@@ -1,0 +1,29 @@
+{
+  "flies": 1,
+  "workers": 6,
+  "simulated_ms_per_fly": 100,
+  "wall_seconds": 1.0265057910000905,
+  "speed_vs_real_time": 0.09741786249697951,
+  "distinct_spike_counts": 1,
+  "total_neural_spikes": 42047.0,
+  "min_neurons_fired": 8334.0,
+  "max_neurons_fired": 8334.0,
+  "brains_with_feeding_activity": 1,
+  "brains_with_walking_activity": 0,
+  "states": [
+    {
+      "odor_left_hz": 23.042254253625064,
+      "odor_right_hz": 27.921419154535602,
+      "sweet_hz": 96.06647823398391,
+      "walk_hz": 0.0,
+      "left_hz": 25.31730504259049,
+      "right_hz": 0.0,
+      "feed_hz": 16.269808189798944,
+      "antenna_hz": 0.0,
+      "spikes": 42047.0,
+      "active_ever": 8334.0,
+      "time_ms": 100.0,
+      "pending_events": 10251.0
+    }
+  ]
+}

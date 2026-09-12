@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fruit Fly Heaven</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a class="wordmark" href="/">Fruit Fly Heaven<span>01 / A CONNECTOME HABITAT</span></a>
+  <div class="connection"><span id="live-dot"></span><span id="connection">Connecting to brains</span></div>
+</header>
+<main>
+  <div class="intro"><div><div class="eyebrow">DROSOPHILA MELANOGASTER · FLYWIRE v783</div><h1>A little bowl of paradise.</h1><p>One hundred independent neural states. A bottomless bowl of bananas and apples.</p></div><button id="pause" class="primary" type="button">Pause brains</button></div>
+  <div class="habitat-layout">
+    <section class="scene-wrap" aria-label="Fruit bowl habitat">
+      <div id="scene" role="img" aria-label="A three-dimensional bowl of rotting bananas and apples with 100 fruit flies. Positions and feeding come from simulated connectome activity."></div>
+      <div class="scene-top"><span class="scene-label">THE FRUIT BOWL</span><span class="scene-label" id="population">100 flies</span></div>
+      <div class="scene-bottom"><span>Drag to orbit · scroll to zoom · click a fly</span><button id="recenter" type="button">Whole bowl</button></div>
+      <div id="error" role="alert" hidden></div>
+    </section>
+    <aside>
+      <div class="inspect-header"><div class="eyebrow">FOLLOW AN INDIVIDUAL</div><div class="fly-picker"><label for="fly-id">Fly</label><select id="fly-id" aria-label="Select a fly"></select><button id="follow" type="button">Look closer</button></div></div>
+      <div class="state-row"><span id="behavior">Waiting for neural activity</span><span id="contact">On fruit</span></div>
+      <div class="neural"><div class="eyebrow">RECENT NEURAL SPIKES</div><canvas id="raster" role="img" aria-label="Actual recent spike events for the selected fly; time on the horizontal axis and neuron index on the vertical axis."></canvas><div class="raster-labels"><span id="raster-start">0 ms</span><span id="raster-end">100 ms</span></div><p class="caption">Latest 256 events · neuron index vertically</p></div>
+      <div class="signals"><div class="eyebrow">MEASURED MOTOR-POPULATION OUTPUT</div>
+        <div class="signal"><span>Feeding</span><span id="feeding">0.0 Hz</span><div><i id="feed-bar"></i></div></div>
+        <div class="signal"><span>Steering, left</span><span id="left">0.0 Hz</span><div><i id="left-bar"></i></div></div>
+        <div class="signal"><span>Steering, right</span><span id="right">0.0 Hz</span><div><i id="right-bar"></i></div></div>
+        <div class="signal"><span>Walking command</span><span id="walking">0.0 Hz</span><div><i id="walk-bar"></i></div></div>
+        <p class="caption">Population means · 100 ms smoothing · bar scale 0–100 Hz</p>
+      </div>
+      <div class="sensory"><div class="eyebrow">SENSORY INPUT</div><label><span>Fruit odor</span><input id="odor" type="checkbox" checked></label><label><span>Sugar on contact</span><input id="taste" type="checkbox" checked></label></div>
+      <div class="individual-stats"><span id="individual-spikes">0 spikes</span><span id="individual-active">0 neurons fired</span></div>
+    </aside>
+  </div>
+  <div class="telemetry" aria-live="off"><div><span class="eyebrow">NEURAL TIME</span><strong id="sim-time">0.00 s</strong></div><div><span class="eyebrow">COMPUTE SPEED</span><strong id="speed">Measuring</strong></div><div><span class="eyebrow">NEURONS PER FLY</span><strong id="neuron-count">138,639</strong></div><div><span class="eyebrow">SYNAPSES PER BRAIN</span><strong>54,492,922</strong></div><div><span class="eyebrow">NEURAL SPIKES, ALL FLIES</span><strong id="total-spikes">0</strong></div></div>
+  <div class="model-summary"><span>Actual connectome wiring · independent brains · modeled senses and bodies</span><span id="slow-note">The clock advances with neural computation.</span></div>
+  <details id="model-notes"><summary>What is real, and what is modeled?</summary><div class="notes-grid"><div><h2>The wiring is real.</h2><p>Every one of the source model’s 15,091,983 directed connection rows is included, representing 54,492,922 synapses. The 100 flies share this immutable wiring; their voltages, synaptic currents, spike histories, and random inputs are independent.</p><p>The downloaded v783 computational model contains 138,639 neurons, compared with 139,255 in FlyWire’s classification. No additional neurons or connections were removed here.</p></div><div><h2>The electrical activity is a model.</h2><p>Leaky integrate-and-fire neurons use a 0.1 ms threshold grid, 20 ms membrane decay, 5 ms synaptic decay, 1.8 ms transmission delay, and a 2.2 ms refractory period. Neurotransmitter signs are predictions supplied by the source model.</p><p>The event-based engine analytically updates quiet cells when needed. Every neural step is accounted for; rendering does not advance the neural clock.</p></div><div><h2>The habitat is supplied.</h2><p>Fruit odor stimulates measured DM1/VA2 olfactory cells; contact stimulates sugar/water sensory cells. Concentration and firing-rate mappings are assumptions. Forward speed and turning are decoded from descending-cell activity; the legs use a supplied animation. The ventral nerve cord and flight physics are absent.</p><p>Food is inexhaustible. Metabolism, reproduction, learning, and subjective experience are not modeled. This is not a validated digital replica of a living fly.</p></div></div><div class="sources"><a href="https://www.nature.com/articles/s41586-024-07558-y" target="_blank" rel="noreferrer">FlyWire connectome paper ↗</a><a href="https://github.com/eonsystemspbc/fly-brain" target="_blank" rel="noreferrer">Source model and data ↗</a><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2702439/" target="_blank" rel="noreferrer">Food-odor circuit evidence ↗</a><a href="/api/meta" target="_blank">Exact provenance and cell IDs ↗</a></div></details>
+</main>
+<footer><span>Fruit Fly Heaven</span><span>Local, open, and inspectable.</span></footer>
+<script type="module" src="app.js"></script>
+</body></html>

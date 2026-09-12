@@ -1,0 +1,637 @@
+{
+  "dataset": "FlyWire FAFB v783 / Eon whole-brain model",
+  "neurons_per_brain": 138639,
+  "connection_rows": 15091983,
+  "synapses_represented": 54492922,
+  "connection_rows_removed": 0,
+  "classification_neurons": 139255,
+  "source_model_neuron_difference": 616,
+  "groups": {
+    "odor_left": 69,
+    "odor_right": 66,
+    "sweet": 129,
+    "walk": 2,
+    "steer_left": 2,
+    "steer_right": 2,
+    "feed": 56,
+    "antenna": 10
+  },
+  "motor_annotations": [
+    {
+      "index": 904,
+      "flywire_id": "720575940604737708",
+      "type": "DNa02",
+      "class": "",
+      "sub_class": "",
+      "side": "right"
+    },
+    {
+      "index": 4353,
+      "flywire_id": "720575940607193986",
+      "type": "CB0845",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 9652,
+      "flywire_id": "720575940610679876",
+      "type": "CB0703",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 9893,
+      "flywire_id": "720575940610792290",
+      "type": "CB0873",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 10334,
+      "flywire_id": "720575940611008718",
+      "type": "CB0810",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 15574,
+      "flywire_id": "720575940612888178",
+      "type": "CB0911",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 18875,
+      "flywire_id": "720575940613935535",
+      "type": "CB0715",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 20215,
+      "flywire_id": "720575940614386070",
+      "type": "CB0845",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 21398,
+      "flywire_id": "720575940614734754",
+      "type": "CB0783",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 22988,
+      "flywire_id": "720575940615197747",
+      "type": "CB0914",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 24049,
+      "flywire_id": "720575940615500030",
+      "type": "CB0720",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 24348,
+      "flywire_id": "720575940615596850",
+      "type": "CB0886",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 26957,
+      "flywire_id": "720575940616340639",
+      "type": "CB0720",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 30742,
+      "flywire_id": "720575940617403622",
+      "type": "CB0861",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 33909,
+      "flywire_id": "720575940618165019",
+      "type": "CB0700",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 34268,
+      "flywire_id": "720575940618238523",
+      "type": "CB0701",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 35538,
+      "flywire_id": "720575940618539810",
+      "type": "CB0915",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 35796,
+      "flywire_id": "720575940618600246",
+      "type": "CB0861",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 39959,
+      "flywire_id": "720575940619682368",
+      "type": "CB0783",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 41514,
+      "flywire_id": "720575940620025620",
+      "type": "MN10",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 46658,
+      "flywire_id": "720575940620982966",
+      "type": "CB0873",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 48718,
+      "flywire_id": "720575940621351412",
+      "type": "CB0810",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 50072,
+      "flywire_id": "720575940621586854",
+      "type": "CB0762",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 53325,
+      "flywire_id": "720575940622137633",
+      "type": "CB0769",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 53907,
+      "flywire_id": "720575940622235930",
+      "type": "CB0723",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 57121,
+      "flywire_id": "720575940622810153",
+      "type": "MN10",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 60250,
+      "flywire_id": "720575940623352063",
+      "type": "CB0911",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 60464,
+      "flywire_id": "720575940623390246",
+      "type": "CB0728",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 60606,
+      "flywire_id": "720575940623415849",
+      "type": "CB0720",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 60974,
+      "flywire_id": "720575940623473335",
+      "type": "CB0750",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 63740,
+      "flywire_id": "720575940623993015",
+      "type": "CB0882",
+      "class": "brain_motor_neuron",
+      "sub_class": "haustellum_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 69118,
+      "flywire_id": "720575940624967612",
+      "type": "CB0715",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 72288,
+      "flywire_id": "720575940625612474",
+      "type": "CB0845",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 74842,
+      "flywire_id": "720575940626094350",
+      "type": "CB0762",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 79276,
+      "flywire_id": "720575940626939737",
+      "type": "CB0728",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 82300,
+      "flywire_id": "720575940627410451",
+      "type": "CB0858",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 83620,
+      "flywire_id": "720575940627652358",
+      "type": "DNp09",
+      "class": "",
+      "sub_class": "",
+      "side": "right"
+    },
+    {
+      "index": 84431,
+      "flywire_id": "720575940627787609",
+      "type": "DNa01",
+      "class": "",
+      "sub_class": "",
+      "side": "left"
+    },
+    {
+      "index": 86234,
+      "flywire_id": "720575940628096586",
+      "type": "CB0769",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 89930,
+      "flywire_id": "720575940628743752",
+      "type": "MN10",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 90454,
+      "flywire_id": "720575940628826128",
+      "type": "CB0858",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 91350,
+      "flywire_id": "720575940628997123",
+      "type": "CB0762",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 91358,
+      "flywire_id": "720575940628998659",
+      "type": "CB0789",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 92336,
+      "flywire_id": "720575940629183643",
+      "type": "CB0886",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 92992,
+      "flywire_id": "720575940629327659",
+      "type": "DNa02",
+      "class": "",
+      "sub_class": "",
+      "side": "left"
+    },
+    {
+      "index": 94214,
+      "flywire_id": "720575940629561347",
+      "type": "CB0845",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 95222,
+      "flywire_id": "720575940629778554",
+      "type": "MNx01",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 95389,
+      "flywire_id": "720575940629810748",
+      "type": "CB0871",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 96066,
+      "flywire_id": "720575940629936348",
+      "type": "CB0720",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 97600,
+      "flywire_id": "720575940630233404",
+      "type": "CB0915",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 99368,
+      "flywire_id": "720575940630580854",
+      "type": "CB0875",
+      "class": "brain_motor_neuron",
+      "sub_class": "haustellum_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 100960,
+      "flywire_id": "720575940630865724",
+      "type": "CB0871",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 100978,
+      "flywire_id": "720575940630868793",
+      "type": "CB0700",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 106500,
+      "flywire_id": "720575940631999080",
+      "type": "MNx01",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 107705,
+      "flywire_id": "720575940632281927",
+      "type": "CB0904",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 107801,
+      "flywire_id": "720575940632304711",
+      "type": "MNx01",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 111524,
+      "flywire_id": "720575940633185567",
+      "type": "CB0762",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 117657,
+      "flywire_id": "720575940635360924",
+      "type": "CB0708",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 119032,
+      "flywire_id": "720575940635872101",
+      "type": "DNp09",
+      "class": "",
+      "sub_class": "",
+      "side": "left"
+    },
+    {
+      "index": 119737,
+      "flywire_id": "720575940636165624",
+      "type": "CB0708",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 123053,
+      "flywire_id": "720575940637662697",
+      "type": "CB0750",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 126113,
+      "flywire_id": "720575940639021757",
+      "type": "CB0723",
+      "class": "brain_motor_neuron",
+      "sub_class": "antennal_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 133149,
+      "flywire_id": "720575940644438551",
+      "type": "DNa01",
+      "class": "",
+      "sub_class": "",
+      "side": "right"
+    },
+    {
+      "index": 133471,
+      "flywire_id": "720575940644726432",
+      "type": "CB0703",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 134358,
+      "flywire_id": "720575940645527918",
+      "type": "CB0914",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 134359,
+      "flywire_id": "720575940645528430",
+      "type": "CB0875",
+      "class": "brain_motor_neuron",
+      "sub_class": "haustellum_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 134550,
+      "flywire_id": "720575940645697828",
+      "type": "CB0789",
+      "class": "brain_motor_neuron",
+      "sub_class": "proboscis_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 135047,
+      "flywire_id": "720575940646274670",
+      "type": "MNx03",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 135896,
+      "flywire_id": "720575940647474979",
+      "type": "CB0882",
+      "class": "brain_motor_neuron",
+      "sub_class": "haustellum_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 136470,
+      "flywire_id": "720575940648804217",
+      "type": "MNx03",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "left"
+    },
+    {
+      "index": 138332,
+      "flywire_id": "720575940660219265",
+      "type": "CB0701",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    },
+    {
+      "index": 138637,
+      "flywire_id": "720575940661338497",
+      "type": "CB0904",
+      "class": "brain_motor_neuron",
+      "sub_class": "ingestion_motor_neuron",
+      "side": "right"
+    }
+  ],
+  "sources": [
+    "https://github.com/eonsystemspbc/fly-brain",
+    "https://www.nature.com/articles/s41586-024-07558-y",
+    "https://www.nature.com/articles/s41586-024-07763-9",
+    "https://codex.flywire.ai",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2702439/"
+  ],
+  "upstream_commit": "a3db62f9436074e485c0278290c2164ed6150808",
+  "source_sha256": {
+    "references/fly-brain/data/2025_Completeness_783.csv": "52b0ac6094cd32c546f8d4c341e094376f48f4e791f8db9b166de5dff8199ea4",
+    "references/fly-brain/data/2025_Connectivity_783.parquet": "efeb23fb99098e9c390f6869969b2a121a2ee92c833cfc45ecb2c1d8e1af0347",
+    "data/raw/classification.csv.gz": "e946b552f4056dfc977707be0674609832c3f64332a22d69dc0d9615e7aae663",
+    "data/raw/consolidated_cell_types.csv.gz": "8aba246d71dc40361677493629972ce3883048c3d02010adc42bda22962a1a2d"
+  },
+  "prepared_sha256": {
+    "groups.bin": "ec643f78dd01c6818f234af3fdde1bf2fb6a108ca103b19903e6246bb2f7afc8",
+    "ids.bin": "70200482b9fe6656f215a97b71332dd6725b80e2cb32e0052a4d47916ca1579b",
+    "indptr.bin": "5eed7ce53ee0aabecb0c4636f95691e4cadb51925dbe1bdd3bef9aca4a32a154",
+    "targets.bin": "302786e9dacecf6f04683f7e46a6c3aa223b136b42b44880ccae0f0487dcd5f3",
+    "weights.bin": "91d63a7ddf6688584f1cd2dc5b06baccc7f2ec788fb36f5ca8bb0900e4874081"
+  },
+  "parameters": {
+    "dt_ms": 0.1,
+    "membrane_tau_ms": 20,
+    "synapse_tau_ms": 5,
+    "rest_mv": -52,
+    "threshold_mv": -45,
+    "reset_mv": -52,
+    "refractory_ms": 2.2,
+    "synaptic_delay_ms": 1.8,
+    "mv_per_synapse": 0.275
+  },
+  "limits": [
+    "The upstream computational model contains 138,639 of the 139,255 classified brain neurons; no additional neurons or edges are removed here.",
+    "Connectivity and neuron identities are measured; neurotransmitter signs are predictions supplied by the upstream model.",
+    "LIF electrical dynamics and sensory rates are assumptions. This is not a validated emulation of a living fly.",
+    "Odor stimulates annotated left/right ORN_DM1 and ORN_VA2 food-odor channels. Rates and spatial odor fields are assumed; banana/apple chemistry is not measured.",
+    "The ventral nerve cord is absent. Walking and steering use a supplied kinematic decoder of descending-neuron spikes; leg cycles are visual animation.",
+    "Food is inexhaustible. Metabolism, development, reproduction, learning, and subjective experience are not modeled."
+  ]
+}

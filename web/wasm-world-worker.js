@@ -1,6 +1,8 @@
 // Full FlyWire spiking brain plus a separate trained, graded visual front end.
 import {createBrainModule,loadConnectome} from '/engine/index.js';
 import {createVisionModule} from '/vision-engine/index.js';
+import {createColorModule,loadFlyColorModel} from '/color-engine/index.js';
+import {ColorVision,validateColorMapping} from './color-vision.js';
 import {compileVisualModel,compileVisualProjection,GradedVision} from './graded-vision.js';
 import {SIMULATION_MODES} from './simulation-modes.js';
 import {createHabitat} from './body-world.js';
@@ -13,6 +15,7 @@ let environment,latestPoses=[],byId=new Map();
 let motorChannels=[];
 let circuitProbe,diagnostics=null,diagnosticFly=null;
 let visualRuntime,visualModel,visualCompiled,visualProjection;
+let colorMapper;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function applyPoses(){for(const pose of latestPoses){const item=byId.get(pose.id);if(item)Object.assign(item.fly,pose);}}
 async function init(args){
@@ -27,6 +30,10 @@ async function init(args){
   if(args.visualMapping.neuron_count!==graph.neuronCount||args.visualMapping.ids_sha256!==data.metadata.prepared_sha256['ids.bin'])throw new Error('Visual projection does not match the connectome');
   visualRuntime=await createVisionModule();visualCompiled=compileVisualModel(args.visualModel);
   visualModel=visualRuntime.createModel(visualCompiled.csr);visualProjection=compileVisualProjection(visualCompiled,args.visualMapping);
+  validateColorMapping(args.colorMapping,graph.neuronCount);
+  const colorModel=await loadFlyColorModel();
+  if(args.colorMapping.ids_sha256!==data.metadata.prepared_sha256['ids.bin']||args.colorMapping.lut_sha256!==colorModel.metadata.lut_sha256)throw new Error('Color inputs do not match the model/connectome');
+  colorMapper=(await createColorModule()).createMapper(colorModel);
   groups=args.groups;fruit=args.fruit;environment=createHabitat(fruit);
   validateSensoryManifest(args.sensoryInputs,graph.neuronCount);
   circuitProbe=args.circuitProbe;validateCircuitProbe(circuitProbe,graph.neuronCount);
@@ -39,11 +46,12 @@ async function init(args){
   const population=graph.createPopulation(args.flies.length,{...mode.parameters,seed:20260912+args.flies[0].id*100003});
   brains=population.map((brain,k)=>{
     brain.setRefractoryPeriod(indices,0);
-    const encoder=new SensoryEncoder(args.sensoryInputs,groups,environment,{visualMapping:args.visualMapping});
+    const encoder=new SensoryEncoder(args.sensoryInputs,groups,environment,{visualMapping:args.visualMapping,colorMapping:args.colorMapping});
     const graded=new GradedVision(visualModel,visualCompiled,args.visualMapping,visualProjection);
+    const color=new ColorVision(colorMapper,args.colorMapping);
     // Preserve the source model's zero-refractory convention only for its food
     // inputs. New visual and body inputs retain the normal LIF refractory period.
-    return {brain,encoder,graded,fly:{...args.flies[k],brain:{time_ms:0,spikes:0,active_ever:0,motor:{}},senses:[0,0,0]},previous:new Float64Array(readIds.length),rates:new Float64Array(readGroups.length)};
+    return {brain,encoder,graded,color,fly:{...args.flies[k],brain:{time_ms:0,spikes:0,active_ever:0,motor:{}},senses:[0,0,0]},previous:new Float64Array(readIds.length),rates:new Float64Array(readGroups.length)};
   });
   byId=new Map(brains.map(item=>[item.fly.id,item]));applyPoses();
   self.postMessage({type:'ready',count:brains.length,heapBytes:module.allocatedHeapBytes});
@@ -56,10 +64,11 @@ async function run(){
     if(paused){await sleep(20);continue;}
     const start=performance.now();let activation=null,spikes=null,selectedId=null,trace=null,lastSpikeMs=null,circuit=null;
     for(const item of brains){
-      const {brain,fly:f,encoder,graded}=item,frame=latestEyes.get(f.id);
+      const {brain,fly:f,encoder,graded,color}=item,frame=latestEyes.get(f.id);
       if(visionOn&&!frame)continue; // Start with an actual rendered eye sample.
       graded.update(frame,brain.timeMs,visionOn);
-      const input=encoder.update(f,frame,{odor:odorOn,taste:tasteOn,vision:visionOn,bodySense:bodySenseOn,graded});
+      color.update(frame,visionOn);
+      const input=encoder.update(f,frame,{odor:odorOn,taste:tasteOn,vision:visionOn,bodySense:bodySenseOn,graded,color});
       if(input){brain.setPoissonInputs(input);item.inputFrame=frame;}
       if(f.id===selected){
         const read=new Uint32Array([selectedNeuron]);trace={neuronIndex:selectedNeuron,dtMs:mode.dtMs,samples:[]};

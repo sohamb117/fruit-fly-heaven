@@ -81,9 +81,9 @@ def main():
         vision=dict(width=32, height=16, eye_yaw_degrees=60, vertical_fov_degrees=120,
                     frame_interval_body_seconds=.05, receptors=retina, unmapped_root_ids=unmapped,
                     mapping='R1-6 assigned to the same-side postsynaptic (p,q) column with greatest absolute connection weight; p/q lattice fitted to each camera image.',
-                    limitations=['Two low-resolution grayscale pinhole cameras, not calibrated compound-eye optics or color vision.',
+                    limitations=['Two low-resolution pinhole cameras; this manifest maps their luminance plane. The separate color-inputs.json manifest maps RGB-derived R7/R8 input.',
                                  'Light and adaptation are encoded as Poisson drive in the existing LIF engine; real photoreceptors use graded signals.',
-                                 'Unmapped photoreceptors stay in the graph but receive no added visual drive. R7/R8 color pathways are not directly stimulated.']),
+                                 'Unmapped R1-6 photoreceptors stay in the graph but receive no added luminance drive. Color receptor mapping and assumptions are recorded separately.']),
         channels=channels,
         scope='Brain only; body-sense rates approximate the missing peripheral/VNC computation at existing input neurons. Wiring is unchanged.')
     (ROOT/'web/sensory-inputs.json').write_text(json.dumps(result, separators=(',', ':'))+'\n')

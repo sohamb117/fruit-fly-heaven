@@ -1,0 +1,20 @@
+{
+  "scope": "Mapping only, not the full-brain simulation. Median of nine alternating warmed batches; WASM includes input/output copies. 1024 pixels = both 32×16 eyes of one fly.",
+  "runtime": "v24.19.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "results": [
+    {
+      "pixels": 1024,
+      "wasmMilliseconds": 0.00983375,
+      "javascriptMilliseconds": 0.013098333333333325,
+      "speedup": 1.3319774585822626
+    },
+    {
+      "pixels": 102400,
+      "wasmMilliseconds": 1.0144791999999996,
+      "javascriptMilliseconds": 1.3329709000000036,
+      "speedup": 1.313946012890165
+    }
+  ]
+}

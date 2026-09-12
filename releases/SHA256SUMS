@@ -19,6 +19,10 @@ d024c4fe97e5a1e9503758970ba964a6066ef8f42ac674e672daa0495beb3011  fruit-fly-brai
 cd4cccf1f7723b9bc63b2b003709fd89f615d8d0f64609d0256d25a33caf1484  fruit-fly-brain-wasm-0.2.0.tgz
 5b0724d350c756b8a5ae15742dc2bd9227e135e350c4a623c9fb2f8097d7aacb  fruit-fly-brain-wasm-0.2.0.wasm
 af18361359782b0d500cb68cd6d959f8d59159d83e2083c035e0156a4a4ec36c  fruit-fly-brain-wasm-0.2.0.zip
+4552adec577ce2aea22832fadf1d2cae95a3d5b7b4560c2a110923ba24d7518a  fruit-fly-color-wasm-0.1.0.manifest.json
+7e81192dfdc6af1f2be6425039ce62a079d7bcb9e8ce8aafa1fae24bd982dcc1  fruit-fly-color-wasm-0.1.0.tgz
+cb34d533bd76649713e45bf9d387e23dd78b17fe86388ad50b9ce3c32fb92fea  fruit-fly-color-wasm-0.1.0.wasm
+4089946ee2a6ad5441da7a7045b377cb62411ee0f0fc8dcbc2d545a03e1d4099  fruit-fly-color-wasm-0.1.0.zip
 88cb76cd18be63e1e9c34639fd63ac2a9d488ac912221aa254383838ff79e724  fruit-fly-vision-wasm-0.1.0.manifest.json
 d5e69130b54722adcd067f3897963cccf8ade0c62700bd7be7a362b4167405d9  fruit-fly-vision-wasm-0.1.0.tgz
 3ba4d589e78741297ac596d1cedec726f63fdd24748f2b128da5562f3b40b6b9  fruit-fly-vision-wasm-0.1.0.wasm

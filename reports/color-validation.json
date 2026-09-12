@@ -1,0 +1,204 @@
+{
+  "protocol": "600 ms full FlyWire graph per condition, matched seed and frozen pose. Identical constant luminance plane, FlyVis graded input, food and body feedback. Only the R7/R8 spectral input differs: blue, green, or disconnected. The first two stimuli have approximately matched total Rh5+Rh6 capture. This checks signal delivery and propagation, not validated color perception.",
+  "model": {
+    "schema_version": 1,
+    "size": 33,
+    "channels": [
+      "Rh3",
+      "Rh4",
+      "Rh5",
+      "Rh6"
+    ],
+    "layout": "R-major, then G, then B, interleaved channels; Float32 little-endian",
+    "input": "sRGB bytes decoded to linear RGB before trilinear lookup",
+    "method": "PBRT v3 Smits-style illuminant reconstruction, nonnegative spectral clamp, Govardovskii 2000 A1 templates, photon-catch integration",
+    "peaks_nm": [
+      345,
+      375,
+      437,
+      508
+    ],
+    "wavelength_nm": [
+      300,
+      720
+    ],
+    "illumination_cutoff_nm": 400,
+    "uv_assumption": "Zero incident light below 400 nm. RGB does not recover ultraviolet.",
+    "normalization": "Each catch divided by that opsin capture under unit-energy equal-energy light over 300–720 nm; no amplification of weak UV channels to RGB white.",
+    "units": "relative photon capture; not volts, spikes or perceived RGB",
+    "limitations": [
+      "Reconstructed spectra are one RGB-compatible approximation, not measured material spectra.",
+      "Template pigment sensitivities omit ocular screening, sensitizing pigments, polarization and adaptation.",
+      "The LUT approximates the spectral integral; the brain adapter supplies separate assumed rate gains."
+    ],
+    "lut_file": "fly-color-lut.bin",
+    "lut_sha256": "43275e5599e230662db22f9dfc5d904366dca27b2c2a74ace23edebbbc1e16af",
+    "sources": {
+      "pbrt-spectrum.cpp": {
+        "url": "https://raw.githubusercontent.com/mmp/pbrt-v3/13d871faae88233b327d04cda24022b8bb0093ee/src/core/spectrum.cpp",
+        "sha256": "f202d90aa4b2bb7cf19efd4ce454586b3e1819d4522acb8edf3d9010f35d087e"
+      },
+      "pbrt-LICENSE.txt": {
+        "url": "https://raw.githubusercontent.com/mmp/pbrt-v3/13d871faae88233b327d04cda24022b8bb0093ee/LICENSE.txt",
+        "sha256": "6f5d3feb321e2a95592f1b9ba7d512f56175ddf2458af6ad8361396d250f5863"
+      },
+      "dreye-filter_templates.py": {
+        "url": "https://raw.githubusercontent.com/neuralsignal/dreye/b36d2870ec661a34e2cda6d9c5b23ea89eb0dabb/dreye/api/filter_templates.py",
+        "sha256": "85995292fc868f41703af683949fc2c08b3ab3dfaac7620f9c2f02e27ac2eefb"
+      },
+      "dreye-capture.py": {
+        "url": "https://raw.githubusercontent.com/neuralsignal/dreye/b36d2870ec661a34e2cda6d9c5b23ea89eb0dabb/dreye/api/capture.py",
+        "sha256": "48944510161cf7d6bcc30b727a9953854a9c4c702c9755965e3de7176e4b4c4c"
+      },
+      "dreye-LICENSE": {
+        "url": "https://raw.githubusercontent.com/neuralsignal/dreye/b36d2870ec661a34e2cda6d9c5b23ea89eb0dabb/LICENSE",
+        "sha256": "e04a7d40bfe8dac6f2fc737b336c909575b6e24cee9f76dae5242f04942a94bf"
+      }
+    },
+    "peak_source": "https://www.nature.com/articles/s41598-020-74742-1",
+    "template_source": "https://doi.org/10.1017/S0952523800174036"
+  },
+  "graphSha256": {
+    "groups.bin": "ec643f78dd01c6818f234af3fdde1bf2fb6a108ca103b19903e6246bb2f7afc8",
+    "ids.bin": "70200482b9fe6656f215a97b71332dd6725b80e2cb32e0052a4d47916ca1579b",
+    "indptr.bin": "5eed7ce53ee0aabecb0c4636f95691e4cadb51925dbe1bdd3bef9aca4a32a154",
+    "targets.bin": "302786e9dacecf6f04683f7e46a6c3aa223b136b42b44880ccae0f0487dcd5f3",
+    "weights.bin": "91d63a7ddf6688584f1cd2dc5b06baccc7f2ec788fb36f5ca8bb0900e4874081"
+  },
+  "results": [
+    {
+      "mode": "reference",
+      "condition": "off",
+      "rgb": null,
+      "captures": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "totalSpikes": 426272,
+      "receptorSpikes": {
+        "Rh3": 0,
+        "Rh4": 0,
+        "Rh5": 0,
+        "Rh6": 0
+      }
+    },
+    {
+      "mode": "reference",
+      "condition": "blue",
+      "rgb": [
+        0,
+        0,
+        205
+      ],
+      "captures": [
+        0.0014319403562694788,
+        0.07397360354661942,
+        0.39108479022979736,
+        0.211895152926445
+      ],
+      "totalSpikes": 442902,
+      "receptorSpikes": {
+        "Rh3": 442,
+        "Rh4": 3094,
+        "Rh5": 5561,
+        "Rh6": 7806
+      }
+    },
+    {
+      "mode": "reference",
+      "condition": "green",
+      "rgb": [
+        0,
+        255,
+        0
+      ],
+      "captures": [
+        0.000015783123672008514,
+        0.0006969157257117331,
+        0.06928777694702148,
+        0.5431618094444275
+      ],
+      "totalSpikes": 445195,
+      "receptorSpikes": {
+        "Rh3": 424,
+        "Rh4": 1008,
+        "Rh5": 1414,
+        "Rh6": 17733
+      }
+    },
+    {
+      "mode": "reference",
+      "changedReceptors": 2099,
+      "changedOtherNeurons": 5238
+    },
+    {
+      "mode": "fast",
+      "condition": "off",
+      "rgb": null,
+      "captures": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "totalSpikes": 506114,
+      "receptorSpikes": {
+        "Rh3": 0,
+        "Rh4": 0,
+        "Rh5": 0,
+        "Rh6": 0
+      }
+    },
+    {
+      "mode": "fast",
+      "condition": "blue",
+      "rgb": [
+        0,
+        0,
+        205
+      ],
+      "captures": [
+        0.0014319403562694788,
+        0.07397360354661942,
+        0.39108479022979736,
+        0.211895152926445
+      ],
+      "totalSpikes": 522935,
+      "receptorSpikes": {
+        "Rh3": 442,
+        "Rh4": 3118,
+        "Rh5": 5713,
+        "Rh6": 7955
+      }
+    },
+    {
+      "mode": "fast",
+      "condition": "green",
+      "rgb": [
+        0,
+        255,
+        0
+      ],
+      "captures": [
+        0.000015783123672008514,
+        0.0006969157257117331,
+        0.06928777694702148,
+        0.5431618094444275
+      ],
+      "totalSpikes": 527815,
+      "receptorSpikes": {
+        "Rh3": 425,
+        "Rh4": 1008,
+        "Rh5": 1422,
+        "Rh6": 18444
+      }
+    },
+    {
+      "mode": "fast",
+      "changedReceptors": 2096,
+      "changedOtherNeurons": 5320
+    }
+  ]
+}

@@ -10,7 +10,7 @@ import zipfile
 ROOT=Path(__file__).resolve().parents[1]
 import argparse
 parser=argparse.ArgumentParser()
-parser.add_argument('package', nargs='?', default='fly-brain-wasm', choices=['fly-brain-wasm','brain-view-wasm','fly-vision-wasm'])
+parser.add_argument('package', nargs='?', default='fly-brain-wasm', choices=['fly-brain-wasm','brain-view-wasm','fly-vision-wasm','fly-color-wasm'])
 args=parser.parse_args()
 PACKAGE=ROOT/'packages'/args.package
 meta=json.loads((PACKAGE/'package.json').read_text())
@@ -19,16 +19,16 @@ OUT=ROOT/'releases';OUT.mkdir(exist_ok=True)
 files=[PACKAGE/p for p in ['package.json','README.md','LICENSE','CHANGELOG.md']]
 files+=sorted((PACKAGE/'dist').glob('*'))
 files.append(PACKAGE/'build.sh')
-for directory in ['native','src','third-party-licenses'] + (['test'] if 'test' in meta.get('files', []) else []):
+for directory in ['native','src','third-party-licenses'] + (['model'] if 'model' in meta.get('files', []) else []) + (['test'] if 'test' in meta.get('files', []) else []):
     files+=sorted(p for p in (PACKAGE/directory).rglob('*') if p.is_file())
 required={'core.js','core.wasm','index.js','index.d.ts'}
-if args.package!='fly-vision-wasm':required.add('worker.js')
+if args.package not in ['fly-vision-wasm','fly-color-wasm']:required.add('worker.js')
 if args.package=='fly-brain-wasm':required.update({'core-f32.js','core-f32.wasm'})
 assert required.issubset({p.name for p in files}), 'Build all release files first'
 assert (PACKAGE/'dist/core.wasm').read_bytes()[:4]==b'\0asm'
 (OUT/f'{name}.wasm').write_bytes((PACKAGE/'dist/core.wasm').read_bytes())
 manifest={'name':meta['name'],'version':meta['version'],'compiler':'Emscripten 4.0.23',
-          'published':False,'dataset_included':False,'files':{}}
+          'published':False,'dataset_included':args.package=='fly-color-wasm','files':{}}
 if args.package=='fly-brain-wasm':
     payload=(PACKAGE/'dist/core-f32.wasm').read_bytes()
     assert payload[:4]==b'\0asm'

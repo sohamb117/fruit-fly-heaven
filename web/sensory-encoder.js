@@ -1,4 +1,5 @@
 import {sensoryRates} from './body-world.js';
+import {validateColorMapping} from './color-vision.js';
 
 const clamp=(n,lo=0,hi=100)=>Math.max(lo,Math.min(hi,Number.isFinite(n)?n:0));
 const mean=a=>a.length?a.reduce((s,n)=>s+n,0)/a.length:0;
@@ -29,20 +30,22 @@ export function bodyInputRates(feedback,enabled=true){
 }
 
 export class SensoryEncoder{
-  constructor(manifest,groups,environment,{visualMapping=null}={}){
+  constructor(manifest,groups,environment,{visualMapping=null,colorMapping=null}={}){
     validateSensoryManifest(manifest,manifest.neuron_count);
     this.manifest=manifest;this.groups=groups;this.environment=environment;
     this.foodCount=groups.odor_left.length+groups.odor_right.length+groups.sweet.length;
-    this.indices=Uint32Array.from([...groups.odor_left,...groups.odor_right,...groups.sweet,...manifest.vision.receptors.map(r=>r.index),...manifest.channels.flatMap(c=>c.indices),...(visualMapping?.cells.map(c=>c.index)||[])]);
+    if(colorMapping)validateColorMapping(colorMapping,manifest.neuron_count);
+    this.indices=Uint32Array.from([...groups.odor_left,...groups.odor_right,...groups.sweet,...manifest.vision.receptors.map(r=>r.index),...manifest.channels.flatMap(c=>c.indices),...(visualMapping?.cells.map(c=>c.index)||[]),...(colorMapping?.cells.map(c=>c.index)||[])]);
     this.projectionCount=visualMapping?.cells.length||0;
+    this.colorCount=colorMapping?.cells.length||0;
     if(this.indices.some(i=>i>=manifest.neuron_count))throw new Error('Visual projection outside connectome');
     if(new Set(this.indices).size!==this.indices.length)throw new Error('Sensory inputs overlap');
     this.ratesHz=new Float32Array(this.indices.length);
     this.adapted=new Float32Array(manifest.vision.width*manifest.vision.height*2);
     this.lightDrive=new Float32Array(this.adapted.length);this.lastSequence=-1;this.lastFrameTime=null;this.lastKey=null;
   }
-  update(pose,frame,{odor=true,taste=true,vision=true,bodySense=true,graded=null}={}){
-    const key=[pose.bodyTime,frame?.sequence,odor,taste,vision,bodySense,graded?.serial].join('|');
+  update(pose,frame,{odor=true,taste=true,vision=true,bodySense=true,graded=null,color=null}={}){
+    const key=[pose.bodyTime,frame?.sequence,odor,taste,vision,bodySense,graded?.serial,color?.serial].join('|');
     if(key===this.lastKey)return null;
     this.lastKey=key;
     const g=SENSORY_GAINS,v=this.manifest.vision,n=v.width*v.height;
@@ -74,10 +77,17 @@ export class SensoryEncoder{
       if(vision&&graded?.summary.ready){
         if(graded.ratesHz?.length!==this.projectionCount||!graded.ratesHz.every(n=>Number.isFinite(n)&&n>=0))throw new Error('Invalid graded visual drive');
         this.ratesHz.set(graded.ratesHz,offset);
+      }else this.ratesHz.fill(0,offset,offset+this.projectionCount);
+      offset+=this.projectionCount;
+    }
+    if(this.colorCount){
+      if(vision&&color?.summary.ready){
+        if(color.ratesHz?.length!==this.colorCount||!color.ratesHz.every(n=>Number.isFinite(n)&&n>=0&&n<=200))throw new Error('Invalid color visual drive');
+        this.ratesHz.set(color.ratesHz,offset);
       }else this.ratesHz.fill(0,offset);
     }
     this.sample={food,vision:{enabled:vision,ready:!!validFrame,leftHz:sums[0]/counts[0],rightHz:sums[1]/counts[1],contrast:this.contrast||0,
-      frameBodyTime:validFrame?frame.bodyTime:null,sequence:validFrame?frame.sequence:null,graded:graded?.summary||null},
+      frameBodyTime:validFrame?frame.bodyTime:null,sequence:validFrame?frame.sequence:null,graded:graded?.summary||null,color:color?.summary||null},
       body:{enabled:bodySense,rates:body,support:mean((pose.feedback?.legs||[]).map(l=>l.support)),jointSpeed:mean((pose.feedback?.legs||[]).map(l=>l.speed)),
         speed:pose.feedback?.speed||0,yaw:pose.feedback?.yaw||0,tilt:pose.feedback?.tilt||0},bodyTime:pose.bodyTime};
     return {indices:this.indices,ratesHz:this.ratesHz,sample:this.sample};

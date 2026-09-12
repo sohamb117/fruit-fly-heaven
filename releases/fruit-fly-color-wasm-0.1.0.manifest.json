@@ -1,0 +1,89 @@
+{
+  "name": "fruit-fly-color-wasm",
+  "version": "0.1.0",
+  "compiler": "Emscripten 4.0.23",
+  "published": false,
+  "dataset_included": true,
+  "files": {
+    "package.json": {
+      "bytes": 533,
+      "sha256": "39cf9d495b4f80ec47fdae022d5d8b6ec118654d8f92a30ca69fce4d01aa40da"
+    },
+    "README.md": {
+      "bytes": 4775,
+      "sha256": "ffb79b5d9a6a4319fad26cf88afebaacee5edc7db3d1f63ad01bda24ce906083"
+    },
+    "LICENSE": {
+      "bytes": 1086,
+      "sha256": "8d61c17302bc912e56f689a812ddbed59556d30a72fbebe08237ae4ef45400f1"
+    },
+    "CHANGELOG.md": {
+      "bytes": 313,
+      "sha256": "0f2eb99abca7dfc96c3a6dca3a8760daba9d8815038e747c9398a18c540524b1"
+    },
+    "dist/core.js": {
+      "bytes": 7605,
+      "sha256": "ab7a02e546063266a7c1d4b5a941b81aaf77ce117bd8815b1a9929f051a815d2"
+    },
+    "dist/core.wasm": {
+      "bytes": 7900,
+      "sha256": "cb34d533bd76649713e45bf9d387e23dd78b17fe86388ad50b9ce3c32fb92fea"
+    },
+    "dist/fly-color-lut.bin": {
+      "bytes": 574992,
+      "sha256": "43275e5599e230662db22f9dfc5d904366dca27b2c2a74ace23edebbbc1e16af"
+    },
+    "dist/fly-color-model.json": {
+      "bytes": 2706,
+      "sha256": "f2511a5658e8eeb8f2ed2e4e2c15044ec78da97982da7dde302a74246736b07f"
+    },
+    "dist/index.d.ts": {
+      "bytes": 546,
+      "sha256": "8b9e483a360726407c7c80403e4499aeb5bea3a3c78f2f98500fccb7f0a46de1"
+    },
+    "dist/index.js": {
+      "bytes": 3302,
+      "sha256": "328f1133d3ab18ce18776ec3506d74ffb4315e5f653861e574e4efb3b0e4f48c"
+    },
+    "build.sh": {
+      "bytes": 536,
+      "sha256": "ced337edeebbfceab45e5aa9932795764966ea38b45f04ab5c277607c479df0c"
+    },
+    "native/core.cpp": {
+      "bytes": 1066,
+      "sha256": "2654ead88868b804a22b897ba18a59ded66b6ab5833da735e4cef636523c5092"
+    },
+    "src/index.d.ts": {
+      "bytes": 546,
+      "sha256": "8b9e483a360726407c7c80403e4499aeb5bea3a3c78f2f98500fccb7f0a46de1"
+    },
+    "src/index.js": {
+      "bytes": 3302,
+      "sha256": "328f1133d3ab18ce18776ec3506d74ffb4315e5f653861e574e4efb3b0e4f48c"
+    },
+    "third-party-licenses/dreye-LICENSE": {
+      "bytes": 1077,
+      "sha256": "e04a7d40bfe8dac6f2fc737b336c909575b6e24cee9f76dae5242f04942a94bf"
+    },
+    "third-party-licenses/pbrt-LICENSE.txt": {
+      "bytes": 1323,
+      "sha256": "6f5d3feb321e2a95592f1b9ba7d512f56175ddf2458af6ad8361396d250f5863"
+    },
+    "model/fly-color-lut.bin": {
+      "bytes": 574992,
+      "sha256": "43275e5599e230662db22f9dfc5d904366dca27b2c2a74ace23edebbbc1e16af"
+    },
+    "model/fly-color-model.json": {
+      "bytes": 2706,
+      "sha256": "f2511a5658e8eeb8f2ed2e4e2c15044ec78da97982da7dde302a74246736b07f"
+    },
+    "model/reference.json": {
+      "bytes": 19970,
+      "sha256": "2242c3d110fa0fa2d6c7fc1603b43bc75a016ccbcf2e20a9c88eedabe6b36091"
+    },
+    "test/color.test.mjs": {
+      "bytes": 2226,
+      "sha256": "9b5457a931474d4aff9d0c391e50d3098d0a80115bd2e1027654f35a55516c1f"
+    }
+  }
+}

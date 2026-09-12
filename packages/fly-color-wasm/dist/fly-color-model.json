@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "size": 33,
+  "channels": [
+    "Rh3",
+    "Rh4",
+    "Rh5",
+    "Rh6"
+  ],
+  "layout": "R-major, then G, then B, interleaved channels; Float32 little-endian",
+  "input": "sRGB bytes decoded to linear RGB before trilinear lookup",
+  "method": "PBRT v3 Smits-style illuminant reconstruction, nonnegative spectral clamp, Govardovskii 2000 A1 templates, photon-catch integration",
+  "peaks_nm": [
+    345,
+    375,
+    437,
+    508
+  ],
+  "wavelength_nm": [
+    300,
+    720
+  ],
+  "illumination_cutoff_nm": 400,
+  "uv_assumption": "Zero incident light below 400 nm. RGB does not recover ultraviolet.",
+  "normalization": "Each catch divided by that opsin capture under unit-energy equal-energy light over 300\u2013720 nm; no amplification of weak UV channels to RGB white.",
+  "units": "relative photon capture; not volts, spikes or perceived RGB",
+  "limitations": [
+    "Reconstructed spectra are one RGB-compatible approximation, not measured material spectra.",
+    "Template pigment sensitivities omit ocular screening, sensitizing pigments, polarization and adaptation.",
+    "The LUT approximates the spectral integral; the brain adapter supplies separate assumed rate gains."
+  ],
+  "lut_file": "fly-color-lut.bin",
+  "lut_sha256": "43275e5599e230662db22f9dfc5d904366dca27b2c2a74ace23edebbbc1e16af",
+  "sources": {
+    "pbrt-spectrum.cpp": {
+      "url": "https://raw.githubusercontent.com/mmp/pbrt-v3/13d871faae88233b327d04cda24022b8bb0093ee/src/core/spectrum.cpp",
+      "sha256": "f202d90aa4b2bb7cf19efd4ce454586b3e1819d4522acb8edf3d9010f35d087e"
+    },
+    "pbrt-LICENSE.txt": {
+      "url": "https://raw.githubusercontent.com/mmp/pbrt-v3/13d871faae88233b327d04cda24022b8bb0093ee/LICENSE.txt",
+      "sha256": "6f5d3feb321e2a95592f1b9ba7d512f56175ddf2458af6ad8361396d250f5863"
+    },
+    "dreye-filter_templates.py": {
+      "url": "https://raw.githubusercontent.com/neuralsignal/dreye/b36d2870ec661a34e2cda6d9c5b23ea89eb0dabb/dreye/api/filter_templates.py",
+      "sha256": "85995292fc868f41703af683949fc2c08b3ab3dfaac7620f9c2f02e27ac2eefb"
+    },
+    "dreye-capture.py": {
+      "url": "https://raw.githubusercontent.com/neuralsignal/dreye/b36d2870ec661a34e2cda6d9c5b23ea89eb0dabb/dreye/api/capture.py",
+      "sha256": "48944510161cf7d6bcc30b727a9953854a9c4c702c9755965e3de7176e4b4c4c"
+    },
+    "dreye-LICENSE": {
+      "url": "https://raw.githubusercontent.com/neuralsignal/dreye/b36d2870ec661a34e2cda6d9c5b23ea89eb0dabb/LICENSE",
+      "sha256": "e04a7d40bfe8dac6f2fc737b336c909575b6e24cee9f76dae5242f04942a94bf"
+    }
+  },
+  "peak_source": "https://www.nature.com/articles/s41598-020-74742-1",
+  "template_source": "https://doi.org/10.1017/S0952523800174036"
+}

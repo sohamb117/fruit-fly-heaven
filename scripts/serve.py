@@ -9,7 +9,7 @@ class Handler(SimpleHTTPRequestHandler):
     def __init__(self,*a,**kw):super().__init__(*a,directory=str(ROOT/'web'),**kw)
     def translate_path(self,path):
         path=unquote(urlparse(path).path)
-        for prefix,base in [('/engine/',ROOT/'packages/fly-brain-wasm/dist'),('/vision-engine/',ROOT/'packages/fly-vision-wasm/dist'),('/view-engine/',ROOT/'packages/brain-view-wasm/dist'),('/anatomy/',ROOT/'data/anatomy'),('/connectome/',ROOT/'data/prepared')]:
+        for prefix,base in [('/engine/',ROOT/'packages/fly-brain-wasm/dist'),('/vision-engine/',ROOT/'packages/fly-vision-wasm/dist'),('/color-engine/',ROOT/'packages/fly-color-wasm/dist'),('/view-engine/',ROOT/'packages/brain-view-wasm/dist'),('/anatomy/',ROOT/'data/anatomy'),('/connectome/',ROOT/'data/prepared')]:
             if path.startswith(prefix):
                 target=(base/path[len(prefix):]).resolve()
                 if not target.is_relative_to(base.resolve()):return str(ROOT/'web/__missing__')

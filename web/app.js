@@ -14,7 +14,7 @@ let workers=[],readyWorkers=0,totalWorkers=0,latestActivation=null,brainView=fal
 let anatomyViewer=null,selectedNeuron=0;
 let habitatData,groupsData,motorOutputsData,fastMode=false,workerGeneration=0,populationSize=100;
 let sensoryInputsData,retinalCamera,retinaCursor=0,lastEyeDraw='';
-let circuitProbeData,visualModelData,visualProjectionData;
+let circuitProbeData,visualModelData,visualProjectionData,colorMappingData;
 const circuitInspector=createCircuitInspector(document.getElementById('circuit-inspector'));
 let bodyWorld,bodyClock='neural',movementMode='behavior',flightEnabled=true,motorCoupling=true,lastMotionNeuralMs=0,lastPoseSent=0,lastMotionPanel=0;
 let flightTrails,trailPositions,lastTrailTime=0;
@@ -271,7 +271,9 @@ function updateMotionPanel(){
 }
 function updateSensoryPanel(f){
   const s=f.sensory;
-  const g=s?.vision.graded;
+  const g=s?.vision.graded,c=s?.vision.color;
+  $('color-model-status').textContent=!$('vision').checked?'Color inputs disconnected':c?.ready?`RGB → receptor mapping · WASM · ${c.meanDriveHz.toFixed(1)} Hz mean color input`:'Waiting for RGB input';
+  for(const side of ['left','right'])$('color-'+side).textContent=(c?.[side]||[0,0,0,0]).map(v=>v.toFixed(4)).join(' · ');
   $('vision-model-status').textContent=!$('vision').checked?'Visual inputs disconnected':g?.ready?`Graded vision running · ${(g.neuralTimeMs/1000).toFixed(2)} neural s · ${g.meanDriveHz.toFixed(1)} Hz mean bridge drive`:'Loading graded visual model';
   for(const [j,side]of ['left','right'].entries())for(const path of ['T4','T5']){
     const values=['a','b','c','d'].map(suffix=>(g?.activity[path+suffix]?.[j]||0).toFixed(3));
@@ -292,7 +294,7 @@ function updateSensoryPanel(f){
     lastEyeDraw=key;
     for(const [i,side]of ['left','right'].entries()){
       const canvas=$('eye-'+side),ctx=canvas.getContext('2d'),image=ctx.createImageData(32,16);
-      for(let p=0;p<512;p++){const n=frame?.pixels[i*512+p]??0;image.data.set([n,n,n,255],p*4);}
+      for(let p=0;p<512;p++){const at=i*512+p,n=frame?.pixels[at]??0,base=at*3;image.data.set(frame?.rgb?[frame.rgb[base],frame.rgb[base+1],frame.rgb[base+2],255]:[n,n,n,255],p*4);}
       ctx.putImageData(image,0,0);
     }
   }
@@ -346,7 +348,7 @@ function launchWorkers(groups){
       updatePanel();
     };
     worker.onerror=event=>{if(generation===workerGeneration){control({paused:true});showError(event.message);}};
-    worker.postMessage({type:'init',flies:bodyWorld.poses().filter((f,i)=>i%totalWorkers===n),fruit:meta.fruit,groups,motorOutputs:motorOutputsData,sensoryInputs:sensoryInputsData,circuitProbe:circuitProbeData,visualModel:visualModelData,visualMapping:visualProjectionData,selectedNeuron,mode,selected,paused:snapshot.paused,odor:$('odor').checked,taste:$('taste').checked,vision:$('vision').checked,bodySense:$('body-sense').checked});
+    worker.postMessage({type:'init',flies:bodyWorld.poses().filter((f,i)=>i%totalWorkers===n),fruit:meta.fruit,groups,motorOutputs:motorOutputsData,sensoryInputs:sensoryInputsData,circuitProbe:circuitProbeData,visualModel:visualModelData,visualMapping:visualProjectionData,colorMapping:colorMappingData,selectedNeuron,mode,selected,paused:snapshot.paused,odor:$('odor').checked,taste:$('taste').checked,vision:$('vision').checked,bodySense:$('body-sense').checked});
   }
 }
 
@@ -409,10 +411,11 @@ function restartPopulation(){
 }
 
 try{
-  const responses=await Promise.all([fetch('/connectome/metadata.json'),fetch('/habitat.json'),fetch('/connectome/groups.json'),fetch('/motor-outputs.json'),fetch('/sensory-inputs.json'),fetch('/circuit-probe.json'),fetch('/visual-model.json'),fetch('/visual-projections.json')]);
+  const responses=await Promise.all([fetch('/connectome/metadata.json'),fetch('/habitat.json'),fetch('/connectome/groups.json'),fetch('/motor-outputs.json'),fetch('/sensory-inputs.json'),fetch('/circuit-probe.json'),fetch('/visual-model.json'),fetch('/visual-projections.json'),fetch('/color-inputs.json')]);
   if(responses.some(r=>!r.ok))throw new Error('Cannot load connectome or habitat');
   meta=await responses[0].json();const habitat=await responses[1].json(),groups=await responses[2].json();meta.fruit=habitat.fruit;meta.flies=habitat.flies.length;
   habitatData=habitat;groupsData=groups;motorOutputsData=await responses[3].json();
+  colorMappingData=await responses[8].json();
   sensoryInputsData=await responses[4].json();circuitProbeData=await responses[5].json();
   const modelText=await responses[6].text();visualModelData=JSON.parse(modelText);visualProjectionData=await responses[7].json();
   const modelHash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(modelText))),n=>n.toString(16).padStart(2,'0')).join('');

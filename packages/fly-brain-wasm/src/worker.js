@@ -5,7 +5,10 @@ let runtime=null,nextId=1,queue=Promise.resolve();
 const graphs=new Map(),brains=new Map();
 function find(map,id,name){if(!map.has(id))throw new Error(`Unknown ${name}: ${id}`);return map.get(id);}
 async function handle({op,args={}}){
-  if(op==='init'){runtime=await createBrainModule(args);return {ready:true};}
+  if(op==='init'){
+    if(runtime)throw new Error('Worker already initialized');
+    runtime=await createBrainModule(args);return {ready:true,precision:runtime.precision};
+  }
   if(!runtime)throw new Error('Call init before other operations');
   if(op==='loadConnectome'){
     const data=args.csr??await loadConnectome(args.url),graph=runtime.createConnectome(data),id=nextId++;

@@ -1,4 +1,5 @@
 export type ActivationField = 'voltage' | 'synapticDrive' | 'spikeCount';
+export type StatePrecision = 'float64' | 'float32';
 export interface NeuronParameters {
   dtMs?:number; tauMembraneMs?:number; tauSynapseMs?:number;
   restMv?:number; thresholdMv?:number; resetMv?:number;
@@ -10,6 +11,7 @@ export interface CSRConnectome {neuronCount:number; rowOffsets:Uint32Array; targ
 export interface ActivationOptions {field?:ActivationField;indices?:Uint32Array;}
 export interface SpikeHistory {timesMs:Float64Array;neuronIndices:Uint32Array;total:number;dropped:number;}
 export interface Brain {
+  readonly precision:StatePrecision;
   readonly neuronCount:number; readonly parameters:Readonly<Required<NeuronParameters>>;
   readonly timeMs:number; readonly totalSpikes:number; readonly connectome:Connectome;
   setPoissonInputs(input:{indices:Uint32Array;ratesHz:Float32Array;amplitudesMv?:Float32Array}):this;
@@ -29,14 +31,16 @@ export interface Connectome {
   dispose():void;
 }
 export interface ActivationMatrix {
+  precision:StatePrecision;
   values:Float64Array;shape:[number,number];order:'row-major';field:ActivationField;
   unit:'mV'|'spikes';timesMs:Float64Array;
 }
 export interface BrainModule {
+  readonly precision:StatePrecision;
   createConnectome(csr:CSRConnectome):Connectome;
   readActivationMatrix(brains:Brain[],options?:ActivationOptions):ActivationMatrix;
   readonly allocatedHeapBytes:number;
 }
 export declare const DEFAULT_PARAMETERS:Readonly<Required<NeuronParameters>>;
-export declare function createBrainModule(options?:{wasmUrl?:string|URL;wasmBinary?:Uint8Array}):Promise<BrainModule>;
+export declare function createBrainModule(options?:{precision?:StatePrecision;wasmUrl?:string|URL;wasmBinary?:Uint8Array}):Promise<BrainModule>;
 export declare function loadConnectome(url:string|URL,options?:{fetch?:typeof fetch}):Promise<CSRConnectome & {metadata:Record<string,unknown>}>;

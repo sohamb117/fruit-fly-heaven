@@ -1,0 +1,517 @@
+{
+  "date": "2026-09-12T16:47:08.016Z",
+  "runtime": "v24.19.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "brains": 100,
+  "workers": 4,
+  "warmupMs": 100,
+  "durationMs": 100,
+  "trials": 3,
+  "stepBlockMs": 2,
+  "seed": 2026,
+  "inputsHz": {
+    "odorLeft": 35,
+    "odorRight": 45,
+    "sweet": 150
+  },
+  "neuronsPerBrain": 138639,
+  "connectionRows": 15091983,
+  "modes": {
+    "reference": {
+      "precision": "float64",
+      "parameters": {},
+      "dtMs": 0.1,
+      "label": "Reference · Float64",
+      "description": "0.1 ms steps · original timing and precision."
+    },
+    "float32": {
+      "precision": "float32",
+      "parameters": {},
+      "dtMs": 0.1
+    },
+    "fast": {
+      "precision": "float32",
+      "parameters": {
+        "dtMs": 1,
+        "delayMs": 2,
+        "refractoryMs": 2
+      },
+      "dtMs": 1,
+      "label": "Fast · approximate",
+      "description": "Float32 · 1 ms steps · delay and refractory rounded to 2 ms. Activity and spike timing can change."
+    }
+  },
+  "coreSha256": {
+    "float64": "5b0724d350c756b8a5ae15742dc2bd9227e135e350c4a623c9fb2f8097d7aacb",
+    "float32": "10c77d01edbf04dcec6be876df4cc963f06f43b509c8abfd9dcf01425f6db308"
+  },
+  "graphSha256": {
+    "indptr.bin": "5eed7ce53ee0aabecb0c4636f95691e4cadb51925dbe1bdd3bef9aca4a32a154",
+    "targets.bin": "302786e9dacecf6f04683f7e46a6c3aa223b136b42b44880ccae0f0487dcd5f3",
+    "weights.bin": "91d63a7ddf6688584f1cd2dc5b06baccc7f2ec788fb36f5ca8bb0900e4874081"
+  },
+  "scope": "Neural stepping only; live app paused; loading, warm-up, readouts, drift comparisons and rendering excluded. Spike-count differences cover the measured window. Voltage and drive differences are snapshots at its end. Different timestep grids also change discretized Poisson input trains; matching seeds do not imply identical stimuli between reference and fast modes. This is not biological validation.",
+  "samples": [
+    {
+      "mode": "reference",
+      "trial": 1,
+      "wallMs": 9005.325040999998,
+      "cohortSpeed": 0.011104540873840071,
+      "wasmHeapBytes": 1512833024,
+      "stateSha256": "bbb8ca4f5d3fa2352430d33864fa7ad9bc746afe7d2911e75bbab6ac60c5a3cf",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0
+        },
+        "synapticDrive": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0
+        },
+        "spikeCount": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0,
+          "total": 5255242,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": 0,
+          "normalizedL1": 0
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 38.75,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 3,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 28.357142857142858,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "float32",
+      "trial": 1,
+      "wallMs": 10600.858916000001,
+      "cohortSpeed": 0.009433197893905449,
+      "wasmHeapBytes": 1260650496,
+      "stateSha256": "5b51c5915d8c44932241425a36f7749663c3c013fbe25cae35b3ccd90932e5ef",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0.25053375960631463,
+          "rootMeanSquared": 0.9339191002124387,
+          "maxAbsolute": 155.43807622762301,
+          "fractionDifferent": 0.7115505016625914
+        },
+        "synapticDrive": {
+          "meanAbsolute": 1.0959876202238574,
+          "rootMeanSquared": 5.208272201991135,
+          "maxAbsolute": 538.3278419172848,
+          "fractionDifferent": 0.7115508623114708
+        },
+        "spikeCount": {
+          "meanAbsolute": 0.015658653048564977,
+          "rootMeanSquared": 0.13512241084360954,
+          "maxAbsolute": 8,
+          "fractionDifferent": 0.014585217723728533,
+          "total": 5251420,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": -0.0007272738343924029,
+          "normalizedL1": 0.04130922990796618
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 38.900000000000006,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 3.1,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 28.644642857142856,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "fast",
+      "trial": 1,
+      "wallMs": 5998.167916999999,
+      "cohortSpeed": 0.016671757340533958,
+      "wasmHeapBytes": 1260650496,
+      "stateSha256": "2b02a5cf5025e302f11ea681cf47d9bf838ba53726f121ff1b0d0dabde20265a",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0.45108154276499784,
+          "rootMeanSquared": 1.4477745661400865,
+          "maxAbsolute": 153.4073123526099,
+          "fractionDifferent": 0.7277076435923514
+        },
+        "synapticDrive": {
+          "meanAbsolute": 1.606679286878054,
+          "rootMeanSquared": 11.773513965598866,
+          "maxAbsolute": 1218.2919921875,
+          "fractionDifferent": 0.7277076435923514
+        },
+        "spikeCount": {
+          "meanAbsolute": 0.1093259472442819,
+          "rootMeanSquared": 0.5366410458723011,
+          "maxAbsolute": 15,
+          "fractionDifferent": 0.05879283607065833,
+          "total": 6646954,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": 0.2648235799607325,
+          "normalizedL1": 0.28841374003328485
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 42.25,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 1.7000000000000002,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 27.989285714285714,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "fast",
+      "trial": 2,
+      "wallMs": 6806.197749999999,
+      "cohortSpeed": 0.014692491119582884,
+      "wasmHeapBytes": 1260650496,
+      "stateSha256": "2b02a5cf5025e302f11ea681cf47d9bf838ba53726f121ff1b0d0dabde20265a",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0.45108154276499784,
+          "rootMeanSquared": 1.4477745661400865,
+          "maxAbsolute": 153.4073123526099,
+          "fractionDifferent": 0.7277076435923514
+        },
+        "synapticDrive": {
+          "meanAbsolute": 1.606679286878054,
+          "rootMeanSquared": 11.773513965598866,
+          "maxAbsolute": 1218.2919921875,
+          "fractionDifferent": 0.7277076435923514
+        },
+        "spikeCount": {
+          "meanAbsolute": 0.1093259472442819,
+          "rootMeanSquared": 0.5366410458723011,
+          "maxAbsolute": 15,
+          "fractionDifferent": 0.05879283607065833,
+          "total": 6646954,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": 0.2648235799607325,
+          "normalizedL1": 0.28841374003328485
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 42.25,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 1.7000000000000002,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 27.989285714285714,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "float32",
+      "trial": 2,
+      "wallMs": 9100.125749999992,
+      "cohortSpeed": 0.010988859137468523,
+      "wasmHeapBytes": 1260650496,
+      "stateSha256": "5b51c5915d8c44932241425a36f7749663c3c013fbe25cae35b3ccd90932e5ef",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0.25053375960631463,
+          "rootMeanSquared": 0.9339191002124387,
+          "maxAbsolute": 155.43807622762301,
+          "fractionDifferent": 0.7115505016625914
+        },
+        "synapticDrive": {
+          "meanAbsolute": 1.0959876202238574,
+          "rootMeanSquared": 5.208272201991135,
+          "maxAbsolute": 538.3278419172848,
+          "fractionDifferent": 0.7115508623114708
+        },
+        "spikeCount": {
+          "meanAbsolute": 0.015658653048564977,
+          "rootMeanSquared": 0.13512241084360954,
+          "maxAbsolute": 8,
+          "fractionDifferent": 0.014585217723728533,
+          "total": 5251420,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": -0.0007272738343924029,
+          "normalizedL1": 0.04130922990796618
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 38.900000000000006,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 3.1,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 28.644642857142856,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "reference",
+      "trial": 2,
+      "wallMs": 7937.509915999995,
+      "cohortSpeed": 0.012598409458163385,
+      "wasmHeapBytes": 1512833024,
+      "stateSha256": "bbb8ca4f5d3fa2352430d33864fa7ad9bc746afe7d2911e75bbab6ac60c5a3cf",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0
+        },
+        "synapticDrive": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0
+        },
+        "spikeCount": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0,
+          "total": 5255242,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": 0,
+          "normalizedL1": 0
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 38.75,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 3,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 28.357142857142858,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "reference",
+      "trial": 3,
+      "wallMs": 7961.530583,
+      "cohortSpeed": 0.01256039890288518,
+      "wasmHeapBytes": 1512833024,
+      "stateSha256": "bbb8ca4f5d3fa2352430d33864fa7ad9bc746afe7d2911e75bbab6ac60c5a3cf",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0
+        },
+        "synapticDrive": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0
+        },
+        "spikeCount": {
+          "meanAbsolute": 0,
+          "rootMeanSquared": 0,
+          "maxAbsolute": 0,
+          "fractionDifferent": 0,
+          "total": 5255242,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": 0,
+          "normalizedL1": 0
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 38.75,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 3,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 28.357142857142858,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "float32",
+      "trial": 3,
+      "wallMs": 8898.885999999999,
+      "cohortSpeed": 0.011237361620319668,
+      "wasmHeapBytes": 1260650496,
+      "stateSha256": "5b51c5915d8c44932241425a36f7749663c3c013fbe25cae35b3ccd90932e5ef",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0.25053375960631463,
+          "rootMeanSquared": 0.9339191002124387,
+          "maxAbsolute": 155.43807622762301,
+          "fractionDifferent": 0.7115505016625914
+        },
+        "synapticDrive": {
+          "meanAbsolute": 1.0959876202238574,
+          "rootMeanSquared": 5.208272201991135,
+          "maxAbsolute": 538.3278419172848,
+          "fractionDifferent": 0.7115508623114708
+        },
+        "spikeCount": {
+          "meanAbsolute": 0.015658653048564977,
+          "rootMeanSquared": 0.13512241084360954,
+          "maxAbsolute": 8,
+          "fractionDifferent": 0.014585217723728533,
+          "total": 5251420,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": -0.0007272738343924029,
+          "normalizedL1": 0.04130922990796618
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 38.900000000000006,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 3.1,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 28.644642857142856,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    },
+    {
+      "mode": "fast",
+      "trial": 3,
+      "wallMs": 6933.0395000000135,
+      "cohortSpeed": 0.014423688196208864,
+      "wasmHeapBytes": 1260650496,
+      "stateSha256": "2b02a5cf5025e302f11ea681cf47d9bf838ba53726f121ff1b0d0dabde20265a",
+      "differences": {
+        "voltage": {
+          "meanAbsolute": 0.45108154276499784,
+          "rootMeanSquared": 1.4477745661400865,
+          "maxAbsolute": 153.4073123526099,
+          "fractionDifferent": 0.7277076435923514
+        },
+        "synapticDrive": {
+          "meanAbsolute": 1.606679286878054,
+          "rootMeanSquared": 11.773513965598866,
+          "maxAbsolute": 1218.2919921875,
+          "fractionDifferent": 0.7277076435923514
+        },
+        "spikeCount": {
+          "meanAbsolute": 0.1093259472442819,
+          "rootMeanSquared": 0.5366410458723011,
+          "maxAbsolute": 15,
+          "fractionDifferent": 0.05879283607065833,
+          "total": 6646954,
+          "referenceTotal": 5255242,
+          "relativeTotalDifference": 0.2648235799607325,
+          "normalizedL1": 0.28841374003328485
+        }
+      },
+      "readouts": {
+        "walk": {
+          "meanHz": 0,
+          "referenceMeanHz": 0
+        },
+        "steer_left": {
+          "meanHz": 42.25,
+          "referenceMeanHz": 38.75
+        },
+        "steer_right": {
+          "meanHz": 1.7000000000000002,
+          "referenceMeanHz": 3
+        },
+        "feed": {
+          "meanHz": 27.989285714285714,
+          "referenceMeanHz": 28.357142857142858
+        }
+      }
+    }
+  ],
+  "medianWallMs": {
+    "reference": 7961.530583,
+    "float32": 9100.125749999992,
+    "fast": 6806.197749999999
+  },
+  "speedup": {
+    "reference": 1,
+    "float32": 0.8748813809523464,
+    "fast": 1.1697471738901504
+  }
+}

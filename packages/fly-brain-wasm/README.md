@@ -2,9 +2,9 @@
 
 A body-independent WebAssembly runtime for connectome-based leaky integrate-and-fire simulations. Supply a directed graph, create independent brains, send electrical signals, and read voltage or spike matrices. The runtime contains no fruit, movement rules, neuron names, dataset-specific dimensions, or happiness score.
 
-The package runs in modern browsers, browser Workers, and Node.js 20+. No runtime dependencies or Python server are required. The `core.wasm` binary is included in the release.
+The package runs in modern browsers, browser Workers, and Node.js 20+. No runtime dependencies or Python server are required. The reference `core.wasm` and optional `core-f32.wasm` binaries are included in the release.
 
-Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.1.2.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
+Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.2.0.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
 
 ```js
 import {createBrainModule, loadConnectome} from 'fruit-fly-brain-wasm';
@@ -31,6 +31,29 @@ connectome.dispose();
 
 The neuron indices above are illustrative. Your environment must choose input and output indices from the annotations for its own dataset. Loading a measured connectome does not establish biological validity of the sensory encoding, neuron equations, or body decoder.
 
+## Optional reduced precision
+
+`createBrainModule({precision: 'float32'})` loads the separate `core-f32.wasm` artifact. The default is `float64`, backed by `core.wasm`. FP32 stores voltage, synaptic drive, arriving drive, tonic drive, and decay tables at 32-bit precision and performs the corresponding state arithmetic in FP32. It uses WebAssembly SIMD support where the compiler can apply it. Model configuration and time calculations retain double precision; spike counters and event timestamps retain integer precision. Connections are unchanged. This is floating-point precision reduction, not INT8 weight quantization.
+
+Precision and time resolution are independent choices. For an explicitly approximate, coarser simulation:
+
+```js
+const module = await createBrainModule({precision: 'float32'});
+const graph = module.createConnectome(csr);
+const brains = graph.createPopulation(100, {
+  seed: 2026,
+  dtMs: 1,
+  delayMs: 2,
+  refractoryMs: 2,
+});
+```
+
+This preset rounds the reference 1.8 ms delay and 2.2 ms refractory period to 2 ms and uses a ten-times-coarser time grid. It can change spikes, firing rates, and downstream behavior. Changing the grid also changes the discrete Poisson input process, even with matching seeds. Keep the default timestep when investigating precision alone. There is no universal speedup or fidelity guarantee; the repository includes `scripts/benchmark-precision.mjs` to measure speed and activity differences together.
+
+`module.precision`, `brain.precision`, and activation matrices report the selected arithmetic precision. Activation arrays remain owned `Float64Array` copies for API compatibility; this does not restore precision lost inside the FP32 simulation. A module's precision is fixed for its lifetime. Create a new module/population to change it. Custom `wasmUrl`/`wasmBinary` must point to the matching binary from this release; the wrapper checks the binary's declared precision.
+
+The example application's **Fast mode** toggle selects this FP32 / 1 ms preset and restarts all 100 brains, while retaining loaded anatomical geometry. Turning it off restores the Float64 / 0.1 ms reference configuration. The UI labels the approximation and actual trace spacing. Its choice persists locally.
+
 ## Graph format
 
 `createConnectome({neuronCount, rowOffsets, targets, weights})` accepts outgoing compressed sparse rows:
@@ -42,7 +65,7 @@ The neuron indices above are illustrative. Your environment must choose input an
 
 `loadConnectome(baseUrl)` is an optional loader for `metadata.json`, `indptr.bin`, `targets.bin`, and `weights.bin`. Arrays are raw little-endian values of the types above. Metadata provides `neurons_per_brain` or `neuronCount`. The source dataset and its licenses are deliberately separate from this package.
 
-The runtime automatically packs edges into four bytes when the graph has at most 262,144 neurons and every weight is an integer in [-8192, 8191]. Other graphs retain the original eight-byte target/weight representation. This is lossless storage: edge order, signed weights, and all connections are preserved. Each brain keeps hot neuron state together in 64-byte records, allocates tonic-drive storage only when needed, and avoids unnecessary threshold searches using conservative bounds and valid prior predictions. Neural timestep, arithmetic precision, and public API are unchanged.
+The runtime automatically packs edges into four bytes when the graph has at most 262,144 neurons and every weight is an integer in [-8192, 8191]. Other graphs retain the original eight-byte target/weight representation. This is lossless storage: edge order, signed weights, and all connections are preserved. Each brain keeps hot neuron state together in 64-byte Float64 records or 56-byte Float32 records, allocates tonic-drive storage only when needed, and avoids unnecessary threshold searches using conservative bounds and valid prior predictions. These storage optimizations do not change the selected timestep or precision.
 
 ## Inputs and outputs
 
@@ -90,7 +113,7 @@ The included `dist/worker.js` exposes an ordered request/response protocol:
 ```js
 // Serve the package's dist/ directory at /engine/ in your host application.
 const worker = new Worker('/engine/worker.js', {type:'module'});
-worker.postMessage({requestId:1, op:'init'});
+worker.postMessage({requestId:1, op:'init', args:{precision:'float64'}}); // Or 'float32'.
 // Await each response before using an id returned by it.
 worker.postMessage({requestId:2, op:'loadConnectome', args:{url:connectomeUrl}});
 // response.result.id identifies the loaded connectome.
@@ -100,7 +123,7 @@ worker.postMessage({requestId:4, op:'stepMany', args:{brainIds, durationMs:10}})
 worker.postMessage({requestId:5, op:'matrix', args:{brainIds, options:{field:'voltage'}}});
 ```
 
-Responses are `{requestId, result}` or `{requestId, error}`. `loadConnectome` also accepts `args.csr`. Brain operations take `args.id`: `setPoissonInputs` (`input`), `setCurrentInputs` / `injectVoltage` (`indices`, `values`), `setRefractoryPeriod` (`indices`, `ms`), `step` (`durationMs`), `activations` (`options`), `spikes`, and `disposeBrain`. Graph disposal uses `disposeConnectome` with `args.id`. Typed results are transferred back to the host.
+Responses are `{requestId, result}` or `{requestId, error}`. Initialization returns the selected precision and rejects repeated initialization. `loadConnectome` also accepts `args.csr`. Brain operations take `args.id`: `setPoissonInputs` (`input`), `setCurrentInputs` / `injectVoltage` (`indices`, `values`), `setRefractoryPeriod` (`indices`, `ms`), `step` (`durationMs`), `activations` (`options`), `spikes`, and `disposeBrain`. Graph disposal uses `disposeConnectome` with `args.id`. Typed results are transferred back to the host.
 
 The module separates neural time from wall time. **100 independent instances is a memory/isolation feature, not a real-time performance guarantee.** Performance depends on graph size, firing density, model parameters, hardware, and worker count. Keep heavy stepping and full matrices off the render thread. There is no learned surrogate, prerecorded activity, or animation fallback.
 

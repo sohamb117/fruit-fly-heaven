@@ -1,4 +1,4 @@
-import createCore from './core.js';
+import createCore64 from './core.js';
 
 export const DEFAULT_PARAMETERS=Object.freeze({
   dtMs:.1,tauMembraneMs:20,tauSynapseMs:5,restMv:-52,thresholdMv:-45,resetMv:-52,
@@ -12,10 +12,14 @@ const integer=(v,name,min=0,max=0xffffffff)=>ensure(Number.isInteger(v)&&v>=min&
 
 /** A module owns a WASM heap; connectomes in that heap can be shared by many brains. */
 export async function createBrainModule(options={}){
+  const precision=options.precision??'float64';
+  ensure(precision==='float64'||precision==='float32','precision must be float64 or float32');
+  const createCore=precision==='float32'?(await import('./core-f32.js')).default:createCore64;
   const core=await createCore({
     ...(options.wasmBinary?{wasmBinary:options.wasmBinary}:{}),
     locateFile:path=>options.wasmUrl?String(options.wasmUrl):new URL(path,import.meta.url).href,
   });
+  ensure(core._fb_precision_bits?.()===(precision==='float32'?32:64),'WASM binary does not match requested precision; use the matching release artifact');
   function check(value){if(value===-1)throw new Error(core.UTF8ToString(core._fb_error()));return value;}
   function pointer(value){if(!value)throw new Error(core.UTF8ToString(core._fb_error())||'WASM allocation failed');return value;}
   function alloc(typed){
@@ -42,6 +46,7 @@ export async function createBrainModule(options={}){
     }
     #live(){ensure(this.#ptr,'Brain has been disposed');return this.#ptr;}
     get neuronCount(){return this.#graph.neuronCount;}
+    get precision(){return precision;}
     get parameters(){return this.#parameters;}
     get timeMs(){return core._fb_time(this.#live());}
     get totalSpikes(){return core._fb_spike_total(this.#live());}
@@ -107,6 +112,7 @@ export async function createBrainModule(options={}){
     dispose(){if(this.#ptr){core._fb_graph_destroy(this.#ptr);this.#ptr=0;}}
   }
   return Object.freeze({
+    precision,
     createConnectome:csr=>new Connectome(csr),
     readActivationMatrix(brains,options={}){
       ensure(Array.isArray(brains)&&brains.length>0,'Provide at least one brain');
@@ -116,7 +122,7 @@ export async function createBrainModule(options={}){
       ensure(field in FIELDS,'Unknown activation field');
       const values=new Float64Array(brains.length*cols),timesMs=new Float64Array(brains.length);
       brains.forEach((b,row)=>{values.set(b.readActivations(options),row*cols);timesMs[row]=b.timeMs;});
-      return {values,shape:[brains.length,cols],order:'row-major',field,unit:UNITS[field],timesMs};
+      return {values,shape:[brains.length,cols],order:'row-major',field,unit:UNITS[field],timesMs,precision};
     },
     get allocatedHeapBytes(){return core.HEAPU8.buffer.byteLength;},
   });

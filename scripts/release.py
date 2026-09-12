@@ -22,11 +22,17 @@ files.append(PACKAGE/'build.sh')
 for directory in ['native','src','third-party-licenses'] + (['test'] if 'test' in meta.get('files', []) else []):
     files+=sorted(p for p in (PACKAGE/directory).rglob('*') if p.is_file())
 required={'core.js','core.wasm','index.js','index.d.ts','worker.js'}
+if args.package=='fly-brain-wasm':required.update({'core-f32.js','core-f32.wasm'})
 assert required.issubset({p.name for p in files}), 'Build all release files first'
 assert (PACKAGE/'dist/core.wasm').read_bytes()[:4]==b'\0asm'
 (OUT/f'{name}.wasm').write_bytes((PACKAGE/'dist/core.wasm').read_bytes())
 manifest={'name':meta['name'],'version':meta['version'],'compiler':'Emscripten 4.0.23',
           'published':False,'dataset_included':False,'files':{}}
+if args.package=='fly-brain-wasm':
+    payload=(PACKAGE/'dist/core-f32.wasm').read_bytes()
+    assert payload[:4]==b'\0asm'
+    (OUT/f'{name}-f32.wasm').write_bytes(payload)
+    manifest['precision_variants']={'float64':'dist/core.wasm','float32':'dist/core-f32.wasm'}
 for path in files:
     payload=path.read_bytes()
     manifest['files'][str(path.relative_to(PACKAGE))]={'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest()}

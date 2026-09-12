@@ -6,7 +6,7 @@ The reusable package is [`packages/fly-brain-wasm`](packages/fly-brain-wasm/READ
 
 The independent [`packages/brain-view-wasm`](packages/brain-view-wasm/README.md) package processes anatomy, activity colors, neuron picking, triangular surface cuts, and arbitrary microscopy slices using SIMD WASM. The browser draws the results with WebGL. Neither module bundles its dataset.
 
-Current artifacts: simulation **0.1.2** and anatomical viewer **0.1.0**. Simulation 0.1.2 improves memory layout and threshold scheduling while preserving all connections and model parameters. It includes the long-interval decay fix from 0.1.1. Both archives include regression tests and full source.
+Current artifacts: simulation **0.2.0** and anatomical viewer **0.1.0**. Simulation 0.2.0 includes separate Float64 and Float32 kernels. The default Float64 engine retains the lossless 0.1.2 optimizations and the long-interval decay fix from 0.1.1. Both archives include regression tests and full source.
 
 ## Open the WASM habitat
 
@@ -18,6 +18,8 @@ With the local data prepared:
 
 Open `http://127.0.0.1:7842/`. The Python process only serves static files. Four browser Workers each load one WASM module and instantiate 25 independent brains; graphs are shared within each worker. The app exposes actual neural time and compute speed. The observatory opens first; **Back to bowl** switches to the habitat, and **Explore brain** returns.
 
+The main view has a **Fast mode** toggle. Off uses the reference Float64 / 0.1 ms model; on uses approximate Float32 / 1 ms stepping and 2 ms delay/refractory periods. All connections stay included. Switching restarts all 100 brains and their traces while keeping anatomy loaded, and the preference is saved locally. Actual trace spacing and active precision are shown. See [precision measurements](reports/wasm-precision.md) for the speed/activity tradeoff; this is not INT8 weight quantization.
+
 ## Anatomical observatory
 
 The view contains a translucent measured neuropil surface, 138,625 annotated neuron anchor locations, 876 complete branching skeletons, and the original downsampled electron-microscopy volume. Fourteen model neurons have no matching coordinates and are omitted spatially. Display sampling never changes simulation connectivity. Anchor locations are typically on a neuron's backbone; they are not all somas.
@@ -25,7 +27,7 @@ The view contains a translucent measured neuropil surface, 138,625 annotated neu
 - Orbit and zoom the 3D brain; drag the slice slider or Shift-drag the scene.
 - Switch between XY, XZ, and YZ sections, a cutaway, a thin slab, and the full anatomy.
 - Scroll over the microscopy section to zoom; click an anatomical point to inspect its neuron.
-- Find a cell by root ID or cell type. Live voltage traces sample that cell every 0.1 ms of neural time, with explicit spike markers.
+- Find a cell by root ID or cell type. Live voltage traces sample that cell every simulation step (0.1 ms in reference mode, 1 ms in fast mode), with explicit spike markers.
 - Choose any of the 100 independent flies. Geometry and static scan are shared; signals are taken from that fly's own state.
 
 The microscopy overview has 2.048 × 2.048 × 1.280 µm voxels and cannot resolve individual synapses. Its imagery is static; only the overlaid electrical activity is simulated. Colors do not represent measured optical activity. Coordinates retain the source FlyWire imagery orientation.
@@ -75,6 +77,7 @@ node scripts/benchmark-view-wasm.mjs
 # Pause the live browser simulation before timing this comparison.
 node scripts/benchmark-brain-performance.mjs 100 100 100 4 3
 node scripts/check-brain-equivalence.mjs
+node scripts/benchmark-precision.mjs 100 100 100 4 3
 .venv/bin/python scripts/release.py
 .venv/bin/python scripts/release.py brain-view-wasm
 ```
@@ -83,7 +86,7 @@ node scripts/check-brain-equivalence.mjs
 
 `reports/wasm-view-benchmark.json` measures the custom viewer kernels against the actual display geometry. It uses a synthetic voltage ramp solely for repeatable performance measurement, not for the live app. Archive checksums cover both `.tgz` and `.zip` packages and their manifests in `releases/SHA256SUMS`.
 
-The repeatable A/B benchmark in `reports/wasm-performance.json` compares the shipped 0.1.1 artifact with the current build using 100 full brains, four workers, identical seeded sensory inputs, 100 ms warm-up and 100 ms measured neural time. Trials alternate engine order and exclude loading/rendering. It requires bit-identical voltage, synaptic drive, cumulative spike counts, and retained spike histories for every brain. See [performance notes](reports/wasm-performance.md) for the measured gain and its limits.
+The repeatable A/B benchmark in `reports/wasm-performance.json` records the 0.1.2 comparison against the shipped 0.1.1 artifact using 100 full brains, four workers, identical seeded sensory inputs, 100 ms warm-up and 100 ms measured neural time. Trials alternate engine order and exclude loading/rendering. It requires bit-identical voltage, synaptic drive, cumulative spike counts, and retained spike histories for every brain. See [performance notes](reports/wasm-performance.md) for the measured gain and its limits.
 
 ## What is modeled
 

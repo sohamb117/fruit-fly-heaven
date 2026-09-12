@@ -10,6 +10,13 @@
 #include <vector>
 
 namespace fb {
+#ifdef FB_FLOAT32
+using State=float;
+constexpr double GAIN_MARGIN=1e-5, THRESHOLD_MARGIN=1e-4;
+#else
+using State=double;
+constexpr double GAIN_MARGIN=1e-12, THRESHOLD_MARGIN=1e-10;
+#endif
 constexpr uint32_t NONE=UINT32_MAX, WHEEL=4096;
 thread_local std::string error;
 struct Config {
@@ -52,24 +59,24 @@ struct Input {uint32_t neuron; double rate, amplitude, logP;uint64_t rng,due;};
 class Brain {
 public:
   GraphHandle graph; Config config;
-  struct alignas(64) Neuron {
-    double v=0,g=0,arriving=0;
+  struct alignas(sizeof(State)==8?64:8) Neuron {
+    State v=0,g=0,arriving=0;
     uint64_t last=0,refractory=0,when=UINT64_MAX;
     uint32_t previous=NONE,next=NONE,refractoryTicks=0;
     uint8_t marked=0;
   };
-  static_assert(sizeof(Neuron)==64,"Hot neuron state must fit one cache line");
+  static_assert(sizeof(Neuron)<=64,"Hot neuron state must fit within 64 bytes");
   std::vector<Neuron> neuron;
-  std::vector<double> current;
+  std::vector<State> current;
   std::vector<uint32_t> head,touched;
   std::vector<uint64_t> counts;
   std::vector<std::vector<uint32_t>> delayed;
   std::vector<Input> inputs;
   std::vector<Spike> history;
-  std::vector<double> em,es;
+  std::vector<State> em,es;
   uint64_t tick=0,totalSpikes=0,rng;
   uint32_t delayTicks;
-  double aFactor,threshold,maxSynapticGain;
+  State aFactor,threshold,maxSynapticGain;
 
   Brain(GraphHandle graph,Config config,uint64_t seed):graph(graph),config(config),rng(seed) {
     config.validate();auto n=graph->n;
@@ -82,7 +89,8 @@ public:
     // Inflate it to keep the rejection conservative near floating-point limits.
     double peakMs=std::log(config.tauM/config.tauS)/(1/config.tauS-1/config.tauM);
     maxSynapticGain=aFactor*(std::exp(-peakMs/config.tauM)-std::exp(-peakMs/config.tauS));
-    maxSynapticGain+=1e-12*(1+std::abs(aFactor));
+    maxSynapticGain+=GAIN_MARGIN*(1+std::abs(aFactor));
+    if(!std::isfinite(aFactor)||!std::isfinite(threshold)||!std::isfinite(static_cast<State>(config.reset-config.rest)))throw std::runtime_error("Parameters exceed state precision range");
     em.resize(10001);es.resize(10001);
     for(int i=0;i<=10000;i++){em[i]=std::exp(-i*config.dt/config.tauM);es[i]=std::exp(-i*config.dt/config.tauS);}
   }
@@ -93,11 +101,11 @@ public:
     double u=(((z^(z>>31))>>11)+.5)*0x1.0p-53;
     return static_cast<uint64_t>(std::min(static_cast<double>(UINT64_MAX/4),std::floor(std::log(u)/s.logP)));
   }
-  double expM(uint64_t t) const {return t<=10000?em[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauM);}
-  double expS(uint64_t t) const {return t<=10000?es[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauS);}
-  double drive(uint32_t i) const {return current.empty()?0:current[i];}
-  double voltageAt(uint32_t i,uint64_t delta) const {
-    double a=expM(delta),b=expS(delta);
+  State expM(uint64_t t) const {return t<=10000?em[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauM);}
+  State expS(uint64_t t) const {return t<=10000?es[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauS);}
+  State drive(uint32_t i) const {return current.empty()?0:current[i];}
+  State voltageAt(uint32_t i,uint64_t delta) const {
+    State a=expM(delta),b=expS(delta);
     return drive(i)+(neuron[i].v-drive(i))*a+neuron[i].g*aFactor*(a-b);
   }
   void evolve(uint32_t i){
@@ -125,7 +133,7 @@ public:
       if(voltageAt(i,hi)<=threshold)return;
     }else{
       if(neuron[i].g<=0 || drive(i)+neuron[i].g<=neuron[i].v || std::max(neuron[i].v,drive(i))+neuron[i].g*aFactor<=threshold)return;
-      if(std::max(neuron[i].v,drive(i))+neuron[i].g*maxSynapticGain<threshold-1e-10)return;
+      if(std::max(neuron[i].v,drive(i))+neuron[i].g*maxSynapticGain<threshold-THRESHOLD_MARGIN)return;
       // Reuse a still-valid upper bound before calculating the analytic peak.
       // Both checks preserve the first crossing on the same discrete time grid.
       if(voltageAt(i,1)>threshold){enqueue(i,start+1);return;}
@@ -185,8 +193,8 @@ public:
       uint32_t edge=Compact?graph->packed[e]:0;
       uint32_t j=Compact?(edge&((1u<<18)-1)):graph->col[e];
       if(tick<neuron[j].refractory)continue;
-      double weight=Compact?static_cast<int32_t>(edge)>>18:graph->weight[e];
-      neuron[j].arriving+=config.weightScale*weight;mark(j);
+      State weight=Compact?static_cast<int32_t>(edge)>>18:graph->weight[e];
+      neuron[j].arriving+=static_cast<State>(config.weightScale)*weight;mark(j);
     }
   }
   void step(uint32_t steps){
@@ -232,6 +240,7 @@ public:
 }
 
 extern "C" {
+uint32_t fb_precision_bits(){return sizeof(fb::State)*8;}
 const char* fb_error(){return fb::error.c_str();}
 void* fb_graph_create(uint32_t n,uint32_t e,const uint32_t* r,const uint32_t* c,const float* w){try{return new fb::GraphHandle(std::make_shared<fb::Graph>(n,e,r,c,w));}catch(const std::exception& e){fb::error=e.what();return nullptr;}}
 void fb_graph_destroy(void* p){delete static_cast<fb::GraphHandle*>(p);}

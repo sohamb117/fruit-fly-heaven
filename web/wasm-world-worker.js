@@ -1,22 +1,26 @@
 // Example environment adapter. All neuroscience is in the generic WASM package.
 import {createBrainModule,loadConnectome} from '/engine/index.js';
+import {SIMULATION_MODES} from './simulation-modes.js';
 let brains=[],fruit=[],groups={},paused=false,selected=1,odorOn=true,tasteOn=true,selectedNeuron=0;
-let module,graph,indices,readIds,readGroups,alive=true;
+let module,graph,indices,readIds,readGroups,alive=true,mode=SIMULATION_MODES.reference;
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function distance(f,x,z){return f.kind==='apple'?Math.hypot(x-f.x,z-f.z):Math.min(...f.path.map(p=>Math.hypot(x-p[0],z-p[1])));}
 function habitat(x,z){let y=1.5+.0037*(x*x+z*z),contact=false;for(const f of fruit){const d=distance(f,x,z);if(d<f.radius){const h=f.y+Math.sqrt(f.radius*f.radius-d*d);if(h>=y){y=h;contact=true;}}}return {y,contact};}
 function odor(x,z){return Math.min(1,fruit.reduce((n,f)=>n+.3*Math.exp(-Math.max(0,distance(f,x,z)-f.radius)/18),0));}
 function inputFor(f){const a=f.heading,x=f.x,z=f.z;return [odorOn?3+65*odor(x+.9*Math.cos(a)-.4*Math.sin(a),z+.9*Math.sin(a)+.4*Math.cos(a)):0,odorOn?3+65*odor(x+.9*Math.cos(a)+.4*Math.sin(a),z+.9*Math.sin(a)-.4*Math.cos(a)):0,tasteOn&&f.contact?150:0];}
 async function init(args){
+  if(!Object.hasOwn(SIMULATION_MODES,args.mode))throw new Error('Unknown simulation mode');
+  mode=SIMULATION_MODES[args.mode];
+  paused=args.paused??false;selected=args.selected??1;odorOn=args.odor??true;tasteOn=args.taste??true;
   selectedNeuron=args.selectedNeuron??args.groups.steer_left[0];
   self.postMessage({type:'progress',message:'Loading WASM and measured connectivity'});
-  module=await createBrainModule();
+  module=await createBrainModule({precision:mode.precision});
   const data=await loadConnectome(new URL('/connectome/',location.href));graph=module.createConnectome(data);
   groups=args.groups;fruit=args.fruit;
   indices=Uint32Array.from([...groups.odor_left,...groups.odor_right,...groups.sweet]);
   readGroups=[groups.odor_left,groups.odor_right,groups.sweet,groups.walk,groups.steer_left,groups.steer_right,groups.feed,groups.antenna];
   readIds=Uint32Array.from(readGroups.flat());
-  const population=graph.createPopulation(args.flies.length,{seed:20260912+args.flies[0].id*100003});
+  const population=graph.createPopulation(args.flies.length,{...mode.parameters,seed:20260912+args.flies[0].id*100003});
   brains=population.map((brain,k)=>{
     brain.setRefractoryPeriod(indices,0);
     return {brain,fly:{...args.flies[k],brain:{},senses:[0,0,0]},previous:new Float64Array(readIds.length),rates:new Float64Array(8)};
@@ -35,9 +39,9 @@ async function run(){
       ratesHz.fill(s[0],0,groups.odor_left.length);ratesHz.fill(s[1],groups.odor_left.length,groups.odor_left.length+groups.odor_right.length);ratesHz.fill(s[2],groups.odor_left.length+groups.odor_right.length);
       brain.setPoissonInputs({indices,ratesHz});
       if(f.id===selected){
-        const read=new Uint32Array([selectedNeuron]);trace={neuronIndex:selectedNeuron,samples:[]};
-        for(let tick=0;tick<20;tick++){
-          brain.step(.1);
+        const read=new Uint32Array([selectedNeuron]);trace={neuronIndex:selectedNeuron,dtMs:mode.dtMs,samples:[]};
+        for(let tick=0;tick<Math.round(durationMs/mode.dtMs);tick++){
+          brain.step(mode.dtMs);
           trace.samples.push([brain.timeMs,brain.readActivations({indices:read})[0],brain.readActivations({field:'spikeCount',indices:read})[0]]);
         }
       }else brain.step(durationMs);

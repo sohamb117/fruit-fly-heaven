@@ -1,18 +1,42 @@
 {
   "name": "fruit-fly-brain-wasm",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Environment-independent connectome LIF simulation in WebAssembly with signal inputs and activation matrices",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./core.wasm": "./dist/core.wasm",
-    "./worker": "./dist/worker.js"
+    "./worker": "./dist/worker.js",
+    "./core-f32.wasm": "./dist/core-f32.wasm"
   },
-  "files": ["dist", "native", "src", "test", "build.sh", "third-party-licenses", "README.md", "LICENSE", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "native",
+    "src",
+    "test",
+    "build.sh",
+    "third-party-licenses",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "license": "GPL-2.0-only",
-  "engines": {"node": ">=20"},
-  "scripts": {"test": "node --test test/*.test.mjs"},
-  "keywords": ["webassembly", "connectome", "drosophila", "neuroscience", "lif"]
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "keywords": [
+    "webassembly",
+    "connectome",
+    "drosophila",
+    "neuroscience",
+    "lif"
+  ]
 }

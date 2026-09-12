@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Add explicit `float32` module selection, a separate SIMD-capable FP32 WASM artifact, and precision metadata on modules, brains, and matrices. Float64 remains the default.
+- Preserve graph connectivity, API readout array types, event timestamp precision, and integer spike counters. FP32 state and arithmetic are an approximation and can alter trajectories.
+- Verify requested precision against the selected binary; reject duplicate Worker initialization.
+- Add precision rounding, binary mismatch, alternate timestep, long-interval, seeded partitioning, and 100-instance Worker coverage for FP32.
+- The example app adds a persistent Fast mode toggle using FP32 and a 1 ms grid, with 2 ms delay/refractory periods. Switching restarts the population and clears its traces; geometry stays loaded.
+
 ## 0.1.2
 
 - Losslessly pack eligible integer-weight graphs; retain ordinary CSR for fractional weights, large weights, or larger neuron indices.

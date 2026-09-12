@@ -18,7 +18,7 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
   const center=lo.map((x,k)=>(x+hi[k])/2),extent=lo.map((x,k)=>hi[k]-x);
   const byNeuron=new Int32Array(metadata.neuronCount).fill(-1);owners.forEach((id,i)=>byNeuron[id]=i);
   let active=false,fly=1,timeMs=0,selectedNeuron=initialNeuron,axis=2,cutMode='cutaway',offset=0,halfThickness=6;
-  let voltage=null,lastSpike=null,pointColors=new Float32Array(positions.length).fill(.2),trace=[],lastTraceTime=-1;
+  let voltage=null,lastSpike=null,pointColors=new Float32Array(positions.length).fill(.2),trace=[],lastTraceTime=-1,traceDtMs=.1;
   let scanZoom=1,scanRect=null,slicePoints=new Uint32Array(),contours=new Float32Array(),sliceDirty=true;
   let zoom=1,azimuth=.13,elevation=.12,dirty=true,lastRender=0,lastFrameWall=0,frames=0;
   const host=$('brain-canvas'),renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
@@ -80,7 +80,7 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
     for(const v of [-60,-52,-45]){ctx.strokeStyle=v===-45?'#665b3d':'#263c3b';ctx.setLineDash(v===-45?[3,4]:[]);ctx.beginPath();ctx.moveTo(34,y(v));ctx.lineTo(w,y(v));ctx.stroke();ctx.fillStyle='#7f9a91';ctx.fillText(String(v),0,y(v)+3);}ctx.setLineDash([]);
     if(trace.length){ctx.strokeStyle='#dbc892';ctx.lineWidth=1.5;ctx.beginPath();trace.forEach((p,i)=>i?ctx.lineTo(x(p[0]),y(p[1])):ctx.moveTo(x(p[0]),y(p[1])));ctx.stroke();ctx.strokeStyle='#f7ac6a';for(let i=1;i<trace.length;i++)if(trace[i][2]>trace[i-1][2]){ctx.beginPath();ctx.moveTo(x(trace[i][0]),2);ctx.lineTo(x(trace[i][0]),11);ctx.stroke();}ctx.fillStyle='#91a59b';ctx.fillText(minT.toFixed(1)+' ms',37,h-2);ctx.textAlign='right';ctx.fillText(maxT.toFixed(1)+' ms',w-2,h-2);ctx.textAlign='left';}
     else{ctx.fillStyle='#91a59b';ctx.fillText('Recording begins with the next neural step…',40,h/2);}
-    $('trace-window').textContent=trace.length?`${trace.length} samples · 0.1 ms spacing`:'Samples every 0.1 ms of neural time';
+    $('trace-window').textContent=trace.length?`${trace.length} samples · ${traceDtMs} ms spacing`:`Samples every ${traceDtMs} ms of neural time`;
   }
   function selectNeuron(index,{moveSlice=true}={}){
     selectedNeuron=index;trace=[];lastTraceTime=-1;uniforms.uSelected.value=index;
@@ -125,13 +125,14 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
   }
   requestAnimationFrame(render);
   return {
+    setTimeStep(dtMs){traceDtMs=dtMs;trace=[];lastTraceTime=-1;drawTrace();},
     setActive(value){active=value;if(value){renderer.setSize(host.clientWidth,host.clientHeight);updateCamera();paintActivity();sliceDirty=true;drawTrace();}},
     selectFly(id){fly=id;voltage=null;lastSpike=null;trace=[];lastTraceTime=-1;pointColors.fill(.2);pointGeometry.attributes.color.array.fill(.2);pointGeometry.attributes.color.needsUpdate=true;branchGeometry.attributes.color.array.fill(.18);branchGeometry.attributes.color.needsUpdate=true;$('anatomy-clock').textContent=`Reading Fly ${String(fly).padStart(3,'0')}`;$('neuron-reading').textContent='Waiting for neural state';drawTrace();dirty=true;sliceDirty=true;},
     update({flyId,activation,lastSpikeMs,neuralTimeMs,recording}){
       if(flyId!==fly)return;voltage=activation;lastSpike=lastSpikeMs;timeMs=neuralTimeMs;
       const start=performance.now();
       if(active){paintActivity();drawSlice();}
-      if(recording?.neuronIndex===selectedNeuron){for(const sample of recording.samples)if(sample[0]>lastTraceTime){trace.push(sample);lastTraceTime=sample[0];}if(trace.length>800)trace.splice(0,trace.length-800);drawTrace();}
+      if(recording?.neuronIndex===selectedNeuron){traceDtMs=recording.dtMs??traceDtMs;for(const sample of recording.samples)if(sample[0]>lastTraceTime){trace.push(sample);lastTraceTime=sample[0];}if(trace.length>800)trace.splice(0,trace.length-800);drawTrace();}
       $('neuron-reading').textContent=`${voltage[selectedNeuron].toFixed(2)} mV · Fly ${String(fly).padStart(3,'0')}`;$('anatomy-clock').textContent=`${timeMs.toFixed(1)} ms neural time`;
       lastFrameWall=performance.now()-start;dirty=true;
     },

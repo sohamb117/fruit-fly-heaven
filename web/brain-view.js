@@ -1,6 +1,6 @@
 import * as THREE from './vendor/three.module.js';
 import {createBrainViewModule} from '/view-engine/index.js';
-const $=id=>document.getElementById(id);
+import {uiElement as $,uiQueryAll,onUIFrame} from './ui-elements.js';
 const fmt=n=>Math.round(n).toLocaleString();
 
 export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
@@ -109,7 +109,7 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
   });
   for(const element of [$('slice-position'),$('slice-thickness')])element.addEventListener('input',updatePlane);
   $('slice-axis').addEventListener('change',()=>{scanZoom=1;updatePlane();});
-  for(const button of document.querySelectorAll('[data-clip]'))button.addEventListener('click',()=>{cutMode=button.dataset.clip;for(const b of document.querySelectorAll('[data-clip]'))b.setAttribute('aria-pressed',String(b===button));updatePlane();});
+  for(const button of uiQueryAll('[data-clip]'))button.addEventListener('click',()=>{cutMode=button.dataset.clip;for(const b of uiQueryAll('[data-clip]'))b.setAttribute('aria-pressed',String(b===button));updatePlane();});
   for(const [id,object]of [['show-surface',surface],['show-skeletons',branches],['show-anchors',points]])$(id).addEventListener('change',()=>{object.visible=$(id).checked;dirty=true;});
   $('neuron-search-form').addEventListener('submit',e=>{e.preventDefault();const query=$('neuron-search').value.trim().toLowerCase();let i=neurons.ids.indexOf(query);if(i<0)i=neurons.labels.findIndex(label=>label.toLowerCase()===query);if(i<0&&query.length>1)i=neurons.labels.findIndex(label=>label.toLowerCase().includes(query));$('neuron-search-status').textContent=i<0?'No matching neuron in this model.':'';if(i>=0)selectNeuron(i);});
   const labels=[...new Set(metadata.skeletonRanges.map(r=>neurons.labels[r.index]))].sort();for(const label of labels){const option=document.createElement('option');option.value=label;$('neuron-options').appendChild(option);}
@@ -117,13 +117,12 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
   $('anatomy-status').textContent=`${fmt(metadata.mappedNeurons)} anchors · ${metadata.skeletonCount} skeletons`;
   updatePlane();selectNeuron(initialNeuron,{moveSlice:false});
   function render(now){
-    if(active&&!document.hidden){
+    if(active&&!host.ownerDocument.hidden){
       if(sliceDirty){drawSlice(true);sliceDirty=false;}
       if(dirty&&now-lastRender>33){renderer.render(scene,camera);lastRender=now;dirty=false;frames++;}
     }
-    requestAnimationFrame(render);
   }
-  requestAnimationFrame(render);
+  onUIFrame(render);
   return {
     setTimeStep(dtMs){traceDtMs=dtMs;trace=[];lastTraceTime=-1;drawTrace();},
     setActive(value){active=value;if(value){renderer.setSize(host.clientWidth,host.clientHeight);updateCamera();paintActivity();sliceDirty=true;drawTrace();}},

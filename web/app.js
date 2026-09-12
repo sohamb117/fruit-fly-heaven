@@ -5,7 +5,9 @@ import {BodyWorld,BODY_LABELS,MOTOR_DECODER,isAirborne,applyNeuralOutput} from '
 import {createRetinalCamera} from './retinal-camera.js';
 import {createCircuitInspector} from './circuit-inspector.js';
 
-const $=id=>document.getElementById(id);
+import {uiElement as $,isUIVisible,onUIFrame} from './ui-elements.js';
+import {mountConsole} from './console-shell.js';
+const consoleUI=mountConsole();
 const countFormat=n=>Math.round(n).toLocaleString();
 function showError(message){for(const id of ['error','anatomy-error']){$(id).hidden=false;$(id).textContent=message;}}
 let meta, snapshot=null, selected=1, stopped=false, following=false;
@@ -15,7 +17,7 @@ let anatomyViewer=null,selectedNeuron=0;
 let habitatData,groupsData,motorOutputsData,fastMode=false,workerGeneration=0,populationSize=100;
 let sensoryInputsData,retinalCamera,retinaCursor=0,lastEyeDraw='';
 let circuitProbeData,visualModelData,visualProjectionData,colorMappingData;
-const circuitInspector=createCircuitInspector(document.getElementById('circuit-inspector'));
+const circuitInspector=createCircuitInspector($('circuit-inspector'));
 let bodyWorld,bodyClock='neural',movementMode='behavior',flightEnabled=true,motorCoupling=true,lastMotionNeuralMs=0,lastPoseSent=0,lastMotionPanel=0;
 let flightTrails,trailPositions,lastTrailTime=0;
 const poseUp=new THREE.Vector3(),poseForward=new THREE.Vector3(),poseSide=new THREE.Vector3(),poseMatrix=new THREE.Matrix4();
@@ -143,7 +145,7 @@ function initScene(){
   host.addEventListener('pointerup',e=>{if(!dragged){const rect=host.getBoundingClientRect();const pos=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);const ray=new THREE.Raycaster();ray.setFromCamera(pos,camera);const hits=ray.intersectObjects(targets.filter(target=>target.userData.flyId<=populationSize));if(hits.length)selectFly(hits[0].object.userData.flyId);}pointer=null;});
   host.addEventListener('pointercancel',()=>pointer=null);
   host.addEventListener('wheel',e=>{e.preventDefault();distance=Math.max(16,Math.min(250,distance*Math.exp(e.deltaY*.001)));},{passive:false});
-  requestAnimationFrame(render);
+  onUIFrame(render);
 }
 
 let previousRender=0;
@@ -151,7 +153,7 @@ function render(now){
   const gap=(now-previousRender)/1000,dt=gap>0&&gap<.25?gap:0;previousRender=now;
   const neuralDelta=snapshot?Math.max(0,snapshot.time_ms-lastMotionNeuralMs)/1000:0;
   lastMotionNeuralMs=snapshot?.time_ms||0;
-  if(document.hidden){requestAnimationFrame(render);return;}
+  if(!isUIVisible())return;
   if(bodyWorld&&snapshot&&!snapshot.paused&&readyWorkers===totalWorkers){
     bodyWorld.advance(bodyClock==='live'?dt:neuralDelta);
     if(now-lastPoseSent>50){
@@ -221,11 +223,12 @@ function render(now){
       break;
     }
   }
-  if(!brainView)renderer.render(scene,camera);requestAnimationFrame(render);
+  if(consoleUI.isOpen('habitat')&&!host.ownerDocument.hidden)renderer.render(scene,camera);
 }
 
 function selectFly(id){if(!Number.isInteger(id)||id<1||id>populationSize)return;selected=id;snapshot.flies[id-1].circuit=null;$('fly-id').value=String(id);$('brain-fly').value=String(id);latestActivation=null;snapshot.selected_spikes=[];anatomyViewer?.selectFly(id);$('matrix-label').textContent=`Reading Fly ${String(id).padStart(3,'0')} membrane voltages`;$('activation-matrix').getContext('2d').clearRect(0,0,512,512);for(const w of workers)w.postMessage({type:'control',selected});if(snapshot)updatePanel();}
-function setBrainView(value){brainView=value;$('anatomy-view').hidden=!value;$('bowl-view').hidden=value;anatomyViewer?.setActive(value);}
+function setBrainView(value){value?consoleUI.open('cortex'):consoleUI.hide('cortex');}
+consoleUI.panels.cortex.node.addEventListener('windowvisibility',event=>{brainView=event.detail.visible;anatomyViewer?.setActive(brainView);});
 function updatePanel(){
   const f=snapshot.flies[selected-1],b=f.brain;
   updateMotionPanel();
@@ -302,10 +305,10 @@ function updateSensoryPanel(f){
 function drawRaster(events){
   const canvas=$('raster'),width=canvas.clientWidth,height=canvas.clientHeight,dpr=window.devicePixelRatio||1;
   canvas.width=width*dpr;canvas.height=height*dpr;const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);ctx.clearRect(0,0,width,height);
-  ctx.strokeStyle='#dde2d4';ctx.lineWidth=1;
+  ctx.strokeStyle='#1a302d';ctx.lineWidth=1;
   for(let i=1;i<4;i++){ctx.beginPath();ctx.moveTo(0,height*i/4);ctx.lineTo(width,height*i/4);ctx.stroke();}
   const max=events.length?events[events.length-1][0]:snapshot.time_ms,min=events.length?events[0][0]:Math.max(0,max-100);
-  ctx.fillStyle='#6e8950';for(const[t,id]of events){const x=4+(t-min)/Math.max(.1,max-min)*(width-8),y=4+id/meta.neurons_per_brain*(height-8);ctx.fillRect(x,y,1.3,2.8);}
+  ctx.fillStyle='#8bf7b3';for(const[t,id]of events){const x=4+(t-min)/Math.max(.1,max-min)*(width-8),y=4+id/meta.neurons_per_brain*(height-8);ctx.fillRect(x,y,1.3,2.8);}
   $('raster-start').textContent=min.toFixed(1)+' ms';$('raster-end').textContent=max.toFixed(1)+' ms';
 }
 async function control(data){
@@ -475,7 +478,7 @@ try{
   $('recenter').addEventListener('click',()=>{following=false;distance=Math.max(178,205/camera.aspect);elevation=.79;goalLook.set(0,8,0);});
   $('brain-view').addEventListener('click',()=>setBrainView(true));
   $('back-to-bowl').addEventListener('click',()=>setBrainView(false));
-  setBrainView(false);
+  brainView=consoleUI.isOpen('cortex');
   createAnatomicalViewer({initialNeuron:selectedNeuron,onNeuronSelect:index=>{selectedNeuron=index;for(const w of workers)w.postMessage({type:'control',selectedNeuron:index});}}).then(viewer=>{anatomyViewer=viewer;showPrecision();viewer.selectFly(selected);viewer.setActive(brainView);}).catch(error=>{$('anatomy-error').hidden=false;$('anatomy-error').textContent='Cannot load anatomical viewer: '+error.message;console.error(error);});
   // Small inspectable surface for local QA; no fabricated or replayed brain data.
   window.heaven={get state(){return snapshot;},get meta(){return meta;},get renderer(){return renderer;},selectFly};

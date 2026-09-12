@@ -168,6 +168,16 @@ node scripts/benchmark-precision.mjs 100 100 100 4 3
 
 The repeatable A/B benchmark in `reports/wasm-performance.json` records the 0.1.2 comparison against the shipped 0.1.1 artifact using 100 full brains, four workers, identical seeded sensory inputs, 100 ms warm-up and 100 ms measured neural time. Trials alternate engine order and exclude loading/rendering. It requires bit-identical voltage, synaptic drive, cumulative spike counts, and retained spike histories for every brain. See [performance notes](reports/wasm-performance.md) for the measured gain and its limits.
 
+## Observation console
+
+The Evangelion-inspired HEAVEN console has seven live instruments: Habitat, Subject, Control, Optics, Cortex, Circuits, and Model. Use **Explore brain** to open Cortex, the subject’s **Neural output rates** heading to inspect Circuits, and the footer’s **Model & sources** link for model documentation. Drag a title bar to float a panel, drag its lower-right corner to resize, or double-click the title to maximize and restore. The title-bar buttons dock, float, detach, maximize, and hide it. Keyboard users can focus a title bar or resize handle and use arrow keys (Shift for larger steps); Escape docks the window.
+
+Layouts persist locally. Narrow screens stack the four main panels vertically. The CRT screen texture is part of the visual theme, with no settings toolbar; reduced-motion preferences suppress it automatically.
+
+The ↗ control opens a same-origin browser popout when supported. It moves the original live instrument, retaining its canvas, controls, and connection to the parent simulation. Close the popout or use **Recall window** to return it. The parent console must remain open. Browsers that block popups get an in-page floating panel instead. Refreshing the main page restarts the simulation as before; rearranging windows does not.
+
+The habitat observer uses a labeled false-color display palette. The eye feeds remain the actual RGB input images, and the display treatment does not alter the habitat lighting or neural signals.
+
 ## What is modeled
 
 The recorded wiring and annotated neuron identities come from FlyWire. Electrical dynamics, neurotransmitter signs, sensory stimulation rates, and the body decoder involve modeling assumptions. The habitat stimulates annotated food-odor, sugar/water, and mapped visual inputs, including the trained graded visual bridge, plus a documented body-sense boundary approximation. Identified brain activity drives the selected behavior or direct actuator decoder; there is no ventral nerve cord, detailed aerodynamics, learning, or metabolism.

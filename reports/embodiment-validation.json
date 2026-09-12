@@ -1,0 +1,282 @@
+{
+  "protocol": "Both full brain kernels. 800 ms paired vision on/off probes with matched seeds, fixed pose, odor/taste/body inputs, and a moving retinal grating. Then 10 neural seconds of behavior-mode embodiment with actual body feedback and a controlled uniform 195/255 retinal image. Vision maps only into annotated visual cells; all original graph edges remain. Flight programs are host assumptions. These tests do not establish physiological fidelity or obstacle avoidance.",
+  "visualModel": "FlyVis flow/0000/000",
+  "visualCheckpointSha256": "d0e42857e738d0315897c2d50fde9eb3fb1a3fb1f071d55dfc13d53d72bccc3f",
+  "graphSha256": {
+    "groups.bin": "ec643f78dd01c6818f234af3fdde1bf2fb6a108ca103b19903e6246bb2f7afc8",
+    "ids.bin": "70200482b9fe6656f215a97b71332dd6725b80e2cb32e0052a4d47916ca1579b",
+    "indptr.bin": "5eed7ce53ee0aabecb0c4636f95691e4cadb51925dbe1bdd3bef9aca4a32a154",
+    "targets.bin": "302786e9dacecf6f04683f7e46a6c3aa223b136b42b44880ccae0f0487dcd5f3",
+    "weights.bin": "91d63a7ddf6688584f1cd2dc5b06baccc7f2ec788fb36f5ca8bb0900e4874081"
+  },
+  "results": [
+    {
+      "mode": "reference",
+      "paired": [
+        {
+          "vision": false,
+          "totalSpikes": 414626,
+          "motionPopulationSpikes": 0,
+          "motorSpikes": {
+            "forward": 0,
+            "reverse": 0,
+            "turn_left": 68,
+            "wing_left": 0,
+            "turn_right": 5,
+            "wing_right": 0,
+            "takeoff": 3,
+            "landing": 46,
+            "groom": 0,
+            "proboscis": 462,
+            "antenna_left": 1,
+            "antenna_right": 0
+          }
+        },
+        {
+          "vision": true,
+          "totalSpikes": 596308,
+          "motionPopulationSpikes": 30422,
+          "motorSpikes": {
+            "forward": 3,
+            "reverse": 0,
+            "turn_left": 67,
+            "wing_left": 0,
+            "turn_right": 15,
+            "wing_right": 0,
+            "takeoff": 55,
+            "landing": 11,
+            "groom": 0,
+            "proboscis": 495,
+            "antenna_left": 0,
+            "antenna_right": 0
+          }
+        }
+      ],
+      "flight": {
+        "neuralMs": 10000,
+        "bodySeconds": 10.000000000000076,
+        "takeoffs": 3,
+        "landings": 3,
+        "maxHeight": 20.840666366422894,
+        "airborneSeconds": 3.932,
+        "wallMs": 54713.1895,
+        "trace": [
+          {
+            "neuralMs": 0,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0
+          },
+          {
+            "neuralMs": 1000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.2786838656659011
+          },
+          {
+            "neuralMs": 2000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.6058727366464387
+          },
+          {
+            "neuralMs": 3000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.9420072061111235
+          },
+          {
+            "neuralMs": 4000,
+            "phase": "cruise",
+            "height": 0,
+            "wingCommand": 0.6916933638620852,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 5000,
+            "phase": "cruise",
+            "height": 6.328779512392305,
+            "wingCommand": 0.522975517188544,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 6000,
+            "phase": "cruise",
+            "height": 16.727348276789034,
+            "wingCommand": 0.4969097518132262,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 7000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0
+          },
+          {
+            "neuralMs": 8000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0
+          },
+          {
+            "neuralMs": 9000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.17627359946383045
+          }
+        ]
+      }
+    },
+    {
+      "mode": "fast",
+      "paired": [
+        {
+          "vision": false,
+          "totalSpikes": 522232,
+          "motionPopulationSpikes": 0,
+          "motorSpikes": {
+            "forward": 0,
+            "reverse": 0,
+            "turn_left": 64,
+            "wing_left": 0,
+            "turn_right": 6,
+            "wing_right": 0,
+            "takeoff": 3,
+            "landing": 43,
+            "groom": 0,
+            "proboscis": 419,
+            "antenna_left": 3,
+            "antenna_right": 5
+          }
+        },
+        {
+          "vision": true,
+          "totalSpikes": 706779,
+          "motionPopulationSpikes": 31004,
+          "motorSpikes": {
+            "forward": 4,
+            "reverse": 0,
+            "turn_left": 69,
+            "wing_left": 0,
+            "turn_right": 15,
+            "wing_right": 0,
+            "takeoff": 64,
+            "landing": 26,
+            "groom": 0,
+            "proboscis": 447,
+            "antenna_left": 2,
+            "antenna_right": 0
+          }
+        }
+      ],
+      "flight": {
+        "neuralMs": 10000,
+        "bodySeconds": 10.000000000000076,
+        "takeoffs": 2,
+        "landings": 2,
+        "maxHeight": 20.592604077060674,
+        "airborneSeconds": 4.432,
+        "wallMs": 40322.687999999995,
+        "trace": [
+          {
+            "neuralMs": 0,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0
+          },
+          {
+            "neuralMs": 1000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.3053862412466254
+          },
+          {
+            "neuralMs": 2000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.6757764378146439
+          },
+          {
+            "neuralMs": 3000,
+            "phase": "takeoff",
+            "height": 0.025352134123945547,
+            "wingCommand": 0.9029883942710227,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 4000,
+            "phase": "cruise",
+            "height": 0.011434587926729023,
+            "wingCommand": 0.6734062140060567,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 5000,
+            "phase": "cruise",
+            "height": 5.64910852723898,
+            "wingCommand": 0.557682937618205,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 6000,
+            "phase": "cruise",
+            "height": 16.981753888105434,
+            "wingCommand": 0.48489861505794274,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 7000,
+            "phase": "landing",
+            "height": 10.826263227951536,
+            "wingCommand": 0.28,
+            "wingHz": 0,
+            "preparation": 1
+          },
+          {
+            "neuralMs": 8000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0
+          },
+          {
+            "neuralMs": 9000,
+            "phase": "grounded",
+            "height": 0,
+            "wingCommand": 0,
+            "wingHz": 0,
+            "preparation": 0.07488748149821044
+          }
+        ]
+      }
+    }
+  ]
+}

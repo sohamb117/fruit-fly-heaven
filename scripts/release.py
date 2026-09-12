@@ -10,7 +10,7 @@ import zipfile
 ROOT=Path(__file__).resolve().parents[1]
 import argparse
 parser=argparse.ArgumentParser()
-parser.add_argument('package', nargs='?', default='fly-brain-wasm', choices=['fly-brain-wasm','brain-view-wasm'])
+parser.add_argument('package', nargs='?', default='fly-brain-wasm', choices=['fly-brain-wasm','brain-view-wasm','fly-vision-wasm'])
 args=parser.parse_args()
 PACKAGE=ROOT/'packages'/args.package
 meta=json.loads((PACKAGE/'package.json').read_text())
@@ -21,7 +21,8 @@ files+=sorted((PACKAGE/'dist').glob('*'))
 files.append(PACKAGE/'build.sh')
 for directory in ['native','src','third-party-licenses'] + (['test'] if 'test' in meta.get('files', []) else []):
     files+=sorted(p for p in (PACKAGE/directory).rglob('*') if p.is_file())
-required={'core.js','core.wasm','index.js','index.d.ts','worker.js'}
+required={'core.js','core.wasm','index.js','index.d.ts'}
+if args.package!='fly-vision-wasm':required.add('worker.js')
 if args.package=='fly-brain-wasm':required.update({'core-f32.js','core-f32.wasm'})
 assert required.issubset({p.name for p in files}), 'Build all release files first'
 assert (PACKAGE/'dist/core.wasm').read_bytes()[:4]==b'\0asm'

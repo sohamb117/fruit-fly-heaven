@@ -1,0 +1,65 @@
+{
+  "name": "fruit-fly-vision-wasm",
+  "version": "0.1.0",
+  "compiler": "Emscripten 4.0.23",
+  "published": false,
+  "dataset_included": false,
+  "files": {
+    "package.json": {
+      "bytes": 566,
+      "sha256": "4797e47578f7c84e018ea16756d8f9f94b2a09499ec0fc584cbf3400b21ec549"
+    },
+    "README.md": {
+      "bytes": 2205,
+      "sha256": "29ef65798db26ddcf80d2570adda77f60bf0aafb51dcae1a1388380f9a8cccc4"
+    },
+    "LICENSE": {
+      "bytes": 1086,
+      "sha256": "8d61c17302bc912e56f689a812ddbed59556d30a72fbebe08237ae4ef45400f1"
+    },
+    "CHANGELOG.md": {
+      "bytes": 336,
+      "sha256": "0e10beef704ec36d84a6332351546a10b4be12285060f086fa5af7d8edf6fa39"
+    },
+    "dist/core.js": {
+      "bytes": 7600,
+      "sha256": "7a47c828a9d356c57aad53488d70afbd66bb9e4d80dfe138ac37a9e3246a6637"
+    },
+    "dist/core.wasm": {
+      "bytes": 7700,
+      "sha256": "3ba4d589e78741297ac596d1cedec726f63fdd24748f2b128da5562f3b40b6b9"
+    },
+    "dist/index.d.ts": {
+      "bytes": 719,
+      "sha256": "edd1d674ba5f1db68e70411bbce4f16aa5e43479e5b88e0320b39efe4b3f07ea"
+    },
+    "dist/index.js": {
+      "bytes": 3618,
+      "sha256": "3385428d94684b7226ef1a277a0f81d6bcd679b373bbd57fccab677ed8aed291"
+    },
+    "build.sh": {
+      "bytes": 484,
+      "sha256": "5b708662a41bd2750a51f34e3cbf981ba55aaced1f45032d0ae72e1d5e7b6e75"
+    },
+    "native/core.cpp": {
+      "bytes": 1000,
+      "sha256": "ed6410d53a24138e6c778cfc4b4e554277ef676bd0ab9b4a5d70f1fa6e2f06d1"
+    },
+    "src/index.d.ts": {
+      "bytes": 719,
+      "sha256": "edd1d674ba5f1db68e70411bbce4f16aa5e43479e5b88e0320b39efe4b3f07ea"
+    },
+    "src/index.js": {
+      "bytes": 3618,
+      "sha256": "3385428d94684b7226ef1a277a0f81d6bcd679b373bbd57fccab677ed8aed291"
+    },
+    "third-party-licenses/FlyVis.txt": {
+      "bytes": 1146,
+      "sha256": "1e0e24112aaccf40ab3c8fd78688628c73da5031d1d9aa4f890558a748e84f41"
+    },
+    "test/core.test.mjs": {
+      "bytes": 2440,
+      "sha256": "83815acacee6f34ffd8630649c333fa6f12f83d0f9078d8b466d4b2bab144e53"
+    }
+  }
+}

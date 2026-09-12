@@ -1,0 +1,927 @@
+{
+  "schema_version": 1,
+  "dataset": "FAFB-FlyWire v783 / existing 138,639-neuron computational model",
+  "neuron_count": 138639,
+  "rate_window_ms": 100,
+  "source_sha256": {
+    "data/prepared/ids.bin": "70200482b9fe6656f215a97b71332dd6725b80e2cb32e0052a4d47916ca1579b",
+    "data/raw/classification.csv.gz": "e946b552f4056dfc977707be0674609832c3f64332a22d69dc0d9615e7aae663",
+    "data/raw/consolidated_cell_types.csv.gz": "8aba246d71dc40361677493629972ce3883048c3d02010adc42bda22962a1a2d"
+  },
+  "scope": "Brain only. No BANC, FANC, MANC, or ventral nerve cord connectivity is loaded. The atlas is used only as a functional reference for named brain cells.",
+  "limitations": [
+    "Published behavioral associations do not establish a validated firing-rate-to-force transfer function.",
+    "Group means and rate thresholds are an explicit actuator decoder, not muscle-resolved circuitry.",
+    "The habitat supplies odor, sugar, rendered visual input and an approximate body-sense boundary adapter; see sensory-inputs.json for its mapping and limitations."
+  ],
+  "channels": [
+    {
+      "key": "forward",
+      "label": "Forward walking",
+      "indices": [
+        42812,
+        78013,
+        130297,
+        135733
+      ],
+      "cells": [
+        {
+          "index": 42812,
+          "root_id": "720575940620300308",
+          "type": "DNg97",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 78013,
+          "root_id": "720575940626730883",
+          "type": "DNg97",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 130297,
+          "root_id": "720575940640978048",
+          "type": "DNg100",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 135733,
+          "root_id": "720575940647228468",
+          "type": "DNg100",
+          "side": "right",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-026-10735-w",
+      "evidence": "These cell types have documented forward-walking roles.",
+      "decoder": "Positive forward drive; no baseline speed."
+    },
+    {
+      "key": "reverse",
+      "label": "Backward walking",
+      "indices": [
+        8808,
+        25844,
+        102124,
+        129127
+      ],
+      "cells": [
+        {
+          "index": 8808,
+          "root_id": "720575940610236514",
+          "type": "MDN",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 25844,
+          "root_id": "720575940616026939",
+          "type": "MDN",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 102124,
+          "root_id": "720575940631082808",
+          "type": "MDN",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 129127,
+          "root_id": "720575940640331472",
+          "type": "MDN",
+          "side": "right",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-025-08925-z",
+      "evidence": "Moonwalker descending neurons are associated with backward walking.",
+      "decoder": "Opposes forward drive."
+    },
+    {
+      "key": "turn_left",
+      "label": "Turn left",
+      "indices": [
+        84431,
+        92992
+      ],
+      "cells": [
+        {
+          "index": 84431,
+          "root_id": "720575940627787609",
+          "type": "DNa01",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 92992,
+          "root_id": "720575940629327659",
+          "type": "DNa02",
+          "side": "left",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-025-08925-z",
+      "evidence": "Identified walking-steering descending populations.",
+      "decoder": "Left-minus-right rate sets yaw torque; side-to-torque gain is a decoder assumption."
+    },
+    {
+      "key": "wing_left",
+      "label": "Wing power left",
+      "indices": [
+        12852,
+        18133,
+        18511,
+        52700,
+        56371,
+        75683,
+        76184,
+        79077,
+        84782,
+        91075,
+        97900,
+        126605,
+        130617
+      ],
+      "cells": [
+        {
+          "index": 12852,
+          "root_id": "720575940612014131",
+          "type": "DNg02_a",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 18133,
+          "root_id": "720575940613668620",
+          "type": "DNg02_b",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 18511,
+          "root_id": "720575940613793170",
+          "type": "DNg02_b",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 52700,
+          "root_id": "720575940622042603",
+          "type": "DNg02_c",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 56371,
+          "root_id": "720575940622681864",
+          "type": "DNg02_b",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 75683,
+          "root_id": "720575940626278129",
+          "type": "DNg02_f",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 76184,
+          "root_id": "720575940626377349",
+          "type": "DNg02_h",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 79077,
+          "root_id": "720575940626904219",
+          "type": "DNg02_b",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 84782,
+          "root_id": "720575940627850622",
+          "type": "DNg02_g",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 91075,
+          "root_id": "720575940628942586",
+          "type": "DNg02_e",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 97900,
+          "root_id": "720575940630289804",
+          "type": "DNg02_a",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 126605,
+          "root_id": "720575940639201443",
+          "type": "DNg02_a",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 130617,
+          "root_id": "720575940641305229",
+          "type": "DNg02_d",
+          "side": "left",
+          "subclass": ""
+        }
+      ],
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9206711/",
+      "evidence": "DNg02 population activity modulates wingbeat amplitude during flight.",
+      "decoder": "Mean bilateral activity sets lift/thrust; asymmetry sets flight yaw. Force gains are assumptions."
+    },
+    {
+      "key": "turn_right",
+      "label": "Turn right",
+      "indices": [
+        904,
+        133149
+      ],
+      "cells": [
+        {
+          "index": 904,
+          "root_id": "720575940604737708",
+          "type": "DNa02",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 133149,
+          "root_id": "720575940644438551",
+          "type": "DNa01",
+          "side": "right",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-025-08925-z",
+      "evidence": "Identified walking-steering descending populations.",
+      "decoder": "Left-minus-right rate sets yaw torque; side-to-torque gain is a decoder assumption."
+    },
+    {
+      "key": "wing_right",
+      "label": "Wing power right",
+      "indices": [
+        10004,
+        15288,
+        24623,
+        31112,
+        32805,
+        57624,
+        70113,
+        71673,
+        82323,
+        98908,
+        109059,
+        136177
+      ],
+      "cells": [
+        {
+          "index": 10004,
+          "root_id": "720575940610863310",
+          "type": "DNg02_a",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 15288,
+          "root_id": "720575940612804606",
+          "type": "DNg02_a",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 24623,
+          "root_id": "720575940615679282",
+          "type": "DNg02_h",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 31112,
+          "root_id": "720575940617498507",
+          "type": "DNg02_b",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 32805,
+          "root_id": "720575940617922439",
+          "type": "DNg02_g",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 57624,
+          "root_id": "720575940622910188",
+          "type": "DNg02_f",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 70113,
+          "root_id": "720575940625144061",
+          "type": "DNg02_c",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 71673,
+          "root_id": "720575940625482954",
+          "type": "DNg02_e",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 82323,
+          "root_id": "720575940627414887",
+          "type": "DNg02_b",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 98908,
+          "root_id": "720575940630492714",
+          "type": "DNg02_d",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 109059,
+          "root_id": "720575940632573887",
+          "type": "DNg02_a",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 136177,
+          "root_id": "720575940647964281",
+          "type": "DNg02_b",
+          "side": "right",
+          "subclass": ""
+        }
+      ],
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9206711/",
+      "evidence": "DNg02 population activity modulates wingbeat amplitude during flight.",
+      "decoder": "Mean bilateral activity sets lift/thrust; asymmetry sets flight yaw. Force gains are assumptions."
+    },
+    {
+      "key": "takeoff",
+      "label": "Escape takeoff",
+      "indices": [
+        1133,
+        11861,
+        39826,
+        41678,
+        43619,
+        56320,
+        57246,
+        95123,
+        95216,
+        108748
+      ],
+      "cells": [
+        {
+          "index": 1133,
+          "root_id": "720575940604954289",
+          "type": "DNp04",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 11861,
+          "root_id": "720575940611644529",
+          "type": "DNp06",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 39826,
+          "root_id": "720575940619654053",
+          "type": "DNp02",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 41678,
+          "root_id": "720575940620054694",
+          "type": "DNp11",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 43619,
+          "root_id": "720575940620468718",
+          "type": "DNp02",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 56320,
+          "root_id": "720575940622673860",
+          "type": "DNp06",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 57246,
+          "root_id": "720575940622838154",
+          "type": "DNp01",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 95123,
+          "root_id": "720575940629757036",
+          "type": "DNp04",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 95216,
+          "root_id": "720575940629777018",
+          "type": "DNp11",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 108748,
+          "root_id": "720575940632499757",
+          "type": "DNp01",
+          "side": "right",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-026-10735-w",
+      "evidence": "These descending types have documented escape-takeoff roles.",
+      "decoder": "A rising command produces a bounded jump impulse; no periodic launch timer."
+    },
+    {
+      "key": "landing",
+      "label": "Landing extension",
+      "indices": [
+        29415,
+        39939,
+        42146,
+        55663
+      ],
+      "cells": [
+        {
+          "index": 29415,
+          "root_id": "720575940617034565",
+          "type": "DNp07",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 39939,
+          "root_id": "720575940619678366",
+          "type": "DNp10",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 42146,
+          "root_id": "720575940620153765",
+          "type": "DNp10",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 55663,
+          "root_id": "720575940622550089",
+          "type": "DNp07",
+          "side": "right",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41593-019-0413-4",
+      "evidence": "Activation elicits landing-associated leg extension.",
+      "decoder": "Extends legs and brakes the flight actuator. Throttle braking is an approximation, not a measured transfer function."
+    },
+    {
+      "key": "groom",
+      "label": "Antennal grooming",
+      "indices": [
+        10020,
+        26421,
+        65709,
+        70810,
+        73748,
+        95375,
+        104931,
+        120024
+      ],
+      "cells": [
+        {
+          "index": 10020,
+          "root_id": "720575940610872014",
+          "type": "DNge011",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 26421,
+          "root_id": "720575940616185531",
+          "type": "DNg62",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 65709,
+          "root_id": "720575940624319124",
+          "type": "DNg62",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 70810,
+          "root_id": "720575940625306603",
+          "type": "DNge011",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 73748,
+          "root_id": "720575940625890888",
+          "type": "DNge012",
+          "side": "left",
+          "subclass": ""
+        },
+        {
+          "index": 95375,
+          "root_id": "720575940629806974",
+          "type": "DNge078",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 104931,
+          "root_id": "720575940631632012",
+          "type": "DNge012",
+          "side": "right",
+          "subclass": ""
+        },
+        {
+          "index": 120024,
+          "root_id": "720575940636308075",
+          "type": "DNge078",
+          "side": "left",
+          "subclass": ""
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-026-10735-w",
+      "evidence": "These descending types have documented antennal-grooming roles.",
+      "decoder": "Front-leg strokes advance only while this output is active."
+    },
+    {
+      "key": "proboscis",
+      "label": "Proboscis",
+      "indices": [
+        4353,
+        15574,
+        20215,
+        21398,
+        24049,
+        26957,
+        30742,
+        35796,
+        39959,
+        50072,
+        60250,
+        60606,
+        63740,
+        72288,
+        74842,
+        82300,
+        90454,
+        91350,
+        91358,
+        94214,
+        95389,
+        96066,
+        99368,
+        100960,
+        111524,
+        134359,
+        134550,
+        135896
+      ],
+      "cells": [
+        {
+          "index": 4353,
+          "root_id": "720575940607193986",
+          "type": "CB0845",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 15574,
+          "root_id": "720575940612888178",
+          "type": "CB0911",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 20215,
+          "root_id": "720575940614386070",
+          "type": "CB0845",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 21398,
+          "root_id": "720575940614734754",
+          "type": "CB0783",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 24049,
+          "root_id": "720575940615500030",
+          "type": "CB0720",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 26957,
+          "root_id": "720575940616340639",
+          "type": "CB0720",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 30742,
+          "root_id": "720575940617403622",
+          "type": "CB0861",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 35796,
+          "root_id": "720575940618600246",
+          "type": "CB0861",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 39959,
+          "root_id": "720575940619682368",
+          "type": "CB0783",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 50072,
+          "root_id": "720575940621586854",
+          "type": "CB0762",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 60250,
+          "root_id": "720575940623352063",
+          "type": "CB0911",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 60606,
+          "root_id": "720575940623415849",
+          "type": "CB0720",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 63740,
+          "root_id": "720575940623993015",
+          "type": "CB0882",
+          "side": "right",
+          "subclass": "haustellum_motor_neuron"
+        },
+        {
+          "index": 72288,
+          "root_id": "720575940625612474",
+          "type": "CB0845",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 74842,
+          "root_id": "720575940626094350",
+          "type": "CB0762",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 82300,
+          "root_id": "720575940627410451",
+          "type": "CB0858",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 90454,
+          "root_id": "720575940628826128",
+          "type": "CB0858",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 91350,
+          "root_id": "720575940628997123",
+          "type": "CB0762",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 91358,
+          "root_id": "720575940628998659",
+          "type": "CB0789",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 94214,
+          "root_id": "720575940629561347",
+          "type": "CB0845",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 95389,
+          "root_id": "720575940629810748",
+          "type": "CB0871",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 96066,
+          "root_id": "720575940629936348",
+          "type": "CB0720",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 99368,
+          "root_id": "720575940630580854",
+          "type": "CB0875",
+          "side": "left",
+          "subclass": "haustellum_motor_neuron"
+        },
+        {
+          "index": 100960,
+          "root_id": "720575940630865724",
+          "type": "CB0871",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 111524,
+          "root_id": "720575940633185567",
+          "type": "CB0762",
+          "side": "left",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 134359,
+          "root_id": "720575940645528430",
+          "type": "CB0875",
+          "side": "right",
+          "subclass": "haustellum_motor_neuron"
+        },
+        {
+          "index": 134550,
+          "root_id": "720575940645697828",
+          "type": "CB0789",
+          "side": "right",
+          "subclass": "proboscis_motor_neuron"
+        },
+        {
+          "index": 135896,
+          "root_id": "720575940647474979",
+          "type": "CB0882",
+          "side": "left",
+          "subclass": "haustellum_motor_neuron"
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-024-07686-5",
+      "evidence": "Motor-cell identities are supplied by the measured brain annotations.",
+      "decoder": "Controls proboscis extension; fruit contact determines whether it counts as feeding."
+    },
+    {
+      "key": "antenna_left",
+      "label": "Antenna left",
+      "indices": [
+        9893,
+        48718,
+        60974,
+        92336,
+        126113
+      ],
+      "cells": [
+        {
+          "index": 9893,
+          "root_id": "720575940610792290",
+          "type": "CB0873",
+          "side": "left",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 48718,
+          "root_id": "720575940621351412",
+          "type": "CB0810",
+          "side": "left",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 60974,
+          "root_id": "720575940623473335",
+          "type": "CB0750",
+          "side": "left",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 92336,
+          "root_id": "720575940629183643",
+          "type": "CB0886",
+          "side": "left",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 126113,
+          "root_id": "720575940639021757",
+          "type": "CB0723",
+          "side": "left",
+          "subclass": "antennal_motor_neuron"
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-024-07686-5",
+      "evidence": "Annotated antennal motor neurons on this side.",
+      "decoder": "Controls that antenna\u2019s deflection and motion amplitude."
+    },
+    {
+      "key": "antenna_right",
+      "label": "Antenna right",
+      "indices": [
+        10334,
+        24348,
+        46658,
+        53907,
+        123053
+      ],
+      "cells": [
+        {
+          "index": 10334,
+          "root_id": "720575940611008718",
+          "type": "CB0810",
+          "side": "right",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 24348,
+          "root_id": "720575940615596850",
+          "type": "CB0886",
+          "side": "right",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 46658,
+          "root_id": "720575940620982966",
+          "type": "CB0873",
+          "side": "right",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 53907,
+          "root_id": "720575940622235930",
+          "type": "CB0723",
+          "side": "right",
+          "subclass": "antennal_motor_neuron"
+        },
+        {
+          "index": 123053,
+          "root_id": "720575940637662697",
+          "type": "CB0750",
+          "side": "right",
+          "subclass": "antennal_motor_neuron"
+        }
+      ],
+      "source": "https://www.nature.com/articles/s41586-024-07686-5",
+      "evidence": "Annotated antennal motor neurons on this side.",
+      "decoder": "Controls that antenna\u2019s deflection and motion amplitude."
+    }
+  ]
+}

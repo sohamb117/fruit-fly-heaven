@@ -6,7 +6,7 @@ The reusable package is [`packages/fly-brain-wasm`](packages/fly-brain-wasm/READ
 
 The independent [`packages/brain-view-wasm`](packages/brain-view-wasm/README.md) package processes anatomy, activity colors, neuron picking, triangular surface cuts, and arbitrary microscopy slices using SIMD WASM. The browser draws the results with WebGL. Neither module bundles its dataset.
 
-Current artifacts: simulation **0.1.1** and anatomical viewer **0.1.0**. Simulation 0.1.1 fixes an unsigned-negation error in decay outside the exponential lookup table; long quiet intervals now retain finite voltage values. Prefer it over 0.1.0. Both archives include the regression tests and full source.
+Current artifacts: simulation **0.1.2** and anatomical viewer **0.1.0**. Simulation 0.1.2 improves memory layout and threshold scheduling while preserving all connections and model parameters. It includes the long-interval decay fix from 0.1.1. Both archives include regression tests and full source.
 
 ## Open the WASM habitat
 
@@ -72,6 +72,9 @@ node --test packages/fly-brain-wasm/test/*.test.mjs
 node --test packages/brain-view-wasm/test/*.test.mjs
 node scripts/benchmark-wasm.mjs 100 5
 node scripts/benchmark-view-wasm.mjs
+# Pause the live browser simulation before timing this comparison.
+node scripts/benchmark-brain-performance.mjs 100 100 100 4 3
+node scripts/check-brain-equivalence.mjs
 .venv/bin/python scripts/release.py
 .venv/bin/python scripts/release.py brain-view-wasm
 ```
@@ -79,6 +82,8 @@ node scripts/benchmark-view-wasm.mjs
 `reports/wasm-100-brains.json` records the actual full-connectome instantiation/matrix benchmark. The small numerical tests also verify model equations against an independent dense reference, inhibition, stable seeded input streams, step-size partitioning, isolation, and memory ownership. A short benchmark is not evidence of long-run biological fidelity or real-time performance.
 
 `reports/wasm-view-benchmark.json` measures the custom viewer kernels against the actual display geometry. It uses a synthetic voltage ramp solely for repeatable performance measurement, not for the live app. Archive checksums cover both `.tgz` and `.zip` packages and their manifests in `releases/SHA256SUMS`.
+
+The repeatable A/B benchmark in `reports/wasm-performance.json` compares the shipped 0.1.1 artifact with the current build using 100 full brains, four workers, identical seeded sensory inputs, 100 ms warm-up and 100 ms measured neural time. Trials alternate engine order and exclude loading/rendering. It requires bit-identical voltage, synaptic drive, cumulative spike counts, and retained spike histories for every brain. See [performance notes](reports/wasm-performance.md) for the measured gain and its limits.
 
 ## What is modeled
 

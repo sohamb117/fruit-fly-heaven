@@ -6,7 +6,7 @@ const countFormat=n=>Math.round(n).toLocaleString();
 function showError(message){for(const id of ['error','anatomy-error']){$(id).hidden=false;$(id).textContent=message;}}
 let meta, snapshot=null, selected=1, stopped=false, following=false;
 let renderer, scene, camera, flyMeshes=[], targets=[], selectedRing,renderBatches=[];
-let workers=[],readyWorkers=0,totalWorkers=0,latestActivation=null,brainView=false,startedWall=0;
+let workers=[],readyWorkers=0,totalWorkers=0,latestActivation=null,brainView=false,startedWall=0,pausedWall=0,pauseStarted=0;
 let anatomyViewer=null,selectedNeuron=0;
 let azimuth=.63,elevation=.79,distance=178;
 const look=new THREE.Vector3(0,8,0), goalLook=look.clone();
@@ -171,7 +171,14 @@ function drawRaster(events){
   ctx.fillStyle='#6e8950';for(const[t,id]of events){const x=4+(t-min)/Math.max(.1,max-min)*(width-8),y=4+id/meta.neurons_per_brain*(height-8);ctx.fillRect(x,y,1.3,2.8);}
   $('raster-start').textContent=min.toFixed(1)+' ms';$('raster-end').textContent=max.toFixed(1)+' ms';
 }
-async function control(data){if('paused'in data)snapshot.paused=data.paused;for(const w of workers)w.postMessage({type:'control',...data});updatePanel();}
+async function control(data){
+  if('paused'in data && data.paused!==snapshot.paused){
+    if(data.paused)pauseStarted=startedWall?performance.now():0;
+    else if(pauseStarted){pausedWall+=performance.now()-pauseStarted;pauseStarted=0;}
+    snapshot.paused=data.paused;
+  }
+  for(const w of workers)w.postMessage({type:'control',...data});updatePanel();
+}
 function drawActivation(){
   if(!latestActivation)return;
   const canvas=$('activation-matrix'),width=512,height=Math.ceil(meta.neurons_per_brain/width);
@@ -190,11 +197,12 @@ function launchWorkers(groups){
     const worker=new Worker('/wasm-world-worker.js',{type:'module'});workers.push(worker);
     worker.onmessage=({data})=>{
       if(data.type==='error'){showError(data.message);return;}
-      if(data.type==='ready'){readyWorkers++;if(readyWorkers===totalWorkers)startedWall=performance.now();}
+      if(data.type==='ready'){readyWorkers++;if(readyWorkers===totalWorkers){startedWall=performance.now();if(snapshot.paused)pauseStarted=startedWall;}}
       if(data.type==='update'){
         for(const f of data.flies)snapshot.flies[f.id-1]=f;
         snapshot.time_ms=Math.min(...snapshot.flies.map(f=>f.brain.time_ms));
-        snapshot.speed=startedWall?snapshot.time_ms/(performance.now()-startedWall):0;
+        const elapsed=(pauseStarted||performance.now())-startedWall-pausedWall;
+        snapshot.speed=startedWall&&elapsed>0?snapshot.time_ms/elapsed:0;
         snapshot.total_spikes=snapshot.flies.reduce((sum,f)=>sum+f.brain.spikes,0);
         if(data.selectedId===selected){latestActivation=data.activation;snapshot.selected_spikes=data.spikes;drawActivation();try{anatomyViewer?.update({flyId:selected,activation:data.activation,lastSpikeMs:data.lastSpikeMs,neuralTimeMs:snapshot.flies[selected-1].brain.time_ms,recording:data.trace});}catch(error){showError('Cannot display neural state: '+error.message);}}
       }

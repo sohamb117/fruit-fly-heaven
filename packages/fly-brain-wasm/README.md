@@ -4,7 +4,7 @@ A body-independent WebAssembly runtime for connectome-based leaky integrate-and-
 
 The package runs in modern browsers, browser Workers, and Node.js 20+. No runtime dependencies or Python server are required. The `core.wasm` binary is included in the release.
 
-Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.1.1.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
+Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.1.2.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
 
 ```js
 import {createBrainModule, loadConnectome} from 'fruit-fly-brain-wasm';
@@ -41,6 +41,8 @@ The neuron indices above are illustrative. Your environment must choose input an
 - Any neuron count and directed connectivity are accepted within WASM memory limits. No edges are pruned or inferred. Parallel connection rows remain additive.
 
 `loadConnectome(baseUrl)` is an optional loader for `metadata.json`, `indptr.bin`, `targets.bin`, and `weights.bin`. Arrays are raw little-endian values of the types above. Metadata provides `neurons_per_brain` or `neuronCount`. The source dataset and its licenses are deliberately separate from this package.
+
+The runtime automatically packs edges into four bytes when the graph has at most 262,144 neurons and every weight is an integer in [-8192, 8191]. Other graphs retain the original eight-byte target/weight representation. This is lossless storage: edge order, signed weights, and all connections are preserved. Each brain keeps hot neuron state together in 64-byte records, allocates tonic-drive storage only when needed, and avoids unnecessary threshold searches using conservative bounds and valid prior predictions. Neural timestep, arithmetic precision, and public API are unchanged.
 
 ## Inputs and outputs
 

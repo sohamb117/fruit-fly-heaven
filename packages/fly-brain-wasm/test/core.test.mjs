@@ -95,3 +95,43 @@ test('validates graph, inputs, configuration, duration and disposed handles',()=
   g.dispose();b.step(1);assert.equal(b.timeMs,1);assert.throws(()=>g.createBrain());
   b.dispose();b.dispose();assert.throws(()=>b.step(1));
 });
+
+test('compact signed weights agree with floating CSR, including encoding boundaries',()=>{
+  for(const weight of [-8192,8191,-250,250,0]){
+    // Cell 2 is silent and isolated from the driven pair. Its fractional edge
+    // forces the second graph to use ordinary CSR without affecting cells 0/1.
+    const csr={neuronCount:3,rowOffsets:ids(0,1,1,2),targets:ids(1,2)};
+    const graphs=[runtime.createConnectome({...csr,weights:floats(weight,0)}),runtime.createConnectome({...csr,weights:floats(weight,.25)})];
+    const brains=graphs.map(g=>g.createBrain({seed:91}));
+    for(const b of brains)b.setRefractoryPeriod(ids(0),0).setPoissonInputs({indices:ids(0),ratesHz:floats(250)});
+    for(let t=0;t<50;t++){
+      for(const b of brains)b.step(2);
+      assert.deepEqual(brains[0].readSpikes(),brains[1].readSpikes());
+      for(const field of ['voltage','synapticDrive','spikeCount'])assert.deepEqual(brains[0].readActivations({field}),brains[1].readActivations({field}));
+    }
+    for(const b of brains)b.dispose();for(const g of graphs)g.dispose();
+  }
+});
+
+test('fractional, large weights and targets above the compact range retain their values',()=>{
+  for(const weight of [8192,-8193,.125]){
+    const g=graph(weight),b=g.createBrain();
+    b.injectVoltage(ids(0),floats(9)).step(1.9);
+    assert.ok(Math.abs(b.readActivations({field:'synapticDrive'})[1]-weight*.275*Math.exp(-.1/5))<1e-10);
+    b.dispose();g.dispose();
+  }
+  const n=(1<<18)+1,row=new Uint32Array(n+1).fill(1);row[0]=0;
+  const g=runtime.createConnectome({neuronCount:n,rowOffsets:row,targets:ids(n-1),weights:floats(250)}),b=g.createBrain();
+  b.injectVoltage(ids(0),floats(9)).step(10);
+  assert.ok(b.readActivations({field:'spikeCount',indices:ids(n-1)})[0]>0);
+  b.dispose();g.dispose();
+});
+
+test('allocating tonic current after synaptic activity preserves other neuron states',()=>{
+  const g=graph(),a=g.createBrain({seed:22}),b=g.createBrain({seed:22});
+  b.setCurrentInputs(ids(1),floats(0)); // Allocate the optional drive array early.
+  for(const brain of [a,b])brain.setPoissonInputs({indices:ids(0),ratesHz:floats(150)}).step(50);
+  for(const brain of [a,b])brain.setCurrentInputs(ids(1),floats(10)).step(50);
+  assert.deepEqual(a.readActivations(),b.readActivations());assert.deepEqual(a.readSpikes(),b.readSpikes());
+  a.dispose();b.dispose();g.dispose();
+});

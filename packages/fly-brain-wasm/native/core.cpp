@@ -29,11 +29,21 @@ struct Graph {
   uint32_t n;
   std::vector<uint32_t> row, col;
   std::vector<float> weight;
+  // Lossless 18-bit target / signed 14-bit weight encoding. Arbitrary graphs
+  // retain the ordinary CSR representation when any edge does not fit.
+  std::vector<uint32_t> packed;
+  bool compact=false;
   Graph(uint32_t n,uint32_t e,const uint32_t* r,const uint32_t* c,const float* w):n(n) {
     if(!n || !r || (!c && e) || (!w && e)) throw std::runtime_error("Invalid graph buffers");
     if(r[0]!=0 || r[n]!=e || !std::is_sorted(r,r+n+1)) throw std::runtime_error("Invalid CSR offsets");
     for(uint32_t i=0;i<e;i++) if(c[i]>=n || !std::isfinite(w[i])) throw std::runtime_error("Invalid edge");
-    row.assign(r,r+n+1);col.assign(c,c+e);weight.assign(w,w+e);
+    row.assign(r,r+n+1);
+    compact=n<=(1u<<18);
+    for(uint32_t i=0;compact && i<e;i++)compact=w[i]>=-8192 && w[i]<=8191 && std::trunc(w[i])==w[i];
+    if(compact){
+      packed.resize(e);
+      for(uint32_t i=0;i<e;i++)packed[i]=c[i]|(static_cast<uint32_t>(static_cast<int32_t>(w[i]))<<18);
+    }else{col.assign(c,c+e);weight.assign(w,w+e);}
   }
 };
 using GraphHandle=std::shared_ptr<const Graph>;
@@ -42,28 +52,37 @@ struct Input {uint32_t neuron; double rate, amplitude, logP;uint64_t rng,due;};
 class Brain {
 public:
   GraphHandle graph; Config config;
-  std::vector<double> v,g,current,arriving;
-  std::vector<uint64_t> last,refractory,when;
-  std::vector<uint32_t> refractoryTicks,previous,next,head,touched;
+  struct alignas(64) Neuron {
+    double v=0,g=0,arriving=0;
+    uint64_t last=0,refractory=0,when=UINT64_MAX;
+    uint32_t previous=NONE,next=NONE,refractoryTicks=0;
+    uint8_t marked=0;
+  };
+  static_assert(sizeof(Neuron)==64,"Hot neuron state must fit one cache line");
+  std::vector<Neuron> neuron;
+  std::vector<double> current;
+  std::vector<uint32_t> head,touched;
   std::vector<uint64_t> counts;
-  std::vector<uint8_t> marked;
   std::vector<std::vector<uint32_t>> delayed;
   std::vector<Input> inputs;
   std::vector<Spike> history;
   std::vector<double> em,es;
   uint64_t tick=0,totalSpikes=0,rng;
   uint32_t delayTicks;
-  double aFactor,threshold;
+  double aFactor,threshold,maxSynapticGain;
 
   Brain(GraphHandle graph,Config config,uint64_t seed):graph(graph),config(config),rng(seed) {
     config.validate();auto n=graph->n;
-    v.resize(n,config.reset-config.rest);g.resize(n);current.resize(n);arriving.resize(n);
-    last.resize(n);refractory.resize(n);when.resize(n,UINT64_MAX);
-    refractoryTicks.resize(n,std::llround(config.refractory/config.dt));
-    previous.resize(n,NONE);next.resize(n,NONE);head.resize(WHEEL,NONE);
-    marked.resize(n);counts.resize(n);history.resize(config.history);
+    neuron.resize(n);head.resize(WHEEL,NONE);
+    for(auto& cell:neuron){cell.v=config.reset-config.rest;cell.refractoryTicks=std::llround(config.refractory/config.dt);}
+    counts.resize(n);history.resize(config.history);
     delayTicks=std::llround(config.delay/config.dt);delayed.resize(delayTicks+1);
     aFactor=config.tauS/(config.tauM-config.tauS);threshold=config.threshold-config.rest;
+    // Continuous-time upper bound on the positive synaptic impulse response.
+    // Inflate it to keep the rejection conservative near floating-point limits.
+    double peakMs=std::log(config.tauM/config.tauS)/(1/config.tauS-1/config.tauM);
+    maxSynapticGain=aFactor*(std::exp(-peakMs/config.tauM)-std::exp(-peakMs/config.tauS));
+    maxSynapticGain+=1e-12*(1+std::abs(aFactor));
     em.resize(10001);es.resize(10001);
     for(int i=0;i<=10000;i++){em[i]=std::exp(-i*config.dt/config.tauM);es[i]=std::exp(-i*config.dt/config.tauS);}
   }
@@ -76,48 +95,56 @@ public:
   }
   double expM(uint64_t t) const {return t<=10000?em[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauM);}
   double expS(uint64_t t) const {return t<=10000?es[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauS);}
+  double drive(uint32_t i) const {return current.empty()?0:current[i];}
   double voltageAt(uint32_t i,uint64_t delta) const {
     double a=expM(delta),b=expS(delta);
-    return current[i]+(v[i]-current[i])*a+g[i]*aFactor*(a-b);
+    return drive(i)+(neuron[i].v-drive(i))*a+neuron[i].g*aFactor*(a-b);
   }
   void evolve(uint32_t i){
-    auto start=std::max(last[i],refractory[i]);
-    if(tick>start){auto delta=tick-start;v[i]=voltageAt(i,delta);g[i]*=expS(delta);}
-    last[i]=tick;
+    auto start=std::max(neuron[i].last,neuron[i].refractory);
+    if(tick>start){auto delta=tick-start;neuron[i].v=voltageAt(i,delta);neuron[i].g*=expS(delta);}
+    neuron[i].last=tick;
   }
   void cancel(uint32_t i){
-    if(when[i]==UINT64_MAX)return;
-    if(previous[i]==NONE)head[when[i]%WHEEL]=next[i];else next[previous[i]]=next[i];
-    if(next[i]!=NONE)previous[next[i]]=previous[i];
-    previous[i]=next[i]=NONE;when[i]=UINT64_MAX;
+    if(neuron[i].when==UINT64_MAX)return;
+    if(neuron[i].previous==NONE)head[neuron[i].when%WHEEL]=neuron[i].next;else neuron[neuron[i].previous].next=neuron[i].next;
+    if(neuron[i].next!=NONE)neuron[neuron[i].next].previous=neuron[i].previous;
+    neuron[i].previous=neuron[i].next=NONE;neuron[i].when=UINT64_MAX;
   }
   void enqueue(uint32_t i,uint64_t t){
-    auto slot=t%WHEEL;when[i]=t;next[i]=head[slot];previous[i]=NONE;
-    if(head[slot]!=NONE)previous[head[slot]]=i;head[slot]=i;
+    auto slot=t%WHEEL;neuron[i].when=t;neuron[i].next=head[slot];neuron[i].previous=NONE;
+    if(head[slot]!=NONE)neuron[head[slot]].previous=i;head[slot]=i;
   }
   void schedule(uint32_t i){
-    cancel(i);auto start=std::max(tick,refractory[i]);
-    if(v[i]>threshold && start==tick){enqueue(i,tick);return;}
+    auto prior=neuron[i].when;cancel(i);auto start=std::max(tick,neuron[i].refractory);
+    if(neuron[i].v>threshold && start==tick){enqueue(i,tick);return;}
     uint64_t hi=1;
-    if(current[i]>threshold){
+    if(drive(i)>threshold){
       // The constant drive eventually crosses threshold, even after inhibition.
       while(voltageAt(i,hi)<=threshold && hi<(1ULL<<40))hi*=2;
       if(voltageAt(i,hi)<=threshold)return;
     }else{
-      if(g[i]<=0 || current[i]+g[i]<=v[i] || std::max(v[i],current[i])+g[i]*aFactor<=threshold)return;
-      double a=v[i]-current[i]+g[i]*aFactor;
-      if(a<=0)return;
-      double peak=std::log(g[i]*aFactor*config.tauM/(a*config.tauS))/((1/config.tauS-1/config.tauM)*config.dt);
-      if(!std::isfinite(peak) || peak<=0 || peak>1e12)return;
-      hi=std::max<uint64_t>(1,std::ceil(peak));
-      if(hi>1 && voltageAt(i,hi-1)>voltageAt(i,hi))hi--;
-      if(voltageAt(i,hi)<=threshold)return;
+      if(neuron[i].g<=0 || drive(i)+neuron[i].g<=neuron[i].v || std::max(neuron[i].v,drive(i))+neuron[i].g*aFactor<=threshold)return;
+      if(std::max(neuron[i].v,drive(i))+neuron[i].g*maxSynapticGain<threshold-1e-10)return;
+      // Reuse a still-valid upper bound before calculating the analytic peak.
+      // Both checks preserve the first crossing on the same discrete time grid.
+      if(voltageAt(i,1)>threshold){enqueue(i,start+1);return;}
+      if(prior!=UINT64_MAX && prior>start && voltageAt(i,prior-start)>threshold)hi=prior-start;
+      else {
+        double a=neuron[i].v-drive(i)+neuron[i].g*aFactor;
+        if(a<=0)return;
+        double peak=std::log(neuron[i].g*aFactor*config.tauM/(a*config.tauS))/((1/config.tauS-1/config.tauM)*config.dt);
+        if(!std::isfinite(peak) || peak<=0 || peak>1e12)return;
+        hi=std::max<uint64_t>(1,std::ceil(peak));
+        if(hi>1 && voltageAt(i,hi-1)>voltageAt(i,hi))hi--;
+        if(voltageAt(i,hi)<=threshold)return;
+      }
     }
     uint64_t lo=1;
     while(lo<hi){auto mid=lo+(hi-lo)/2;if(voltageAt(i,mid)>threshold)hi=mid;else lo=mid+1;}
     enqueue(i,start+lo);
   }
-  void mark(uint32_t i){if(!marked[i]){marked[i]=1;touched.push_back(i);}}
+  void mark(uint32_t i){if(!neuron[i].marked){neuron[i].marked=1;touched.push_back(i);}}
   void checkIndex(uint32_t i) const {if(i>=graph->n)throw std::runtime_error("Neuron index outside graph");}
   void setInputs(uint32_t n,const uint32_t* indices,const float* rates,const float* amplitudes){
     std::vector<Input> replacement;replacement.reserve(n);
@@ -141,16 +168,26 @@ public:
   }
   void setCurrents(uint32_t n,const uint32_t* ids,const float* values){
     for(uint32_t k=0;k<n;k++){checkIndex(ids[k]);if(!std::isfinite(values[k]))throw std::runtime_error("Non-finite current");}
+    if(n && current.empty())current.resize(graph->n);
     for(uint32_t k=0;k<n;k++){auto i=ids[k];evolve(i);current[i]=values[k];schedule(i);}
   }
   void inject(uint32_t n,const uint32_t* ids,const float* values){
     for(uint32_t k=0;k<n;k++){checkIndex(ids[k]);if(!std::isfinite(values[k]))throw std::runtime_error("Non-finite pulse");}
-    for(uint32_t k=0;k<n;k++){auto i=ids[k];if(tick<refractory[i])continue;evolve(i);v[i]+=values[k];schedule(i);}
+    for(uint32_t k=0;k<n;k++){auto i=ids[k];if(tick<neuron[i].refractory)continue;evolve(i);neuron[i].v+=values[k];schedule(i);}
   }
   void setRefractory(uint32_t n,const uint32_t* ids,double ms){
     if(!std::isfinite(ms)||ms<0||ms>1000||std::abs(ms/config.dt-std::round(ms/config.dt))>1e-7)throw std::runtime_error("Invalid refractory period");
     for(uint32_t k=0;k<n;k++)checkIndex(ids[k]);
-    for(uint32_t k=0;k<n;k++)refractoryTicks[ids[k]]=std::llround(ms/config.dt);
+    for(uint32_t k=0;k<n;k++)neuron[ids[k]].refractoryTicks=std::llround(ms/config.dt);
+  }
+  template<bool Compact> void deliver(const std::vector<uint32_t>& pending){
+    for(auto i:pending)for(uint32_t e=graph->row[i];e<graph->row[i+1];e++){
+      uint32_t edge=Compact?graph->packed[e]:0;
+      uint32_t j=Compact?(edge&((1u<<18)-1)):graph->col[e];
+      if(tick<neuron[j].refractory)continue;
+      double weight=Compact?static_cast<int32_t>(edge)>>18:graph->weight[e];
+      neuron[j].arriving+=config.weightScale*weight;mark(j);
+    }
   }
   void step(uint32_t steps){
     if(steps>1000000)throw std::runtime_error("Step block exceeds 1,000,000 ticks");
@@ -162,21 +199,18 @@ public:
     }
     for(uint32_t t=0;t<steps;t++,tick++){
       auto& pending=delayed[tick%delayed.size()];
-      for(auto i:pending)for(uint32_t e=graph->row[i];e<graph->row[i+1];e++){
-        auto j=graph->col[e];if(tick<refractory[j])continue;
-        arriving[j]+=config.weightScale*graph->weight[e];mark(j);
-      }
+      if(graph->compact)deliver<true>(pending);else deliver<false>(pending);
       pending.clear();
-      for(auto i:touched){evolve(i);g[i]+=arriving[i];arriving[i]=0;}
-      for(auto k:inputEvents[t]){const auto& input=inputs[k];auto i=input.neuron;if(tick<refractory[i])continue;if(!marked[i])evolve(i);v[i]+=input.amplitude;mark(i);}
-      for(auto i:touched){schedule(i);marked[i]=0;}touched.clear();
+      for(auto i:touched){evolve(i);neuron[i].g+=neuron[i].arriving;neuron[i].arriving=0;}
+      for(auto k:inputEvents[t]){const auto& input=inputs[k];auto i=input.neuron;if(tick<neuron[i].refractory)continue;if(!neuron[i].marked)evolve(i);neuron[i].v+=input.amplitude;mark(i);}
+      for(auto i:touched){schedule(i);neuron[i].marked=0;}touched.clear();
       auto i=head[tick%WHEEL];
       while(i!=NONE){
-        auto nextIndex=next[i];
-        if(when[i]==tick){
+        auto nextIndex=neuron[i].next;
+        if(neuron[i].when==tick){
           cancel(i);evolve(i);
-          if(v[i]>threshold && tick>=refractory[i]){
-            v[i]=config.reset-config.rest;g[i]=0;refractory[i]=tick+refractoryTicks[i];
+          if(neuron[i].v>threshold && tick>=neuron[i].refractory){
+            neuron[i].v=config.reset-config.rest;neuron[i].g=0;neuron[i].refractory=tick+neuron[i].refractoryTicks;
             delayed[(tick+delayTicks)%delayed.size()].push_back(i);
             counts[i]++;history[totalSpikes%history.size()]={tick*config.dt,i};totalSpikes++;
             // Tonic current can cause another spike without a new synaptic event.
@@ -188,9 +222,9 @@ public:
     }
   }
   double field(uint32_t i,uint32_t kind) const {
-    auto start=std::max(last[i],refractory[i]);auto elapsed=tick>start?tick-start:0;
+    auto start=std::max(neuron[i].last,neuron[i].refractory);auto elapsed=tick>start?tick-start:0;
     if(kind==0)return config.rest+voltageAt(i,elapsed);
-    if(kind==1)return g[i]*expS(elapsed);
+    if(kind==1)return neuron[i].g*expS(elapsed);
     if(kind==2)return counts[i];
     throw std::runtime_error("Unknown state field");
   }

@@ -1,6 +1,6 @@
 {
   "name": "fruit-fly-brain-wasm",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Environment-independent connectome LIF simulation in WebAssembly with signal inputs and activation matrices",
   "type": "module",
   "main": "./dist/index.js",

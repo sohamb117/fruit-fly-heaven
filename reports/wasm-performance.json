@@ -1,0 +1,93 @@
+{
+  "date": "2026-09-12T16:33:04.437Z",
+  "runtime": "v24.19.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "brains": 100,
+  "workers": 4,
+  "warmupMs": 100,
+  "measuredNeuralMs": 100,
+  "stepBlockMs": 2,
+  "trials": 3,
+  "inputsHz": {
+    "odorLeft": 35,
+    "odorRight": 45,
+    "sweet": 150
+  },
+  "seed": 2026,
+  "scope": "Full measured graph; round-robin neural stepping only. Excludes graph loading, rendering, sensory updates and activation transfers.",
+  "correctness": "Bit-identical final voltage, synaptic drive, cumulative neuron spike counts and retained spike histories for every brain in every trial.",
+  "samples": [
+    {
+      "engine": "0.1.1",
+      "trial": 1,
+      "wallMs": 18985.800875,
+      "cohortSpeed": 0.005267094111983306,
+      "wasmHeapBytes": 1677721600,
+      "totalSpikes": 9469700,
+      "stateSha256": "a4dc271bc8ea14a5eb8c135787034a4d8936ce166760a55a5af4cdd4dfa1bacb"
+    },
+    {
+      "engine": "current",
+      "trial": 1,
+      "wallMs": 10428.871000000006,
+      "cohortSpeed": 0.009588765648745673,
+      "wasmHeapBytes": 1512833024,
+      "totalSpikes": 9469700,
+      "stateSha256": "a4dc271bc8ea14a5eb8c135787034a4d8936ce166760a55a5af4cdd4dfa1bacb"
+    },
+    {
+      "engine": "current",
+      "trial": 2,
+      "wallMs": 10162.441833000004,
+      "cohortSpeed": 0.009840154722979555,
+      "wasmHeapBytes": 1512833024,
+      "totalSpikes": 9469700,
+      "stateSha256": "a4dc271bc8ea14a5eb8c135787034a4d8936ce166760a55a5af4cdd4dfa1bacb"
+    },
+    {
+      "engine": "0.1.1",
+      "trial": 2,
+      "wallMs": 20672.493875,
+      "cohortSpeed": 0.0048373457312246996,
+      "wasmHeapBytes": 1677721600,
+      "totalSpikes": 9469700,
+      "stateSha256": "a4dc271bc8ea14a5eb8c135787034a4d8936ce166760a55a5af4cdd4dfa1bacb"
+    },
+    {
+      "engine": "0.1.1",
+      "trial": 3,
+      "wallMs": 19415.957708,
+      "cohortSpeed": 0.00515040264837396,
+      "wasmHeapBytes": 1677721600,
+      "totalSpikes": 9469700,
+      "stateSha256": "a4dc271bc8ea14a5eb8c135787034a4d8936ce166760a55a5af4cdd4dfa1bacb"
+    },
+    {
+      "engine": "current",
+      "trial": 3,
+      "wallMs": 9236.409041000006,
+      "cohortSpeed": 0.010826718430951301,
+      "wasmHeapBytes": 1512833024,
+      "totalSpikes": 9469700,
+      "stateSha256": "a4dc271bc8ea14a5eb8c135787034a4d8936ce166760a55a5af4cdd4dfa1bacb"
+    }
+  ],
+  "medianWallMs": {
+    "0.1.1": 19415.957708,
+    "current": 10162.441833000004
+  },
+  "speedup": 1.9105602794154752,
+  "provenance": {
+    "currentVersion": "0.1.2",
+    "currentWasmSha256": "d024c4fe97e5a1e9503758970ba964a6066ef8f42ac674e672daa0495beb3011",
+    "baselineArchiveSha256": "8c17bd7e52de9fbb4b5a45c159cc680861a318394ee7d14a039f591a0ce95465",
+    "neuronsPerBrain": 138639,
+    "connectionRows": 15091983,
+    "graphSha256": {
+      "indptr.bin": "5eed7ce53ee0aabecb0c4636f95691e4cadb51925dbe1bdd3bef9aca4a32a154",
+      "targets.bin": "302786e9dacecf6f04683f7e46a6c3aa223b136b42b44880ccae0f0487dcd5f3",
+      "weights.bin": "91d63a7ddf6688584f1cd2dc5b06baccc7f2ec788fb36f5ca8bb0900e4874081"
+    }
+  }
+}

@@ -9,7 +9,7 @@ let meta, snapshot=null, selected=1, stopped=false, following=false;
 let renderer, scene, camera, flyMeshes=[], targets=[], selectedRing,renderBatches=[];
 let workers=[],readyWorkers=0,totalWorkers=0,latestActivation=null,brainView=false,startedWall=0,pausedWall=0,pauseStarted=0;
 let anatomyViewer=null,selectedNeuron=0;
-let habitatData,groupsData,fastMode=false,workerGeneration=0;
+let habitatData,groupsData,fastMode=false,workerGeneration=0,populationSize=100;
 let azimuth=.63,elevation=.79,distance=178;
 const look=new THREE.Vector3(0,8,0), goalLook=look.clone();
 const host=$('scene');
@@ -82,6 +82,7 @@ function createFly(id){
   // Larger invisible picking target; visible anatomy stays at fly scale.
   const hit=new THREE.Mesh(new THREE.SphereGeometry(2.0,8,6),new THREE.MeshBasicMaterial({visible:false}));
   hit.userData.flyId=id;group.add(hit);targets.push(hit);
+  group.traverse(object=>{object.userData.flyId=id;});
   scene.add(group);flyMeshes.push(group);
 }
 
@@ -104,7 +105,9 @@ function initScene(){
   meta.fruit.forEach(createFruit);
   materials.body=material('#805b2d');materials.head=material('#493d2b');materials.eye=material('#a83d28',.38);
   materials.wing=new THREE.MeshStandardMaterial({color:'#e0dfcf',transparent:true,opacity:.55,roughness:.4,side:THREE.DoubleSide,depthWrite:false});
-  for(let i=1;i<=meta.flies;i++)createFly(i);
+  // Cache body geometry for the available range; only the active population
+  // receives brain instances, draw instances, and picking targets.
+  for(let i=1;i<=habitatData.flies.length;i++)createFly(i);
   // Batch repeated fly/fruit geometry into a few draw calls rather than thousands.
   const batches=new Map();
   scene.traverse(object=>{if(object.isMesh&&(object.geometry===sphere||object.geometry===cylinder)&&object.material.visible){const key=object.geometry.uuid+object.material.uuid;if(!batches.has(key))batches.set(key,[]);batches.get(key).push(object);}});
@@ -119,7 +122,7 @@ function initScene(){
   let pointer=null,dragged=false;
   host.addEventListener('pointerdown',e=>{pointer={x:e.clientX,y:e.clientY};dragged=false;host.setPointerCapture(e.pointerId);});
   host.addEventListener('pointermove',e=>{if(!pointer)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;if(Math.abs(dx)+Math.abs(dy)>2)dragged=true;azimuth-=dx*.006;elevation=Math.max(.25,Math.min(1.47,elevation+dy*.006));pointer={x:e.clientX,y:e.clientY};});
-  host.addEventListener('pointerup',e=>{if(!dragged){const rect=host.getBoundingClientRect();const pos=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);const ray=new THREE.Raycaster();ray.setFromCamera(pos,camera);const hits=ray.intersectObjects(targets);if(hits.length)selectFly(hits[0].object.userData.flyId);}pointer=null;});
+  host.addEventListener('pointerup',e=>{if(!dragged){const rect=host.getBoundingClientRect();const pos=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);const ray=new THREE.Raycaster();ray.setFromCamera(pos,camera);const hits=ray.intersectObjects(targets.filter(target=>target.userData.flyId<=populationSize));if(hits.length)selectFly(hits[0].object.userData.flyId);}pointer=null;});
   host.addEventListener('pointercancel',()=>pointer=null);
   host.addEventListener('wheel',e=>{e.preventDefault();distance=Math.max(16,Math.min(250,distance*Math.exp(e.deltaY*.001)));},{passive:false});
   requestAnimationFrame(render);
@@ -142,11 +145,18 @@ function render(now){
   look.lerp(goalLook,Math.min(1,dt*5));
   camera.position.set(look.x+distance*Math.cos(elevation)*Math.sin(azimuth),look.y+distance*Math.sin(elevation),look.z+distance*Math.cos(elevation)*Math.cos(azimuth));camera.lookAt(look);
   scene.updateMatrixWorld(true);
-  for(const{batch,originals}of renderBatches){originals.forEach((object,i)=>batch.setMatrixAt(i,object.matrixWorld));batch.instanceMatrix.needsUpdate=true;}
+  for(const{batch,originals}of renderBatches){
+    let count=0;
+    for(const object of originals){
+      if(object.userData.flyId>populationSize)continue;
+      batch.setMatrixAt(count++,object.matrixWorld);
+    }
+    batch.count=count;batch.instanceMatrix.needsUpdate=true;
+  }
   renderer.render(scene,camera);requestAnimationFrame(render);
 }
 
-function selectFly(id){selected=id;$('fly-id').value=String(id);$('brain-fly').value=String(id);latestActivation=null;snapshot.selected_spikes=[];anatomyViewer?.selectFly(id);$('matrix-label').textContent=`Reading Fly ${String(id).padStart(3,'0')} membrane voltages`;$('activation-matrix').getContext('2d').clearRect(0,0,512,512);for(const w of workers)w.postMessage({type:'control',selected});if(snapshot)updatePanel();}
+function selectFly(id){if(!Number.isInteger(id)||id<1||id>populationSize)return;selected=id;$('fly-id').value=String(id);$('brain-fly').value=String(id);latestActivation=null;snapshot.selected_spikes=[];anatomyViewer?.selectFly(id);$('matrix-label').textContent=`Reading Fly ${String(id).padStart(3,'0')} membrane voltages`;$('activation-matrix').getContext('2d').clearRect(0,0,512,512);for(const w of workers)w.postMessage({type:'control',selected});if(snapshot)updatePanel();}
 function setBrainView(value){brainView=value;$('anatomy-view').hidden=!value;$('bowl-view').hidden=value;anatomyViewer?.setActive(value);}
 function updatePanel(){
   const f=snapshot.flies[selected-1],b=f.brain;
@@ -160,7 +170,7 @@ function updatePanel(){
   $('speed').textContent=snapshot.speed?snapshot.speed.toFixed(4)+'× real time':'Measuring';
   $('total-spikes').textContent=countFormat(snapshot.total_spikes);
   $('pause').textContent=snapshot.paused?'Resume brains':'Pause brains';
-  $('connection').textContent=readyWorkers<totalWorkers?`Loading brains · ${readyWorkers}/${totalWorkers} workers`:snapshot.paused?'WASM brains paused':`100 WASM brains · ${totalWorkers} workers`;$('live-dot').classList.add('online');
+  $('connection').textContent=readyWorkers<totalWorkers?`Loading brains · ${readyWorkers}/${totalWorkers} workers`:snapshot.paused?'WASM brains paused':`${populationSize} WASM ${populationSize===1?'brain':'brains'} · ${totalWorkers} ${totalWorkers===1?'worker':'workers'}`;$('live-dot').classList.add('online');
   $('slow-note').textContent=snapshot.speed?`1 neural second ≈ ${Math.round(1/snapshot.speed)} seconds of computation`:'The clock advances with neural computation.';
   drawRaster(snapshot.selected_spikes);
 }
@@ -195,7 +205,7 @@ function drawActivation(){
 }
 function launchWorkers(groups){
   const generation=++workerGeneration,mode=fastMode?'fast':'reference';
-  totalWorkers=Math.min(4,Math.max(1,(navigator.hardwareConcurrency||4)-2));
+  totalWorkers=Math.min(populationSize,4,Math.max(1,(navigator.hardwareConcurrency||4)-2));
   for(let n=0;n<totalWorkers;n++){
     const worker=new Worker('/wasm-world-worker.js',{type:'module'});workers.push(worker);
     worker.onmessage=({data})=>{
@@ -219,7 +229,39 @@ function launchWorkers(groups){
 
 function freshSnapshot(paused=false){
   const zero=()=>({time_ms:0,spikes:0,active_ever:0,odor_left_hz:0,odor_right_hz:0,sweet_hz:0,walk_hz:0,left_hz:0,right_hz:0,feed_hz:0,antenna_hz:0});
-  return {flies:habitatData.flies.map(f=>({...f,velocity:0,brain:zero()})),time_ms:0,speed:0,total_spikes:0,selected_spikes:[],paused};
+  return {flies:habitatData.flies.slice(0,populationSize).map(f=>({...f,velocity:0,brain:zero()})),time_ms:0,speed:0,total_spikes:0,selected_spikes:[],paused};
+}
+function populationValue(value){
+  const number=Number(value);
+  return value===null||String(value).trim()===''||!Number.isFinite(number)?populationSize:Math.max(1,Math.min(habitatData.flies.length,Math.round(number)));
+}
+function previewPopulation(value){
+  const count=populationValue(value);
+  $('population-size').value=String(count);$('population-count').value=String(count);
+  $('population-unit').textContent=count===1?'fly':'flies';
+  $('population-size').setAttribute('aria-valuetext',`${count} ${count===1?'fly':'flies'}`);
+}
+function syncPopulationView(){
+  meta.flies=populationSize;selected=Math.min(selected,populationSize);
+  previewPopulation(populationSize);
+  for(const id of ['fly-id','brain-fly']){
+    const picker=$(id);picker.replaceChildren();
+    for(let i=1;i<=populationSize;i++)picker.add(new Option(String(i).padStart(3,'0'),i));
+    picker.value=String(selected);
+  }
+  const flies=`${populationSize} ${populationSize===1?'fly':'flies'}`;
+  $('population').textContent=flies;
+  $('population-summary').textContent=`${populationSize} independent neural ${populationSize===1?'state':'states'}. A bottomless bowl of bananas and apples.`;
+  $('model-population').textContent=`Actual connectome wiring · ${populationSize} independent WASM ${populationSize===1?'brain':'brains'} · modeled bodies`;
+  host.setAttribute('aria-label',`A three-dimensional bowl of rotting bananas and apples with ${flies}. Positions and feeding come from simulated connectome activity.`);
+  for(const mesh of flyMeshes)mesh.visible=mesh.userData.flyId<=populationSize;
+}
+function changePopulation(value){
+  const next=populationValue(value);previewPopulation(next);
+  if(next===populationSize)return;
+  populationSize=next;
+  try{localStorage.setItem('fruit-fly-population',String(populationSize));}catch{}
+  restartPopulation();
 }
 function showPrecision(){
   const mode=SIMULATION_MODES[fastMode?'fast':'reference'];
@@ -232,6 +274,7 @@ function restartPopulation(){
   for(const worker of workers)worker.terminate();
   workers=[];readyWorkers=0;startedWall=pausedWall=pauseStarted=0;
   snapshot=freshSnapshot(snapshot.paused);latestActivation=null;
+  syncPopulationView();
   for(const id of ['error','anatomy-error']){$(id).hidden=true;$(id).textContent='';}
   const matrix=$('activation-matrix');matrix.getContext('2d').clearRect(0,0,matrix.width,matrix.height);
   $('matrix-label').textContent='Waiting for new neural state';
@@ -243,16 +286,23 @@ try{
   if(responses.some(r=>!r.ok))throw new Error('Cannot load connectome or habitat');
   meta=await responses[0].json();const habitat=await responses[1].json(),groups=await responses[2].json();meta.fruit=habitat.fruit;meta.flies=habitat.flies.length;
   habitatData=habitat;groupsData=groups;
+  populationSize=habitatData.flies.length;
   try{fastMode=localStorage.getItem('fruit-fly-fast-mode')==='true';}catch{}
-  snapshot=freshSnapshot();showPrecision();$('fast-mode').disabled=false;
+  try{populationSize=populationValue(localStorage.getItem('fruit-fly-population'));}catch{}
+  snapshot=freshSnapshot();syncPopulationView();showPrecision();$('fast-mode').disabled=false;
+  for(const id of ['population-size','population-count']){$(id).max=String(habitatData.flies.length);$(id).disabled=false;}
+  $('population-max').textContent=String(habitatData.flies.length);
+  $('population-size').addEventListener('input',()=>previewPopulation($('population-size').value));
+  $('population-size').addEventListener('change',()=>changePopulation($('population-size').value));
+  $('population-count').addEventListener('change',()=>changePopulation($('population-count').value));
+  $('population-count').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();changePopulation($('population-count').value);$('population-count').blur();}});
   $('fast-mode').addEventListener('change',()=>{
     fastMode=$('fast-mode').checked;
     try{localStorage.setItem('fruit-fly-fast-mode',String(fastMode));}catch{}
     restartPopulation();
   });
-  for(let i=1;i<=meta.flies;i++){$('fly-id').add(new Option(String(i).padStart(3,'0'),i));$('brain-fly').add(new Option(String(i).padStart(3,'0'),i));}
-  $('population').textContent=meta.flies+' flies';$('neuron-count').textContent=countFormat(meta.neurons_per_brain);
-  selectedNeuron=groups.steer_left[0];initScene();launchWorkers(groups);updatePanel();
+  $('neuron-count').textContent=countFormat(meta.neurons_per_brain);
+  selectedNeuron=groups.steer_left[0];initScene();syncPopulationView();launchWorkers(groups);updatePanel();
   $('fly-id').addEventListener('change',()=>selectFly(Number($('fly-id').value)));
   $('brain-fly').addEventListener('change',()=>selectFly(Number($('brain-fly').value)));
   $('pause').addEventListener('click',()=>control({paused:!snapshot?.paused}).catch(console.error));

@@ -16,9 +16,11 @@ With the local data prepared:
 .venv/bin/python scripts/serve.py --port 7842
 ```
 
-Open `http://127.0.0.1:7842/`. The Python process only serves static files. Four browser Workers each load one WASM module and instantiate 25 independent brains; graphs are shared within each worker. The app exposes actual neural time and compute speed. The observatory opens first; **Back to bowl** switches to the habitat, and **Explore brain** returns.
+Open `http://127.0.0.1:7842/`. The Python process only serves static files. At the default population of 100, four browser Workers each load one WASM module and instantiate 25 independent brains; graphs are shared within each worker. The app exposes actual neural time and compute speed. The observatory opens first; **Back to bowl** switches to the habitat, and **Explore brain** returns.
 
-The main view has a **Fast mode** toggle. Off uses the reference Float64 / 0.1 ms model; on uses approximate Float32 / 1 ms stepping and 2 ms delay/refractory periods. All connections stay included. Switching restarts all 100 brains and their traces while keeping anatomy loaded, and the preference is saved locally. Actual trace spacing and active precision are shown. See [precision measurements](reports/wasm-precision.md) for the speed/activity tradeoff; this is not INT8 weight quantization.
+The main view has a **Population** slider and exact number field for 1–100 flies. Reducing the population creates only the selected number of full brain instances and draws only those flies. Worker count scales down for small populations; both fly selectors and all counters follow the chosen count. Changing the population restarts neural state, preserves pause and sensory settings, and keeps the current fly selected when it remains in range (otherwise the last remaining fly). The choice persists locally.
+
+The main view also has a **Fast mode** toggle. Off uses the reference Float64 / 0.1 ms model; on uses approximate Float32 / 1 ms stepping and 2 ms delay/refractory periods. All connections stay included. Switching restarts the selected population and its traces while keeping anatomy loaded, and the preference is saved locally. Actual trace spacing and active precision are shown. See [precision measurements](reports/wasm-precision.md) for the speed/activity tradeoff; this is not INT8 weight quantization.
 
 ## Anatomical observatory
 
@@ -28,7 +30,7 @@ The view contains a translucent measured neuropil surface, 138,625 annotated neu
 - Switch between XY, XZ, and YZ sections, a cutaway, a thin slab, and the full anatomy.
 - Scroll over the microscopy section to zoom; click an anatomical point to inspect its neuron.
 - Find a cell by root ID or cell type. Live voltage traces sample that cell every simulation step (0.1 ms in reference mode, 1 ms in fast mode), with explicit spike markers.
-- Choose any of the 100 independent flies. Geometry and static scan are shared; signals are taken from that fly's own state.
+- Choose any fly in the active population. Geometry and static scan are shared; signals are taken from that fly's own state.
 
 The microscopy overview has 2.048 × 2.048 × 1.280 µm voxels and cannot resolve individual synapses. Its imagery is static; only the overlaid electrical activity is simulated. Colors do not represent measured optical activity. Coordinates retain the source FlyWire imagery orientation.
 

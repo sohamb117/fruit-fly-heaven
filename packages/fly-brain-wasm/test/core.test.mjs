@@ -36,6 +36,19 @@ test('inhibition suppresses the postsynaptic cell; zero input is silent',()=>{
   assert.ok(b.readActivations()[1]<-52);b.dispose();g.dispose();
 });
 
+test('quiet neurons and slow tonic drives remain finite beyond 10,000 ticks',()=>{
+  const g=graph(),quiet=g.createBrain(),driven=g.createBrain({tauMembraneMs:2000});
+  quiet.step(1500);
+  assert.deepEqual([...quiet.readActivations()],[-52,-52]);
+  assert.deepEqual([...quiet.readActivations({field:'synapticDrive'})],[0,0]);
+  quiet.injectVoltage(ids(0),floats(-3)).step(1500);
+  assert.ok(quiet.readActivations().every(Number.isFinite));
+  driven.setCurrentInputs(ids(1),floats(8)).step(5000);
+  assert.ok(driven.readActivations().every(Number.isFinite));
+  assert.ok(driven.readSpikes().timesMs[0]>4000);
+  quiet.dispose();driven.dispose();g.dispose();
+});
+
 test('seeded trajectories do not depend on step partition or observing matrices',()=>{
   const g=graph();const brains=[g.createBrain({seed:42}),g.createBrain({seed:42}),g.createBrain({seed:43})];
   for(const b of brains)b.setPoissonInputs({indices:ids(0,1),ratesHz:floats(140,70)});

@@ -4,7 +4,7 @@ A body-independent WebAssembly runtime for connectome-based leaky integrate-and-
 
 The package runs in modern browsers, browser Workers, and Node.js 20+. No runtime dependencies or Python server are required. The `core.wasm` binary is included in the release.
 
-Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.1.0.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
+Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.1.1.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
 
 ```js
 import {createBrainModule, loadConnectome} from 'fruit-fly-brain-wasm';

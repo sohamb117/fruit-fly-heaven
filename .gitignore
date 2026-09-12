@@ -4,6 +4,7 @@ references/
 data/raw/
 data/prepared/
 data/profile/
+data/anatomy/
 build/
 runtime/
 .DS_Store

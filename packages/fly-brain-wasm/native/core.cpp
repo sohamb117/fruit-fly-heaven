@@ -74,8 +74,8 @@ public:
     double u=(((z^(z>>31))>>11)+.5)*0x1.0p-53;
     return static_cast<uint64_t>(std::min(static_cast<double>(UINT64_MAX/4),std::floor(std::log(u)/s.logP)));
   }
-  double expM(uint64_t t) const {return t<=10000?em[t]:std::exp(-t*config.dt/config.tauM);}
-  double expS(uint64_t t) const {return t<=10000?es[t]:std::exp(-t*config.dt/config.tauS);}
+  double expM(uint64_t t) const {return t<=10000?em[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauM);}
+  double expS(uint64_t t) const {return t<=10000?es[t]:std::exp(-static_cast<double>(t)*config.dt/config.tauS);}
   double voltageAt(uint32_t i,uint64_t delta) const {
     double a=expM(delta),b=expS(delta);
     return current[i]+(v[i]-current[i])*a+g[i]*aFactor*(a-b);

@@ -11,12 +11,29 @@
 </header>
 <main>
   <div class="intro"><div><div class="eyebrow">DROSOPHILA MELANOGASTER · FLYWIRE v783</div><h1>A little bowl of paradise.</h1><p>One hundred independent neural states. A bottomless bowl of bananas and apples.</p></div><button id="pause" class="primary" type="button">Pause brains</button></div>
-  <div class="habitat-layout">
+  <section id="anatomy-view" hidden aria-label="Anatomical brain observatory">
+    <div class="anatomy-heading"><div><div class="eyebrow">THE BRAIN OBSERVATORY</div><h2>Inside <label for="brain-fly">Fly</label> <select id="brain-fly" aria-label="Brain monitor fly"></select></h2></div><div class="anatomy-heading-actions"><span id="anatomy-clock">Waiting for neural state</span><button id="back-to-bowl">Back to bowl</button></div></div>
+    <div class="anatomy-controls">
+      <div class="view-modes" role="group" aria-label="Brain clipping mode"><button data-clip="cutaway" aria-pressed="true">Cutaway</button><button data-clip="slab" aria-pressed="false">Thin slice</button><button data-clip="all" aria-pressed="false">Full brain</button></div>
+      <label>Plane <select id="slice-axis" aria-label="Slice axis"><option value="2">XY</option><option value="1">XZ</option><option value="0">YZ</option></select></label>
+      <label class="slice-position">Slice <input id="slice-position" aria-label="Slice position" type="range" min="0" max="1000" value="600"><output id="slice-value">— µm</output></label>
+      <label>Slab <input id="slice-thickness" aria-label="Slice thickness in micrometers" type="range" min="2" max="50" value="12"><output id="thickness-value">12 µm</output></label>
+    </div>
+    <div class="anatomy-displays">
+      <div class="brain-stage"><div id="brain-canvas" role="img" aria-label="Measured FlyWire neuron anatomy colored by live simulated membrane voltage"></div><div class="brain-stage-label"><span>3D ANATOMY</span><span id="anatomy-status">Loading geometry and WASM</span></div><div class="brain-gestures">Drag to orbit · scroll to zoom · Shift-drag to slice · click a neuron</div></div>
+      <div class="scan-stage"><div class="scan-title"><span>ORIGINAL MICROSCOPY</span><span id="scan-axis">XY SECTION</span></div><canvas id="em-slice" aria-label="Cross-section of the original FlyWire electron microscopy volume with simulated activity overlays" role="img"></canvas><div class="scan-caption">Static scan · 2.048 × 2.048 × 1.280 µm voxels<br>Colored points: simulated activity within the selected slab.<br>Scroll to zoom · click to inspect.</div></div>
+    </div>
+    <div class="anatomy-layers"><label><input id="show-surface" type="checkbox" checked> Translucent surface</label><label><input id="show-skeletons" type="checkbox" checked> Neuron branches</label><label><input id="show-anchors" type="checkbox" checked> Neuron anchors</label><span class="voltage-legend"><i></i> −52 mV rest → −45 mV threshold · gold flashes: spikes</span></div>
+    <div class="neuron-inspector"><div class="neuron-details"><div class="eyebrow">SELECTED NEURON</div><strong id="neuron-type">Select a neuron</strong><a id="neuron-root" target="_blank" rel="noreferrer">—</a><span id="neuron-reading">Waiting for activity</span><form id="neuron-search-form"><input id="neuron-search" aria-label="Find neuron by root ID or cell type" placeholder="Root ID or cell type" list="neuron-options"><datalist id="neuron-options"></datalist><button type="submit">Find</button></form><span id="neuron-search-status" role="status"></span></div><div class="voltage-recording"><div class="trace-heading"><span>MEMBRANE VOLTAGE</span><span id="trace-window">Samples every 0.1 ms of neural time</span></div><canvas id="neuron-trace" role="img" aria-label="Selected neuron's recorded voltage over actual neural time"></canvas><p>Trace samples are recorded from the simulation. Spike markers show threshold events; voltage resets immediately.</p></div></div>
+    <p class="anatomy-note" id="anatomy-coverage">Matching geometry to the simulation’s neuron IDs.</p><p class="anatomy-note"><a href="/anatomy/metadata.json" target="_blank">Anatomical sources and checksums ↗</a> · Geometry and static scan are shared by all flies. The selected fly supplies the electrical activity.</p>
+    <div id="anatomy-error" role="alert" hidden></div>
+  </section>
+  <div class="habitat-layout" id="bowl-view">
     <section class="scene-wrap" aria-label="Fruit bowl habitat">
       <div id="scene" role="img" aria-label="A three-dimensional bowl of rotting bananas and apples with 100 fruit flies. Positions and feeding come from simulated connectome activity."></div>
       <div class="scene-top"><span class="scene-label">THE FRUIT BOWL</span><span class="scene-label" id="population">100 flies</span></div>
       <div id="brain-panel" hidden><div id="matrix-label">Loading membrane voltages</div><canvas id="activation-matrix" role="img" aria-label="Every neuron's actual membrane voltage, arranged by neuron index in a matrix"></canvas><div class="matrix-legend">Blue: below rest · dark: −52 mV · yellow: −45 mV threshold<br>Each pixel is one neuron. Matrix layout, not anatomical positions.</div></div>
-      <div class="scene-bottom"><span>Drag to orbit · scroll to zoom</span><button id="brain-view" type="button">Show brain matrix</button><button id="recenter" type="button">Whole bowl</button></div>
+      <div class="scene-bottom"><span>Drag to orbit · scroll to zoom</span><button id="brain-view" type="button">Explore brain</button><button id="recenter" type="button">Whole bowl</button></div>
       <div id="error" role="alert" hidden></div>
     </section>
     <aside>

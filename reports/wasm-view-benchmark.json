@@ -1,0 +1,12 @@
+{
+  "engine": "SIMD WASM / Node",
+  "geometry": "Measured FlyWire v783; synthetic voltage ramp for kernel timing only",
+  "neurons": 138639,
+  "mappedNeurons": 138625,
+  "skeletonVertices": 2922212,
+  "volumeVoxels": 31569408,
+  "activityMapMedianMs": 11.314416999999992,
+  "slabFilterMedianMs": 0.49824999999998454,
+  "volumeSliceMedianMs": 4.094333000000006,
+  "wasmHeapBytes": 141557760
+}

@@ -1,0 +1,14 @@
+{
+  "name":"fruit-fly-brain-view-wasm",
+  "version":"0.1.0",
+  "description":"Independent WebAssembly anatomy, volume slicing, activity mapping and neuron picking kernels",
+  "type":"module",
+  "main":"./dist/index.js",
+  "types":"./dist/index.d.ts",
+  "exports":{".":{"types":"./dist/index.d.ts","import":"./dist/index.js"},"./core.wasm":"./dist/core.wasm","./worker":"./dist/worker.js"},
+  "files":["dist","src","native","test","build.sh","README.md","LICENSE","CHANGELOG.md","third-party-licenses"],
+  "license":"GPL-2.0-only",
+  "engines":{"node":">=20"},
+  "scripts":{"test":"node --test test/*.test.mjs"},
+  "keywords":["webassembly","neuroscience","volume-rendering","connectome","flywire"]
+}

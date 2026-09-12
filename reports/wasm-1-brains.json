@@ -1,0 +1,22 @@
+{
+  "engine": "WASM / sequential Node",
+  "brains": 1,
+  "neuronsPerBrain": 138639,
+  "connectionRows": 15091983,
+  "synapsesRepresented": 54492922,
+  "simulatedMsPerBrain": 1500,
+  "allocationMs": 1.8367910000000052,
+  "wallMs": 29815.061833,
+  "speedVsRealTime": 0.050310142182558394,
+  "matrixShape": [
+    1,
+    138639
+  ],
+  "matrixBytes": 1109112,
+  "matrixReadMs": 9.158165999997436,
+  "wasmHeapBytes": 242679808,
+  "spikeCounts": [
+    776125
+  ],
+  "distinctSpikeCounts": 1
+}

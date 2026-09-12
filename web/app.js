@@ -1,10 +1,13 @@
 import * as THREE from './vendor/three.module.js';
+import {createAnatomicalViewer} from './brain-view.js';
 
 const $=id=>document.getElementById(id);
 const countFormat=n=>Math.round(n).toLocaleString();
+function showError(message){for(const id of ['error','anatomy-error']){$(id).hidden=false;$(id).textContent=message;}}
 let meta, snapshot=null, selected=1, stopped=false, following=false;
 let renderer, scene, camera, flyMeshes=[], targets=[], selectedRing,renderBatches=[];
 let workers=[],readyWorkers=0,totalWorkers=0,latestActivation=null,brainView=false,startedWall=0;
+let anatomyViewer=null,selectedNeuron=0;
 let azimuth=.63,elevation=.79,distance=178;
 const look=new THREE.Vector3(0,8,0), goalLook=look.clone();
 const host=$('scene');
@@ -141,7 +144,8 @@ function render(now){
   renderer.render(scene,camera);requestAnimationFrame(render);
 }
 
-function selectFly(id){selected=id;$('fly-id').value=String(id);latestActivation=null;snapshot.selected_spikes=[];$('matrix-label').textContent=`Reading Fly ${String(id).padStart(3,'0')} membrane voltages`;$('activation-matrix').getContext('2d').clearRect(0,0,512,512);for(const w of workers)w.postMessage({type:'control',selected});if(snapshot)updatePanel();}
+function selectFly(id){selected=id;$('fly-id').value=String(id);$('brain-fly').value=String(id);latestActivation=null;snapshot.selected_spikes=[];anatomyViewer?.selectFly(id);$('matrix-label').textContent=`Reading Fly ${String(id).padStart(3,'0')} membrane voltages`;$('activation-matrix').getContext('2d').clearRect(0,0,512,512);for(const w of workers)w.postMessage({type:'control',selected});if(snapshot)updatePanel();}
+function setBrainView(value){brainView=value;$('anatomy-view').hidden=!value;$('bowl-view').hidden=value;anatomyViewer?.setActive(value);}
 function updatePanel(){
   const f=snapshot.flies[selected-1],b=f.brain;
   $('behavior').textContent=b.feed_hz>2?'Feeding signals active':f.velocity>.1?'Motor signals active':'Neural activity';
@@ -185,19 +189,19 @@ function launchWorkers(groups){
   for(let n=0;n<totalWorkers;n++){
     const worker=new Worker('/wasm-world-worker.js',{type:'module'});workers.push(worker);
     worker.onmessage=({data})=>{
-      if(data.type==='error'){$('error').hidden=false;$('error').textContent=data.message;return;}
+      if(data.type==='error'){showError(data.message);return;}
       if(data.type==='ready'){readyWorkers++;if(readyWorkers===totalWorkers)startedWall=performance.now();}
       if(data.type==='update'){
         for(const f of data.flies)snapshot.flies[f.id-1]=f;
         snapshot.time_ms=Math.min(...snapshot.flies.map(f=>f.brain.time_ms));
         snapshot.speed=startedWall?snapshot.time_ms/(performance.now()-startedWall):0;
         snapshot.total_spikes=snapshot.flies.reduce((sum,f)=>sum+f.brain.spikes,0);
-        if(data.selectedId===selected){latestActivation=data.activation;snapshot.selected_spikes=data.spikes;drawActivation();}
+        if(data.selectedId===selected){latestActivation=data.activation;snapshot.selected_spikes=data.spikes;drawActivation();try{anatomyViewer?.update({flyId:selected,activation:data.activation,lastSpikeMs:data.lastSpikeMs,neuralTimeMs:snapshot.flies[selected-1].brain.time_ms,recording:data.trace});}catch(error){showError('Cannot display neural state: '+error.message);}}
       }
       updatePanel();
     };
-    worker.onerror=event=>{$('error').hidden=false;$('error').textContent=event.message;};
-    worker.postMessage({type:'init',flies:snapshot.flies.filter((f,i)=>i%totalWorkers===n),fruit:meta.fruit,groups});
+    worker.onerror=event=>showError(event.message);
+    worker.postMessage({type:'init',flies:snapshot.flies.filter((f,i)=>i%totalWorkers===n),fruit:meta.fruit,groups,selectedNeuron});
   }
 }
 
@@ -207,16 +211,20 @@ try{
   meta=await responses[0].json();const habitat=await responses[1].json(),groups=await responses[2].json();meta.fruit=habitat.fruit;meta.flies=habitat.flies.length;
   const zero=()=>({time_ms:0,spikes:0,active_ever:0,odor_left_hz:0,odor_right_hz:0,sweet_hz:0,walk_hz:0,left_hz:0,right_hz:0,feed_hz:0,antenna_hz:0});
   snapshot={flies:habitat.flies.map(f=>({...f,velocity:0,brain:zero()})),time_ms:0,speed:0,total_spikes:0,selected_spikes:[],paused:false};
-  for(let i=1;i<=meta.flies;i++){$('fly-id').add(new Option(String(i).padStart(3,'0'),i));}
+  for(let i=1;i<=meta.flies;i++){$('fly-id').add(new Option(String(i).padStart(3,'0'),i));$('brain-fly').add(new Option(String(i).padStart(3,'0'),i));}
   $('population').textContent=meta.flies+' flies';$('neuron-count').textContent=countFormat(meta.neurons_per_brain);
-  initScene();launchWorkers(groups);updatePanel();
+  selectedNeuron=groups.steer_left[0];initScene();launchWorkers(groups);updatePanel();
   $('fly-id').addEventListener('change',()=>selectFly(Number($('fly-id').value)));
+  $('brain-fly').addEventListener('change',()=>selectFly(Number($('brain-fly').value)));
   $('pause').addEventListener('click',()=>control({paused:!snapshot?.paused}).catch(console.error));
   $('odor').addEventListener('change',()=>control({odor:$('odor').checked}).catch(console.error));
   $('taste').addEventListener('change',()=>control({taste:$('taste').checked}).catch(console.error));
   $('follow').addEventListener('click',()=>{following=true;distance=25;});
   $('recenter').addEventListener('click',()=>{following=false;distance=Math.max(178,205/camera.aspect);elevation=.79;goalLook.set(0,8,0);});
-  $('brain-view').addEventListener('click',()=>{brainView=!brainView;$('brain-panel').hidden=!brainView;$('brain-view').textContent=brainView?'Show bowl':'Show brain matrix';drawActivation();});
+  $('brain-view').addEventListener('click',()=>setBrainView(true));
+  $('back-to-bowl').addEventListener('click',()=>setBrainView(false));
+  setBrainView(true);
+  createAnatomicalViewer({initialNeuron:selectedNeuron,onNeuronSelect:index=>{selectedNeuron=index;for(const w of workers)w.postMessage({type:'control',selectedNeuron:index});}}).then(viewer=>{anatomyViewer=viewer;viewer.selectFly(selected);viewer.setActive(brainView);}).catch(error=>{$('anatomy-error').hidden=false;$('anatomy-error').textContent='Cannot load anatomical viewer: '+error.message;console.error(error);});
   // Small inspectable surface for local QA; no fabricated or replayed brain data.
   window.heaven={get state(){return snapshot;},get meta(){return meta;},get renderer(){return renderer;},selectFly};
 }catch(error){$('error').hidden=false;$('error').textContent='Unable to start: '+error.message;console.error(error);}

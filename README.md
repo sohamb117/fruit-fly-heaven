@@ -1,8 +1,12 @@
 # Fruit Fly Heaven
 
-A generic WebAssembly connectome runtime and a separate example habitat with 100 fruit flies, rotting bananas/apples, live spike monitors, and a full voltage matrix for the selected brain.
+A generic WebAssembly connectome runtime, a companion anatomical visualization module, and an example habitat with 100 fruit flies, rotting bananas/apples, live spike monitors, and a brain observatory.
 
 The reusable package is [`packages/fly-brain-wasm`](packages/fly-brain-wasm/README.md). Its API is independent of fruit, flies’ bodies, rendering, input-neuron identities, and dataset size. Compiled release artifacts live in `releases/`; nothing has been published to an external registry.
+
+The independent [`packages/brain-view-wasm`](packages/brain-view-wasm/README.md) package processes anatomy, activity colors, neuron picking, triangular surface cuts, and arbitrary microscopy slices using SIMD WASM. The browser draws the results with WebGL. Neither module bundles its dataset.
+
+Current artifacts: simulation **0.1.1** and anatomical viewer **0.1.0**. Simulation 0.1.1 fixes an unsigned-negation error in decay outside the exponential lookup table; long quiet intervals now retain finite voltage values. Prefer it over 0.1.0. Both archives include the regression tests and full source.
 
 ## Open the WASM habitat
 
@@ -12,7 +16,27 @@ With the local data prepared:
 .venv/bin/python scripts/serve.py --port 7842
 ```
 
-Open `http://127.0.0.1:7842/`. The Python process only serves static files. Four browser Workers each load one WASM module and instantiate 25 independent brains; graphs are shared within each worker. The app exposes actual neural time and compute speed. Choose a fly, then **Show brain matrix** to see all 138,639 membrane voltages.
+Open `http://127.0.0.1:7842/`. The Python process only serves static files. Four browser Workers each load one WASM module and instantiate 25 independent brains; graphs are shared within each worker. The app exposes actual neural time and compute speed. The observatory opens first; **Back to bowl** switches to the habitat, and **Explore brain** returns.
+
+## Anatomical observatory
+
+The view contains a translucent measured neuropil surface, 138,625 annotated neuron anchor locations, 876 complete branching skeletons, and the original downsampled electron-microscopy volume. Fourteen model neurons have no matching coordinates and are omitted spatially. Display sampling never changes simulation connectivity. Anchor locations are typically on a neuron's backbone; they are not all somas.
+
+- Orbit and zoom the 3D brain; drag the slice slider or Shift-drag the scene.
+- Switch between XY, XZ, and YZ sections, a cutaway, a thin slab, and the full anatomy.
+- Scroll over the microscopy section to zoom; click an anatomical point to inspect its neuron.
+- Find a cell by root ID or cell type. Live voltage traces sample that cell every 0.1 ms of neural time, with explicit spike markers.
+- Choose any of the 100 independent flies. Geometry and static scan are shared; signals are taken from that fly's own state.
+
+The microscopy overview has 2.048 × 2.048 × 1.280 µm voxels and cannot resolve individual synapses. Its imagery is static; only the overlaid electrical activity is simulated. Colors do not represent measured optical activity. Coordinates retain the source FlyWire imagery orientation.
+
+To prepare the anatomy after preparing the connectome:
+
+```sh
+.venv/bin/python -u scripts/prepare-anatomy.py
+```
+
+This downloads public geometry and a 31,569,408-voxel microscopy volume. Annotations are pinned to commit `8587524c1748ce5ef2080822a2fc890fc03bf597`. Every displayed skeleton keeps all of its supplied vertices and edges. Exact source URLs, hashes, missing locations, and geometry selection are recorded in `reports/anatomy-provenance.json`; downloaded data stays out of Git and the release archives.
 
 The full 100-brain model does **not** currently run at biological real time on the development Mac. WASM keeps heavy neural computation away from rendering; it does not remove the computational cost of the full connectome. The UI reports measured speed. No movement or neural activity is fabricated to conceal a slow simulation.
 
@@ -45,11 +69,16 @@ git clone https://github.com/emscripten-core/emsdk.git references/emsdk
 .venv/bin/python references/emsdk/emsdk.py activate 4.0.23
 bash scripts/build-wasm.sh
 node --test packages/fly-brain-wasm/test/*.test.mjs
+node --test packages/brain-view-wasm/test/*.test.mjs
 node scripts/benchmark-wasm.mjs 100 5
+node scripts/benchmark-view-wasm.mjs
 .venv/bin/python scripts/release.py
+.venv/bin/python scripts/release.py brain-view-wasm
 ```
 
 `reports/wasm-100-brains.json` records the actual full-connectome instantiation/matrix benchmark. The small numerical tests also verify model equations against an independent dense reference, inhibition, stable seeded input streams, step-size partitioning, isolation, and memory ownership. A short benchmark is not evidence of long-run biological fidelity or real-time performance.
+
+`reports/wasm-view-benchmark.json` measures the custom viewer kernels against the actual display geometry. It uses a synthetic voltage ramp solely for repeatable performance measurement, not for the live app. Archive checksums cover both `.tgz` and `.zip` packages and their manifests in `releases/SHA256SUMS`.
 
 ## What is modeled
 

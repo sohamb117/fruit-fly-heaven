@@ -4,6 +4,8 @@ A body-independent WebAssembly runtime for connectome-based leaky integrate-and-
 
 The package runs in modern browsers, browser Workers, and Node.js 20+. No runtime dependencies or Python server are required. The `core.wasm` binary is included in the release.
 
+Install the local release with `npm install ./releases/fruit-fly-brain-wasm-0.1.0.tgz`. For a plain browser application, serve the extracted `dist/` directory and import `dist/index.js` by URL; bare package imports require a bundler or import map.
+
 ```js
 import {createBrainModule, loadConnectome} from 'fruit-fly-brain-wasm';
 
@@ -84,7 +86,8 @@ Compile/load the WASM module once per Worker, then create many brain handles wit
 The included `dist/worker.js` exposes an ordered request/response protocol:
 
 ```js
-const worker = new Worker(new URL('./dist/worker.js', import.meta.url), {type:'module'});
+// Serve the package's dist/ directory at /engine/ in your host application.
+const worker = new Worker('/engine/worker.js', {type:'module'});
 worker.postMessage({requestId:1, op:'init'});
 // Await each response before using an id returned by it.
 worker.postMessage({requestId:2, op:'loadConnectome', args:{url:connectomeUrl}});
@@ -109,7 +112,9 @@ node --test packages/fly-brain-wasm/test/*.test.mjs
 python3 scripts/release.py
 ```
 
-The release builder creates a versioned tar archive, npm-installable `.tgz`, manifest, and SHA-256 checksums under `releases/`. The tests cover comparison against an independent dense reference, inhibitory signaling, seed reproducibility, invariance to stepping block size and observation, 100 isolated instances, activation-matrix layout, tonic and impulse inputs, memory ownership, validation, and explicit spike-history truncation.
+The release builder creates a versioned `.zip`, npm-installable `.tgz`, manifest, and SHA-256 checksums under `releases/`. The tests cover comparison against an independent dense reference, inhibitory signaling, seed reproducibility, invariance to stepping block size and observation, 100 isolated instances, activation-matrix layout, tonic and impulse inputs, memory ownership, validation, and explicit spike-history truncation.
+
+The archive also includes the native source, JavaScript source, build script, and third-party license notices. To rebuild an extracted package, activate Emscripten 4.0.23 in your shell and run `bash build.sh` from its package directory. Repository tests and the habitat are available in the parent repository.
 
 The local FlyWire dataset adapter and 3D bowl application are separate examples in the parent repository. The reusable runtime never downloads or bundles the FlyWire dataset automatically.
 

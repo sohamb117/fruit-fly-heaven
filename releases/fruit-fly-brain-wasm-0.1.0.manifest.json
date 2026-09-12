@@ -1,0 +1,85 @@
+{
+  "name": "fruit-fly-brain-wasm",
+  "version": "0.1.0",
+  "compiler": "Emscripten 4.0.23",
+  "published": false,
+  "dataset_included": false,
+  "files": {
+    "package.json": {
+      "bytes": 744,
+      "sha256": "dc41dbe4e961690578506cb33a371c8f3ef6e35cecbb6bf346ec8f1831802725"
+    },
+    "README.md": {
+      "bytes": 9335,
+      "sha256": "171650090fee8c3ff8d03ebe1551ada124a875e89319ef947a9e3ab8b235fcf9"
+    },
+    "LICENSE": {
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "CHANGELOG.md": {
+      "bytes": 519,
+      "sha256": "abc7859c7015954fb4c48d82ac3ae248f216621e35e6888462e417012abd6584"
+    },
+    "dist/core.js": {
+      "bytes": 14785,
+      "sha256": "c1ad67e006fa259c679131057a99620623b1aea6e8b3fb9297553aff6a5dcde9"
+    },
+    "dist/core.wasm": {
+      "bytes": 64291,
+      "sha256": "10674172339a8c7d9ffa8af4fdd7f034dfaa998a5ca7a19b7cb86380e5f3d688"
+    },
+    "dist/index.d.ts": {
+      "bytes": 2309,
+      "sha256": "856a2ca8f5f8d969c0d78eab0093ac036e2c498e4ac8f39255c4213744978e21"
+    },
+    "dist/index.js": {
+      "bytes": 9410,
+      "sha256": "c3fa277026b8ce13f8de6c6ed23fdff679bdb5c080fd3387f7fe36774158e9eb"
+    },
+    "dist/worker.js": {
+      "bytes": 2732,
+      "sha256": "e04e07bef3c293997027c0e3e2250e6b2bbdd262e6608c39fbf802d73770f080"
+    },
+    "build.sh": {
+      "bytes": 805,
+      "sha256": "c19a3ce336fd358dc0889d799878b5a180143d17de67618a985bbd8c82584e98"
+    },
+    "native/core.cpp": {
+      "bytes": 12602,
+      "sha256": "dbee708b0722d3f46eb3a6a8f853cffbee5a657b821d7cee219e1d435a9cc4e0"
+    },
+    "src/index.d.ts": {
+      "bytes": 2309,
+      "sha256": "856a2ca8f5f8d969c0d78eab0093ac036e2c498e4ac8f39255c4213744978e21"
+    },
+    "src/index.js": {
+      "bytes": 9410,
+      "sha256": "c3fa277026b8ce13f8de6c6ed23fdff679bdb5c080fd3387f7fe36774158e9eb"
+    },
+    "src/worker.js": {
+      "bytes": 2732,
+      "sha256": "e04e07bef3c293997027c0e3e2250e6b2bbdd262e6608c39fbf802d73770f080"
+    },
+    "third-party-licenses/compiler-rt.txt": {
+      "bytes": 16708,
+      "sha256": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d"
+    },
+    "third-party-licenses/emscripten.txt": {
+      "bytes": 5093,
+      "sha256": "620a78084fc7ca97c0b5dea9abf891f3ffcadfdbf305276f099c9c4e12fc1d86"
+    },
+    "third-party-licenses/libcxx.txt": {
+      "bytes": 16703,
+      "sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b"
+    },
+    "third-party-licenses/libcxxabi.txt": {
+      "bytes": 16706,
+      "sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c"
+    },
+    "third-party-licenses/musl.txt": {
+      "bytes": 6204,
+      "sha256": "f9bc4423732350eb0b3f7ed7e91d530298476f8fec0c6c427a1c04ade22655af"
+    }
+  }
+}

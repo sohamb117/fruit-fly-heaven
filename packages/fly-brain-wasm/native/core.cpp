@@ -72,7 +72,7 @@ public:
     s.rng+=0x9e3779b97f4a7c15ULL;uint64_t z=s.rng;
     z=(z^(z>>30))*0xbf58476d1ce4e5b9ULL;z=(z^(z>>27))*0x94d049bb133111ebULL;
     double u=(((z^(z>>31))>>11)+.5)*0x1.0p-53;
-    return static_cast<uint64_t>(std::min<double>(UINT64_MAX/4,std::floor(std::log(u)/s.logP)));
+    return static_cast<uint64_t>(std::min(static_cast<double>(UINT64_MAX/4),std::floor(std::log(u)/s.logP)));
   }
   double expM(uint64_t t) const {return t<=10000?em[t]:std::exp(-t*config.dt/config.tauM);}
   double expS(uint64_t t) const {return t<=10000?es[t]:std::exp(-t*config.dt/config.tauS);}

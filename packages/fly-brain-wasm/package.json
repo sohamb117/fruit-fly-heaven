@@ -10,7 +10,7 @@
     "./core.wasm": "./dist/core.wasm",
     "./worker": "./dist/worker.js"
   },
-  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+  "files": ["dist", "native", "src", "build.sh", "third-party-licenses", "README.md", "LICENSE", "CHANGELOG.md"],
   "license": "GPL-2.0-only",
   "engines": {"node": ">=20"},
   "scripts": {"test": "node --test test/*.test.mjs"},

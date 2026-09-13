@@ -1,0 +1,48 @@
+{
+  "date": "2026-09-13T09:49:52.544Z",
+  "scope": "Five simulated seconds per separate Node process; actual production MuJoCo body and WASM muscles; zero MN input; corrected stance used in both runs. Leaky refresh is an explicit reconstruction.",
+  "fixed": {
+    "passed": true,
+    "simSeconds": 4.999999999995016,
+    "wallSeconds": 155.83861145900002,
+    "heapStartBytes": 17563648,
+    "heapPeakBytes": 17563648,
+    "heapFinalBytes": 17563648,
+    "rssStartBytes": 125616128,
+    "rssSampledPeakBytes": 125616128,
+    "rssFinalBytes": 82968576,
+    "vectorsCreated": 5017,
+    "vectorsDeleted": 5017,
+    "contactsCreated": 51963,
+    "contactsDeleted": 51963,
+    "vectorsOutstanding": 0,
+    "contactsOutstanding": 0,
+    "nativeMessages": []
+  },
+  "leaky": {
+    "passed": true,
+    "simSeconds": 4.999999999995016,
+    "wallSeconds": 155.39794470799998,
+    "heapStartBytes": 17563648,
+    "heapPeakBytes": 392036352,
+    "heapFinalBytes": 392036352,
+    "rssStartBytes": 129859584,
+    "rssSampledPeakBytes": 421560320,
+    "rssFinalBytes": 421560320,
+    "vectorsCreated": 51869,
+    "vectorsDeleted": 16,
+    "contactsCreated": 51963,
+    "contactsDeleted": 110,
+    "vectorsOutstanding": 51853,
+    "contactsOutstanding": 51853,
+    "nativeMessages": []
+  },
+  "maxQposDifference": 0,
+  "maxQvelDifference": 0,
+  "notes": [
+    "Native heap capacity never shrinks, so final capacity is also its run peak. RSS peak is only sampled, not OS high-water RSS.",
+    "Both runs complete; this demonstrates the leak and its removal but does not reproduce the Chromium observer native abort.",
+    "No new neural physiology, motor control, root stabilization or body dynamics changes were introduced by the contact ownership fix."
+  ],
+  "browserEvidence": "The repeated 2.738 s native abort was observed in the actual Chromium observation run; Safari automation was unavailable."
+}

@@ -1,0 +1,30 @@
+{
+  "samples": [
+    {
+      "neuralMs": 10,
+      "cpuMs": 951.6999999880791,
+      "gpuMs": 330
+    },
+    {
+      "neuralMs": 10,
+      "cpuMs": 932.0999999940395,
+      "gpuMs": 119.59999999403954
+    },
+    {
+      "neuralMs": 10,
+      "cpuMs": 916.2999999821186,
+      "gpuMs": 114.5
+    }
+  ],
+  "adapter": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": ""
+  },
+  "maxVoltageError": 0.000026702880859375,
+  "maxRateError": 0.0005645751953125,
+  "maxSpikeDifference": 0,
+  "neuralMs": 30,
+  "scope": "Fixed sensory-current replay; compute timing excludes readback and loading. Motor-state comparison only."
+}

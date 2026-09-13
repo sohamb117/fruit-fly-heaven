@@ -1,0 +1,6 @@
+**
+!scripts/
+!scripts/training_coordinator.py
+!web/
+!web/training/
+!web/training/config.json

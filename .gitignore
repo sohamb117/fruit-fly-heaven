@@ -8,3 +8,31 @@ data/anatomy/
 build/
 runtime/
 .DS_Store
+node_modules/
+
+# Generated distribution archives; package-level runtime dist files are versioned.
+/dist/
+
+# Training state and downloaded checkpoint backups are not source artifacts.
+/data/training/
+/checkpoints/
+/backups/
+*.sqlite
+*.sqlite-*
+*.sqlite.*
+*.sqlite3
+*.sqlite3-*
+*.sqlite3.*
+/*checkpoint*.json
+/heaven-banc888-shared-generation-*.json
+
+# Local runtime output.
+*.log
+MUJOCO_LOG.TXT
+
+# Keep written experiment summaries. Raw captures, browser traces, screenshots,
+# databases and generated validation output stay local unless explicitly selected.
+# Existing tracked reports remain tracked regardless of these ignore rules.
+/reports/**
+!/reports/**/
+!/reports/**/*.md

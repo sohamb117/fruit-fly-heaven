@@ -1,197 +1,147 @@
-# Fruit Fly Heaven
+# Fruit Fly Heaven — BANC v888
 
-A generic WebAssembly connectome runtime, a companion anatomical visualization module, and an example habitat with 100 fruit flies, rotting bananas/apples, live spike monitors, and a brain observatory.
+A browser neuromechanics experiment using the **BANC v888 brain-and-ventral-nerve-cord graph**. Chemical connectivity is preserved across brain, VNC, ascending, descending and motor populations. Annotated **motor neurons**, rather than descending-neuron behavior scores, activate modeled muscle groups. A small actuator adapter connects their forces to the actual FlyBody model in MuJoCo WASM.
 
-The reusable package is [`packages/fly-brain-wasm`](packages/fly-brain-wasm/README.md). Its API is independent of fruit, flies’ bodies, rendering, input-neuron identities, and dataset size. Compiled release artifacts live in `releases/`; nothing has been published to an external registry.
+The default application runs BANC **inside the original 3D console**. The habitat, movable/popout panels, eye cameras, graded vision, color processing, population controls, anatomy, microscopy and circuit instruments are retained. The original FlyWire backend is available at `/?dataset=flywire` or `/flywire.html`, with its [original documentation](README-flywire.md). The standalone research prototype is isolated at `/banc-lab.html`.
 
-The independent [`packages/brain-view-wasm`](packages/brain-view-wasm/README.md) package processes anatomy, activity colors, neuron picking, triangular surface cuts, and arbitrary microscopy slices using SIMD WASM. The browser draws the results with WebGL. Neither module bundles its dataset.
+**This implements the experimental substrate, not a validated autonomous food-localization → approach → landing → probing/feeding → takeoff/flight cycle.** Physiology and muscle calibration remain necessary. The stage monitor records observed events and never supplies movement commands. Graded, spiking, hormonal and motor activity are not substituted for successful behavior.
 
-Current artifacts: simulation **0.2.0**, anatomical viewer **0.1.0**, and graded vision **0.1.0**. The independent [`fly-vision-wasm`](packages/fly-vision-wasm/README.md) package runs generic graded recurrent networks and exposes their activation arrays; its release contains no dataset. Simulation 0.2.0 includes separate Float64 and Float32 kernels. The default Float64 engine retains the lossless 0.1.2 optimizations and the long-interval decay fix from 0.1.1. Both archives include regression tests and full source.
+The [existing-controller investigation](reports/existing-fly-control.md) reproduces the original 1.1988-second FlyBody flight trial and a [60-simulated-second bounded hover](reports/flybody-bounded-hover-60s.json). The optional [flight reference](http://127.0.0.1:7842/?controller=flybody-reference&follow=1) now brakes into hover inside the visible bowl, using the original 3D console and an explicitly labeled learned controller/BANC observer role. It starts airborne with ground contacts disabled; it does not establish BANC-driven takeoff, landing or feeding. An isolated [common-body landing/walking teacher](reports/flybody-landing-teacher/README.md) also reproduces a prescribed landing and subsequent walking with exact state continuity; the takeoff handoff remains unsuccessful.
 
-## Open the WASM habitat
+The default mechanical path is now **BANC brain → VNC → annotated motor neurons → muscle activation/force → native FlyBody actuators → MuJoCo contacts and wing forces**. The [native/WASM validation](reports/flybody-runtime-validation.json) checks identical trajectories, isolated joint stimulation, claw grip and motor disconnection. [Earlier surrogate-body trials](reports/banc-one-fly-observation.md) are historical failed behavioral trials, not evidence for the new body.
 
-With the local data prepared:
+The extended visual audit exposed a native contact-handle leak that silently stopped the body at 2.738 seconds. Contact vectors and their element handles are now explicitly released; a [five-second controlled comparison](reports/mujoco-contact-memory-comparison.json) retains identical physical trajectories while keeping the native heap constant at 17.56 MB. Runtime exceptions visibly pause the console. The completed [200-frame, 60-minute audit](reports/observation-60min-20260913/) records loaded build changes and separates reference-policy flight, frozen/error intervals, and direct BANC behavior.
 
-```sh
-.venv/bin/python scripts/serve.py --port 7842
-```
+The [prior one-fly observation](reports/flybody-flight-repair.md) stayed on the fruit, but its I1-based retraction interpretation has been corrected to III1. Those measurements do not validate current controlled flight. The [earlier transplant observation](reports/flybody-transplant.md), which showed brief intake followed by tumbling, is also historical. Neither establishes the complete requested food-seeking and flight cycle.
 
-Open `http://127.0.0.1:7842/`. The Python process only serves static files. At the default population of 100, four browser Workers each load one WASM module and instantiate 25 independent brains; graphs are shared within each worker. The app exposes actual neural time and compute speed. The moving bowl opens first; **Explore brain** opens the observatory, and **Back to bowl** returns.
+## Run
 
-The main view has a **Population** slider and exact number field for 1–100 flies. Reducing the population creates only the selected number of full brain instances and draws only those flies. Worker count scales down for small populations; both fly selectors and all counters follow the chosen count. Changing the population restarts neural state, preserves pause and sensory settings, and keeps the current fly selected when it remains in range (otherwise the last remaining fly). The choice persists locally.
-
-The main view also has a **Fast mode** toggle. Off uses the reference Float64 / 0.1 ms model; on uses approximate Float32 / 1 ms stepping and 2 ms delay/refractory periods. All connections stay included. Switching restarts the selected population and its traces while keeping anatomy loaded, and the preference is saved locally. Actual trace spacing and active precision are shown. See [precision measurements](reports/wasm-precision.md) for the speed/activity tradeoff; this is not INT8 weight quantization.
-
-## Brain outputs and body actuation
-
-The default **Movement → Behavior signals · walking + flight** restores the original habitat controller from commit `1f9fb8b`. Actual WASM firing rates from DNp09 (walking), DNa01/DNa02 (left/right steering), and proboscis cells (feeding) determine ground movement. Steering activity contributes forward drive even when DNp09 and the direct forward outputs are quiet. Feeding slows walking. This is an explicit behavior-level mapping; it does not claim to decode individual muscles.
-
-The restored rule, in habitat distance units per body second, is:
-
-```text
-forward speed = 8 × tanh((walkHz + 0.15 × (leftHz + rightHz)) / 30) / (1 + feedHz / 35)
-turn rate     = 2.8 × tanh((leftHz − rightHz) / 40) radians/second
-```
-
-**Movement → Direct motor neurons** retains the separate actuator controller: DNg97/DNg100 for forward drive and DNa01/DNa02 for steering. Steering alone turns in place in that mode. Changing Movement applies to all flies without restarting or altering brain state. The selected mode persists through reloads and population/precision changes. The sidebar separates actual neural firing rates from modeled walking/turning commands and realized body speed.
-
-Both modes retain MDN reverse drive, bilateral DNg02 wing power, escape-related takeoff DNs, DNp07/DNp10 landing extension, annotated grooming DNs, and direct proboscis/antennal motor outputs. These **97 identified neurons** supply 12 channels, including the direct forward and steering readouts. [The output manifest](web/motor-outputs.json) lists their model indices, FlyWire root IDs, types, sides, input-file checksums, functional sources, and direct decoder assumptions. Its neuron-ID checksum is checked at startup. DNp09 belongs to the original walking readout in the prepared groups, outside this 97-cell manifest. No brain-and-cord dataset or additional nerve-cord connectivity is loaded.
-
-The worker reads each population's actual spike counts and calculates a 100 ms exponentially smoothed mean firing rate. Direct actuator gains have a 2 Hz dead zone and saturate at 42 Hz; behavior walking/turning use the smooth saturating functions above. Neither body controller injects neural activity, selects destinations, or supplies random movement.
-
-**Behavior mode now includes flight preparation, takeoff, cruise, and landing.** Sustained walking/steering activity accumulates preparation; proboscis activity slows it. Once prepared, a body program supplies a jump and sustained wing motion. Height and vertical-velocity feedback regulate lift, and a bounded flight bout or sufficiently strong landing signal initiates descent. A recovery interval prevents immediate relaunch. These gains and timers are explicit host assumptions in `FLIGHT_PROGRAM`, not decoded motivation, metabolism, or a reconstructed VNC. Quiet brains do not prepare flight. The UI shows preparation, flight phase and commanded wing power separately from actual DNg02 spike rates. Direct mode omits this program; its jump still requires a rising neural command.
-
-The lightweight body model supplies the conversion from rate to force, joint patterns, surface support, drag, gravity, and a bowl boundary. These gains are explicit assumptions in `BEHAVIOR_DECODER` and `MOTOR_DECODER` in [body-world.js](web/body-world.js). Ground velocity approaches the commanded speed through the existing body mechanics. In particular, using landing output to brake wing force is an approximation beyond the measured leg-extension association. Turning is not inferred from geometry, and landing happens where the trajectory meets a surface. Inter-fly collisions, detailed muscle mechanics, and detailed aerodynamics are not implemented.
-
-**Follow neural time** is the default for this controller. Bodies advance with the population neural clock; the optional **Live · held outputs** setting holds the latest motor output on a separate wall-clock body simulation. A live body does not imply a real-time brain. Body poses reach brain workers up to 20 times per wall second, updating left/right odor at the current 3D position and sugar input only on fruit contact. Rendering does not advance neural time.
-
-**Motor coupling** disconnects all actuator inputs, including the behavior mapping, without pausing neural computation. On a supporting surface, zero inputs produce no active movement; airborne bodies may continue to fall or coast under gravity and drag. **Flight** controls whether the wing/jump actuators receive their neural inputs. **Pause habitat** freezes both clocks. Population or Fast mode changes reset bodies alongside brains while preserving movement, coupling, and sensory controls.
-
-Open **How the brain drives this body** below the bowl for each channel's current firing rate, source cell types, and evidence. The detailed circuit inspector continues to expose unmodified neural state. Quiet DNg97/DNg100 cells can coexist with behavior-driven walking, and quiet DNg02 cells can coexist with program-assisted wing motion. The body commands and raw neural readouts are labeled separately. The visual repair below uses a distinct published graded network; it does not silently rewrite the original LIF neurons or graph.
-
-Rebuild the output annotations with `.venv/bin/python scripts/prepare-motor-outputs.py` after preparing the original dataset. Run `node --test web/test/*.test.mjs` for behavior and direct movement, 100-body stillness/motion, flight forces, disconnection, timing, sensory feedback, and circuit inspection. With the local connectome prepared, the suite also runs both complete WASM kernels for 600 neural ms, using food/body feedback and a controlled uniform retinal image. The same measured readouts move the behavior body while the direct shadow body stays in place; switching controllers leaves WASM state unchanged. Full-data tests explicitly skip when the dataset is absent.
-
-## Vision and body-sense feedback
-
-The cameras now feed the trained [FlyVis visual model](https://github.com/TuragaLab/flyvis/tree/92b3845cc426dd309a1a0e1b3890156c42e14021), ported to the new generic graded WASM runtime. Each eye has **45,669 independent graded neurons and 1,513,231 connections**, covering all 65 type entries in the published specification. Models share immutable wiring within a worker; both eyes and every fly have independent state. The trained parameters are from `flow/0000/000`, with the source revision, checkpoint hash and published archive checksum in [visual-model.json](web/visual-model.json). The full 138,639-neuron FlyWire spiking brain remains unchanged.
-
-This front end transmits continuous, rectified activity through the published recurrent network, using its trained signs, strengths, biases and time constants. It runs the authors' 20 ms Euler update, with one second of neutral-gray initialization. It does not wait for visual neurons to cross an LIF spike threshold. Graded output is sampled at 20 ms neural intervals; the body clock and held camera frames remain explicit, including the approximation made by Live mode.
-
-**14,746 mapped T2/T3 and T4/T5 cells** receive additional visual drive in FlyWire. The [projection manifest](web/visual-projections.json) matches cell type and nearest normalized retinotopic position and lists every receiving root ID. Rectified graded activity is converted to Poisson drive at 20 Hz per model unit, capped at 60 Hz. Those gains and the mapping between specimens are host assumptions. No motor-output neuron receives direct visual stimulation. The original photoreceptor surrogate is retained in the spiking graph, but is no longer the sole path for vision. The new activity panel shows actual graded release in model units; the brain inspector continues to show actual FlyWire spikes and voltages. The two are never substituted for one another.
-
-Controlled tests verify reversed-direction responses, ON/OFF edge responses, independent eyes, signal disconnection, and the numerical kernel against an independent reference. The full-connectome validation additionally compares Vision on/off at matched seeds, checks that downstream motor spike counts change, and runs takeoff, sustained flight and landing in both brain precisions. See [validation measurements](reports/embodiment-validation.json). This establishes tested motion/contrast processing and connectivity into the brain; it is not a validation of complete biological vision or obstacle avoidance.
-
-To reproduce model preparation, obtain the pinned public FlyVis source and its `results_pretrained_models.zip` archive using the authors' downloader, then run `.venv/bin/python scripts/prepare-graded-vision.py`. The script verifies the published archive hash, restricts checkpoint deserialization to tensors, reproduces ordered parameter sharing and convex-hull fill, and checks the checkpoint's synapse counts and signs against the graph. Build/package with `bash scripts/build-wasm.sh` and `.venv/bin/python scripts/release.py fly-vision-wasm`. Run `node --test packages/fly-vision-wasm/test/*.test.mjs web/test/*.test.mjs` and `node scripts/validate-embodiment.mjs`.
-
-
-The camera retains RGB as well as the original luminance plane. RGB passes through the new [fruit-fly-color-wasm](packages/fly-color-wasm/README.md) adapter: published PBRT illuminant spectrum reconstruction followed by drEye/Govardovskii pigment templates and photon-catch integration. A precomputed 33³ lookup supplies Rh3/Rh4/Rh5/Rh6 responses. **No incident light below 400 nm is assumed**; RGB cannot recover UV. The model uses published pigment peaks, not full measured in-eye spectral sensitivities. Source revisions, hashes, template and normalization assumptions are included with the module.
-
-The [color input manifest](web/color-inputs.json) assigns **2,498 existing R7/R8 cells** to their strongest same-side postsynaptic visual column; 180 cells in the prepared graph lack a usable column assignment. Because this dataset labels R7/R8 without opsin subtype, an explicitly assumed deterministic 30:70 pale/yellow mosaic supplies paired Rh3/Rh5 or Rh4/Rh6 identities per column. This does not establish the actual specimen's opsin mosaic, dorsal-rim specializations or coexpression. Relative catches become `min(80, 2 + 60 × capture)` Hz of Poisson input. These rate gains are assumptions, and adaptation/phototransduction are not calibrated. The graph, motor outputs and trained achromatic FlyVis network remain unchanged.
-
-The RGB eye previews show the frames supplied to the mapping, not subjective fly perception. The color panel shows actual relative captures computed by WASM, separately from raw neural firing. Vision disconnects achromatic, graded and color inputs together. Each fly retains independent samples and rates, while workers share a stateless color mapper and immutable LUT. The old luminance-only frame format remains supported for scientific probes, with no added color input.
-
-`node --test packages/fly-color-wasm/test/*.test.mjs packages/fly-vision-wasm/test/*.test.mjs web/test/*.test.mjs` checks the spectral approximation, color-channel routing, disconnection, numerical kernels and existing movement/vision behavior. `node scripts/validate-color.mjs` additionally checks color-dependent receptor firing and propagation through the full connectome in both precisions with the same achromatic input. It records [color validation](reports/color-validation.json). `node scripts/benchmark-color.mjs` records a [mapping-only benchmark](reports/color-performance.json): about 1.3× faster in WASM here, around 0.01 ms per binocular frame. Rebuild color data with `.venv/bin/python scripts/prepare-color-model.py` and receptor assignments with `.venv/bin/python scripts/prepare-color-inputs.py`; package with `.venv/bin/python scripts/release.py fly-color-wasm`.
-
-Every fly has two **32 × 16 RGB cameras attached to its head**, rendered from the same Three.js habitat, including the fruit, bowl, and other flies. The observer camera, selection ring, and trails are excluded from sensory input. The **What Fly … sees and senses** panel displays the exact frames last supplied to that fly's brain, with body-time stamps and input rates. Selecting another fly changes inspection, not which brains receive vision.
-
-The [sensory manifest](web/sensory-inputs.json) maps **6,244 existing R1–6 photoreceptors** to visual columns. The mapping follows the [visual atlas authors' method](https://github.com/hsseung/OpticLobe.jl/blob/3352e97c37b0f96ab08f27b70b4420f3d4ac2726/src/columnassignment.jl): assign each R1–6 neuron to the same-side postsynaptic column receiving its greatest summed absolute connection weight. Published p/q column coordinates preserve spatial ordering in both eyes; fitting that lattice to two pinhole images is an optical approximation. The remaining 1,694 R1–6 cells have no usable assignment in these inputs and receive no added visual drive. All stay in the full neural graph. The separate color adapter additionally drives mapped R7/R8 cells.
-
-In [sensory-encoder.js](web/sensory-encoder.js), luminance supplies a 2–20 Hz baseline with a bounded contrast term and 150 ms adaptation in body time. Real photoreceptors use graded signals; this encoder supplies a **Poisson surrogate to the existing LIF model**, not a validated retinal biophysics model. The cameras have 120° vertical fields of view and look 60° to either side; they do not reproduce measured ommatidial optics or spectral sensitivity.
-
-Body feedback uses the same joint poses that render the legs and antennae. The adapter reports joint angle and speed, a kinematic foot-support estimate, actual body velocity/yaw/tilt, nearby head contact, and a decaying landing-impact signal. Eight bilateral input channels target annotated AN_AVLP ascending populations, wind/gravity Johnston's-organ neurons, BM_Ant bristles, and SA_DLV sensory-ascending neurons. **These are boundary proxies for missing peripheral/VNC computation.** The feature mixtures and rate gains do not establish individual neurons' physiological tuning, and this is not a complete leg proprioceptor circuit. The manifest records this distinction for every channel. No input is injected into a motor-output population and no new connectivity is created.
-
-**Vision** and **Body sense** independently remove those inputs without resetting the brain. Odor and sugar remain separately controllable. Changing population or Fast mode preserves all four switches. Turning a sense off clears its applied drive; it does not instantly erase activity already circulating in the network. Pause freezes both bodies and eye sampling.
-
-Eye sampling targets 20 frames per body second, with at most one fly's two renders per animation frame to bound GPU/readback cost. Workers hold the last sample between updates, and wait for the first eye frame before running when vision is enabled. At high populations or in Live body-clock mode, sampling may fall below the target; the panel exposes the sampled body time. Input vectors are rebuilt only when body samples, eye frames, or switches change. Neural computation remains in the generic WASM artifact; the scene renderer and dataset-specific sensory adapter are host code.
-
-To regenerate the mapping, download the [public v783 column annotations](https://storage.googleapis.com/flywire-data/codex/data/fafb/783/column_assignment.csv.gz) to `data/raw/column_assignment.csv.gz`, then run `.venv/bin/python scripts/prepare-sensory-inputs.py`. The manifest records SHA-256 checksums for annotations and the exact prepared graph. Run `node --test web/test/*.test.mjs` for spatial/eye isolation, adaptation, sensory switches, actual joint feedback, input mapping validation, and 100 independent WASM sensory states in both precisions. These tests verify implementation behavior, not biological fidelity.
-
-## Anatomical observatory
-
-The view contains a translucent measured neuropil surface, 138,625 annotated neuron anchor locations, 876 complete branching skeletons, and the original downsampled electron-microscopy volume. Fourteen model neurons have no matching coordinates and are omitted spatially. Display sampling never changes simulation connectivity. Anchor locations are typically on a neuron's backbone; they are not all somas.
-
-- Orbit and zoom the 3D brain; drag the slice slider or Shift-drag the scene.
-- Switch between XY, XZ, and YZ sections, a cutaway, a thin slab, and the full anatomy.
-- Scroll over the microscopy section to zoom; click an anatomical point to inspect its neuron.
-- Find a cell by root ID or cell type. Live voltage traces sample that cell every simulation step (0.1 ms in reference mode, 1 ms in fast mode), with explicit spike markers.
-- Choose any fly in the active population. Geometry and static scan are shared; signals are taken from that fly's own state.
-
-The microscopy overview has 2.048 × 2.048 × 1.280 µm voxels and cannot resolve individual synapses. Its imagery is static; only the overlaid electrical activity is simulated. Colors do not represent measured optical activity. Coordinates retain the source FlyWire imagery orientation.
-
-To prepare the anatomy after preparing the connectome:
+For a fresh checkout, follow the [reproducibility guide](docs/reproducibility.md) to install dependencies and prepare the pinned datasets. Once those assets are ready:
 
 ```sh
-.venv/bin/python -u scripts/prepare-anatomy.py
+uv run --python .venv/bin/python python scripts/serve.py --port 7842
 ```
 
-This downloads public geometry and a 31,569,408-voxel microscopy volume. Annotations are pinned to commit `8587524c1748ce5ef2080822a2fc890fc03bf597`. Every displayed skeleton keeps all of its supplied vertices and edges. Exact source URLs, hashes, missing locations, and geometry selection are recorded in `reports/anatomy-provenance.json`; downloaded data stays out of Git and the release archives.
+Open [one fly in the original 3D console](http://127.0.0.1:7842/?population=1&movement=direct&clock=neural&follow=1). The console requests WebGPU for neural computation and uses WASM for muscle dynamics and the MuJoCo solver. If GPU initialization fails, it reports the reason and uses the same neural equations in WASM. The status shows the active backend. Device loss stops the run.
 
-The full 100-brain model does **not** currently run at biological real time on the development Mac. WASM keeps heavy neural computation away from rendering; it does not remove the computational cost of the full connectome. The UI reports measured speed. Live body motion uses a separate, explicitly displayed clock; all displayed neural activity still comes from the WASM simulation.
+Open the [hosted training console](https://flytrain.morisoba.moe/train.html) for a low-resolution native 3D preview and shared parameter search. Every Start contributes to the GCP coordinator; the matching local client joins the same pool. Each participant runs one complete BANC/FlyBody episode on their own computer, and the coordinator combines paired evaluations into a shared candidate. Opening the page connects metadata only; compute waits for Start. **Download checkpoint** fetches the latest saved parameter vector. See [training and checkpoint instructions](docs/training.md). Successful autonomous behavior is not yet established.
 
-## Decode movement
+The managed deployment uses Cloud Run and Firestore in project `flyheaven`. Cloud Run serves the website and assigns work; the browser runs the neural and body simulation. Firestore keeps generations, accepted results and checkpoints across container restarts and scale-to-zero. See the [deployment guide](deploy/cloudrun/README.md) for builds, migration, custom-domain setup and backups.
 
-The **Decode movement · trace the quiet circuits** disclosure below the eyes is a read-only live circuit inspector. It follows the selected fly through mapped photoreceptors, L1/L2, selected ON/OFF relays, T4/T5, and LC4/LPLC2 populations. It also exposes all 29 forward-walking and wing-power cells individually: interval spike rate, membrane voltage, distance from the model threshold, and exact root ID. A 100 ms neural window is separate from the actuator's exponentially smoothed rate. Sampling is performed only for the selected fly; changing fly starts a new measurement window, and pausing retains the last sample.
+The original **1–100 fly** population control and Reference/Fast switch are retained. A fresh BANC session starts with **one fly**, so the first run can advance perceptibly; an explicitly saved population is respected. BANC uses 0.5 ms reference or 1 ms fast neural steps. The body clock can follow neural time or hold the latest output in Live mode. Direct movement uses motor neurons, muscle forces and native FlyBody joint/contact mechanics in the original 3D habitat. Behavior mode retains the original assisted controller for comparison. Pause, sensory switches, motor coupling, flight controls, fly selection, neuron traces and separate instrument windows remain available. Assisted behavior is not evidence that the physiological controller achieves the target sequence.
 
-The input lists rank signed connection weight × measured presynaptic firing rate, summed by source cell type and averaged per motor cell. They are **ranking proxies**, not delivered currents or causal proof: they omit delay and refractory losses. The displayed net synaptic drive is read directly from WASM. No neuron input, edge, parameter, or motor command is altered by inspection. The probe manifest checks all four graph hashes, and regeneration preserves every graph array.
-
-The [earlier circuit diagnosis](reports/circuit-diagnosis.md) records 11 controlled conditions across three seeds **before the graded visual bridge and behavior flight program**. Its all-spiking visual path failed to recruit motion populations. Those measurements remain a useful baseline, and the original LIF branch retains those limitations; the new graded network supplies a documented alternative visual path. Artificial interventions in that report run only in diagnostic brains. Current validation is recorded separately in [embodiment-validation.json](reports/embodiment-validation.json).
-
-```sh
-.venv/bin/python scripts/prepare-circuit-probe.py
-node scripts/diagnose-circuits.mjs 1000 3
-node --test web/test/*.test.mjs
-```
-
-## Source data
-
-The source model is pinned to `eonsystemspbc/fly-brain` commit `a3db62f9436074e485c0278290c2164ed6150808`. It contains 138,639 neurons and 15,091,983 directed connection rows representing 54,492,922 synapses. Every connection row is retained. FlyWire’s full classification includes 139,255 neurons; the 616-neuron difference comes from the upstream computational model.
-
-The included `scripts/prepare.py` converts the source model to outgoing CSR arrays without filtering its connectivity. It records source and prepared-file SHA-256 hashes, exact dimensions, input/output populations, and the upstream commit in `reports/data-provenance.json`. Raw data, virtual environments, and downloaded toolchains are ignored by Git.
-
-To reconstruct data in a fresh checkout:
+## Reproduce preparation
 
 ```sh
 uv venv .venv
-uv pip install --python .venv/bin/python -r requirements.txt
-mkdir -p references data/raw
-git clone https://github.com/eonsystemspbc/fly-brain.git references/fly-brain
-git -C references/fly-brain checkout a3db62f9436074e485c0278290c2164ed6150808
-curl -fL https://storage.googleapis.com/flywire-data/codex/data/fafb/783/classification.csv.gz -o data/raw/classification.csv.gz
-curl -fL https://storage.googleapis.com/flywire-data/codex/data/fafb/783/consolidated_cell_types.csv.gz -o data/raw/consolidated_cell_types.csv.gz
-.venv/bin/python scripts/prepare.py
+uv pip install --python .venv/bin/python -r requirements-banc.txt
+.venv/bin/python scripts/prepare-banc.py --download
+
+git clone https://github.com/TuragaLab/flybody.git references/flybody
+git -C references/flybody checkout d015e9bfe441bd90ae431bac24c55cb74bdbce26
+npm ci --prefix packages/flybody-runtime
+.venv/bin/python scripts/prepare-flybody-runtime.py
+# Optional older reduced-body lab:
+.venv/bin/python scripts/distill-flybody.py
+.venv/bin/python scripts/prepare-banc-console.py
+.venv/bin/python scripts/prepare-banc-anatomy.py
 ```
 
-## Build and test the module
+The BANC downloader checks SHA-256 against [the source lock](configs/banc-v888.lock.json); changed upstream files are rejected. About 397 MiB of source data and 221 MiB of runtime data are stored in ignored `data/` directories. The public source is the [BANC project](https://github.com/htem/BANC-project), [data deposit](https://doi.org/10.7910/DVN/7WTH1N), and [v888 documentation](https://github.com/sjcabs/fly_connectome_data_tutorial/blob/main/data/dataset_documentation/banc_data.md). BANC data are CC BY 4.0.
 
-Emscripten 4.0.23 is pinned for the release:
+The wing lookup and local steering calibration are included in `models/`. To regenerate them, also clone `https://github.com/FlyRanch/mpc-simulations` into `references/mpc-simulations` and check out `d29a8d3467122addbfcb9929bd57baf4b9c05576`, then follow the [wing repair reproduction commands](reports/flybody-flight-repair.md#reproduction).
+
+The current pinned source produces **175,401 modeled cells, 13,542,180 directed chemical edges, and 42,199,458 synaptic contacts in that edge table**. It excludes 13,107 annotations explicitly marked glia, trachea or not-a-neuron, and 78,685 incident edges. All other annotations and edge endpoints are retained, with no connection-count cutoff. These numbers describe the downloaded snapshot and filtering, not the headline counts of the whole imaging volume. See [exact provenance](reports/banc-provenance.json).
+
+The importer preserves root IDs as strings/uint64. Input, output and anatomy mappings use BANC identities; FlyWire indices are never reused. The trained FlyVis model is shared as a visual front end with new BANC projections. Of 805 annotated motor neurons, **454 map to 135 muscle groups**, including newly retained haltere targets. The other 351 motor neurons remain simulated. Unknown transmitter assignments leave 427,715 edges at zero conductance, with topology and counts preserved and coverage reported.
+
+## Physiology and muscle boundary
+
+All numerical physiology priors and cell/receptor/electrical overrides are editable in [banc-physiology.json](configs/banc-physiology.json). Re-run preparation after editing it.
+
+| Component | Implemented behavior | Evidence boundary |
+|---|---|---|
+| Cell electrophysiology | Per-cell capacitance, leak, threshold, reset, refractory period and adaptation; class/type rules and individual overrides | Numerical priors, not BANC electrophysiological recordings |
+| Chemical kinetics | Delayed transmission; separate receptor rise/decay states and reversal potentials | Contact count-to-conductance gain and kinetic constants assumed |
+| Graded vs spiking | Graded photoreceptor and L1/L2/L3 release without spike counts; other cells use adaptive integrate-and-fire | Limited type assignment; defaults remain explicit |
+| Receptors | nAChR, GABA_A, GluCl, HisCl, excitatory glutamate override | Presynaptic transmitter does not establish receptor expression; CNS glutamate defaults to GluCl |
+| Neuromodulators | Slow dopamine, octopamine, serotonin and tyramine state; cell-specific sensitivity | Local edge-mediated approximation; receptor sensitivities largely unknown |
+| Electrical synapses | Independent, bidirectional conductances; live switch | Two GF–PSI type-matched pairs from literature, assumed conductance and symmetry; not extracted from BANC EM |
+| Internal state | Finite food, crop filling, absorption, expenditure, hunger/satiety, insulin-like and AKH-like modulation | Normalized phenomenological states and timescales |
+| Muscles | Motor-target annotations, activation/deactivation, fatigue, energy availability and force–length–velocity response | Reduced Hill-type model; rate scale and actuator calibration assumed |
+| Biomechanics | Native FlyBody inertia, joints, contacts, adhesion, friction, gravity and ellipsoid wing aerodynamics in MuJoCo WASM | Frozen coordinates, bowl heightfield with separate fruit solids, locally fitted wing-actuator mapping and unvalidated free-flight control |
+
+The original chemical network includes bidirectional brain–VNC communication. Head motor neurons that reside in the brain remain there; an artificial VNC relay is not inserted into their observed pathways. No descending neuron is treated as a muscle actuator.
+
+The sensory boundary retains actual rendered binocular RGB images, the trained FlyVis network, and spectral color processing. BANC-specific mappings select DM1/VA2 olfactory cells, sugar-sensitive gustatory cells, mechanosensory populations and visual inputs. Native ground forces now drive separate per-leg load afferents; joint motion, shaft contact and rotation use distinct inputs. This snapshot has no annotated R1–R6, so luminance enters existing graded L1/L2/L3 neurons. T2/T3/T4/T5 receive mapped FlyVis drive and R7/R8 receive color drive. Representative-point retinotopy, opsin mosaics and sensory tuning are explicit assumptions; cells without usable laterality remain in the graph without added visual drive. Direct-mode feeding requires native mouth contact at food, probing and pumping. See the [ground feedback repair and observation](reports/flybody-ground-feedback.md).
+
+[Sensory rate-to-current calibration](reports/banc-sensory-current-calibration.json) now uses isolated instances of the actual configured WASM neuron dynamics, including adaptation, refractory time and graded release. It corrects the previous loss of low-rate inputs; this is an interface calibration, not fitted biological sensory tuning. Haltere and wing-base inputs now respect [organ and side](reports/banc-rotation-gating.md), but their directional and phase tuning remains unresolved. [Proboscis mapping](reports/banc-proboscis-mapping.json) separates rostrum/haustellum extensors from retractors; m8 and frozen labellar motions are not rerouted into extension. The rendered mouth follows the actual native joint anchors and contact ellipsoids.
+
+Direct-mode taste inputs require actual native contact between a fruit solid and the annotated organ: the corresponding tarsus, wing or labellum, on the corresponding side. Floor contact beneath fruit does not stimulate taste. The mapper covers 516 of the 539 selected cells; 23 cells with missing laterality receive no guessed contact input. Sixteen source-labelled sugar/taste-peg annotations omitted by the original bristle-only classifier are supplied with checked source hashes in [the annotation supplement](models/banc-taste-peg-annotations.json). Two conflicting coarse labellar labels are resolved by their exact matched FlyWire identities; one unresolved/mechanical cell is excluded. The 150 Hz contact stimulus remains an assumed sensory tuning value. The encoder also excludes added generic posture drive to 360 explicitly auditory-frequency JO cells because native antennal vibration is not modeled; their neural dynamics and graph connections remain intact. See the [bounded encoder assay](reports/banc-sensory-recruitment/encoder-assay.json).
+
+The native habitat uses [separate fruit collision solids](reports/flybody-habitat-collision-validation.md) matching the original rendered tube and sphere meshes, preserving empty space beneath fruit. Only the bowl remains a heightfield. Initial stance and subsequent support recognize all static habitat geoms. [Native contact tests](reports/flybody-contact-environment-validation.json) distinguish bowl, food and unsupported space; quiet one-second support trials retain all six initial feet and no airborne samples in either original fruit heading or on a flat fixture. These contact checks do not establish controlled powered flight.
+
+The original wing meshes now follow native wing-body matrices and fluid-ellipsoid landmarks, correcting a coordinate conversion that displayed a resting wing nearly vertical. [Native/WASM/render registration](reports/flybody-wing-pose-verification.json) and [reference-controller UI validation](reports/flybody-reference-wing-ui.json) cover this correction. It changes the display, not aerodynamic forces or motor output.
+
+The visual audit also corrected [bowl winding](reports/bowl-winding-validation.json): the original inner floor was culled from above, exposing the lower shell even though native feet contacted the higher surface. Follow-camera fruit occlusion is handled without changing the fly or its retinal view. [Eleven unsupported collision mappings](reports/observation-60min-20260913/contact-modality-audit.md) are now explicitly excluded: ten chemosensory cells and one joint-angle receptor without an assigned position response.
+
+## FlyBody and the actuator boundary
+
+[prepare-flybody-runtime.py](scripts/prepare-flybody-runtime.py) exports a [mesh-free FlyBody](models/flybody-mujoco.xml) from pinned revision `d015e9bfe441bd90ae431bac24c55cb74bdbce26`. Removing visual meshes preserves their exact compiled per-body masses and inertias. The model retains **50 articulated coordinates, freezes 52, and keeps all six root coordinates active**. Its 56 native actuators include six claw-grip actuators. Total mass is **0.0009846214691323196 g**, equal to the source model. [Metadata](models/flybody-mujoco.json) records the source, joint indices, limits, hashes and measured wing cycle. FlyBody's Apache-2.0 [license](models/FlyBody-LICENSE) is retained.
+
+BANC muscle-force differences change native leg position-actuator targets. Long-tendon motor units engage claws, and proboscis groups drive native mouth joints. Power muscles drive a shared thoracic oscillator through FlyBody's position-error/force interface; MuJoCo computes wing motion and fluid forces at 50 µs steps. A lookup table separates wing deployment from beating and calibrates the measured cycle to a body-relative stroke plane at 235.8 Hz. Twelve steering muscle types retain separate effects, fitted locally to published RoboFly force/torque directions. III1-associated retraction competes with basalar opening through an explicit hinge prior. The measured cycle, fitted mechanical transfer, and assumed hinge competition are different evidence levels. This is an explicit reduced actuator model, **not a learned locomotion policy**. Rate saturation at 80 Hz, deployment time constants, hinge competition, joint-target scaling and claw-force substitution remain priors. The adapter receives no desired root speed, altitude, heading, food bearing or behavior stage.
+
+The wing calibration now measures torque about the whole-body center of mass, correcting an earlier balance around the thorax/free-joint origin. The 235.8 Hz frequency, native servo, and prior mean-force curve are retained; power-specific waveform fits and steering responses are recalibrated in the correct frame. This improves isolated mechanics, but the actual BANC loop still overturns. Frozen native antennae now supply zero joint-motion feedback instead of feeding the former display oscillator into proprioception.
+
+[Native kinematic measurements](reports/flybody-leg-sign-audit.json) showed that positive femur/tibia coordinates extend all twelve corresponding hinges. Their BANC flexor signals now use negative native actuator direction, correcting the previous reversal while preserving source annotations. Muscle length decreases in the torque direction; the WASM force–velocity input is positive for shortening. The normalized moment arm remains an assumed constant. Coxa and tarsal motion require further anatomical calibration; a direction was not guessed from an unsigned angle at a straight-joint crossing.
+
+The shared chemical conductance prior is now **0.1 nS·ms per contact**. A [five-value calibration sweep](reports/banc-rest-calibration.json) selected the largest tested gain with quiet motor output under zero external input and retained probing/pump response to sugar. The old 0.5 setting produced spontaneous high-rate wing output. This limited calibration does not establish selective sensory responses or coordinated movement.
+
+The earlier [local inertia/foot surrogate](models/flybody-reduced.json) remains in the optional research lab. Its pose-fit errors do not validate the current body or locomotion. Published walking/flight controllers have not been distilled into this adapter.
+
+## Compute and validation
+
+The [BANC runtime](packages/banc-runtime) uses the same Float32 state layout and equations in C++/WASM and WGSL. JavaScript owns the WebGPU device and dispatches shaders; WASM does not directly execute on the GPU. Incoming-connectivity reduction, receptor kinetics, membrane updates, delayed release and neuromodulation run on WebGPU. Immutable GPU graphs are shared across flies in each worker; delay histories allocate only the slots the graph can address. Motor readouts and population counters use small GPU reductions. The selected fly supplies full voltage, spike and circuit inspection. Every selected-neuron timestep is copied within the GPU command batch, then read back once per block. Muscle integration and native MuJoCo body physics run in WASM.
+
+The graph's largest storage buffer is about 207 MiB, exceeding WebGPU's guaranteed default 128 MiB limit. The runtime checks adapter capabilities and explicitly requests the required limits before allocating. It does not assume every device can hold the full graph.
+
+Rebuild with Emscripten 4.0.23:
 
 ```sh
-git clone https://github.com/emscripten-core/emsdk.git references/emsdk
-.venv/bin/python references/emsdk/emsdk.py install 4.0.23
-.venv/bin/python references/emsdk/emsdk.py activate 4.0.23
-bash scripts/build-wasm.sh
-node --test packages/fly-brain-wasm/test/*.test.mjs
-node --test packages/brain-view-wasm/test/*.test.mjs
-node scripts/benchmark-wasm.mjs 100 5
-node scripts/benchmark-view-wasm.mjs
-# Pause the live browser simulation before timing this comparison.
-node scripts/benchmark-brain-performance.mjs 100 100 100 4 3
-node scripts/check-brain-equivalence.mjs
-node scripts/benchmark-precision.mjs 100 100 100 4 3
-.venv/bin/python scripts/release.py
-.venv/bin/python scripts/release.py brain-view-wasm
+source references/emsdk/emsdk_env.sh
+bash packages/banc-runtime/build.sh
 ```
 
-`reports/wasm-100-brains.json` records the actual full-connectome instantiation/matrix benchmark. The small numerical tests also verify model equations against an independent dense reference, inhibition, stable seeded input streams, step-size partitioning, isolation, and memory ownership. A short benchmark is not evidence of long-run biological fidelity or real-time performance.
+Checked-in `dist/core.js` and `dist/core.wasm` allow running without the compiler. To install the SDK, clone `https://github.com/emscripten-core/emsdk` into `references/emsdk` and run its installer for `4.0.23` using a native Python interpreter.
 
-`reports/wasm-view-benchmark.json` measures the custom viewer kernels against the actual display geometry. It uses a synthetic voltage ramp solely for repeatable performance measurement, not for the live app. Archive checksums cover both `.tgz` and `.zip` packages and their manifests in `releases/SHA256SUMS`.
+```sh
+node --test packages/banc-runtime/test/*.test.mjs
+.venv/bin/python -m unittest discover -s tests -p test_banc_prepare.py
+node --test --test-force-exit --test-concurrency=1 web/test/*.test.mjs
+node scripts/verify-flybody-runtime.mjs
+# With the static server running, Chrome installed, and Playwright available:
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/verify-transplant-ui.mjs --one-fly
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/benchmark-transplant.mjs --populations=1 --seconds=20 --output=reports/flybody-transplant-performance.json
+# Observe actual movement and test loss of actuation, without a behavior program:
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/diagnose-banc-behavior.mjs --population=1 --ms=2000 --disconnect-ms=300
+# Independent equation checks and the optional research lab:
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/verify-banc-browser.mjs
+# Also reproduce the compute benchmark and one-second closed-loop observation:
+PLAYWRIGHT_MODULE=/absolute/path/to/playwright/index.mjs node scripts/verify-banc-browser.mjs --benchmark --long
+```
 
-The repeatable A/B benchmark in `reports/wasm-performance.json` records the 0.1.2 comparison against the shipped 0.1.1 artifact using 100 full brains, four workers, identical seeded sensory inputs, 100 ms warm-up and 100 ms measured neural time. Trials alternate engine order and exclude loading/rendering. It requires bit-identical voltage, synaptic drive, cumulative spike counts, and retained spike histories for every brain. See [performance notes](reports/wasm-performance.md) for the measured gain and its limits.
+[Console validation](reports/transplant-ui-validation.json) exercises the original 3D instruments and controls with BANC. [Pre-audit one-fly end-to-end benchmarks](reports/transplant-performance-reference-reuse.md) compare both backends after the per-neural-block body feedback correction, including rendered eyes, visual processing and open anatomy inspection. [Equation validation](reports/banc-browser-validation.json) checks actual WebGPU against WASM on synthetic circuits and the independent research lab. [Kernel measurements](reports/banc-compute-benchmark.json) are not the end-to-end acceptance test. Full FlyWire regression tests require the separately prepared old dataset and explicitly skip when absent.
 
-## Observation console
+The current [contact, sensory and wing-frame repair comparison](reports/transplant-performance-solid-wing-repair.md) completed two 20-second trials per backend/mode with all eight measurements valid and unchanged source hashes. BANC median throughput is **1.65× slower in Reference and 1.68× slower in Fast**; every matched pair passes the requested factor-of-ten threshold. BANC advances at 0.03868× and 0.04563× real time, respectively. This compares the original UI workloads: BANC uses synchronized MuJoCo and FlyWire retains its kinematic body. It does not establish equal rendered-frame counts or successful behavior. The [current short visual observation](reports/flybody-solid-wing-repair/README.md) still fails the autonomous behavioral target; the flexible-wing experiment is excluded from this production benchmark.
 
-The Evangelion-inspired HEAVEN console has seven live instruments: Habitat, Subject, Control, Optics, Cortex, Circuits, and Model. Use **Explore brain** to open Cortex, the subject’s **Neural output rates** heading to inspect Circuits, and the footer’s **Model & sources** link for model documentation. Drag a title bar to float a panel, drag its lower-right corner to resize, or double-click the title to maximize and restore. The title-bar buttons dock, float, detach, maximize, and hide it. Keyboard users can focus a title bar or resize handle and use arrow keys (Shift for larger steps); Escape docks the window.
+The earlier [post-audit comparison](reports/transplant-performance-visual-audit.md) measured BANC **1.25× slower in Reference and 1.38× slower in Fast**, at 0.0140× and 0.0225× real time. These separate shared-machine runs are not a controlled before/after speed experiment.
 
-Layouts persist locally. Narrow screens stack the four main panels vertically. The CRT screen texture is part of the visual theme, with no settings toolbar; reduced-motion preferences suppress it automatically.
+Before the extended visual audit, the BANC path measured **2.37× slower in Reference and 2.59× slower in Fast** than the old system with one fly, within the requested factor-of-ten threshold. BANC display throughput was 59.9 and 50.8 frames/s respectively; neural throughput was 0.0341× and 0.0365× real time. These are single 20-second shared-machine samples. The [earlier ground-feedback benchmarks](reports/flybody-ground-performance.md) used the previous rendering-dependent body coupling and do not measure the current synchronization.
 
-The ↗ control opens a same-origin browser popout when supported. It moves the original live instrument, retaining its canvas, controls, and connection to the parent simulation. Close the popout or use **Recall window** to return it. The parent console must remain open. Browsers that block popups get an in-page floating panel instead. Refreshing the main page restarts the simulation as before; rearranging windows does not.
+The earlier [whole-console comparison](reports/transplant-performance.md), before the behavior repair, measured BANC on an Apple M2 Pro at **1.32–1.72× slower with one fly** and **4.18–5.69× slower with 100 flies**, with **59.3–60.0 display frames/s**. Both Reference and Fast met the requested factor-of-ten throughput threshold in those samples. These were single 20-second measurement windows with matching sensory, rendering and inspection settings; display frame rate does not imply real-time neural simulation or validate the autonomous behavioral sequence. Subsequent testing focuses on observed single-fly behavior; those earlier measurements are not a benchmark of every later change.
 
-The habitat observer uses a labeled false-color display palette. The eye feeds remain the actual RGB input images, and the display treatment does not alter the habitat lighting or neural signals.
+On this machine's Apple Metal adapter, the two warmed 10 ms replay batches took 114–120 ms in WebGPU versus 916–932 ms in WASM: approximately **8× faster neural compute**, still below real time. Over the 30 ms replay, motor spike counts matched exactly and maximum motor-voltage difference was 0.000027 mV. This does not establish long-horizon numerical equivalence or full behavioral performance.
 
-## What is modeled
+The earlier [one-second lab observation](reports/banc-closed-loop.json) remained finite and showed small motor-driven motion toward food. It recorded no ingestion or completed feeding/flight sequence; it is not validation of the restored 3D console. Those controlled surrogate-body tests do not validate native FlyBody flight. Native MuJoCo checks are recorded separately in `reports/flybody-runtime-validation.json`.
 
-The recorded wiring and annotated neuron identities come from FlyWire. Electrical dynamics, neurotransmitter signs, sensory stimulation rates, and the body decoder involve modeling assumptions. The habitat stimulates annotated food-odor, sugar/water, and mapped visual inputs, including the trained graded visual bridge, plus a documented body-sense boundary approximation. Identified brain activity drives the selected behavior or direct actuator decoder; there is no ventral nerve cord, detailed aerodynamics, learning, or metabolism.
-
-Feeding activity is a neural signal, not a validated measure of happiness or subjective experience. The module exposes electrical values and leaves behavioral interpretation to the host application.
-
-The original CPU prototype remains under `src/brain.cpp`, `src/brain.py`, and `src/server.py` for reference. The active browser example uses `packages/fly-brain-wasm/native/core.cpp` and `web/wasm-world-worker.js`.
-
-## Credits and licenses
-
-- Runtime and application code: GPL-2.0-only; see `LICENSE`.
-- FlyWire connectome: Dorkenwald et al., [Nature (2024)](https://www.nature.com/articles/s41586-024-07558-y); dataset attribution and licensing remain applicable.
-- Electrical model defaults: Shiu et al. and the [Eon implementation](https://github.com/eonsystemspbc/fly-brain).
-- Food-odor input rationale: [Semmelhack & Wang (2009)](https://pmc.ncbi.nlm.nih.gov/articles/PMC2702439/).
-- Three.js renderer: MIT, Three.js authors. Vendored files preserve their license headers; see `web/vendor/LICENSE.three`.
-
-Connectome data is excluded from the generic module release and must be obtained under its own license.
+Implementation details, equations, assumptions and the remaining scientific work are in [the model notes](docs/banc-model.md).

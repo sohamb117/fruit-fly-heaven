@@ -1,0 +1,29 @@
+// Actual BANC/native-body integration evidence. Lifecycle unit fixtures are separate.
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+const directory=process.env.TRAINING_REPORT_DIR||'reports/training-worker-smoke';await fs.mkdir(directory,{recursive:true});
+const configText=await fs.readFile('web/training/config.json','utf8'),config=JSON.parse(configText),configHash=createHash('sha256').update(configText).digest('hex');
+const report={date:new Date().toISOString(),scope:'One real BANC v888 network, its real native MuJoCo/WASM muscles, fixed 0.5 ms neural steps with 2 ms body feedback; preview is observer-only. This smoke does not establish learned behavior.',configHash,modelFingerprint:config.modelFingerprint,errors:[]};
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--enable-unsafe-webgpu']});
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});page.on('pageerror',e=>report.errors.push(e.message));
+ page.on('console',m=>{if(m.type()==='error')report.errors.push(m.text());});await page.goto(process.env.TRAINING_SITE_URL||'http://127.0.0.1:7842/train.html');
+ await page.evaluate(async()=>{const {NativeFlyPreview}=await import('/training/preview.js');window.smokePreview=new NativeFlyPreview(document.querySelector('#training-preview'));smokePreview.setQuality('low');window.smokeEvents=[];window.smokeWorker=new Worker('/training/worker.js',{type:'module'});smokeWorker.onmessage=e=>{smokeEvents.push({...e.data,wall:performance.now()});if(e.data.type==='ready'||e.data.type==='frame'){const frame=e.data.frame;smokePreview.setFrame(frame);document.querySelector('#preview-empty').hidden=true;document.querySelector('#preview-clock').textContent=frame.simSeconds.toFixed(3)+' s';}};smokeWorker.onerror=e=>smokeEvents.push({type:'error',message:e.message});smokeWorker.postMessage({type:'initialize',id:'init',configUrl:'/training/config.json'});});
+ const wait=async(type,id,timeout=180000)=>{await page.waitForFunction(({type,id})=>smokeEvents.some(e=>(e.type===type&&(!id||e.id===id))||e.type==='error'),{type,id},{timeout});const error=await page.evaluate(()=>smokeEvents.find(e=>e.type==='error'));if(error)throw new Error(error.message);return page.evaluate(({type,id})=>smokeEvents.find(e=>e.type===type&&(!id||e.id===id)),{type,id});};
+ report.ready=await wait('ready','init');console.log(JSON.stringify({type:'ready',backend:report.ready.backend,modelFingerprint:report.ready.modelFingerprint}));
+ assert.equal(report.ready.configHash,configHash);assert.equal(report.ready.modelFingerprint,config.modelFingerprint);assert(['webgpu','wasm'].includes(report.ready.backend));assert.equal(report.ready.bodyBackend,'mujoco-wasm');assert.equal(report.ready.frame.feet.length,6);assert.equal(report.ready.frame.wings.length,2);
+ const parameters=config.parameters.map(p=>p.initial),job={parameters,seed:888,stage:'posture',durationSeconds:.2,generation:0,pairId:'smoke',sign:1};
+ await page.evaluate(job=>smokeWorker.postMessage({type:'evaluate',id:'actual-baseline',job,previewHz:3,dutyCycle:1}),job);
+ report.evaluation=(await wait('evaluation','actual-baseline')).result;assert.notEqual(report.evaluation.reason,'simulation_error');assert(report.evaluation.steps>0);assert.equal(report.evaluation.simSeconds,report.evaluation.steps*.002);assert.equal(report.evaluation.configHash,configHash);assert.deepEqual(report.evaluation.parameters,parameters);assert(report.evaluation.metrics.finalNeuralSpikes>0);assert(Number.isFinite(report.evaluation.return));
+ report.frames=await page.evaluate(()=>smokeEvents.filter(e=>e.type==='frame'&&e.id==='actual-baseline').map(e=>e.frame));assert(report.frames.length>=2);const final=report.frames.at(-1);assert(Math.abs(final.neuralMs-final.simSeconds*1000)<1e-7);assert(final.position.every(Number.isFinite));assert.notDeepEqual(final.position,report.frames[0].position);report.clockParityMs=Math.abs(final.neuralMs-final.simSeconds*1000);
+ await page.screenshot({path:directory+'/native-preview.png'});
+ // Actual paused evaluator: no body or neural blocks may pass the checkpoint.
+ await page.evaluate(job=>{smokeWorker.postMessage({type:'pause',id:'pause'});smokeWorker.postMessage({type:'evaluate',id:'cancel-test',job:{...job,durationSeconds:1}});},job);
+ await wait('paused','pause');await page.waitForTimeout(80);report.pausedFrames=await page.evaluate(()=>smokeEvents.filter(e=>e.type==='frame'&&e.id==='cancel-test').length);assert.equal(report.pausedFrames,0);
+ await page.evaluate(()=>{smokeWorker.postMessage({type:'budget',id:'budget',previewHz:0,dutyCycle:.5});smokeWorker.postMessage({type:'cancel',id:'cancel'});});report.budget=await wait('budget','budget');report.cancelled=(await wait('evaluation','cancel-test')).result;assert.equal(report.cancelled.cancelled,true);assert.equal(report.cancelled.steps,0);
+ await page.evaluate(()=>smokeWorker.postMessage({type:'stop',id:'stop'}));await wait('stopped');report.stopped=true;
+ const afterText=await fs.readFile('web/training/config.json','utf8');report.configUnchanged=createHash('sha256').update(afterText).digest('hex')===configHash;assert(report.configUnchanged);report.passed=true;
+}catch(error){report.passed=false;report.failure=error.stack;process.exitCode=1;}finally{await browser.close();await fs.writeFile(directory+'/result.json',JSON.stringify(report,null,2)+'\n');}
+console.log(JSON.stringify({passed:report.passed,backend:report.ready?.backend,reason:report.evaluation?.reason,simSeconds:report.evaluation?.simSeconds,spikes:report.evaluation?.metrics.finalNeuralSpikes,report:directory+'/result.json',failure:report.failure}));

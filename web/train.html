@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080d0c">
+  <title>Training</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/training/train.css">
+</head>
+<body>
+<a class="skip-link" href="#training-controls">Skip to controls</a>
+<div class="training-shell">
+  <header class="training-header">
+    <h1>Training</h1>
+    <span class="status-light"><i id="run-light" aria-hidden="true"></i><span id="run-status" role="status">Connecting…</span></span>
+  </header>
+  <main>
+    <section id="training-controls" class="run-bar" aria-label="Training controls">
+      <div class="run-actions"><button id="start-training" class="primary" type="button" disabled>Start</button><button id="pause-training" type="button" disabled>Pause</button><button id="stop-training" type="button" disabled>Stop</button></div>
+      <div class="budget-control"><div class="range-label"><label for="computer-budget">Intensity</label><output id="budget-value" for="computer-budget">60%</output></div><input id="computer-budget" type="range" min="10" max="100" step="5" value="60"></div>
+      <div class="preview-control"><label for="preview-quality">Preview quality</label><select id="preview-quality"><option value="off">Off</option><option value="low">Low</option><option value="balanced" selected>Medium</option><option value="high">High</option></select></div>
+      <button id="save-checkpoint" type="button" disabled>Download checkpoint</button>
+    </section>
+    <div id="training-error" class="error-banner" role="alert" hidden></div>
+    <p id="checkpoint-status" class="download-status" role="status" hidden></p>
+    <noscript><p class="error-banner">Enable JavaScript to start training.</p></noscript>
+    <div class="workspace">
+      <section class="instrument preview-panel" aria-labelledby="preview-heading">
+        <div class="titlebar"><h2 id="preview-heading">Live preview</h2></div>
+        <div class="preview-wrap">
+          <div id="training-preview" role="img" aria-label="3D fly preview"></div>
+          <div id="preview-empty" class="preview-empty"><span class="crosshair" aria-hidden="true">+</span><strong>Press Start</strong></div>
+          <div class="preview-overlay"><span id="preview-label"></span><span id="preview-clock"></span></div>
+          <div class="preview-caption"><span id="preview-status"></span><button id="recenter-preview" type="button" disabled>Reset view</button></div>
+        </div>
+        <dl class="preview-readouts"><div><dt>Trial</dt><dd id="preview-candidate">—</dd></div><div><dt>Score</dt><dd id="preview-reward">—</dd></div><div><dt>Time</dt><dd id="preview-time">—</dd></div></dl>
+      </section>
+      <section class="instrument stage-panel" aria-labelledby="stage-heading">
+        <div class="titlebar"><h2 id="stage-heading">Current task</h2></div>
+        <div class="panel-body">
+          <h3 id="stage-title">—</h3>
+          <p id="stage-description"></p>
+          <div class="progress-label"><label for="stage-progress">Tasks completed</label><span id="stage-progress-value">0 / 6</span></div>
+          <progress id="stage-progress" max="6" value="0" aria-label="Tasks completed"></progress>
+          <ol id="stage-list" class="stage-list" aria-label="Tasks"></ol>
+        </div>
+      </section>
+      <section class="instrument timeline-panel" aria-labelledby="timeline-heading">
+        <div class="titlebar"><h2 id="timeline-heading">Your trials</h2><span id="history-count" class="instrument-id">0</span></div>
+        <div class="panel-body">
+          <dl class="score-readouts"><div><dt>Completed</dt><dd id="evaluations-count">0</dd></div><div><dt>Uploaded</dt><dd id="uploaded-count">0</dd></div><div><dt>Latest score</dt><dd id="latest-reward">—</dd></div><div><dt>Time running</dt><dd id="work-time">0 s</dd></div></dl>
+          <div class="reward-plot"><svg id="reward-chart" viewBox="0 0 640 180" role="img" aria-label="Trial scores" hidden><g id="reward-grid"></g><path id="reward-path" fill="none"></path><g id="reward-dots"></g></svg><p id="history-empty">No completed trials</p></div>
+          <div class="plot-caption"><span id="reward-range">Score</span><span>Trial →</span></div>
+          <div class="table-wrap"><table aria-label="Recent trials"><thead><tr><th scope="col">Trial</th><th scope="col">Task</th><th scope="col">Score</th><th scope="col">Result</th></tr></thead><tbody id="candidate-rows"></tbody></table></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<script type="module" src="/training/view.js"></script>
+</body>
+</html>

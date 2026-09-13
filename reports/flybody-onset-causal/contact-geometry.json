@@ -1,0 +1,2476 @@
+{
+  "date": "2026-09-13T10:47:28.401Z",
+  "scope": "Read-only classification of selected recorded wing-heightfield contacts; original captured physics scene is compiled only for static rays. No replay, controller, collision or UI changes.",
+  "units": "Native coordinates are centimeters in [x,y,z-up]. Scene coordinates are millimeters in [x,y-up,z]. Forces retain recorded g cm/s^2 units.",
+  "environmentPoint": "position minus 0.5 * signedDistance * normal; contact.position is the surface-point midpoint and normal points from ground geom0 toward wing geom1.",
+  "timing": "Post mj_step integrated qpos/qvel; contact and force caches describe the just-completed 50 us step (its pre-integration state). No additional forward/step calls.",
+  "selection": "Both contacts at first positive wing impact, maximum wing normal force, and positive wing contacts at peak angular speed and peak fluid root force. This is not an impulse-weighted census of the complete trajectory.",
+  "findings": [
+    "The first wing impact occurs after the first overturn; this audit does not identify the cause of that overturn.",
+    "Selected contacts include near-top banana contacts, actual bowl contact, and later invisible heightfield fill/cliff contacts.",
+    "An almost horizontal first-contact normal aligns with an internal heightfield grid plane, although neighboring height samples all belong to the same banana. This is a separate prism-seam concern, not a visible fruit silhouette.",
+    "The largest normal-force contact lies on the real bowl. Large amplification from a real collision is not by itself evidence of a collision bug.",
+    "The recorded behavior still fails: the fly overturns before these impacts. No behavioral success or correction has been demonstrated by this geometry audit."
+  ],
+  "nextMechanicsBoundary": "In a separate matched replay, compare surface-consistent fruit collision volumes while retaining legitimate wing-bowl contacts and explicitly checking internal heightfield seam contacts. Independently investigate wing actuation and fluid coupling before first impact. A terrain correction alone is not established as a cure for the initial overturn.",
+  "limitations": [
+    "Scene contact midpoints alone cannot determine impulse causality. The independent matched mechanics replay is the source for intervention effects.",
+    "Ray and closest-triangle checks use original main fruit surfaces and corrected original bowl winding. Decorative spots, mold and stems are excluded from nearest-solid distances; they do not explain the selected large gaps.",
+    "Banana TubeGeometry has open end rings, so vertical intervals describe the rendered cross-section rather than asserting a closed global volume. Selected under-fruit cases are away from endpoints.",
+    "Some contact normals can reflect edges/features. Internal-grid alignment is evidence of a collision representation artifact, not an assertion that changing terrain alone cures the unstable wing drive."
+  ],
+  "sourceSha256": {
+    "reports/flybody-onset-causal/capture.json": "20caf377ed11cbe640b16d82ff714cc2f333c8c98956e437540b64d85a5f092f",
+    "reports/flybody-onset-causal/mechanics.json": "3a172ec4b7fe1f03e04d87ae625d0972f4df7fe78458bef12c80489ff26f9b5d",
+    "reports/flybody-onset-causal/sources/body-world.js": "6493bc72bbb6fa939a7ad5e785b01928d1e0df2c62cdfddf2cc6a712c8fc440c",
+    "reports/flybody-onset-causal/sources/app.js": "2b5109beae239962f6bead12b80336a4b0fa91cb5e9406c8d838817f25db0bb6",
+    "scripts/original-fruit-geometry.mjs": "ab84524508322beeba675ddfcb1258fa093c793f1a8a776790b6ae347443ac3f"
+  },
+  "rows": [
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.0036039263736055167,
+      "position": [
+        -3.1965726317591594,
+        -1.5152496485062925,
+        1.6599601504405341
+      ],
+      "normal": [
+        -0.3398341292934074,
+        -0.20540428329118154,
+        0.9177809351762696
+      ],
+      "forceContactFrame": [
+        0.509696330965273,
+        -0.04473884490660915,
+        0.3025276213575025,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -0.45372467784170006,
+        -0.1484786974477701,
+        0.35412267485848214
+      ],
+      "event": "first_impact_1",
+      "time": 0.11269999999999575,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -3.1971850003497653,
+        -1.515619779463195,
+        1.6616139578992712
+      ],
+      "scenePosition": [
+        -31.971850003497654,
+        16.616139578992712,
+        -15.15619779463195
+      ],
+      "analytic": {
+        "y": 16.618581906644735,
+        "contact": true,
+        "fruitIndex": 0,
+        "normal": [
+          -0.2838892810309712,
+          0.9364303177741226,
+          -0.20616773770203287
+        ]
+      },
+      "nativeHeight": 16.61613957899272,
+      "nativeTopNormal": [
+        -0.33983244765521053,
+        -0.20540442680106274,
+        0.9177815257299502
+      ],
+      "normalDotTop": 0.9999999999984014,
+      "environmentPointBelowNativeTop": 7.105427357601002e-15,
+      "renderTop": {
+        "height": 16.437586204389106,
+        "fruitIndex": 0
+      },
+      "undersides": [
+        {
+          "height": 5.562414279916325,
+          "fruitIndex": 0
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 0,
+          "lower": 5.562414279916325,
+          "upper": 16.437586204389106
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.17246839825924434,
+        "fruitIndex": 0,
+        "point": [
+          -31.93584574584645,
+          16.44954878526424,
+          -15.129805574679601
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -32.484375,
+          "z": -15.46875,
+          "y": 16.356412934840606,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.3645826765093799,
+            0.892735489140101,
+            -0.264769368354879
+          ]
+        },
+        {
+          "x": -32.484375,
+          "z": -14.953125,
+          "y": 16.498874146397245,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.32372247521624975,
+            0.9164790243995408,
+            -0.23509563346759624
+          ]
+        },
+        {
+          "x": -31.96875,
+          "z": -15.46875,
+          "y": 16.547337092345487,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.3083189113966623,
+            0.9245561820575809,
+            -0.2239091670617489
+          ]
+        },
+        {
+          "x": -31.96875,
+          "z": -14.953125,
+          "y": 16.662736411841813,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.2674587101035322,
+            0.9437894019736358,
+            -0.19423543217446623
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.006012127995447258,
+        0.393838147164999
+      ],
+      "internalGridSide": false,
+      "classification": "near_visible_fruit_surface_with_approximation_gap",
+      "nativeMinusRenderedTop": 0.17855337460361298,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.002122873160562454,
+      "position": [
+        -3.195813563419719,
+        -1.5069662568859024,
+        1.6619432997914396
+      ],
+      "normal": [
+        -0.9999999999999649,
+        2.654374994714696e-7,
+        -1.0773415356204146e-11
+      ],
+      "forceContactFrame": [
+        13.342195549499545,
+        -4.605882396203497,
+        6.54759138168636,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -13.342196772002442,
+        -4.605878854684311,
+        -6.547591381830102
+      ],
+      "event": "first_impact_2",
+      "time": 0.11269999999999575,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -3.1968750000000004,
+        -1.5069662566041573,
+        1.6619432997914283
+      ],
+      "scenePosition": [
+        -31.968750000000004,
+        16.619432997914284,
+        -15.069662566041572
+      ],
+      "analytic": {
+        "y": 16.63828569084837,
+        "contact": true,
+        "fruitIndex": 0,
+        "normal": [
+          -0.27669361610434723,
+          0.9397142818080616,
+          -0.20094205974125767
+        ]
+      },
+      "nativeHeight": 16.63665448398394,
+      "nativeTopNormal": [
+        -0.33983244765521053,
+        -0.20540442680106274,
+        0.9177815257299502
+      ],
+      "normalDotTop": 0.3398323931232735,
+      "environmentPointBelowNativeTop": 0.0172214860696549,
+      "renderTop": {
+        "height": 16.451965571085324,
+        "fruitIndex": 0
+      },
+      "undersides": [
+        {
+          "height": 5.548034970463917,
+          "fruitIndex": 0
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 0,
+          "lower": 5.548034970463917,
+          "upper": 16.451965571085324
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.16176025196897406,
+        "fruitIndex": 0,
+        "point": [
+          -31.93498115974638,
+          16.463185424206767,
+          -15.044908975281745
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -31.96875,
+          "z": -15.46875,
+          "y": 16.547337092345487,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.3083189113966623,
+            0.9245561820575809,
+            -0.2239091670617489
+          ]
+        },
+        {
+          "x": -31.96875,
+          "z": -14.953125,
+          "y": 16.662736411841813,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.2674587101035322,
+            0.9437894019736358,
+            -0.19423543217446623
+          ]
+        },
+        {
+          "x": -31.453125,
+          "z": -15.46875,
+          "y": 16.7014564855887,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.2520551462839454,
+            0.9502427475981167,
+            -0.18304896576861862
+          ]
+        },
+        {
+          "x": -31.453125,
+          "z": -14.953125,
+          "y": 16.79201333004744,
+          "contact": true,
+          "fruitIndex": 0,
+          "normal": [
+            -0.21119494499081526,
+            0.9653355550079068,
+            -0.15337523088133587
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0.22601224929275077
+      ],
+      "internalGridSide": true,
+      "classification": "near_visible_fruit_surface_with_approximation_gap",
+      "nativeMinusRenderedTop": 0.1846889128986149,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "time": 0.3255999999999723,
+      "geoms": [
+        0,
+        78
+      ],
+      "category": "wing_environment",
+      "distance": -0.01281377577269388,
+      "position": [
+        -1.9215657435145372,
+        1.5430176366998396,
+        0.37000534997041234
+      ],
+      "normal": [
+        0.1130945486186313,
+        0.6020650538273917,
+        0.7903969218263492
+      ],
+      "forceContactFrame": [
+        350.20107902744223,
+        -123.95990254246416,
+        169.66033429289632,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        224.43801646461765,
+        275.81527488437627,
+        200.86063110670378
+      ],
+      "geomNames": [
+        "ground",
+        "wing_left_membrane_collision"
+      ],
+      "geomBodies": [
+        0,
+        9
+      ],
+      "root": [
+        -1.858770513478629,
+        1.3831408957359679,
+        0.5379615110489598,
+        -0.6121436833100438,
+        -0.5252366447533009,
+        0.5511518617801817,
+        -0.2136309978634845
+      ],
+      "omega": 571.6712702781215,
+      "event": "maximum_wing_normal_force",
+      "wingName": "wing_left_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.9208411594209807,
+        1.5468749999999991,
+        0.3750693344342675
+      ],
+      "scenePosition": [
+        -19.208411594209807,
+        3.750693344342675,
+        15.468749999999991
+      ],
+      "analytic": {
+        "y": 3.750507619379772,
+        "contact": false,
+        "fruitIndex": -1,
+        "normal": [
+          0.13983258277957208,
+          0.983751044563651,
+          -0.11260875238239537
+        ]
+      },
+      "nativeHeight": 3.750693344342668,
+      "nativeTopNormal": [
+        0.14077194680007657,
+        -0.11074053420719719,
+        0.9838291483167294
+      ],
+      "normalDotTop": 0.7268630645257721,
+      "environmentPointBelowNativeTop": -6.661338147750939e-15,
+      "renderTop": {
+        "height": 3.75400604720744,
+        "fruitIndex": -1
+      },
+      "undersides": [],
+      "fruitIntervals": [],
+      "nearestVisible": {
+        "distance": 0.0032626674333422908,
+        "fruitIndex": -1,
+        "point": [
+          -19.20796623919663,
+          3.753906732085289,
+          15.468402441503551
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -19.59375,
+          "z": 14.953125,
+          "y": 3.7477906494140627,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.14264052847234615,
+            0.9837701864552516,
+            -0.10885724541310628
+          ]
+        },
+        {
+          "x": -19.59375,
+          "z": 15.46875,
+          "y": 3.8058298828125,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.14258127511489416,
+            0.983361524996037,
+            -0.11256416456439013
+          ]
+        },
+        {
+          "x": -19.078125,
+          "z": 14.953125,
+          "y": 3.674011962890625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.1389602741984038,
+            0.9842904075854796,
+            -0.10891480950685703
+          ]
+        },
+        {
+          "x": -19.078125,
+          "z": 15.46875,
+          "y": 3.7320511962890626,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.1389024886030471,
+            0.9838810977483026,
+            -0.11262363940787602
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.2526770311947786,
+        2.842170943040401e-14
+      ],
+      "internalGridSide": false,
+      "classification": "visible_bowl_surface",
+      "nativeMinusRenderedTop": -0.0033127028647719214,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.004831879885528297,
+      "position": [
+        -1.524078991396783,
+        0.8959418535702834,
+        0.9524959108014077
+      ],
+      "normal": [
+        -0.7071059793090622,
+        0.7071075830631236,
+        -4.615099533517402e-9
+      ],
+      "forceContactFrame": [
+        102.69527137720499,
+        3.4736395531162887,
+        -61.51917248322369,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -116.11711381557993,
+        29.116030441849766,
+        3.4736390791673895
+      ],
+      "event": "angularSpeed_peak_contact_1",
+      "time": 0.33779999999997096,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.525787316975963,
+        0.8976501830240371,
+        0.9524959107902579
+      ],
+      "scenePosition": [
+        -15.25787316975963,
+        9.524959107902578,
+        8.976501830240371
+      ],
+      "analytic": {
+        "y": 14.841173769577853,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.15368602311318172,
+          0.30686229492964234,
+          0.9392636148867727
+        ]
+      },
+      "nativeHeight": 10.22487374491952,
+      "nativeTopNormal": [
+        0.9832840683437372,
+        0.1760097257001153,
+        0.046615634720114686
+      ],
+      "normalDotTop": -0.570828232564921,
+      "environmentPointBelowNativeTop": 0.699914637016942,
+      "renderTop": {
+        "height": 14.049359204120336,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 11.95064075679582,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 11.95064075679582,
+          "upper": 14.049359204120336
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.7062748766494638,
+        "fruitIndex": 1,
+        "point": [
+          -15.34858279678601,
+          10,
+          8.461786262391257
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 8.765625,
+          "y": 15.46921281502026,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.14716879705048255,
+            0.41153546917004347,
+            0.8994331007861042
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 8.765625,
+          "y": 15.275845454961395,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.1494095919569848,
+            0.3793075758268992,
+            0.9131278863070431
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.40897324652677014,
+        0.40897324652678435
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": -3.8244854592008153,
+      "nearestFruitVerticalGap": 2.4256816488932422
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.014560472473361173,
+      "position": [
+        -1.532981896335651,
+        0.9470122162216514,
+        0.9128122583364221
+      ],
+      "normal": [
+        0.9599470161257047,
+        0.2739648041555025,
+        0.0586942272748649
+      ],
+      "forceContactFrame": [
+        65.83958445609362,
+        -36.3770710097578,
+        -15.403084822120178,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        74.09001117207657,
+        -16.947545170518563,
+        -10.901750127950937
+      ],
+      "event": "angularSpeed_peak_contact_2",
+      "time": 0.33779999999997096,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5259932552835591,
+        0.9490067447164394,
+        0.9132395661767125
+      ],
+      "scenePosition": [
+        -15.259932552835592,
+        9.132395661767125,
+        9.490067447164394
+      ],
+      "analytic": {
+        "y": 2.6948296101746365,
+        "contact": false,
+        "fruitIndex": -1,
+        "normal": [
+          0.11193811051295789,
+          0.991273823692583,
+          -0.06961369029633857
+        ]
+      },
+      "nativeHeight": 9.132395661766992,
+      "nativeTopNormal": [
+        0.9988725458807383,
+        -0.0033427151375507854,
+        0.04735465490573773
+      ],
+      "normalDotTop": 0.9607283784876542,
+      "environmentPointBelowNativeTop": -1.3322676295501878e-13,
+      "renderTop": {
+        "height": 2.699029305878341,
+        "fruitIndex": -1
+      },
+      "undersides": [],
+      "fruitIntervals": [],
+      "nearestVisible": {
+        "distance": 1.3452315501131662,
+        "fruitIndex": 1,
+        "point": [
+          -15.438360830500985,
+          10,
+          8.477608072459054
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.4049792914703687,
+        0.4049792914703403
+      ],
+      "internalGridSide": false,
+      "classification": "heightfield_footprint_cliff_in_visible_air",
+      "nativeMinusRenderedTop": 6.433366355888651,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.0145605523542396,
+      "position": [
+        -1.5329807944220142,
+        0.9470066132659088,
+        0.912819743414856
+      ],
+      "normal": [
+        0.9597403881898051,
+        0.2746829032011896,
+        0.058717033016392486
+      ],
+      "forceContactFrame": [
+        65.46347004710935,
+        -36.167726647845164,
+        -15.318723084706276,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        73.679503864429,
+        -16.794834267846767,
+        -10.839644396155194
+      ],
+      "event": "angularSpeed_peak_contact_3",
+      "time": 0.33779999999997096,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5259936193376562,
+        0.9490063806623465,
+        0.9132472196315164
+      ],
+      "scenePosition": [
+        -15.259936193376562,
+        9.132472196315165,
+        9.490063806623466
+      ],
+      "analytic": {
+        "y": 2.694829765614922,
+        "contact": false,
+        "fruitIndex": -1,
+        "normal": [
+          0.11193813709135746,
+          0.9912738225721751,
+          -0.06961366351273662
+        ]
+      },
+      "nativeHeight": 9.132472196314936,
+      "nativeTopNormal": [
+        0.0053768314933701,
+        0.9988439828072795,
+        0.047768061430028236
+      ],
+      "normalDotTop": 0.2823305262273369,
+      "environmentPointBelowNativeTop": -2.291500322826323e-13,
+      "renderTop": {
+        "height": 2.6990294624413878,
+        "fruitIndex": -1
+      },
+      "undersides": [],
+      "fruitIntervals": [],
+      "nearestVisible": {
+        "distance": 1.3451789676221113,
+        "fruitIndex": 1,
+        "point": [
+          -15.438363739124465,
+          10,
+          8.477608585053131
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.40497223102727276,
+        0.4049722310273296
+      ],
+      "internalGridSide": false,
+      "classification": "heightfield_footprint_cliff_in_visible_air",
+      "nativeMinusRenderedTop": 6.433442733873548,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "geoms": [
+        0,
+        81
+      ],
+      "category": "wing_environment",
+      "distance": -0.01370681962339385,
+      "position": [
+        -1.538268729793392,
+        0.9247650494108506,
+        1.0445591974783102
+      ],
+      "normal": [
+        0.8705986496122486,
+        0.4902596928341472,
+        0.04127256807489467
+      ],
+      "forceContactFrame": [
+        8.970220479590932,
+        -3.6158626335561643,
+        3.986588187679084,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        9.391404247680772,
+        1.2462369739066084,
+        4.436284828195139
+      ],
+      "event": "fluidRootForce_peak_contact_1",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_brown_collision",
+      "nativeEnvironmentPoint": [
+        -1.5323021604660891,
+        0.9281249999999996,
+        1.0448420553013085
+      ],
+      "scenePosition": [
+        -15.323021604660891,
+        10.448420553013085,
+        9.281249999999996
+      ],
+      "analytic": {
+        "y": 2.6874653928397962,
+        "contact": false,
+        "fruitIndex": -1,
+        "normal": [
+          0.11240691496171973,
+          0.991326908973043,
+          -0.06808557126690479
+        ]
+      },
+      "nativeHeight": 10.44842055301304,
+      "nativeTopNormal": [
+        0.9832840683437372,
+        0.1760097257001153,
+        0.046615634720114686
+      ],
+      "normalDotTop": 0.944260203100197,
+      "environmentPointBelowNativeTop": -4.440892098500626e-14,
+      "renderTop": {
+        "height": 2.6909216762388013,
+        "fruitIndex": -1
+      },
+      "undersides": [],
+      "fruitIntervals": [],
+      "nearestVisible": {
+        "distance": 0.6677614077253994,
+        "fruitIndex": 1,
+        "point": [
+          -15.434969434555706,
+          10.621242151332355,
+          8.646029033576799
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.2826247667182713,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "heightfield_footprint_cliff_in_visible_air",
+      "nativeMinusRenderedTop": 7.757498876774239,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "geoms": [
+        0,
+        81
+      ],
+      "category": "wing_environment",
+      "distance": -0.012824216936261764,
+      "position": [
+        -1.540822270277709,
+        0.9302415060632966,
+        1.064411004128626
+      ],
+      "normal": [
+        -0.9439531087744079,
+        -0.33007957894291384,
+        1.7314476667747024e-14
+      ],
+      "forceContactFrame": [
+        46.471583886284314,
+        -24.505788910340172,
+        -13.301324335788303,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -35.778135593939496,
+        -38.471636466880035,
+        13.301324335788962
+      ],
+      "event": "fluidRootForce_peak_contact_2",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_brown_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468749999999998,
+        0.9281249999999996,
+        1.064411004128626
+      ],
+      "scenePosition": [
+        -15.468749999999998,
+        10.644110041286261,
+        9.281249999999996
+      ],
+      "analytic": {
+        "y": 13.522334120428019,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.16086358257142158,
+          0.087055686738003,
+          0.9831298058796011
+        ]
+      },
+      "nativeHeight": 13.52233363609308,
+      "nativeTopNormal": [
+        0.9832840683437372,
+        0.1760097257001153,
+        0.046615634720114686
+      ],
+      "normalDotTop": -0.986271269270369,
+      "environmentPointBelowNativeTop": 2.878223594806819,
+      "renderTop": {
+        "height": 13.065829162259803,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 12.934170738250415,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 12.934170738250415,
+          "upper": 13.065829162259803
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.5926848550278933,
+        "fruitIndex": 1,
+        "point": [
+          -15.56811044222245,
+          10.79750148538674,
+          8.717446927307444
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.4565044738332773,
+      "nearestFruitVerticalGap": 2.2900606969641544
+    },
+    {
+      "geoms": [
+        0,
+        81
+      ],
+      "category": "wing_environment",
+      "distance": -0.012824867275694304,
+      "position": [
+        -1.540825408022596,
+        0.9302514388227088,
+        1.0644150376946153
+      ],
+      "normal": [
+        -0.9434159196125176,
+        -0.3316118252138602,
+        -1.7313598663577992e-13
+      ],
+      "forceContactFrame": [
+        46.53351362520631,
+        -24.532891904664467,
+        -13.329278123914394,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -35.76506048724795,
+        -38.57578416386222,
+        13.32927812390783
+      ],
+      "event": "fluidRootForce_peak_contact_3",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_brown_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468749999999998,
+        0.9281249999999995,
+        1.0644150376946142
+      ],
+      "scenePosition": [
+        -15.468749999999998,
+        10.644150376946142,
+        9.281249999999995
+      ],
+      "analytic": {
+        "y": 13.522334120428026,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.16086358257142164,
+          0.08705568673800415,
+          0.9831298058796011
+        ]
+      },
+      "nativeHeight": 13.522333636093098,
+      "nativeTopNormal": [
+        0.9832840683437372,
+        0.1760097257001153,
+        0.046615634720114686
+      ],
+      "normalDotTop": -0.9860127499716587,
+      "environmentPointBelowNativeTop": 2.8781832591469563,
+      "renderTop": {
+        "height": 13.065829162259803,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 12.934170738250415,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 12.934170738250415,
+          "upper": 13.065829162259803
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.5926744158458119,
+        "fruitIndex": 1,
+        "point": [
+          -15.568108692149474,
+          10.797539119305213,
+          8.71745685778379
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.45650447383329507,
+      "nearestFruitVerticalGap": 2.2900203613042738
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.009227234651758622,
+      "position": [
+        -1.550188679907448,
+        0.8733523613268855,
+        0.9958637818740192
+      ],
+      "normal": [
+        0.7182390028017716,
+        0.6957964751666373,
+        -2.887685595589039e-13
+      ],
+      "forceContactFrame": [
+        40.4073700632761,
+        -22.875619180227073,
+        8.031067617460467,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        34.61013772013875,
+        22.34707966377841,
+        -22.87561918023874
+      ],
+      "event": "fluidRootForce_peak_contact_4",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468749999999996,
+        0.8765625000000001,
+        0.9958637818740179
+      ],
+      "scenePosition": [
+        -15.468749999999996,
+        9.95863781874018,
+        8.765625000000002
+      ],
+      "analytic": {
+        "y": 15.469212815020256,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.14716879705048255,
+          0.4115354691700428,
+          0.8994331007861045
+        ]
+      },
+      "nativeHeight": 15.469212947273263,
+      "nativeTopNormal": [
+        0.18213717373033372,
+        0.8549517192469893,
+        0.48567850240889143
+      ],
+      "normalDotTop": 0.7256904147227794,
+      "environmentPointBelowNativeTop": 5.510575128533084,
+      "renderTop": {
+        "height": 14.961052988602844,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 11.03894575481479,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 11.03894575481479,
+          "upper": 14.961052988602844
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.27959201373831416,
+        "fruitIndex": 1,
+        "point": [
+          -15.51562210393725,
+          10.03099840359815,
+          8.499657622718965
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 8.765625,
+          "y": 15.46921281502026,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.14716879705048255,
+            0.41153546917004347,
+            0.8994331007861042
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 8.765625,
+          "y": 15.275845454961395,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.1494095919569848,
+            0.3793075758268992,
+            0.9131278863070431
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.5081599586704186,
+      "nearestFruitVerticalGap": 1.080307936074611
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.009228031274996874,
+      "position": [
+        -1.550182559988725,
+        0.8733454847336284,
+        0.9958722999983902
+      ],
+      "normal": [
+        0.7168506239646032,
+        0.6972267801236259,
+        -4.812393853208118e-14
+      ],
+      "forceContactFrame": [
+        40.422630878597474,
+        -22.868507977958817,
+        8.078825052882198,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        34.60976134641578,
+        22.392429991550134,
+        -22.868507977960764
+      ],
+      "event": "fluidRootForce_peak_contact_5",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468750000000018,
+        0.8765625000000015,
+        0.99587229999839
+      ],
+      "scenePosition": [
+        -15.468750000000018,
+        9.9587229999839,
+        8.765625000000014
+      ],
+      "analytic": {
+        "y": 15.469212815020237,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.14716879705048255,
+          0.4115354691700395,
+          0.8994331007861059
+        ]
+      },
+      "nativeHeight": 15.46921294727321,
+      "nativeTopNormal": [
+        0.09059667806446296,
+        0.9626962153617216,
+        0.2549671328855976
+      ],
+      "normalDotTop": 0.7361618676734721,
+      "environmentPointBelowNativeTop": 5.51048994728931,
+      "renderTop": {
+        "height": 14.961052988602802,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 11.038945754814833,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 11.038945754814833,
+          "upper": 14.961052988602802
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.2795699681708111,
+        "fruitIndex": 1,
+        "point": [
+          -15.515618408115932,
+          10.031077879277765,
+          8.499678593996702
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.984375,
+          "z": 8.765625,
+          "y": 15.652429287273618,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.18170238801090713,
+            0.44207154787893627,
+            0.8783831673859962
+          ]
+        },
+        {
+          "x": -15.984375,
+          "z": 9.28125,
+          "y": 14.15992504645726,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.19874994055552678,
+            0.1933208410762102,
+            0.9607942097737482
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 8.765625,
+          "y": 15.46921281502026,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.14716879705048255,
+            0.41153546917004347,
+            0.8994331007861042
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        }
+      ],
+      "gridAlignment": [
+        2.842170943040401e-14,
+        2.842170943040401e-14
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.508159958670408,
+      "nearestFruitVerticalGap": 1.0802227548309329
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.019649136115400794,
+      "position": [
+        -1.5322418006538603,
+        0.8667379319423001,
+        1.017759939629208
+      ],
+      "normal": [
+        8.883286656220485e-8,
+        0.9999999999999961,
+        8.960147978570141e-11
+      ],
+      "forceContactFrame": [
+        65.62158058917879,
+        -26.50939188944481,
+        29.111530425241963,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        29.111536254594963,
+        65.62157800549312,
+        -26.50939188356502
+      ],
+      "event": "fluidRootForce_peak_contact_6",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5322417997811157,
+        0.8765625000000005,
+        1.0177599396300885
+      ],
+      "scenePosition": [
+        -15.322417997811158,
+        10.177599396300884,
+        8.765625000000005
+      ],
+      "analytic": {
+        "y": 15.416201053306533,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.14780472433322286,
+          0.402700175551089,
+          0.9033196178960701
+        ]
+      },
+      "nativeHeight": 15.414336115845035,
+      "nativeTopNormal": [
+        0.015295870483229454,
+        0.9990507675399893,
+        0.04078725565564226
+      ],
+      "normalDotTop": 0.9990507689024161,
+      "environmentPointBelowNativeTop": 5.236736719544151,
+      "renderTop": {
+        "height": 14.866265212304071,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 11.133734544228389,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 11.133734544228389,
+          "upper": 14.866265212304071
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.24745485822088156,
+        "fruitIndex": 1,
+        "point": [
+          -15.363902926491178,
+          10.241642546466261,
+          8.530228775590128
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 8.765625,
+          "y": 15.46921281502026,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.14716879705048255,
+            0.41153546917004347,
+            0.8994331007861042
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 8.765625,
+          "y": 15.275845454961395,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.1494095919569848,
+            0.3793075758268992,
+            0.9131278863070431
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0.2837953981844237,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.5480709035409639,
+      "nearestFruitVerticalGap": 0.9561351479275046
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.04014490792014349,
+      "position": [
+        -1.5639718997547256,
+        0.9176083737940264,
+        0.980668161144572
+      ],
+      "normal": [
+        0.8517593209445311,
+        0.5239332583298291,
+        -3.73347744681686e-13
+      ],
+      "forceContactFrame": [
+        23.976230423342866,
+        9.696629594527787,
+        -10.626609977753557,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        14.854343353554517,
+        21.61325862676445,
+        9.696629594518836
+      ],
+      "event": "fluidRootForce_peak_contact_7",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468750000000044,
+        0.9281250000000022,
+        0.9806681611445646
+      ],
+      "scenePosition": [
+        -15.468750000000044,
+        9.806681611445645,
+        9.281250000000021
+      ],
+      "analytic": {
+        "y": 13.522334120427814,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.1608635825714222,
+          0.087055686737969,
+          0.983129805879604
+        ]
+      },
+      "nativeHeight": 13.52233363609269,
+      "nativeTopNormal": [
+        0.05896524429407357,
+        0.9971204441192252,
+        0.04768563604293563
+      ],
+      "normalDotTop": 0.5726487596739026,
+      "environmentPointBelowNativeTop": 3.715652024647044,
+      "renderTop": {
+        "height": 13.065829162259732,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 12.934170738250486,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 12.934170738250486,
+          "upper": 13.065829162259732
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.8094178373107173,
+        "fruitIndex": 1,
+        "point": [
+          -15.604444566135276,
+          10.01616523481229,
+          8.511275434433527
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.984375,
+          "z": 9.28125,
+          "y": 14.15992504645726,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.19874994055552678,
+            0.1933208410762102,
+            0.9607942097737482
+          ]
+        },
+        {
+          "x": -15.984375,
+          "z": 9.796875,
+          "y": 2.800472314453125,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11716223847301813,
+            0.9905132311264114,
+            -0.07180911390281756
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        }
+      ],
+      "gridAlignment": [
+        8.526512829121202e-14,
+        5.684341886080802e-14
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.45650447383295756,
+      "nearestFruitVerticalGap": 3.127489126804841
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.04014476092933817,
+      "position": [
+        -1.5639703800476905,
+        0.9176060438472506,
+        0.9806694334409194
+      ],
+      "normal": [
+        0.8516867283270819,
+        0.5240512539737995,
+        -1.2876396030240258e-11
+      ],
+      "forceContactFrame": [
+        23.98377064126772,
+        9.698339812620178,
+        -10.631173800724131,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        14.855379189031899,
+        21.62315471225711,
+        9.698339812311353
+      ],
+      "event": "fluidRootForce_peak_contact_8",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.546875,
+        0.9281249999999996,
+        0.9806694334406609
+      ],
+      "scenePosition": [
+        -15.46875,
+        9.80669433440661,
+        9.281249999999996
+      ],
+      "analytic": {
+        "y": 13.522334120428019,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.16086358257142186,
+          0.087055686738003,
+          0.9831298058796011
+        ]
+      },
+      "nativeHeight": 13.522333636093151,
+      "nativeTopNormal": [
+        0.3744093022198277,
+        0.8764344438208349,
+        0.3027876154926511
+      ],
+      "normalDotTop": 0.77817600296907,
+      "environmentPointBelowNativeTop": 3.715639301686542,
+      "renderTop": {
+        "height": 13.065829162259803,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 12.934170738250415,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 12.934170738250415,
+          "upper": 13.065829162259803
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.8094145445095782,
+        "fruitIndex": 1,
+        "point": [
+          -15.604444014114753,
+          10.016177105570742,
+          8.511278566775056
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.45650447383334836,
+      "nearestFruitVerticalGap": 3.127476403843806
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.04912432090183433,
+      "position": [
+        -1.568374102748099,
+        0.9341023848358392,
+        0.9785869868529553
+      ],
+      "normal": [
+        0.8752936367737886,
+        0.4830397043176232,
+        0.0231018067704344
+      ],
+      "forceContactFrame": [
+        21.84782028638222,
+        7.819645170718777,
+        10.52097713427009,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        15.069788228631815,
+        17.400233835051655,
+        10.922381011095872
+      ],
+      "event": "fluidRootForce_peak_contact_9",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468749999999944,
+        0.9459668835574522,
+        0.9791544171375568
+      ],
+      "scenePosition": [
+        -15.468749999999945,
+        9.791544171375568,
+        9.459668835574522
+      ],
+      "analytic": {
+        "y": 2.7164399758525812,
+        "contact": false,
+        "fruitIndex": -1,
+        "normal": [
+          0.11345204928267012,
+          0.9911180936515034,
+          -0.06937980217737977
+        ]
+      },
+      "nativeHeight": 9.791544171376305,
+      "nativeTopNormal": [
+        0.0053768314933701,
+        0.9988439828072795,
+        0.047768061430028236
+      ],
+      "normalDotTop": 0.4882911370317719,
+      "environmentPointBelowNativeTop": 7.371880883511039e-13,
+      "renderTop": {
+        "height": 2.721257784976032,
+        "fruitIndex": -1
+      },
+      "undersides": [],
+      "fruitIntervals": [],
+      "nearestVisible": {
+        "distance": 0.9830599350333425,
+        "fruitIndex": 1,
+        "point": [
+          -15.633554733995535,
+          10.04596771838014,
+          8.524513824760799
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        1.1368683772161603e-13,
+        0.3460244083869384
+      ],
+      "internalGridSide": false,
+      "classification": "heightfield_footprint_cliff_in_visible_air",
+      "nativeMinusRenderedTop": 7.070286386400273,
+      "nearestFruitVerticalGap": null
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.013751537700968217,
+      "position": [
+        -1.5403661677467435,
+        0.9303411452985417,
+        1.065843708351316
+      ],
+      "normal": [
+        -0.9466333721789826,
+        -0.322312361967468,
+        5.328474619976622e-13
+      ],
+      "forceContactFrame": [
+        46.84109560234019,
+        -24.92677508653763,
+        -12.981819948955277,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -36.30713653222032,
+        -38.69398131845041,
+        12.981819948975714
+      ],
+      "event": "fluidRootForce_peak_contact_10",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.5468750000000004,
+        0.9281249999999999,
+        1.0658437083513197
+      ],
+      "scenePosition": [
+        -15.468750000000004,
+        10.658437083513197,
+        9.281249999999998
+      ],
+      "analytic": {
+        "y": 13.522334120427997,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.16086358257142186,
+          0.0870556867379996,
+          0.9831298058796012
+        ]
+      },
+      "nativeHeight": 13.522333636093098,
+      "nativeTopNormal": [
+        0.05896524429407357,
+        0.9971204441192252,
+        0.04768563604293563
+      ],
+      "normalDotTop": -0.3772027135575491,
+      "environmentPointBelowNativeTop": 2.8638965525799005,
+      "renderTop": {
+        "height": 13.065829162259789,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 12.93417073825043,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 12.93417073825043,
+          "upper": 13.065829162259789
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.5889769052157221,
+        "fruitIndex": 1,
+        "point": [
+          -15.567488824291862,
+          10.810868881401163,
+          8.72097418716529
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.4565044738333093,
+      "nearestFruitVerticalGap": 2.275733654737232
+    },
+    {
+      "geoms": [
+        0,
+        82
+      ],
+      "category": "wing_environment",
+      "distance": -0.013751379546546122,
+      "position": [
+        -1.5403629255830276,
+        0.930331353699229,
+        1.065839990092953
+      ],
+      "normal": [
+        -0.9471157995356408,
+        -0.320891979129993,
+        5.812948257477808e-13
+      ],
+      "forceContactFrame": [
+        46.78103588308054,
+        -24.8996208244948,
+        -12.955940621284503,
+        0,
+        0,
+        0
+      ],
+      "forceWorld": [
+        -36.31696959754285,
+        -38.59448347559862,
+        12.955940621306793
+      ],
+      "event": "fluidRootForce_peak_contact_11",
+      "time": 0.337249999999971,
+      "wingName": "wing_right_membrane_collision",
+      "nativeEnvironmentPoint": [
+        -1.546875,
+        0.9281249999999996,
+        1.065839990092957
+      ],
+      "scenePosition": [
+        -15.46875,
+        10.65839990092957,
+        9.281249999999996
+      ],
+      "analytic": {
+        "y": 13.522334120428019,
+        "contact": true,
+        "fruitIndex": 1,
+        "normal": [
+          0.16086358257142186,
+          0.087055686738003,
+          0.9831298058796011
+        ]
+      },
+      "nativeHeight": 13.522333636093151,
+      "nativeTopNormal": [
+        0.3744093022198277,
+        0.8764344438208349,
+        0.3027876154926511
+      ],
+      "normalDotTop": -0.6358497488806999,
+      "environmentPointBelowNativeTop": 2.863933735163581,
+      "renderTop": {
+        "height": 13.065829162259803,
+        "fruitIndex": 1
+      },
+      "undersides": [
+        {
+          "height": 12.934170738250415,
+          "fruitIndex": 1
+        }
+      ],
+      "fruitIntervals": [
+        {
+          "fruitIndex": 1,
+          "lower": 12.934170738250415,
+          "upper": 13.065829162259803
+        }
+      ],
+      "nearestVisible": {
+        "distance": 0.5889865283571757,
+        "fruitIndex": 1,
+        "point": [
+          -15.567490437559993,
+          10.810834189361291,
+          8.720965032963566
+        ]
+      },
+      "gridVertices": [
+        {
+          "x": -15.46875,
+          "z": 9.28125,
+          "y": 13.522334120427963,
+          "contact": true,
+          "fruitIndex": 1,
+          "normal": [
+            0.16086358257142191,
+            0.08705568673799396,
+            0.983129805879602
+          ]
+        },
+        {
+          "x": -15.46875,
+          "z": 9.796875,
+          "y": 2.7404656494140625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.11343224054993001,
+            0.9909450443892329,
+            -0.07184041901495566
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.28125,
+          "y": 2.6460289306640625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10972648968287385,
+            0.9916257645943017,
+            -0.06810609704454239
+          ]
+        },
+        {
+          "x": -14.953125,
+          "z": 9.796875,
+          "y": 2.682426416015625,
+          "contact": false,
+          "fruitIndex": -1,
+          "normal": [
+            0.10969744024735639,
+            0.9913632375710708,
+            -0.07187073671378523
+          ]
+        }
+      ],
+      "gridAlignment": [
+        0,
+        0
+      ],
+      "internalGridSide": false,
+      "classification": "invisible_fill_below_visible_fruit",
+      "nativeMinusRenderedTop": 0.45650447383334836,
+      "nearestFruitVerticalGap": 2.275770837320845
+    }
+  ]
+}

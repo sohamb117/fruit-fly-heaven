@@ -1,0 +1,1437 @@
+{
+  "date": "2026-09-13T19:40:13.268Z",
+  "platform": "darwin",
+  "arch": "arm64",
+  "cpu": "Apple M2 Pro",
+  "ramBytes": 17179869184,
+  "scope": "Whole-product throughput with the common original 3D console, rendered binocular RGB, FlyVis, color, all senses, direct movement, neural body clock and open anatomy. Intended physics differ: original kinematic FlyWire body versus BANC muscles/MuJoCo with synchronized feedback. This is not an equal numerical workload or behavioral-parity test.",
+  "requested": {
+    "populations": [
+      1
+    ],
+    "modes": [
+      "reference",
+      "fast"
+    ],
+    "datasets": [
+      "flywire",
+      "banc"
+    ],
+    "seconds": 20,
+    "trials": 2
+  },
+  "frameMetric": "frameHz counts requestAnimationFrame callbacks, not guaranteed displayed or distinct scene frames; renderer/anatomy counters are reported separately.",
+  "memory": "Sum of RSS of Chrome descendant processes, including shared pages counted more than once; not unique physical memory.",
+  "samples": [
+    {
+      "trial": 1,
+      "population": 1,
+      "mode": "reference",
+      "dataset": "flywire",
+      "startupMs": 1772,
+      "before": {
+        "wall": 5125.5,
+        "neural": 182,
+        "frames": 114,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Reference · Float64",
+          "precisionDescription": "0.1 ms steps · original timing and precision."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.16666666666666666,
+            "neuralMs": 182,
+            "position": [
+              -32.84577102237165,
+              16.910873111249643,
+              -12.203833296252588
+            ],
+            "eyeSequence": 4
+          }
+        ],
+        "body": {
+          "time": 0.16666666666666666,
+          "position": [
+            -32.84577102237165,
+            16.910873111249643,
+            -12.203833296252588
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "falling",
+          "takeoffs": 1,
+          "landings": 0
+        },
+        "rendererFrames": 115,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 182,
+          "frames": 31,
+          "activityUpdateMs": 23,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 800
+        },
+        "min": 182,
+        "max": 182,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 25591.899999976158,
+        "neural": 1424,
+        "frames": 1054,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Reference · Float64",
+          "precisionDescription": "0.1 ms steps · original timing and precision."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 1.4166666666666665,
+            "neuralMs": 1424,
+            "position": [
+              -32.842416242840464,
+              16.884777423338633,
+              -12.158861491703771
+            ],
+            "eyeSequence": 29
+          }
+        ],
+        "body": {
+          "time": 1.4166666666666665,
+          "position": [
+            -32.842416242840464,
+            16.884777423338633,
+            -12.158861491703771
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "turning",
+          "takeoffs": 1,
+          "landings": 1
+        },
+        "rendererFrames": 1105,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 1424,
+          "frames": 472,
+          "activityUpdateMs": 17.5,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 800
+        },
+        "min": 1424,
+        "max": 1424,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20466.399999976158,
+      "neuralMs": 1242,
+      "cohortSpeed": 0.06068482976983968,
+      "frameHz": 45.92893718490282,
+      "peakRSS": 1330020352,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 1,
+      "population": 1,
+      "mode": "reference",
+      "dataset": "banc",
+      "startupMs": 4689,
+      "before": {
+        "wall": 7678.5,
+        "neural": 98,
+        "frames": 398,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC reference · Float32",
+          "precisionDescription": "0.5 ms neural steps · prepared BANC delay bins and physiology. Float32 on WebGPU or WASM."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.09799999999999737,
+            "neuralMs": 98,
+            "position": [
+              -34.48162582038133,
+              16.530790932679928,
+              -13.449715346140996
+            ],
+            "eyeSequence": 2
+          }
+        ],
+        "body": {
+          "time": 0.09799999999999737,
+          "position": [
+            -34.48162582038133,
+            16.530790932679928,
+            -13.449715346140996
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "surface_motion",
+          "takeoffs": 0,
+          "landings": 0
+        },
+        "rendererFrames": 391,
+        "backend": "webgpu",
+        "allocatedBytes": 275716460,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 94,
+          "frames": 20,
+          "activityUpdateMs": 12.699999988079071,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 188
+        },
+        "min": 98,
+        "max": 98,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 27834.20000001788,
+        "neural": 880,
+        "frames": 1437,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC reference · Float32",
+          "precisionDescription": "0.5 ms neural steps · prepared BANC delay bins and physiology. Float32 on WebGPU or WASM."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.8799999999999113,
+            "neuralMs": 880,
+            "position": [
+              29.108473321902938,
+              13.617093480093077,
+              -38.116480496881834
+            ],
+            "eyeSequence": 18
+          }
+        ],
+        "body": {
+          "time": 0.8799999999999113,
+          "position": [
+            29.108473321902938,
+            13.617093480093077,
+            -38.116480496881834
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "airborne_wings",
+          "takeoffs": 13,
+          "landings": 0
+        },
+        "rendererFrames": 1462,
+        "backend": "webgpu",
+        "allocatedBytes": 275716460,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 880,
+          "frames": 172,
+          "activityUpdateMs": 13.199999988079071,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 800
+        },
+        "min": 880,
+        "max": 880,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20155.70000001788,
+      "neuralMs": 782,
+      "cohortSpeed": 0.03879795789773147,
+      "frameHz": 51.54869342166624,
+      "peakRSS": 1263992832,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 1,
+      "population": 1,
+      "mode": "fast",
+      "dataset": "flywire",
+      "startupMs": 1462,
+      "before": {
+        "wall": 4589.4000000059605,
+        "neural": 192,
+        "frames": 93,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Fast · approximate",
+          "precisionDescription": "Float32 · 1 ms steps · delay and refractory rounded to 2 ms. Activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.18333333333333332,
+            "neuralMs": 192,
+            "position": [
+              -32.84561090571521,
+              16.940378781390493,
+              -12.18440016705246
+            ],
+            "eyeSequence": 4
+          }
+        ],
+        "body": {
+          "time": 0.18333333333333332,
+          "position": [
+            -32.84561090571521,
+            16.940378781390493,
+            -12.18440016705246
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "falling",
+          "takeoffs": 1,
+          "landings": 0
+        },
+        "rendererFrames": 94,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 192,
+          "frames": 24,
+          "activityUpdateMs": 18.30000001192093,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 192
+        },
+        "min": 192,
+        "max": 192,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 25500.40000000596,
+        "neural": 1740,
+        "frames": 261,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Fast · approximate",
+          "precisionDescription": "Float32 · 1 ms steps · delay and refractory rounded to 2 ms. Activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 1.733333333333332,
+            "neuralMs": 1740,
+            "position": [
+              -32.84442007214127,
+              16.89432861238683,
+              -12.059213980876502
+            ],
+            "eyeSequence": 34
+          }
+        ],
+        "body": {
+          "time": 1.733333333333332,
+          "position": [
+            -32.84442007214127,
+            16.89432861238683,
+            -12.059213980876502
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "turning",
+          "takeoffs": 1,
+          "landings": 1
+        },
+        "rendererFrames": 324,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 1740,
+          "frames": 192,
+          "activityUpdateMs": 18.100000023841858,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 800
+        },
+        "min": 1740,
+        "max": 1740,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20911,
+      "neuralMs": 1548,
+      "cohortSpeed": 0.07402802352828655,
+      "frameHz": 8.034049065085362,
+      "peakRSS": 1476411392,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 1,
+      "population": 1,
+      "mode": "fast",
+      "dataset": "banc",
+      "startupMs": 3238,
+      "before": {
+        "wall": 6131.199999988079,
+        "neural": 102,
+        "frames": 309,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC fast · Float32",
+          "precisionDescription": "1 ms neural steps · delay bins rounded to 1 ms. Physiology runs in Float32 on WebGPU or WASM; activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.10199999999999693,
+            "neuralMs": 102,
+            "position": [
+              -34.86913242595985,
+              16.248461232073474,
+              -13.7692166873991
+            ],
+            "eyeSequence": 2
+          }
+        ],
+        "body": {
+          "time": 0.10199999999999693,
+          "position": [
+            -34.86913242595985,
+            16.248461232073474,
+            -13.7692166873991
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "surface_motion",
+          "takeoffs": 0,
+          "landings": 0
+        },
+        "rendererFrames": 303,
+        "backend": "webgpu",
+        "allocatedBytes": 274313252,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 100,
+          "frames": 21,
+          "activityUpdateMs": 11.799999982118607,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 100
+        },
+        "min": 102,
+        "max": 102,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 26390.19999998808,
+        "neural": 1016,
+        "frames": 1467,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC fast · Float32",
+          "precisionDescription": "1 ms neural steps · delay bins rounded to 1 ms. Physiology runs in Float32 on WebGPU or WASM; activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 1.0159999999999318,
+            "neuralMs": 1016,
+            "position": [
+              -31.440471868702087,
+              15.670092718215397,
+              -19.31111538969778
+            ],
+            "eyeSequence": 21
+          }
+        ],
+        "body": {
+          "time": 1.0159999999999318,
+          "position": [
+            -31.440471868702087,
+            15.670092718215397,
+            -19.31111538969778
+          ],
+          "airborne": false,
+          "onFood": false,
+          "motion": "surface_motion",
+          "takeoffs": 15,
+          "landings": 0
+        },
+        "rendererFrames": 1497,
+        "backend": "webgpu",
+        "allocatedBytes": 274313252,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 1014,
+          "frames": 172,
+          "activityUpdateMs": 12.599999994039536,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 800
+        },
+        "min": 1016,
+        "max": 1016,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20259,
+      "neuralMs": 914,
+      "cohortSpeed": 0.04511575102423614,
+      "frameHz": 57.15978083814601,
+      "peakRSS": 1750319104,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 2,
+      "population": 1,
+      "mode": "reference",
+      "dataset": "flywire",
+      "startupMs": 1442,
+      "before": {
+        "wall": 4246.5999999940395,
+        "neural": 160,
+        "frames": 139,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Reference · Float64",
+          "precisionDescription": "0.1 ms steps · original timing and precision."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.15,
+            "neuralMs": 160,
+            "position": [
+              -32.84794702018812,
+              16.91266673692044,
+              -12.219683034822662
+            ],
+            "eyeSequence": 4
+          }
+        ],
+        "body": {
+          "time": 0.15,
+          "position": [
+            -32.84794702018812,
+            16.91266673692044,
+            -12.219683034822662
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "falling",
+          "takeoffs": 1,
+          "landings": 0
+        },
+        "rendererFrames": 140,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 160,
+          "frames": 38,
+          "activityUpdateMs": 18.900000005960464,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 800
+        },
+        "min": 160,
+        "max": 160,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 24416.09999999404,
+        "neural": 1510,
+        "frames": 1169,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Reference · Float64",
+          "precisionDescription": "0.1 ms steps · original timing and precision."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 1.4999999999999996,
+            "neuralMs": 1510,
+            "position": [
+              -32.84452797577053,
+              16.89116704723233,
+              -12.091375497633237
+            ],
+            "eyeSequence": 31
+          }
+        ],
+        "body": {
+          "time": 1.4999999999999996,
+          "position": [
+            -32.84452797577053,
+            16.89116704723233,
+            -12.091375497633237
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "turning",
+          "takeoffs": 1,
+          "landings": 1
+        },
+        "rendererFrames": 1224,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 1510,
+          "frames": 441,
+          "activityUpdateMs": 19.900000005960464,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 800
+        },
+        "min": 1510,
+        "max": 1510,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20169.5,
+      "neuralMs": 1350,
+      "cohortSpeed": 0.0669327449862416,
+      "frameHz": 51.067205433947294,
+      "peakRSS": 1700511744,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 2,
+      "population": 1,
+      "mode": "reference",
+      "dataset": "banc",
+      "startupMs": 4401,
+      "before": {
+        "wall": 7426.299999982119,
+        "neural": 98,
+        "frames": 385,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC reference · Float32",
+          "precisionDescription": "0.5 ms neural steps · prepared BANC delay bins and physiology. Float32 on WebGPU or WASM."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.09799999999999737,
+            "neuralMs": 98,
+            "position": [
+              -34.48162582038133,
+              16.530790932679928,
+              -13.449715346140996
+            ],
+            "eyeSequence": 2
+          }
+        ],
+        "body": {
+          "time": 0.09799999999999737,
+          "position": [
+            -34.48162582038133,
+            16.530790932679928,
+            -13.449715346140996
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "surface_motion",
+          "takeoffs": 0,
+          "landings": 0
+        },
+        "rendererFrames": 378,
+        "backend": "webgpu",
+        "allocatedBytes": 275716460,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 98,
+          "frames": 21,
+          "activityUpdateMs": 12,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 196
+        },
+        "min": 98,
+        "max": 98,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 27606.40000000596,
+        "neural": 876,
+        "frames": 1438,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": false,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC reference · Float32",
+          "precisionDescription": "0.5 ms neural steps · prepared BANC delay bins and physiology. Float32 on WebGPU or WASM."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.8759999999999117,
+            "neuralMs": 876,
+            "position": [
+              27.573585135888642,
+              13.745934487940275,
+              -38.69350691325861
+            ],
+            "eyeSequence": 18
+          }
+        ],
+        "body": {
+          "time": 0.8759999999999117,
+          "position": [
+            27.573585135888642,
+            13.745934487940275,
+            -38.69350691325861
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "airborne_wings",
+          "takeoffs": 13,
+          "landings": 0
+        },
+        "rendererFrames": 1463,
+        "backend": "webgpu",
+        "allocatedBytes": 275716460,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 876,
+          "frames": 173,
+          "activityUpdateMs": 13,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 800
+        },
+        "min": 876,
+        "max": 876,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20180.100000023842,
+      "neuralMs": 778,
+      "cohortSpeed": 0.03855283175004489,
+      "frameHz": 52.18011803701448,
+      "peakRSS": 1217740800,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 2,
+      "population": 1,
+      "mode": "fast",
+      "dataset": "flywire",
+      "startupMs": 1522,
+      "before": {
+        "wall": 4589.9000000059605,
+        "neural": 196,
+        "frames": 93,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Fast · approximate",
+          "precisionDescription": "Float32 · 1 ms steps · delay and refractory rounded to 2 ms. Activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.18333333333333332,
+            "neuralMs": 196,
+            "position": [
+              -32.842439874492904,
+              16.90393495810278,
+              -12.169241680161775
+            ],
+            "eyeSequence": 4
+          }
+        ],
+        "body": {
+          "time": 0.18333333333333332,
+          "position": [
+            -32.842439874492904,
+            16.90393495810278,
+            -12.169241680161775
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "landing",
+          "takeoffs": 1,
+          "landings": 0
+        },
+        "rendererFrames": 94,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 196,
+          "frames": 24,
+          "activityUpdateMs": 18.099999994039536,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 196
+        },
+        "min": 196,
+        "max": 196,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 25342.80000001192,
+        "neural": 1842,
+        "frames": 260,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "kinematic",
+          "referenceController": false,
+          "precisionLabel": "Fast · approximate",
+          "precisionDescription": "Float32 · 1 ms steps · delay and refractory rounded to 2 ms. Activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 1.8333333333333317,
+            "neuralMs": 1842,
+            "position": [
+              -32.84497533916704,
+              16.897322267898666,
+              -12.027190551514508
+            ],
+            "eyeSequence": 36
+          }
+        ],
+        "body": {
+          "time": 1.8333333333333317,
+          "position": [
+            -32.84497533916704,
+            16.897322267898666,
+            -12.027190551514508
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "turning",
+          "takeoffs": 1,
+          "landings": 1
+        },
+        "rendererFrames": 327,
+        "backend": "wasm",
+        "allocatedBytes": 182321152,
+        "anatomy": {
+          "selectedNeuron": 84431,
+          "fly": 1,
+          "timeMs": 1842,
+          "frames": 191,
+          "activityUpdateMs": 17.900000005960464,
+          "heapBytes": 140902400,
+          "scanPixels": 197120,
+          "traceSamples": 800
+        },
+        "min": 1842,
+        "max": 1842,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20752.90000000596,
+      "neuralMs": 1646,
+      "cohortSpeed": 0.07931421632637016,
+      "frameHz": 8.047068120597702,
+      "peakRSS": 1833975808,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    },
+    {
+      "trial": 2,
+      "population": 1,
+      "mode": "fast",
+      "dataset": "banc",
+      "startupMs": 3594,
+      "before": {
+        "wall": 6772.700000017881,
+        "neural": 100,
+        "frames": 346,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC fast · Float32",
+          "precisionDescription": "1 ms neural steps · delay bins rounded to 1 ms. Physiology runs in Float32 on WebGPU or WASM; activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 0.09999999999999715,
+            "neuralMs": 100,
+            "position": [
+              -34.75006276758867,
+              16.312657293474146,
+              -13.61884998799045
+            ],
+            "eyeSequence": 2
+          }
+        ],
+        "body": {
+          "time": 0.09999999999999715,
+          "position": [
+            -34.75006276758867,
+            16.312657293474146,
+            -13.61884998799045
+          ],
+          "airborne": false,
+          "onFood": true,
+          "motion": "surface_motion",
+          "takeoffs": 0,
+          "landings": 0
+        },
+        "rendererFrames": 340,
+        "backend": "webgpu",
+        "allocatedBytes": 274313252,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 96,
+          "frames": 21,
+          "activityUpdateMs": 11.700000017881393,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 96
+        },
+        "min": 100,
+        "max": 100,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "after": {
+        "wall": 26924.5,
+        "neural": 1030,
+        "frames": 1509,
+        "paused": false,
+        "population": 1,
+        "configuration": {
+          "movementMode": "direct",
+          "movementControl": "direct",
+          "bodyClock": "neural",
+          "fast": true,
+          "flightEnabled": true,
+          "motorCoupling": true,
+          "sensorySwitches": {
+            "odor": true,
+            "taste": true,
+            "vision": true,
+            "body-sense": true
+          },
+          "bodyBackend": "mujoco-wasm",
+          "referenceController": false,
+          "precisionLabel": "BANC fast · Float32",
+          "precisionDescription": "1 ms neural steps · delay bins rounded to 1 ms. Physiology runs in Float32 on WebGPU or WASM; activity and spike timing can change."
+        },
+        "bodies": [
+          {
+            "id": 1,
+            "time": 1.0299999999999614,
+            "neuralMs": 1030,
+            "position": [
+              -32.265953775246345,
+              13.627283747727471,
+              -21.431917983330155
+            ],
+            "eyeSequence": 21
+          }
+        ],
+        "body": {
+          "time": 1.0299999999999614,
+          "position": [
+            -32.265953775246345,
+            13.627283747727471,
+            -21.431917983330155
+          ],
+          "airborne": true,
+          "onFood": false,
+          "motion": "airborne_wings",
+          "takeoffs": 18,
+          "landings": 0
+        },
+        "rendererFrames": 1539,
+        "backend": "webgpu",
+        "allocatedBytes": 274313252,
+        "anatomy": {
+          "selectedNeuron": 66777,
+          "fly": 1,
+          "timeMs": 1028,
+          "frames": 172,
+          "activityUpdateMs": 12,
+          "heapBytes": 31391744,
+          "scanPixels": 498560,
+          "traceSamples": 800
+        },
+        "min": 1030,
+        "max": 1030,
+        "eyesReady": 1,
+        "gradedReady": 1,
+        "colorReady": 1,
+        "errors": []
+      },
+      "wallMs": 20151.79999998212,
+      "neuralMs": 930,
+      "cohortSpeed": 0.04614972359793295,
+      "frameHz": 57.71196617676991,
+      "peakRSS": 1259143168,
+      "errors": [],
+      "validityIssues": [],
+      "valid": true
+    }
+  ],
+  "sourceSha256": {
+    "web/app.js": "8b383a4522a6f9eb96d7510ac2655a255289d2ba31e4885a526693494d116976",
+    "web/wasm-world-worker.js": "e5aec3ea52ab9faf5807c45524158a9ad459675d4d1c2a141c6e18099dce418f",
+    "web/banc-world-worker.js": "ffd3e529c65f5d46f41e21ba50c9d829db1a8fc7341caf74bc5dfae3e32047e0",
+    "web/body-world.js": "6493bc72bbb6fa939a7ad5e785b01928d1e0df2c62cdfddf2cc6a712c8fc440c",
+    "web/flybody-world.js": "e8894bdbee7448c6b69ff5b7cb44f10ea8c0f8fb7b9a1467e23b1e398f6547d3",
+    "web/flybody-physics.js": "3378d510367581f899702a95fd862d918828043afa70014d7503c22b5cd9e855",
+    "web/flybody-wings.js": "cfb41da66648159c2ce92da81c0d97c63958bc4d3dd3603e459f92e9f1c7dd7d",
+    "models/flybody-mujoco.xml": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
+    "models/flybody-mujoco.json": "c1348adf19decee75abbbb1d2be8a5ef6ac8cfe4fe4850083a502b62877c4a48",
+    "packages/flybody-runtime/package-lock.json": "29e5852fc4e947d5c5ca9caf77d6c6630398dc4ae994ff6b3a933afe5809866a",
+    "web/brain-view.js": "58aa41fa8d4a132580704621a2a1368479a7ae024c337c8d563e6645c15f4b0b",
+    "packages/banc-runtime/src/neural.wgsl": "84a75736d2435f94a396b10ce292f9a825f47ab83d54bb67249a0865873cd520",
+    "packages/banc-runtime/src/webgpu.js": "e076a35780bfba9a0edf5afda548bd25ca6d8877589c7107155f84042715e431",
+    "packages/banc-runtime/dist/core.wasm": "bcbc77058e9f310a8faba078d16fdff2fdb3bea9d1836d80f80cda2598451d6a",
+    "packages/fly-brain-wasm/dist/core.wasm": "5b0724d350c756b8a5ae15742dc2bd9227e135e350c4a623c9fb2f8097d7aacb",
+    "configs/banc-physiology.json": "0148252bfa4db2ac46fdbb8d5698d3592c07ed9ca7888157f007f8626fcbfb41",
+    "scripts/benchmark-transplant.mjs": "d63e6a503da6b98a6d7458234dd19c12708fcad08c2442e034e326700503563f",
+    "scripts/benchmark-transplant-metrics.mjs": "8eb29e2d5f54c493882154b3de074e2b62b8fd5189f4497119a63d0ca5e547f2",
+    "web/simulation-modes.js": "88706d4f9537cacc92db9345ea0b2eb4401ca8f4cbccfcf94a747a0c684e181b",
+    "web/flybody-habitat-collision.js": "d2d850e1c93871bd10213782e53884ba53e0002f51597abe3f8d9ad67f7b4944",
+    "web/flybody-contact-environment.js": "52c1acfd16613cd45eaa7a5f5f0f75d00dd62f7214c145a7f2f7771a2d26f8e8",
+    "models/flybody-wing-actuation.json": "5428033a5967dea38b5840d89efe7eec267ceea530d4b2efcb84dabcb2fcbfb0",
+    "data/prepared/banc888/console/groups.json": "8e3932032920f2f5821f247fbf17ee2f7ce0b400b143105147095128d1e3e3b8",
+    "web/flybody-stance.js": "1e1734753645f2070874afcf3eb72325ff6c9ee3473f1487cbd10dd0ebff1abd",
+    "web/flybody-leg-actuation.js": "0bdad8d1366e485e91987be4e5439c6c744740654b0534f8083bd2a231e8833e",
+    "web/fruit-camera-occlusion.js": "3aee8160487ee7a983e5e762ffdd323b1fe7d70bb72f858cb990b63108eae2ab",
+    "web/banc-ground-sense.js": "dc78d621534d1f6babc7b6995fbe55e4e203f5efc09a89b499f09d289cdcc1d3",
+    "web/banc-sensory-current.js": "24bb83d02f7680cd79ab60f7d9b48ab3da5a0946bac9dbfa0b42c8eaa03d0c51",
+    "web/banc-proboscis.js": "97e20dac51c05f6791a5a56e5cb4c5ffeb2b758bbdcb40ba69dbb50a303e83f0",
+    "web/banc-taste.js": "c792a196b4ca0682b1aad8c2623d3141bf65047867e1e48947cad5793fafeaed",
+    "web/flybody-mouth-pose.js": "0d45e769033fb49239e8f91dd6467569e5fe8d31a2dcab8f9c5ad96928107696",
+    "web/flybody-wing-pose.js": "2eadef6980b88683aeee6450eed68e2cda697a847d004121b742ebc59ffebc73",
+    "web/banc/embodiment.js": "e8dad58ae67f95ed32d2efd443367dd8a54d328faaf3e5a78ae606fc13472f71",
+    "web/sensory-encoder.js": "7024729f40c3f398adcd68990e276c14041ddd612f8cbc67a41bdef890a00dcb",
+    "models/banc-taste-peg-annotations.json": "2c6b173502ef8e05d584ab9fddfdcca7fe88f9f572aad2ef69e001bf42469c48",
+    "data/prepared/banc888/console/sensory-inputs.json": "fc685a45a56a7e68d2fb9c7b6a30b02c7c538d2a9242f27856d6224aaf2a3387"
+  },
+  "graphs": {
+    "flywire": {
+      "groups.bin": "ec643f78dd01c6818f234af3fdde1bf2fb6a108ca103b19903e6246bb2f7afc8",
+      "ids.bin": "70200482b9fe6656f215a97b71332dd6725b80e2cb32e0052a4d47916ca1579b",
+      "indptr.bin": "5eed7ce53ee0aabecb0c4636f95691e4cadb51925dbe1bdd3bef9aca4a32a154",
+      "targets.bin": "302786e9dacecf6f04683f7e46a6c3aa223b136b42b44880ccae0f0487dcd5f3",
+      "weights.bin": "91d63a7ddf6688584f1cd2dc5b06baccc7f2ec788fb36f5ca8bb0900e4874081"
+    },
+    "banc": {
+      "ids.bin": {
+        "bytes": 1403208,
+        "sha256": "dd942f6fd3bf27b155b4112c94b31a8348564264070933f7f916bc18e9dd1542"
+      },
+      "offsets.bin": {
+        "bytes": 1403216,
+        "sha256": "7a8ed4d8bf90351356f6097a8ef8b72cf9a669de0e54006f72b9472148f062ee"
+      },
+      "edges.bin": {
+        "bytes": 216674944,
+        "sha256": "c3a0444e2db62227e3f93082e882d357724105331fef836a7b7697bff92e55c7"
+      },
+      "params.bin": {
+        "bytes": 11225664,
+        "sha256": "9f72c736ef2c2aaebe84fd18050dd6fbc777e4d95f8fab07b9aa11c44840549f"
+      },
+      "io.json": {
+        "bytes": 787065,
+        "sha256": "1b19cd8c91ff64d1fe2af8f3fdd09d98792ecfca229e1c102ecb08a96da1ce72"
+      }
+    }
+  },
+  "effectiveModelSettings": {
+    "flywire": {
+      "reference": {
+        "dtMs": 0.1,
+        "precision": "float64",
+        "body": "original kinematic BodyWorld",
+        "bodyStepSeconds": 0.016666666666666666
+      },
+      "fast": {
+        "dtMs": 1,
+        "precision": "float32",
+        "body": "original kinematic BodyWorld",
+        "bodyStepSeconds": 0.016666666666666666
+      }
+    },
+    "banc": {
+      "reference": {
+        "dtMs": 0.5,
+        "precision": "float32",
+        "body": "native MuJoCo",
+        "bodyFeedbackBlockMs": 2
+      },
+      "fast": {
+        "dtMs": 1,
+        "precision": "float32",
+        "body": "native MuJoCo",
+        "bodyFeedbackBlockMs": 2
+      }
+    },
+    "provenance": "Effective mode settings derived from the captured worker/source configuration; runtime UI controls, brain backend and body backend are recorded at both measurement endpoints."
+  },
+  "sourceHashesUnchangedAtEnd": true,
+  "changedSourceFiles": [],
+  "comparisons": [
+    {
+      "population": 1,
+      "mode": "reference",
+      "expectedTrialsPerDataset": 2,
+      "validTrials": {
+        "flywire": 2,
+        "banc": 2
+      },
+      "complete": true,
+      "configurationsConsistent": true,
+      "eligible": true,
+      "flywireMedianSpeed": 0.06380878737804065,
+      "bancMedianSpeed": 0.03867539482388818,
+      "slowdown": 1.6498548410067844,
+      "pairedTrialSlowdowns": [
+        {
+          "trial": 1,
+          "slowdown": 1.5641243265895688
+        },
+        {
+          "trial": 2,
+          "slowdown": 1.7361304461419664
+        }
+      ],
+      "pairedSlowdownRange": [
+        1.5641243265895688,
+        1.7361304461419664
+      ],
+      "threshold": 10,
+      "withinOneOrderOfMagnitude": true,
+      "everyPairedTrialWithinOneOrderOfMagnitude": true,
+      "limitation": "Short-window whole-product throughput: shared 3D console, different intended neural and body models. A <=10x median slowdown does not establish equal speed, long-run performance, or behavioral parity."
+    },
+    {
+      "population": 1,
+      "mode": "fast",
+      "expectedTrialsPerDataset": 2,
+      "validTrials": {
+        "flywire": 2,
+        "banc": 2
+      },
+      "complete": true,
+      "configurationsConsistent": true,
+      "eligible": true,
+      "flywireMedianSpeed": 0.07667111992732836,
+      "bancMedianSpeed": 0.04563273731108455,
+      "slowdown": 1.680177969703,
+      "pairedTrialSlowdowns": [
+        {
+          "trial": 1,
+          "slowdown": 1.6408465302620976
+        },
+        {
+          "trial": 2,
+          "slowdown": 1.7186281984562666
+        }
+      ],
+      "pairedSlowdownRange": [
+        1.6408465302620976,
+        1.7186281984562666
+      ],
+      "threshold": 10,
+      "withinOneOrderOfMagnitude": true,
+      "everyPairedTrialWithinOneOrderOfMagnitude": true,
+      "limitation": "Short-window whole-product throughput: shared 3D console, different intended neural and body models. A <=10x median slowdown does not establish equal speed, long-run performance, or behavioral parity."
+    }
+  ]
+}

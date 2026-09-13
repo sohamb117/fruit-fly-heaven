@@ -1,0 +1,54 @@
+{
+	admin 127.0.0.1:2019
+	servers {
+		timeouts {
+			read_header 10s
+			read_body 15s
+			write 10m
+			idle 60s
+		}
+	}
+}
+
+@PUBLIC_ORIGIN@ {
+	header {
+		Cross-Origin-Opener-Policy same-origin
+		Cross-Origin-Embedder-Policy require-corp
+		Cross-Origin-Resource-Policy same-origin
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+	}
+	@api path /api/training/status /api/training/checkpoint /api/training/lease /api/training/result /api/training/release /api/training/heartbeat
+	handle @api {
+		request_body {
+			max_size 262144
+		}
+		reverse_proxy 127.0.0.1:7850 {
+			transport http {
+				dial_timeout 3s
+				response_header_timeout 15s
+				read_timeout 15s
+				write_timeout 15s
+				max_conns_per_host 16
+			}
+		}
+	}
+	handle /api/* {
+		respond "Not found" 404
+	}
+	handle {
+		@read method GET HEAD
+		handle @read {
+			root * /srv/fly-training/current
+			header Cache-Control "public, max-age=0, must-revalidate"
+			@wasm path *.wasm
+			header @wasm Content-Type application/wasm
+			@shader path *.wgsl
+			header @shader Content-Type text/plain
+			file_server {
+				precompressed gzip
+			}
+		}
+		respond "Method not allowed" 405
+	}
+}

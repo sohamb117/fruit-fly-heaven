@@ -1,0 +1,3602 @@
+{
+  "scope": "Native kinematic sign audit; no integration or applied root forces. Angles are measured between actual adjacent joint anchors; tarsus2 body origin closes the distal segment.",
+  "command": "node scripts/audit-flybody-leg-signs.mjs",
+  "mujoco": "3.13.0",
+  "sourceHashes": {
+    "models/flybody-mujoco.xml": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
+    "models/flybody-mujoco.json": "cbe98d986b9e685943858f546f09e50141b03f62f36c35146d752e9336028360",
+    "data/prepared/banc888/io.json": "1b19cd8c91ff64d1fe2af8f3fdd09d98792ecfca229e1c102ecb08a96da1ce72",
+    "scripts/prepare-banc.py": "fe085a9bf31d63c8e67df18fb58978c4783b15a73102ed0e2ae937b4ad74fe82",
+    "reports/flybody-leg-sign-placements.json": "7a8b2e3bc35f18650078b61c8d72a26e354e8c5ee8b056812bea0a06f34e73ad"
+  },
+  "sourceRevision": "d015e9bfe441bd90ae431bac24c55cb74bdbce26",
+  "definition": {
+    "internalAngle": "acos(dot(upstreamAnchor-hingeAnchor, downstreamAnchor-hingeAnchor)/(lengths)); extension increases this angle, flexion decreases it before the straight-line branch.",
+    "anteriorCoxaMotion": "Root-frame X displacement of femur anchor relative to thorax-coxa anchor; positive X points toward the head.",
+    "perturbationRadians": 0.01,
+    "rangeDerivativePerturbationRadians": 0.0001,
+    "allRangeScope": "31 evenly spaced q values strictly inside the XML joint limits, repeated with the other coordinates of each of four tested poses held at their actual values."
+  },
+  "cases": [
+    {
+      "name": "neutral",
+      "joints": [
+        {
+          "name": "coxa_T1_left",
+          "kind": "coxa",
+          "qpos": 0.0,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            -0.02259243631172826,
+            -0.022464661516957918,
+            -0.022334640274756377
+          ],
+          "units": "cm",
+          "derivative": 0.01288980184859425,
+          "rangeDerivativeMin": 0.00817495063283949,
+          "rangeDerivativeMax": 0.025896444436623867,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_left",
+          "kind": "femur",
+          "qpos": 0.0,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            0.4993553600622051,
+            0.509355360062205,
+            0.5193553600622048
+          ],
+          "units": "radians",
+          "derivative": 0.999999999999987,
+          "rangeDerivativeMin": 0.9999999999887876,
+          "rangeDerivativeMax": 1.0000000000076614,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            28.610954608799936,
+            29.18391240393076,
+            29.75687019906157
+          ]
+        },
+        {
+          "name": "tibia_T1_left",
+          "kind": "tibia",
+          "qpos": 0.0,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.541472932351831,
+            1.551465402154692,
+            1.5614578748676662
+          ],
+          "units": "radians",
+          "derivative": 0.9992471257917579,
+          "rangeDerivativeMin": 0.9817315654002401,
+          "rangeDerivativeMax": 0.99924597677159,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            88.31989325741498,
+            88.89241960403083,
+            89.46494611738389
+          ]
+        },
+        {
+          "name": "tarsus_T1_left",
+          "kind": "tarsus",
+          "qpos": 0.0,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            3.119720612943054,
+            3.1100750918274707,
+            3.1002610125566368
+          ],
+          "units": "radians",
+          "derivative": -0.9729800193208682,
+          "rangeDerivativeMin": -0.9999031641205747,
+          "rangeDerivativeMax": 0.9998832504254374,
+          "rangeNegativeDerivativeCount": 20,
+          "rangePositiveDerivativeCount": 11,
+          "measuredDegrees": [
+            178.74682438160326,
+            178.19417673047602,
+            177.6318714084504
+          ]
+        },
+        {
+          "name": "coxa_T2_left",
+          "kind": "coxa",
+          "qpos": 0.0,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            -0.007990553455933639,
+            -0.00800189484223807,
+            -0.008012436045726493
+          ],
+          "units": "cm",
+          "derivative": -0.0010941294896427145,
+          "rangeDerivativeMin": -0.0026605436493493118,
+          "rangeDerivativeMax": 0.005586800077440196,
+          "rangeNegativeDerivativeCount": 10,
+          "rangePositiveDerivativeCount": 21
+        },
+        {
+          "name": "femur_T2_left",
+          "kind": "femur",
+          "qpos": 0.0,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            0.24664645537158997,
+            0.25664645537158953,
+            0.2666464553715897
+          ],
+          "units": "radians",
+          "derivative": 0.999999999999987,
+          "rangeDerivativeMin": 0.9999999999910081,
+          "rangeDerivativeMax": 1.000000000008147,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            14.131800924653918,
+            14.704758719784715,
+            15.27771651491555
+          ]
+        },
+        {
+          "name": "tibia_T2_left",
+          "kind": "tibia",
+          "qpos": 0.0,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.65072492037784,
+            1.6607126217144073,
+            1.670700300867096
+          ],
+          "units": "radians",
+          "derivative": 0.9987690244627978,
+          "rangeDerivativeMin": 0.964251322543852,
+          "rangeDerivativeMax": 0.9987783361831148,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            94.5795710747191,
+            95.15182420834157,
+            95.72407607092143
+          ]
+        },
+        {
+          "name": "tarsus_T2_left",
+          "kind": "tarsus",
+          "qpos": 0.0,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            2.785752113246322,
+            2.7757698544775025,
+            2.7657866653256273
+          ],
+          "units": "radians",
+          "derivative": -0.9982723960347384,
+          "rangeDerivativeMin": -0.9999053182629947,
+          "rangeDerivativeMax": 0.9994105779043139,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.6118388586644,
+            159.0398975612036,
+            158.46790295672037
+          ]
+        },
+        {
+          "name": "coxa_T3_left",
+          "kind": "coxa",
+          "qpos": 0.0,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            -0.011007682669230516,
+            -0.011197440851537892,
+            -0.011386273568769062
+          ],
+          "units": "cm",
+          "derivative": -0.018929544976927296,
+          "rangeDerivativeMin": -0.02081869564529021,
+          "rangeDerivativeMax": 0.003849610090769784,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_left",
+          "kind": "femur",
+          "qpos": 0.0,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.1784965019485403,
+            1.1883409807504315,
+            1.1981866961722352
+          ],
+          "units": "radians",
+          "derivative": 0.9845097111847445,
+          "rangeDerivativeMin": 0.937197386423616,
+          "rangeDerivativeMax": 0.9866804721103684,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            67.52287573258235,
+            68.08692281943672,
+            68.65104075939294
+          ]
+        },
+        {
+          "name": "tibia_T3_left",
+          "kind": "tibia",
+          "qpos": 0.0,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.4971219009761025,
+            1.5071211270151978,
+            1.5171203540406357
+          ],
+          "units": "radians",
+          "derivative": 0.9999226532266592,
+          "rangeDerivativeMin": 0.9968759669308491,
+          "rangeDerivativeMax": 0.9999229690116351,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            85.77876634253344,
+            86.35167979297091,
+            86.92459329992165
+          ]
+        },
+        {
+          "name": "tarsus_T3_left",
+          "kind": "tarsus",
+          "qpos": 0.0,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            2.6287387364171795,
+            2.618742917254338,
+            2.608746944800459
+          ],
+          "units": "radians",
+          "derivative": -0.9995895808360133,
+          "rangeDerivativeMin": -0.9999519806103141,
+          "rangeDerivativeMax": 0.9985674969126279,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            150.61563503925734,
+            150.04291678845053,
+            149.47018975471426
+          ]
+        },
+        {
+          "name": "coxa_T1_right",
+          "kind": "coxa",
+          "qpos": 0.0,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            -0.021240478314740272,
+            -0.02108310976950603,
+            -0.020923632930864036
+          ],
+          "units": "cm",
+          "derivative": 0.0158422691938118,
+          "rangeDerivativeMin": 0.011342931832344916,
+          "rangeDerivativeMax": 0.02636958676707768,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_right",
+          "kind": "femur",
+          "qpos": 0.0,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            0.5182928393914129,
+            0.5282928393914126,
+            0.5382928393914133
+          ],
+          "units": "radians",
+          "derivative": 1.0000000000000175,
+          "rangeDerivativeMin": 0.9999999999876774,
+          "rangeDerivativeMax": 1.0000000000087717,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            29.69599224897978,
+            30.268950044110586,
+            30.84190783924145
+          ]
+        },
+        {
+          "name": "tibia_T1_right",
+          "kind": "tibia",
+          "qpos": 0.0,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.5276938116943528,
+            1.5376914034701425,
+            1.5476889968403311
+          ],
+          "units": "radians",
+          "derivative": 0.9997592572989156,
+          "rangeDerivativeMin": 0.9931751240700726,
+          "rangeDerivativeMax": 0.9997593096378043,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            87.53040779833994,
+            88.1032276123874,
+            88.67604751778718
+          ]
+        },
+        {
+          "name": "tarsus_T1_right",
+          "kind": "tarsus",
+          "qpos": 0.0,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            3.088214608137882,
+            3.097983788120807,
+            3.1076225136880278
+          ],
+          "units": "radians",
+          "derivative": 0.9703952775072855,
+          "rangeDerivativeMin": -0.9991020960442576,
+          "rangeDerivativeMax": 0.999101404712821,
+          "rangeNegativeDerivativeCount": 19,
+          "rangePositiveDerivativeCount": 12,
+          "measuredDegrees": [
+            176.94166327694802,
+            177.5013960592733,
+            178.0536543541599
+          ]
+        },
+        {
+          "name": "coxa_T2_right",
+          "kind": "coxa",
+          "qpos": 0.0,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            -0.0079958686928637,
+            -0.00800632120419972,
+            -0.008015973090087232
+          ],
+          "units": "cm",
+          "derivative": -0.00100521986117659,
+          "rangeDerivativeMin": -0.0025742798255568022,
+          "rangeDerivativeMax": 0.005645548776071763,
+          "rangeNegativeDerivativeCount": 9,
+          "rangePositiveDerivativeCount": 22
+        },
+        {
+          "name": "femur_T2_right",
+          "kind": "femur",
+          "qpos": 0.0,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            0.25880358240841506,
+            0.2688035824084167,
+            0.27880358240841435
+          ],
+          "units": "radians",
+          "derivative": 0.9999999999999648,
+          "rangeDerivativeMin": 0.9999999999915632,
+          "rangeDerivativeMax": 1.0000000000065512,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            14.82835299486838,
+            15.401310789999297,
+            15.974268585129986
+          ]
+        },
+        {
+          "name": "tibia_T2_right",
+          "kind": "tibia",
+          "qpos": 0.0,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.6491483494851478,
+            1.6591483194972363,
+            1.669148289456149
+          ],
+          "units": "radians",
+          "derivative": 0.9999969985500567,
+          "rangeDerivativeMin": 0.9999097414414848,
+          "rangeDerivativeMax": 0.9999970201635122,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            94.48924021646465,
+            95.06219629341471,
+            95.63515236731801
+          ]
+        },
+        {
+          "name": "tarsus_T2_right",
+          "kind": "tarsus",
+          "qpos": 0.0,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            2.7920497119369116,
+            2.7820612498275614,
+            2.7720721717470704
+          ],
+          "units": "radians",
+          "derivative": -0.9988770094920607,
+          "rangeDerivativeMin": -0.9999414526007389,
+          "rangeDerivativeMax": 0.9996363863451485,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.9726646847023,
+            159.4003679620102,
+            158.82803594677142
+          ]
+        },
+        {
+          "name": "coxa_T3_right",
+          "kind": "coxa",
+          "qpos": 0.0,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            -0.010962092036462673,
+            -0.011153116026942578,
+            -0.011343206858862184
+          ],
+          "units": "cm",
+          "derivative": -0.019055741119975572,
+          "rangeDerivativeMin": -0.02096198618031786,
+          "rangeDerivativeMax": 0.003889955584382432,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_right",
+          "kind": "femur",
+          "qpos": 0.0,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.1617636313473172,
+            1.1716171040752892,
+            1.1814717988864052
+          ],
+          "units": "radians",
+          "derivative": 0.9854083769543998,
+          "rangeDerivativeMin": 0.9429655661782887,
+          "rangeDerivativeMax": 0.9876267618291745,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            66.56415286799374,
+            67.1287152688538,
+            67.69334768992022
+          ]
+        },
+        {
+          "name": "tibia_T3_right",
+          "kind": "tibia",
+          "qpos": 0.0,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            1.5034952697857629,
+            1.513494877029419,
+            1.5234944847234246
+          ],
+          "units": "radians",
+          "derivative": 0.9999607468830884,
+          "rangeDerivativeMin": 0.9985299769556255,
+          "rangeDerivativeMax": 0.9999608755351108,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            86.14393347660729,
+            86.71686876845723,
+            87.28980408611031
+          ]
+        },
+        {
+          "name": "tarsus_T3_right",
+          "kind": "tarsus",
+          "qpos": 0.0,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.01,
+            0.0,
+            0.01
+          ],
+          "measured": [
+            2.6372458917801267,
+            2.6272622237679197,
+            2.6172779582092542
+          ],
+          "units": "radians",
+          "derivative": -0.9983966785436227,
+          "rangeDerivativeMin": -0.9997594592792147,
+          "rangeDerivativeMax": 0.9950068174169324,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            151.1030591372163,
+            150.53103709605708,
+            149.95898081800772
+          ]
+        }
+      ]
+    },
+    {
+      "name": "original_fruit",
+      "joints": [
+        {
+          "name": "coxa_T1_left",
+          "kind": "coxa",
+          "qpos": 0.0036132760470205466,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.0063867239529794536,
+            0.0036132760470205466,
+            0.013613276047020548
+          ],
+          "measured": [
+            -0.02254192418876657,
+            -0.022415206944905012,
+            -0.02228624819902822
+          ],
+          "units": "cm",
+          "derivative": 0.012783799486917533,
+          "rangeDerivativeMin": 0.007992269169913857,
+          "rangeDerivativeMax": 0.025803080835984198,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_left",
+          "kind": "femur",
+          "qpos": -0.03499099971169861,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.044990999711698614,
+            -0.03499099971169861,
+            -0.02499099971169861
+          ],
+          "measured": [
+            0.4643646214593501,
+            0.47436455948510065,
+            0.4843644998787494
+          ],
+          "units": "radians",
+          "derivative": 0.9999939209699658,
+          "rangeDerivativeMin": 0.9999897595333596,
+          "rangeDerivativeMax": 0.9999987321296366,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            26.606132964810858,
+            27.17908720907875,
+            27.752041589017217
+          ]
+        },
+        {
+          "name": "tibia_T1_left",
+          "kind": "tibia",
+          "qpos": -0.018832039729386164,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.028832039729386166,
+            -0.018832039729386164,
+            -0.008832039729386164
+          ],
+          "measured": [
+            1.5226550867190458,
+            1.5326475469471175,
+            1.5426400129264708
+          ],
+          "units": "radians",
+          "derivative": 0.9992463103712488,
+          "rangeDerivativeMin": 0.9817315653866399,
+          "rangeDerivativeMax": 0.9992459767482753,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            87.24171012312769,
+            87.81423592114854,
+            88.38676204869354
+          ]
+        },
+        {
+          "name": "tarsus_T1_left",
+          "kind": "tarsus",
+          "qpos": -0.010414072895430504,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            -0.020414072895430506,
+            -0.010414072895430504,
+            -0.00041407289543050375
+          ],
+          "measured": [
+            3.129156350884492,
+            3.120113027797556,
+            3.110478921205238
+          ],
+          "units": "radians",
+          "derivative": -0.9338714839627114,
+          "rangeDerivativeMin": -0.9999031641028111,
+          "rangeDerivativeMax": 0.9998832504298782,
+          "rangeNegativeDerivativeCount": 20,
+          "rangePositiveDerivativeCount": 11,
+          "measuredDegrees": [
+            179.28745234223913,
+            178.76930809658447,
+            178.21731444946548
+          ]
+        },
+        {
+          "name": "coxa_T2_left",
+          "kind": "coxa",
+          "qpos": -0.008785741765725136,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.018785741765725138,
+            -0.008785741765725136,
+            0.0012142582342748644
+          ],
+          "measured": [
+            -0.008046626076585815,
+            -0.008058126070298975,
+            -0.00806882025811991
+          ],
+          "units": "cm",
+          "derivative": -0.0011097090767047365,
+          "rangeDerivativeMin": -0.002619417982783513,
+          "rangeDerivativeMax": 0.00567259090595261,
+          "rangeNegativeDerivativeCount": 9,
+          "rangePositiveDerivativeCount": 22
+        },
+        {
+          "name": "femur_T2_left",
+          "kind": "femur",
+          "qpos": 0.031522805527913436,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            0.021522805527913434,
+            0.031522805527913436,
+            0.04152280552791344
+          ],
+          "measured": [
+            0.27816926070940184,
+            0.2881692606305077,
+            0.29816926055676285
+          ],
+          "units": "radians",
+          "derivative": 0.99999999236805,
+          "rangeDerivativeMin": 0.9999999458572967,
+          "rangeDerivativeMax": 0.9999999993948183,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            15.937924628923001,
+            16.510882419533523,
+            17.083840210439078
+          ]
+        },
+        {
+          "name": "tibia_T2_left",
+          "kind": "tibia",
+          "qpos": 0.029137949080761574,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.019137949080761572,
+            0.029137949080761574,
+            0.039137949080761576
+          ],
+          "measured": [
+            1.6798269696770152,
+            1.6898145993123177,
+            1.6998021993437629
+          ],
+          "units": "radians",
+          "derivative": 0.9987614833373846,
+          "rangeDerivativeMin": 0.964251322543852,
+          "rangeDerivativeMax": 0.9987783361897762,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            96.24699567474349,
+            96.8192447001861,
+            97.39149202945265
+          ]
+        },
+        {
+          "name": "tarsus_T2_left",
+          "kind": "tarsus",
+          "qpos": 0.004925994351926273,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.005074005648073727,
+            0.004925994351926273,
+            0.014925994351926274
+          ],
+          "measured": [
+            2.7808349793383025,
+            2.77085225273808,
+            2.760868632314577
+          ],
+          "units": "radians",
+          "derivative": -0.9983173511862731,
+          "rangeDerivativeMin": -0.9999053183085138,
+          "rangeDerivativeMax": 0.9994105778976525,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.3301078384342,
+            158.75813973620848,
+            158.18612042168115
+          ]
+        },
+        {
+          "name": "coxa_T3_left",
+          "kind": "coxa",
+          "qpos": -0.09454187570419882,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.10454187570419882,
+            -0.09454187570419882,
+            -0.08454187570419883
+          ],
+          "measured": [
+            -0.009052348108105885,
+            -0.009238298950783286,
+            -0.009423553103250442
+          ],
+          "units": "cm",
+          "derivative": -0.01856024975722786,
+          "rangeDerivativeMin": -0.019590948282296322,
+          "rangeDerivativeMax": 0.0036006549879348537,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_left",
+          "kind": "femur",
+          "qpos": 0.20980994761733654,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            0.19980994761733653,
+            0.20980994761733654,
+            0.21980994761733655
+          ],
+          "measured": [
+            1.3859140016148224,
+            1.3958078717627633,
+            1.405702114547781
+          ],
+          "units": "radians",
+          "derivative": 0.9894056466479331,
+          "rangeDerivativeMin": 0.9504958414963127,
+          "rangeDerivativeMax": 0.9897269860448255,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            79.40702306061648,
+            79.97390006314397,
+            80.54079841620326
+          ]
+        },
+        {
+          "name": "tibia_T3_left",
+          "kind": "tibia",
+          "qpos": 0.2772108484355143,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.2672108484355143,
+            0.2772108484355143,
+            0.2872108484355143
+          ],
+          "measured": [
+            1.774311165185775,
+            1.7843103603799821,
+            1.7943095520766896
+          ],
+          "units": "radians",
+          "derivative": 0.9999193445457291,
+          "rangeDerivativeMin": 0.9968759669413962,
+          "rangeDerivativeMax": 0.9999229690205169,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            101.66054130808435,
+            102.23345299123991,
+            102.80636447400352
+          ]
+        },
+        {
+          "name": "tarsus_T3_left",
+          "kind": "tarsus",
+          "qpos": 0.03040283698855007,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            0.02040283698855007,
+            0.03040283698855007,
+            0.04040283698855007
+          ],
+          "measured": [
+            2.5983481440294356,
+            2.5883518844370306,
+            2.5783554954702046
+          ],
+          "units": "radians",
+          "derivative": -0.9996324279615496,
+          "rangeDerivativeMin": -0.9999519806036528,
+          "rangeDerivativeMax": 0.9985674969192893,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            148.87438235853722,
+            148.30163887297525,
+            147.72888797480496
+          ]
+        },
+        {
+          "name": "coxa_T1_right",
+          "kind": "coxa",
+          "qpos": -0.05264775074268923,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.06264775074268923,
+            -0.05264775074268923,
+            -0.04264775074268923
+          ],
+          "measured": [
+            -0.022258341871352484,
+            -0.02209563385432824,
+            -0.021930716292331835
+          ],
+          "units": "cm",
+          "derivative": 0.016381278951032443,
+          "rangeDerivativeMin": 0.012964809817817696,
+          "rangeDerivativeMax": 0.02750568676351166,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_right",
+          "kind": "femur",
+          "qpos": 0.16743955796348803,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            0.15743955796348802,
+            0.16743955796348803,
+            0.17743955796348804
+          ],
+          "measured": [
+            0.6857299468358817,
+            0.6957298239244424,
+            0.7057297039221773
+          ],
+          "units": "radians",
+          "derivative": 0.9999878543147758,
+          "rangeDerivativeMin": 0.9999634651333689,
+          "rangeDerivativeMax": 0.9999950079830899,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            39.28943183942634,
+            39.86238259225044,
+            40.43533351175794
+          ]
+        },
+        {
+          "name": "tibia_T1_right",
+          "kind": "tibia",
+          "qpos": 0.10214801538324653,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.09214801538324653,
+            0.10214801538324653,
+            0.11214801538324652
+          ],
+          "measured": [
+            1.6298172405188125,
+            1.6398148259056338,
+            1.649812407952077
+          ],
+          "units": "radians",
+          "derivative": 0.999758371663229,
+          "rangeDerivativeMin": 0.9931751240849218,
+          "rangeDerivativeMax": 0.999759309641135,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            93.38164925938614,
+            93.95446870737267,
+            94.52728796396963
+          ]
+        },
+        {
+          "name": "tarsus_T1_right",
+          "kind": "tarsus",
+          "qpos": 0.06032826083847299,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            0.050328260838472985,
+            0.06032826083847299,
+            0.07032826083847299
+          ],
+          "measured": [
+            3.1287402932430397,
+            3.121035983399022,
+            3.111933080691369
+          ],
+          "units": "radians",
+          "derivative": -0.840360627583525,
+          "rangeDerivativeMin": -0.9991020960509189,
+          "rangeDerivativeMax": 0.9991014046950575,
+          "rangeNegativeDerivativeCount": 19,
+          "rangePositiveDerivativeCount": 12,
+          "measuredDegrees": [
+            179.26361399534974,
+            178.82218955722644,
+            178.3006316507597
+          ]
+        },
+        {
+          "name": "coxa_T2_right",
+          "kind": "coxa",
+          "qpos": -0.06165038487263814,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.07165038487263814,
+            -0.06165038487263814,
+            -0.051650384872638136
+          ],
+          "measured": [
+            -0.008412082116854304,
+            -0.008423456074235256,
+            -0.00843398769302844
+          ],
+          "units": "cm",
+          "derivative": -0.0010952788087068529,
+          "rangeDerivativeMin": -0.002244860784466479,
+          "rangeDerivativeMax": 0.006280551032521696,
+          "rangeNegativeDerivativeCount": 8,
+          "rangePositiveDerivativeCount": 23
+        },
+        {
+          "name": "femur_T2_right",
+          "kind": "femur",
+          "qpos": 0.12626342758091205,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            0.11626342758091206,
+            0.12626342758091205,
+            0.13626342758091206
+          ],
+          "measured": [
+            0.3850660392095276,
+            0.3950659814627461,
+            0.4050659264208823
+          ],
+          "units": "radians",
+          "derivative": 0.999994360567735,
+          "rangeDerivativeMin": 0.9999407741246441,
+          "rangeDerivativeMax": 0.9999991648856899,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            22.062658880525007,
+            22.63561336700897,
+            23.2085680084733
+          ]
+        },
+        {
+          "name": "tibia_T2_right",
+          "kind": "tibia",
+          "qpos": 0.10337443357448749,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.09337443357448749,
+            0.10337443357448749,
+            0.11337443357448748
+          ],
+          "measured": [
+            1.7525224696541828,
+            1.7625224388111598,
+            1.772522407848158
+          ],
+          "units": "radians",
+          "derivative": 0.9999969096987642,
+          "rangeDerivativeMin": 0.9999097414215008,
+          "rangeDerivativeMax": 0.9999970201479691,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            100.41214101302856,
+            100.98509704098434,
+            101.55805306206584
+          ]
+        },
+        {
+          "name": "tarsus_T2_right",
+          "kind": "tarsus",
+          "qpos": 0.009121572473665747,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.0008784275263342533,
+            0.009121572473665747,
+            0.01912157247366575
+          ],
+          "measured": [
+            2.7829386892594226,
+            2.772949663260815,
+            2.762960065876507
+          ],
+          "units": "radians",
+          "derivative": -0.9989311691457778,
+          "rangeDerivativeMin": -0.9999414526040695,
+          "rangeDerivativeMax": 0.9996363863540303,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.4506415382342,
+            158.87831250706753,
+            158.30595073791176
+          ]
+        },
+        {
+          "name": "coxa_T3_right",
+          "kind": "coxa",
+          "qpos": 0.00714731453089768,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.00285268546910232,
+            0.00714731453089768,
+            0.01714731453089768
+          ],
+          "measured": [
+            -0.011100024397686979,
+            -0.011290835880172772,
+            -0.011480699031244487
+          ],
+          "units": "cm",
+          "derivative": -0.01903373167787539,
+          "rangeDerivativeMin": -0.02100981231680215,
+          "rangeDerivativeMax": 0.0038927160576733566,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_right",
+          "kind": "femur",
+          "qpos": -0.014934163486145515,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            -0.024934163486145515,
+            -0.014934163486145515,
+            -0.0049341634861455146
+          ],
+          "measured": [
+            1.1470544371858669,
+            1.156904479760565,
+            1.1667558242897955
+          ],
+          "units": "radians",
+          "derivative": 0.9850693551964329,
+          "rangeDerivativeMin": 0.9424091541140878,
+          "rangeDerivativeMax": 0.9875000105818987,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            65.72137812250416,
+            66.28574399005855,
+            66.85018445411275
+          ]
+        },
+        {
+          "name": "tibia_T3_right",
+          "kind": "tibia",
+          "qpos": -0.01543318907030105,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.02543318907030105,
+            -0.01543318907030105,
+            -0.005433189070301049
+          ],
+          "measured": [
+            1.4880626879319483,
+            1.4980622943244535,
+            1.5080619012901304
+          ],
+          "units": "radians",
+          "derivative": 0.9999606679091053,
+          "rangeDerivativeMin": 0.9985299769658951,
+          "rangeDerivativeMax": 0.9999608755273393,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            85.25971166939354,
+            85.83264691247612,
+            86.40558218839902
+          ]
+        },
+        {
+          "name": "tarsus_T3_right",
+          "kind": "tarsus",
+          "qpos": -0.00011260179105721381,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.010112601791057213,
+            -0.00011260179105721381,
+            0.009887398208942787
+          ],
+          "measured": [
+            2.6373583061321844,
+            2.627374645049674,
+            2.61739038602777
+          ],
+          "units": "radians",
+          "derivative": -0.9983960052207141,
+          "rangeDerivativeMin": -0.9997594592525694,
+          "rangeDerivativeMax": 0.9950068174258142,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            151.10950000514592,
+            150.53747836102906,
+            149.96542245750854
+          ]
+        }
+      ]
+    },
+    {
+      "name": "fruit_opposite_heading",
+      "joints": [
+        {
+          "name": "coxa_T1_left",
+          "kind": "coxa",
+          "qpos": 0.004163152582098959,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.005836847417901041,
+            0.004163152582098959,
+            0.01416315258209896
+          ],
+          "measured": [
+            -0.022577210847743952,
+            -0.022452192623023823,
+            -0.022324929197751472
+          ],
+          "units": "cm",
+          "derivative": 0.012614082499624,
+          "rangeDerivativeMin": 0.007805083103787358,
+          "rangeDerivativeMax": 0.025752924388237484,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_left",
+          "kind": "femur",
+          "qpos": -0.035479266213136525,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.04547926621313653,
+            -0.035479266213136525,
+            -0.025479266213136523
+          ],
+          "measured": [
+            0.46387611455702277,
+            0.4738761096900857,
+            0.4838761050093251
+          ],
+          "units": "radians",
+          "derivative": 0.9999995226151163,
+          "rangeDerivativeMin": 0.9999991973588807,
+          "rangeDerivativeMax": 0.9999999006127247,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            26.578143581044493,
+            27.151101097320364,
+            27.72405862426336
+          ]
+        },
+        {
+          "name": "tibia_T1_left",
+          "kind": "tibia",
+          "qpos": -0.01857417679862821,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.028574176798628212,
+            -0.01857417679862821,
+            -0.00857417679862821
+          ],
+          "measured": [
+            1.522912755142283,
+            1.5329052155376661,
+            1.5428976816453353
+          ],
+          "units": "radians",
+          "derivative": 0.9992463251526138,
+          "rangeDerivativeMin": 0.9817315654055137,
+          "rangeDerivativeMax": 0.99924597677159,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            87.25647343629298,
+            87.82899924390006,
+            88.40152537879702
+          ]
+        },
+        {
+          "name": "tarsus_T1_left",
+          "kind": "tarsus",
+          "qpos": -0.010516129315590463,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            -0.020516129315590464,
+            -0.010516129315590463,
+            -0.0005161293155904623
+          ],
+          "measured": [
+            3.12924104285351,
+            3.1202096208296437,
+            3.1105784115091697
+          ],
+          "units": "radians",
+          "derivative": -0.9331315672170157,
+          "rangeDerivativeMin": -0.9999031641538814,
+          "rangeDerivativeMax": 0.9998832504232169,
+          "rangeNegativeDerivativeCount": 20,
+          "rangePositiveDerivativeCount": 11,
+          "measuredDegrees": [
+            179.2923048346225,
+            178.77484246965346,
+            178.22301482398325
+          ]
+        },
+        {
+          "name": "coxa_T2_left",
+          "kind": "coxa",
+          "qpos": -0.025406982526670084,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.035406982526670086,
+            -0.025406982526670084,
+            -0.015406982526670084
+          ],
+          "measured": [
+            -0.008259295139637409,
+            -0.008268365343238673,
+            -0.008276608717195877
+          ],
+          "units": "cm",
+          "derivative": -0.0008656788779233882,
+          "rangeDerivativeMin": -0.002287209826395964,
+          "rangeDerivativeMax": 0.006083457004921362,
+          "rangeNegativeDerivativeCount": 8,
+          "rangePositiveDerivativeCount": 23
+        },
+        {
+          "name": "femur_T2_left",
+          "kind": "femur",
+          "qpos": 0.07559774294488451,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            0.06559774294488452,
+            0.07559774294488451,
+            0.08559774294488451
+          ],
+          "measured": [
+            0.32224165162590146,
+            0.332241349274365,
+            0.3422410639555276
+          ],
+          "units": "radians",
+          "derivative": 0.9999706164813081,
+          "rangeDerivativeMin": 0.9997254382818066,
+          "rangeDerivativeMax": 0.999996873912723,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            18.463086621489136,
+            19.036027093152992,
+            19.608968540718617
+          ]
+        },
+        {
+          "name": "tibia_T2_left",
+          "kind": "tibia",
+          "qpos": 0.05856752654072971,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.04856752654072971,
+            0.05856752654072971,
+            0.06856752654072971
+          ],
+          "measured": [
+            1.7092200547102352,
+            1.7192075897911965,
+            1.7291950875656945
+          ],
+          "units": "radians",
+          "derivative": 0.9987516427729657,
+          "rangeDerivativeMin": 0.9642513225482929,
+          "rangeDerivativeMax": 0.9987783361997682,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            97.93109539401614,
+            98.50333900189408,
+            99.07558047226911
+          ]
+        },
+        {
+          "name": "tarsus_T2_left",
+          "kind": "tarsus",
+          "qpos": 0.006249084566169394,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.0037509154338306065,
+            0.006249084566169394,
+            0.016249084566169393
+          ],
+          "measured": [
+            2.7795142285003265,
+            2.7695313794373138,
+            2.7595476460437802
+          ],
+          "units": "radians",
+          "derivative": -0.9983291228273128,
+          "rangeDerivativeMin": -0.9999053182591089,
+          "rangeDerivativeMax": 0.9994105779020934,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.25443438962984,
+            158.68245927080307,
+            158.11043348356978
+          ]
+        },
+        {
+          "name": "coxa_T3_left",
+          "kind": "coxa",
+          "qpos": -0.13132558160823152,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.14132558160823153,
+            -0.13132558160823152,
+            -0.12132558160823152
+          ],
+          "measured": [
+            -0.008514170509525187,
+            -0.008703506770362662,
+            -0.008892196150574353
+          ],
+          "units": "cm",
+          "derivative": -0.018901282052458283,
+          "rangeDerivativeMin": -0.019718672141649796,
+          "rangeDerivativeMax": 0.003774440636809817,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_left",
+          "kind": "femur",
+          "qpos": 0.1896872548740125,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            0.1796872548740125,
+            0.1896872548740125,
+            0.1996872548740125
+          ],
+          "measured": [
+            1.3656460612131223,
+            1.375520069996428,
+            1.3853945731037758
+          ],
+          "units": "radians",
+          "derivative": 0.9874255945326751,
+          "rangeDerivativeMin": 0.9424541637703676,
+          "rangeDerivativeMax": 0.9879004794333124,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            78.24575561617638,
+            78.8114946463349,
+            79.37726199917475
+          ]
+        },
+        {
+          "name": "tibia_T3_left",
+          "kind": "tibia",
+          "qpos": 0.20611547889397636,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.19611547889397635,
+            0.20611547889397636,
+            0.21611547889397636
+          ],
+          "measured": [
+            1.7032214322438188,
+            1.7132206471936469,
+            1.723219859888806
+          ],
+          "units": "radians",
+          "derivative": 0.9999213822493571,
+          "rangeDerivativeMin": 0.9968759669308491,
+          "rangeDerivativeMax": 0.9999229690238476,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            97.58739964379812,
+            98.1603124588674,
+            98.73322514475365
+          ]
+        },
+        {
+          "name": "tarsus_T3_left",
+          "kind": "tarsus",
+          "qpos": -0.008391976676453567,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.018391976676453568,
+            -0.008391976676453567,
+            0.0016080233235464328
+          ],
+          "measured": [
+            2.637127079587923,
+            2.627131396094704,
+            2.6171355516835892
+          ],
+          "units": "radians",
+          "derivative": -0.9995763952166836,
+          "rangeDerivativeMin": -0.9999519806014323,
+          "rangeDerivativeMax": 0.9985674968837621,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            151.09625170004833,
+            150.5235412225383,
+            149.950821525112
+          ]
+        },
+        {
+          "name": "coxa_T1_right",
+          "kind": "coxa",
+          "qpos": -0.003930102661957354,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.013930102661957353,
+            -0.003930102661957354,
+            0.006069897338042646
+          ],
+          "measured": [
+            -0.0212181298988512,
+            -0.02105743189291123,
+            -0.020894628161329715
+          ],
+          "units": "cm",
+          "derivative": 0.01617508687607426,
+          "rangeDerivativeMin": 0.011767868564396822,
+          "rangeDerivativeMax": 0.02654242855314789,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_right",
+          "kind": "femur",
+          "qpos": 0.05988817072829535,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            0.04988817072829535,
+            0.05988817072829535,
+            0.06988817072829535
+          ],
+          "measured": [
+            0.5781809719399048,
+            0.5881809649845925,
+            0.598180958234791
+          ],
+          "units": "radians",
+          "derivative": 0.9999993147443096,
+          "rangeDerivativeMin": 0.9999984554098784,
+          "rangeDerivativeMax": 0.9999997889542644,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            33.127329486928424,
+            33.700286883549204,
+            34.27324429194489
+          ]
+        },
+        {
+          "name": "tibia_T1_right",
+          "kind": "tibia",
+          "qpos": 0.03706560650190281,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.02706560650190281,
+            0.03706560650190281,
+            0.047065606501902814
+          ],
+          "measured": [
+            1.564750498588854,
+            1.5747480938573113,
+            1.5847456889357159
+          ],
+          "units": "radians",
+          "derivative": 0.9997595173430904,
+          "rangeDerivativeMin": 0.9931751240493947,
+          "rangeDerivativeMax": 0.999759309651127,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            89.65359956013262,
+            90.22641957429518,
+            90.79923957756853
+          ]
+        },
+        {
+          "name": "tarsus_T1_right",
+          "kind": "tarsus",
+          "qpos": 0.02180828344527862,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            0.01180828344527862,
+            0.02180828344527862,
+            0.03180828344527862
+          ],
+          "measured": [
+            3.1093424361039563,
+            3.118611165980208,
+            3.1268977206111694
+          ],
+          "units": "radians",
+          "derivative": 0.8777642253606556,
+          "rangeDerivativeMin": -0.9991020960353758,
+          "rangeDerivativeMax": 0.9991014047194824,
+          "rangeNegativeDerivativeCount": 19,
+          "rangePositiveDerivativeCount": 12,
+          "measuredDegrees": [
+            178.15219864968253,
+            178.68325775303856,
+            179.15804236009726
+          ]
+        },
+        {
+          "name": "coxa_T2_right",
+          "kind": "coxa",
+          "qpos": -0.01937845927285771,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.02937845927285771,
+            -0.01937845927285771,
+            -0.009378459272857709
+          ],
+          "measured": [
+            -0.008219937721906516,
+            -0.00822805144772634,
+            -0.008235342375258203
+          ],
+          "units": "cm",
+          "derivative": -0.0007702326675843549,
+          "rangeDerivativeMin": -0.0022342198125521046,
+          "rangeDerivativeMax": 0.0060750201502212525,
+          "rangeNegativeDerivativeCount": 8,
+          "rangePositiveDerivativeCount": 23
+        },
+        {
+          "name": "femur_T2_right",
+          "kind": "femur",
+          "qpos": 0.07988207184458114,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            0.06988207184458115,
+            0.07988207184458114,
+            0.08988207184458114
+          ],
+          "measured": [
+            0.3386838947855295,
+            0.34868369892035866,
+            0.35868351354246897
+          ],
+          "units": "radians",
+          "derivative": 0.9999809378469731,
+          "rangeDerivativeMin": 0.999842273528978,
+          "rangeDerivativeMax": 0.9999977758179401,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            19.40515776026367,
+            19.978104333146852,
+            20.55105150690698
+          ]
+        },
+        {
+          "name": "tibia_T2_right",
+          "kind": "tibia",
+          "qpos": 0.08010903805911457,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            0.07010903805911457,
+            0.08010903805911457,
+            0.09010903805911456
+          ],
+          "measured": [
+            1.7292571454700068,
+            1.7392571148798441,
+            1.7492570841854478
+          ],
+          "units": "radians",
+          "derivative": 0.9999969357720522,
+          "rangeDerivativeMin": 0.9999097414303826,
+          "rangeDerivativeMax": 0.9999970201657327,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            99.07913612827163,
+            99.65209217071524,
+            100.2250482071867
+          ]
+        },
+        {
+          "name": "tarsus_T2_right",
+          "kind": "tarsus",
+          "qpos": 0.013307298019263654,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            0.0033072980192636534,
+            0.013307298019263654,
+            0.023307298019263654
+          ],
+          "measured": [
+            2.7787576296864414,
+            2.7687683588502527,
+            2.758778535651665
+          ],
+          "units": "radians",
+          "derivative": -0.9989547017388078,
+          "rangeDerivativeMin": -0.9999414526035144,
+          "rangeDerivativeMax": 0.9996363863407076,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.2110844708096,
+            158.63874141148287,
+            158.06636670412192
+          ]
+        },
+        {
+          "name": "coxa_T3_right",
+          "kind": "coxa",
+          "qpos": 0.0070457552360078685,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.0029542447639921317,
+            0.0070457552360078685,
+            0.01704575523600787
+          ],
+          "measured": [
+            -0.01110950717831823,
+            -0.0113006277231239,
+            -0.011490797860563794
+          ],
+          "units": "cm",
+          "derivative": -0.01906453411227825,
+          "rangeDerivativeMin": -0.02104511288588025,
+          "rangeDerivativeMax": 0.003906347089896456,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_right",
+          "kind": "femur",
+          "qpos": -0.01501414507019775,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            -0.025014145070197752,
+            -0.01501414507019775,
+            -0.00501414507019775
+          ],
+          "measured": [
+            1.1469654129632245,
+            1.1568195676771245,
+            1.1666749891942048
+          ],
+          "units": "radians",
+          "derivative": 0.9854788115490118,
+          "rangeDerivativeMin": 0.9439174626751923,
+          "rangeDerivativeMax": 0.98784332448143,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            65.71627741027233,
+            66.28087888604773,
+            66.84555294429886
+          ]
+        },
+        {
+          "name": "tibia_T3_right",
+          "kind": "tibia",
+          "qpos": -0.01582026918001119,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.025820269180011193,
+            -0.01582026918001119,
+            -0.005820269180011191
+          ],
+          "measured": [
+            1.4876756230706192,
+            1.497675229439329,
+            1.5076748363843038
+          ],
+          "units": "radians",
+          "derivative": 0.9999606656842295,
+          "rangeDerivativeMin": 0.9985299769693645,
+          "rangeDerivativeMax": 0.9999608755284495,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            85.23753448644156,
+            85.81046972816077,
+            86.38340500289753
+          ]
+        },
+        {
+          "name": "tarsus_T3_right",
+          "kind": "tarsus",
+          "qpos": 0.00026282233461870017,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.0097371776653813,
+            0.00026282233461870017,
+            0.0102628223346187
+          ],
+          "measured": [
+            2.6369835066318967,
+            2.6269998224630333,
+            2.6170155416635574
+          ],
+          "units": "radians",
+          "derivative": -0.9983982484169651,
+          "rangeDerivativeMin": -0.9997594592880965,
+          "rangeDerivativeMax": 0.9950068174191529,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            151.0880255756158,
+            150.51600260874835,
+            149.9439454574649
+          ]
+        }
+      ]
+    },
+    {
+      "name": "flat",
+      "joints": [
+        {
+          "name": "coxa_T1_left",
+          "kind": "coxa",
+          "qpos": 0.002416609270592741,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.007583390729407259,
+            0.002416609270592741,
+            0.012416609270592741
+          ],
+          "measured": [
+            -0.02257002731244099,
+            -0.022443392855358957,
+            -0.022314514077694164
+          ],
+          "units": "cm",
+          "derivative": 0.012775661737341251,
+          "rangeDerivativeMin": 0.00800799142827019,
+          "rangeDerivativeMax": 0.025823434852620397,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_left",
+          "kind": "femur",
+          "qpos": -0.021459078858626527,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.031459078858626525,
+            -0.021459078858626527,
+            -0.011459078858626527
+          ],
+          "measured": [
+            0.47789629084393476,
+            0.4878962876558528,
+            0.4978962845857019
+          ],
+          "units": "radians",
+          "derivative": 0.9999996870883572,
+          "rangeDerivativeMin": 0.9999994448159355,
+          "rangeDerivativeMax": 0.9999999312626517,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            27.381440510313947,
+            27.954398122781132,
+            28.527355742005266
+          ]
+        },
+        {
+          "name": "tibia_T1_left",
+          "kind": "tibia",
+          "qpos": -0.011326872124183863,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.02132687212418386,
+            -0.011326872124183863,
+            -0.0013268721241838626
+          ],
+          "measured": [
+            1.5301545950016286,
+            1.5401470596876794,
+            1.5501395289912117
+          ],
+          "units": "radians",
+          "derivative": 0.9992466994791506,
+          "rangeDerivativeMin": 0.9817315653865011,
+          "rangeDerivativeMax": 0.9992459767693695,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            87.67140029614309,
+            88.24392634958731,
+            88.81645266759375
+          ]
+        },
+        {
+          "name": "tarsus_T1_left",
+          "kind": "tarsus",
+          "qpos": -0.006372705931758903,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            -0.016372705931758904,
+            -0.006372705931758903,
+            0.0036272940682410973
+          ],
+          "measured": [
+            3.1256384318963844,
+            3.1162535915938916,
+            3.1065273394837365
+          ],
+          "units": "radians",
+          "derivative": -0.9555546206323928,
+          "rangeDerivativeMin": -0.9999031641338973,
+          "rangeDerivativeMax": 0.9998832504143351,
+          "rangeNegativeDerivativeCount": 20,
+          "rangePositiveDerivativeCount": 11,
+          "measuredDegrees": [
+            179.0858904315516,
+            178.5481786908145,
+            177.9909054944224
+          ]
+        },
+        {
+          "name": "coxa_T2_left",
+          "kind": "coxa",
+          "qpos": 0.0061909770403454955,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.0038090229596545047,
+            0.0061909770403454955,
+            0.016190977040345497
+          ],
+          "measured": [
+            -0.00794007762886494,
+            -0.007951629043548486,
+            -0.007962385301954016
+          ],
+          "units": "cm",
+          "derivative": -0.001115383654453836,
+          "rangeDerivativeMin": -0.0027182258981184315,
+          "rangeDerivativeMax": 0.005498093699519979,
+          "rangeNegativeDerivativeCount": 10,
+          "rangePositiveDerivativeCount": 21
+        },
+        {
+          "name": "femur_T2_left",
+          "kind": "femur",
+          "qpos": -0.01981291452441082,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.029812914524410823,
+            -0.01981291452441082,
+            -0.009812914524410821
+          ],
+          "measured": [
+            0.22683356460623538,
+            0.23683355598313843,
+            0.2468335480461688
+          ],
+          "units": "radians",
+          "derivative": 0.9999991719966709,
+          "rangeDerivativeMin": 0.999995999131989,
+          "rangeDerivativeMax": 0.999999954456321,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            12.996605903845376,
+            13.569563204909139,
+            14.1425205452851
+          ]
+        },
+        {
+          "name": "tibia_T2_left",
+          "kind": "tibia",
+          "qpos": -0.01669636526846584,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.02669636526846584,
+            -0.01669636526846584,
+            -0.006696365268465841
+          ],
+          "measured": [
+            1.6340490467987534,
+            1.6440367795910185,
+            1.6540244943792175
+          ],
+          "units": "radians",
+          "derivative": 0.9987723790232051,
+          "rangeDerivativeMin": 0.9642513225505134,
+          "rangeDerivativeMax": 0.9987783361875557,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            93.62411389894372,
+            94.19636883484492,
+            94.76862273918911
+          ]
+        },
+        {
+          "name": "tarsus_T2_left",
+          "kind": "tarsus",
+          "qpos": -0.002372879282195597,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.012372879282195597,
+            -0.002372879282195597,
+            0.007627120717804404
+          ],
+          "measured": [
+            2.788120637539895,
+            2.7781386110329644,
+            2.768155635819784
+          ],
+          "units": "radians",
+          "derivative": -0.9982500860055366,
+          "rangeDerivativeMin": -0.9999053182635498,
+          "rangeDerivativeMax": 0.9994105779065343,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            159.74754530436033,
+            159.1756173145255,
+            158.60363496782657
+          ]
+        },
+        {
+          "name": "coxa_T3_left",
+          "kind": "coxa",
+          "qpos": 0.009493909875324337,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.0005060901246756629,
+            0.009493909875324337,
+            0.019493909875324338
+          ],
+          "measured": [
+            -0.011197613500697041,
+            -0.011387255012773143,
+            -0.01157594958767224
+          ],
+          "units": "cm",
+          "derivative": -0.01891680434875989,
+          "rangeDerivativeMin": -0.02090184769112935,
+          "rangeDerivativeMax": 0.0038626181220538514,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_left",
+          "kind": "femur",
+          "qpos": -0.019609185382159427,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            -0.029609185382159425,
+            -0.019609185382159427,
+            -0.009609185382159427
+          ],
+          "measured": [
+            1.1591946421493595,
+            1.1690370408811672,
+            1.1788807627653624
+          ],
+          "units": "radians",
+          "derivative": 0.9843060308001418,
+          "rangeDerivativeMin": 0.9373694053582682,
+          "rangeDerivativeMax": 0.9867207267744149,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            66.41696062933607,
+            66.98088853695356,
+            67.5448922556185
+          ]
+        },
+        {
+          "name": "tibia_T3_left",
+          "kind": "tibia",
+          "qpos": -0.020430864300790257,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.030430864300790256,
+            -0.020430864300790257,
+            -0.010430864300790257
+          ],
+          "measured": [
+            1.4766926216692233,
+            1.4866918452041253,
+            1.4966910700470892
+          ],
+          "units": "radians",
+          "derivative": 0.9999224188932955,
+          "rangeDerivativeMin": 0.9968759669343186,
+          "rangeDerivativeMax": 0.9999229690083045,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            84.6082548597553,
+            85.18116816671308,
+            85.75408154861728
+          ]
+        },
+        {
+          "name": "tarsus_T3_left",
+          "kind": "tarsus",
+          "qpos": 0.00016805936002011455,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.009831940639979886,
+            0.00016805936002011455,
+            0.010168059360020115
+          ],
+          "measured": [
+            2.6285707486354513,
+            2.618574926822828,
+            2.6085789518669382
+          ],
+          "units": "radians",
+          "derivative": -0.9995898384256519,
+          "rangeDerivativeMin": -0.999951980624747,
+          "rangeDerivativeMax": 0.9985674969126279,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            150.60601004835456,
+            150.03329164572642,
+            149.46056446863548
+          ]
+        },
+        {
+          "name": "coxa_T1_right",
+          "kind": "coxa",
+          "qpos": 0.002246952491117793,
+          "limit": [
+            -0.2,
+            1.7
+          ],
+          "testedQpos": [
+            -0.007753047508882207,
+            0.002246952491117793,
+            0.012246952491117794
+          ],
+          "measured": [
+            -0.021219398111152952,
+            -0.02106288234116208,
+            -0.02090426030048943
+          ],
+          "units": "cm",
+          "derivative": 0.015756890533176124,
+          "rangeDerivativeMin": 0.011209823649865197,
+          "rangeDerivativeMax": 0.02630350373445528,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31
+        },
+        {
+          "name": "femur_T1_right",
+          "kind": "femur",
+          "qpos": -0.01800820167374582,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.02800820167374582,
+            -0.01800820167374582,
+            -0.00800820167374582
+          ],
+          "measured": [
+            0.5002846383815797,
+            0.5102846381369215,
+            0.5202846379008528
+          ],
+          "units": "radians",
+          "derivative": 0.9999999759636559,
+          "rangeDerivativeMin": 0.9999999580234675,
+          "rangeDerivativeMax": 0.9999999942633675,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            28.66419833449311,
+            29.23715611560605,
+            29.810113897211135
+          ]
+        },
+        {
+          "name": "tibia_T1_right",
+          "kind": "tibia",
+          "qpos": -0.00958004423855487,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.019580044238554868,
+            -0.00958004423855487,
+            0.00041995576144513054
+          ],
+          "measured": [
+            1.518116076487823,
+            1.5281136662826176,
+            1.5381112581350842
+          ],
+          "units": "radians",
+          "derivative": 0.999759082363061,
+          "rangeDerivativeMin": 0.9931751240789544,
+          "rangeDerivativeMax": 0.9997593096366941,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            86.98164399371193,
+            87.55446369425671,
+            88.12728351269743
+          ]
+        },
+        {
+          "name": "tarsus_T1_right",
+          "kind": "tarsus",
+          "qpos": -0.005698318011487031,
+          "limit": [
+            -0.7,
+            1.2
+          ],
+          "testedQpos": [
+            -0.01569831801148703,
+            -0.005698318011487031,
+            0.004301681988512969
+          ],
+          "measured": [
+            3.0826142668637466,
+            3.0924280235227686,
+            3.102151667638387
+          ],
+          "units": "radians",
+          "derivative": 0.9768700387320141,
+          "rangeDerivativeMin": -0.9991020960598007,
+          "rangeDerivativeMax": 0.9991014047150415,
+          "rangeNegativeDerivativeCount": 19,
+          "rangePositiveDerivativeCount": 12,
+          "measuredDegrees": [
+            176.62078735810715,
+            177.1830741958375,
+            177.74019796514966
+          ]
+        },
+        {
+          "name": "coxa_T2_right",
+          "kind": "coxa",
+          "qpos": 0.0062161641127090606,
+          "limit": [
+            -0.2,
+            0.9
+          ],
+          "testedQpos": [
+            -0.0037838358872909397,
+            0.0062161641127090606,
+            0.016216164112709062
+          ],
+          "measured": [
+            -0.007940836951998723,
+            -0.00795162296626916,
+            -0.007961613824869308
+          ],
+          "units": "cm",
+          "derivative": -0.0010388436435292481,
+          "rangeDerivativeMin": -0.0026434922365155267,
+          "rangeDerivativeMax": 0.005545904109734157,
+          "rangeNegativeDerivativeCount": 10,
+          "rangePositiveDerivativeCount": 21
+        },
+        {
+          "name": "femur_T2_right",
+          "kind": "femur",
+          "qpos": -0.019827919401268088,
+          "limit": [
+            -0.15,
+            2.0
+          ],
+          "testedQpos": [
+            -0.02982791940126809,
+            -0.019827919401268088,
+            -0.009827919401268087
+          ],
+          "measured": [
+            0.23897570054626835,
+            0.24897568698032635,
+            0.2589756744411628
+          ],
+          "units": "radians",
+          "derivative": 0.9999986947447232,
+          "rangeDerivativeMin": 0.9999943861676436,
+          "rangeDerivativeMax": 0.9999999208432087,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            13.692299047483377,
+            14.26525606534298,
+            14.838213142032654
+          ]
+        },
+        {
+          "name": "tibia_T2_right",
+          "kind": "tibia",
+          "qpos": -0.016729041106654345,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.026729041106654347,
+            -0.016729041106654345,
+            -0.006729041106654345
+          ],
+          "measured": [
+            1.6324193584432471,
+            1.6424193285306234,
+            1.6524192985750457
+          ],
+          "units": "radians",
+          "derivative": 0.9999970065899253,
+          "rangeDerivativeMin": 0.9999097414303826,
+          "rangeDerivativeMax": 0.999997020162402,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            93.53073963425159,
+            94.10369571551531,
+            94.67665179431796
+          ]
+        },
+        {
+          "name": "tarsus_T2_right",
+          "kind": "tarsus",
+          "qpos": -0.0023970085458962396,
+          "limit": [
+            -1.0,
+            1.8
+          ],
+          "testedQpos": [
+            -0.012397008545896239,
+            -0.0023970085458962396,
+            0.007602991454103761
+          ],
+          "measured": [
+            2.794443857421291,
+            2.784455550806399,
+            2.7744666157393176
+          ],
+          "units": "radians",
+          "derivative": -0.9988620840986728,
+          "rangeDerivativeMin": -0.9999414526040695,
+          "rangeDerivativeMax": 0.9996363863451485,
+          "rangeNegativeDerivativeCount": 24,
+          "rangePositiveDerivativeCount": 7,
+          "measuredDegrees": [
+            160.10983911649754,
+            159.53755130298163,
+            158.96522748180763
+          ]
+        },
+        {
+          "name": "coxa_T3_right",
+          "kind": "coxa",
+          "qpos": 0.00913057522942915,
+          "limit": [
+            -0.3,
+            1.3
+          ],
+          "testedQpos": [
+            -0.0008694247705708508,
+            0.00913057522942915,
+            0.01913057522942915
+          ],
+          "measured": [
+            -0.011144887496215165,
+            -0.01133581919479807,
+            -0.011525797012397448
+          ],
+          "units": "cm",
+          "derivative": -0.019045475809114157,
+          "rangeDerivativeMin": -0.0210443553397624,
+          "rangeDerivativeMax": 0.0039013315290131745,
+          "rangeNegativeDerivativeCount": 27,
+          "rangePositiveDerivativeCount": 4
+        },
+        {
+          "name": "femur_T3_right",
+          "kind": "femur",
+          "qpos": -0.01909865909495517,
+          "limit": [
+            -0.7,
+            1.5
+          ],
+          "testedQpos": [
+            -0.029098659094955168,
+            -0.01909865909495517,
+            -0.009098659094955169
+          ],
+          "measured": [
+            1.1429467839646394,
+            1.1527983503272472,
+            1.1626512198481764
+          ],
+          "units": "radians",
+          "derivative": 0.9852217941768494,
+          "rangeDerivativeMin": 0.9431667834403079,
+          "rangeDerivativeMax": 0.9876725695445732,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            65.48602692922452,
+            66.05048010339499,
+            66.61500794303731
+          ]
+        },
+        {
+          "name": "tibia_T3_right",
+          "kind": "tibia",
+          "qpos": -0.019773685049970624,
+          "limit": [
+            -1.35,
+            1.3
+          ],
+          "testedQpos": [
+            -0.029773685049970626,
+            -0.019773685049970624,
+            -0.009773685049970624
+          ],
+          "measured": [
+            1.4837223629960652,
+            1.493721969114864,
+            1.5037215758415696
+          ],
+          "units": "radians",
+          "derivative": 0.9999606422752214,
+          "rangeDerivativeMin": 0.9985299769658951,
+          "rangeDerivativeMax": 0.9999608755306699,
+          "rangeNegativeDerivativeCount": 0,
+          "rangePositiveDerivativeCount": 31,
+          "measuredDegrees": [
+            85.01102936885205,
+            85.58396459625241,
+            86.15689985848327
+          ]
+        },
+        {
+          "name": "tarsus_T3_right",
+          "kind": "tarsus",
+          "qpos": 9.384756060511375e-05,
+          "limit": [
+            -0.8,
+            1.2
+          ],
+          "testedQpos": [
+            -0.009906152439394886,
+            9.384756060511375e-05,
+            0.010093847560605114
+          ],
+          "measured": [
+            2.63715220037851,
+            2.627168526594274,
+            2.6171842555908222
+          ],
+          "units": "radians",
+          "derivative": -0.9983972393843965,
+          "rangeDerivativeMin": -0.9997594592736636,
+          "rangeDerivativeMax": 0.9950068174235938,
+          "rangeNegativeDerivativeCount": 26,
+          "rangePositiveDerivativeCount": 5,
+          "measuredDegrees": [
+            151.097691015327,
+            150.52566864345488,
+            149.95361205344224
+          ]
+        }
+      ]
+    }
+  ],
+  "mapping": [
+    {
+      "joint": "femur_T2_right",
+      "target": "trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 7
+    },
+    {
+      "joint": "coxa_T1_right",
+      "target": "sternal_posterior_rotator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "move_coxa_posterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "femur_T1_right",
+      "target": "trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 8
+    },
+    {
+      "joint": "coxa_T1_left",
+      "target": "sternal_posterior_rotator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "move_coxa_posterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tibia_T1_left",
+      "target": "accessory_tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 12
+    },
+    {
+      "joint": "femur_T1_left",
+      "target": "tergotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tibia_T3_left",
+      "target": "accessory_tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 12
+    },
+    {
+      "joint": "tarsus_T2_left",
+      "target": "tarsus_depressor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tibia_T3_right",
+      "target": "accessory_tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 13
+    },
+    {
+      "joint": "femur_T1_right",
+      "target": "trochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tarsus_T2_right",
+      "target": "tarsus_depressor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "coxa_T1_right",
+      "target": "tergopleural_promotor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tibia_T1_right",
+      "target": "accessory_tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 11
+    },
+    {
+      "joint": "tibia_T3_left",
+      "target": "tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "tibia_T2_right",
+      "target": "tibia_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T2_right",
+      "target": "tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "tarsus_T3_left",
+      "target": "tarsus_depressor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "tarsus_T2_right",
+      "target": "tarsus_levator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T2_right",
+      "target": "accessory_tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 12
+    },
+    {
+      "joint": "coxa_T3_right",
+      "target": "sternal_anterior_rotator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T2_left",
+      "target": "sternotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "femur_T2_left",
+      "target": "trochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T3_right",
+      "target": "accessory_trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "tibia_T2_left",
+      "target": "accessory_tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 11
+    },
+    {
+      "joint": "femur_T3_right",
+      "target": "trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 7
+    },
+    {
+      "joint": "coxa_T1_left",
+      "target": "sternal_anterior_rotator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T3_left",
+      "target": "trochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T2_left",
+      "target": "tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "femur_T2_right",
+      "target": "accessory_trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "femur_T3_left",
+      "target": "sternotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "tibia_T2_left",
+      "target": "tibia_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T3_left",
+      "target": "trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 7
+    },
+    {
+      "joint": "femur_T2_right",
+      "target": "sternotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "tibia_T3_right",
+      "target": "tibia_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T2_left",
+      "target": "trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 7
+    },
+    {
+      "joint": "femur_T2_left",
+      "target": "tergotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "tibia_T3_left",
+      "target": "tibia_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T1_right",
+      "target": "tergotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tibia_T1_left",
+      "target": "tibia_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "coxa_T2_right",
+      "target": "sternal_anterior_rotator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T1_left",
+      "target": "tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "femur_T2_left",
+      "target": "accessory_trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "coxa_T3_right",
+      "target": "sternal_posterior_rotator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "move_coxa_posterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "femur_T1_left",
+      "target": "trochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T1_right",
+      "target": "tibia_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T3_right",
+      "target": "sternotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "coxa_T2_right",
+      "target": "sternal_posterior_rotator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "move_coxa_posterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "coxa_T3_left",
+      "target": "sternal_anterior_rotator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tarsus_T1_right",
+      "target": "tarsus_depressor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "femur_T3_left",
+      "target": "accessory_trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "coxa_T1_left",
+      "target": "tergopleural_promotor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "femur_T2_right",
+      "target": "tergotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "tarsus_T3_right",
+      "target": "tarsus_depressor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "femur_T1_left",
+      "target": "sternotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T1_left",
+      "target": "trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 8
+    },
+    {
+      "joint": "coxa_T3_left",
+      "target": "sternal_posterior_rotator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "move_coxa_posterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tarsus_T3_left",
+      "target": "tarsus_levator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 1
+    },
+    {
+      "joint": "coxa_T2_left",
+      "target": "sternal_anterior_rotator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T3_right",
+      "target": "tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "femur_T1_right",
+      "target": "accessory_trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "femur_T3_right",
+      "target": "tergotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "coxa_T1_right",
+      "target": "sternal_anterior_rotator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "move_coxa_anterior"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "femur_T1_left",
+      "target": "accessory_trochanter_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "femur_T2_right",
+      "target": "trochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tarsus_T3_right",
+      "target": "tarsus_levator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 1
+    },
+    {
+      "joint": "femur_T3_right",
+      "target": "trochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tibia_T1_right",
+      "target": "tibia_flexor_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_femur_tibia_joint"
+      ],
+      "motorNeuronCount": 5
+    },
+    {
+      "joint": "femur_T3_left",
+      "target": "tergotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "coxa_T2_left",
+      "target": "sternal_posterior_rotator_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "move_coxa_posterior"
+      ],
+      "motorNeuronCount": 4
+    },
+    {
+      "joint": "tarsus_T1_right",
+      "target": "tarsus_levator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 1
+    },
+    {
+      "joint": "tarsus_T1_left",
+      "target": "tarsus_depressor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 3
+    },
+    {
+      "joint": "tarsus_T2_left",
+      "target": "tarsus_levator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 1
+    },
+    {
+      "joint": "femur_T1_right",
+      "target": "sternotrochanter_extensor_muscle",
+      "ioSign": -1,
+      "sourceFunctions": [
+        "extend_coxa_trochanter_joint"
+      ],
+      "motorNeuronCount": 2
+    },
+    {
+      "joint": "tarsus_T1_left",
+      "target": "tarsus_levator_muscle",
+      "ioSign": 1,
+      "sourceFunctions": [
+        "flex_tibia_tarsus_joint"
+      ],
+      "motorNeuronCount": 1
+    }
+  ],
+  "confirmedReversedFlexExtensionJoints": [
+    {
+      "joint": "femur_T1_left",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9999897595333596,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "tibia_T1_left",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9817315653865011,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "femur_T2_left",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9997254382818066,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "tibia_T2_left",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.964251322543852,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "femur_T3_left",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.937197386423616,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "tibia_T3_left",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9968759669308491,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "femur_T1_right",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9999634651333689,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "tibia_T1_right",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9931751240493947,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "femur_T2_right",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.999842273528978,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "tibia_T2_right",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9999097414215008,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "femur_T3_right",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9424091541140878,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    },
+    {
+      "joint": "tibia_T3_right",
+      "minimumExtensionDerivativeAcrossTestedRanges": 0.9985299769556255,
+      "nativePositiveAction": "extension",
+      "requiredNativeFlexionSign": -1,
+      "requiredNativeExtensionSign": 1,
+      "currentSourceConvention": "flexion +1, extension -1; this convention must be converted at the native adapter boundary"
+    }
+  ],
+  "compiledMuscleVelocityProbe": {
+    "inputVelocities": [
+      -1,
+      0,
+      1
+    ],
+    "forces": [
+      0.04030812531709671,
+      0.03224650025367737,
+      0.024184875190258026
+    ],
+    "forceRatiosToZeroVelocity": [
+      1.25,
+      1,
+      0.75
+    ],
+    "interpretation": "The current kernel decreases force for positive velocity input. This input must mean positive shortening speed to match the intended concentric force-velocity effect, not positive lengthening."
+  },
+  "momentArm": {
+    "identity": "For positive tensile force F, joint torque = -F * dl/dq. A drive with intended native torque sign s therefore requires dl/dq < 0 for s=+1 and >0 for s=-1.",
+    "priorAdapterInput": "Before the native sign conversion: l_normalized = 1 + 0.2 * io.sign * (q-neutral); v_input = +0.2 * io.sign * qvel.",
+    "priorAdapterCommand": "Before correction, positive io.sign increased the native position target. A native position actuator develops positive generalized torque when its filtered target is above q.",
+    "priorInconsistency": "The prior normalized length derivative had the same sign as the intended generalized force. It was opposite to the virtual-work identity for a tensile muscle.",
+    "reducedConsistentForm": "Let s_native map anatomical muscle action to the native coordinate. An explicit reduced moment-arm prior r>0 gives l_normalized=1-r*s_native*(q-q_reference). The existing kernel input must be positive shortening speed, v_shortening=+r*s_native*qvel=-dl_normalized/dt, because its velocity factor is 1-0.25*v.",
+    "lengthKernelSymmetry": "The Gaussian force-length factor exp(-((l-1)/0.45)^2) is symmetric. Correcting the length-derivative sign alone leaves its instantaneous force factor unchanged; the native anatomical sign correction changes directional velocity modulation.",
+    "scope": "The position-target adapter is not a physical tendon transmission. r and Fmax remain fitted priors; this identity fixes directional consistency only. Positive shortening speed must be distinguished explicitly from the length derivative."
+  },
+  "conclusion": {
+    "femurAndTibia": "Positive q extends all 12 hinges at neutral and initialized placements across every sampled point of their native joint ranges. A correct direct adapter converts the anatomical io sign for these coordinates. This kinematic report establishes the required conversion; the separate production pulse report validates its implementation.",
+    "coxa": "At neutral positive coxa q is anterior for T1, posterior for T2/T3. The T2 derivative changes sign nearby; raw anterior displacement is posture dependent. This does not establish one globally correct sign or axis for the anterior/posterior muscle adapter.",
+    "tarsus": "Most tested positive-q perturbations reduce the internal tibia-tarsus angle. The nearly straight T1 right neutral posture has the opposite unsigned-angle derivative, and the derivative crosses the straight-line branch within joint limits. Do not flip all tarsal signs based on the extend_* XML class names.",
+    "rootPose": "Internal hinge angles and root-frame anterior displacements are invariant under a global root transform; initialized poses include terrain-aligned root quaternions.",
+    "behaviorScope": "This proves adapter-direction errors, not that correcting them alone restores coordinated walking, landing or flight."
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "dataset": "BANC",
+  "materialization": 888,
+  "synapse_table": "v3",
+  "neuron_count": 175401,
+  "chemical_edges": 13542180,
+  "synapse_count": 42199458,
+  "electrical_directed_edges": 4,
+  "excluded_non_neuronal_annotations": 13107,
+  "excluded_non_neuronal_edges": 78685,
+  "unknown_transmitter_edges_zeroed": 427715,
+  "count_threshold": null,
+  "regions": {
+    "ventral_nerve_cord": 26769,
+    "optic_lobe": 105646,
+    "central_brain": 42620,
+    "unknown": 366
+  },
+  "physiology_profiles": {
+    "default": 159747,
+    "lamina": 4128,
+    "olfactory": 3007,
+    "motor": 805,
+    "kenyon": 4552,
+    "photoreceptor": 1846,
+    "descending": 1316
+  },
+  "motor_neurons": 805,
+  "mapped_motor_neurons": 454,
+  "unassigned_motor_neurons": 351,
+  "muscle_groups": 135,
+  "sensory_neurons": 6476,
+  "dt_ms": 0.5,
+  "delay_slots": 32,
+  "receptors": [
+    {
+      "name": "nAChR",
+      "rise_ms": 0.3,
+      "decay_ms": 3,
+      "reversal_mv": 0
+    },
+    {
+      "name": "GABA_A",
+      "rise_ms": 0.5,
+      "decay_ms": 8,
+      "reversal_mv": -75
+    },
+    {
+      "name": "GluCl_assumed",
+      "rise_ms": 1,
+      "decay_ms": 6,
+      "reversal_mv": -75
+    },
+    {
+      "name": "HisCl",
+      "rise_ms": 0.2,
+      "decay_ms": 4,
+      "reversal_mv": -75
+    },
+    {
+      "name": "glutamate_cation_override",
+      "rise_ms": 0.5,
+      "decay_ms": 5,
+      "reversal_mv": 0
+    },
+    {
+      "name": "dopamine",
+      "rise_ms": 50,
+      "decay_ms": 500,
+      "reversal_mv": 0
+    },
+    {
+      "name": "octopamine",
+      "rise_ms": 50,
+      "decay_ms": 400,
+      "reversal_mv": 0
+    },
+    {
+      "name": "serotonin",
+      "rise_ms": 50,
+      "decay_ms": 600,
+      "reversal_mv": 0
+    },
+    {
+      "name": "tyramine",
+      "rise_ms": 50,
+      "decay_ms": 400,
+      "reversal_mv": 0
+    }
+  ],
+  "synaptic_weight_ns_ms_per_contact": 0.1,
+  "physiology_status": "Mechanistic priors; numerical parameters are uncalibrated, not measurements of BANC cells.",
+  "source_lock": {
+    "dataset": "BANC",
+    "materialization": 888,
+    "synapse_table": "v3",
+    "sources": {
+      "meta": {
+        "file": "meta.feather",
+        "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+        "bytes": 57503026,
+        "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather"
+      },
+      "edges": {
+        "file": "edges-v3.feather",
+        "sha256": "8c296e946f3c69a8c7222f30ad75fa8a98eeb189124fec6df829c9125f4be64b",
+        "bytes": 359161658,
+        "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_edgelist_simple_v3.feather"
+      }
+    }
+  },
+  "physiology_sha256": "0148252bfa4db2ac46fdbb8d5698d3592c07ed9ca7888157f007f8626fcbfb41",
+  "files": {
+    "ids.bin": {
+      "bytes": 1403208,
+      "sha256": "dd942f6fd3bf27b155b4112c94b31a8348564264070933f7f916bc18e9dd1542"
+    },
+    "offsets.bin": {
+      "bytes": 1403216,
+      "sha256": "7a8ed4d8bf90351356f6097a8ef8b72cf9a669de0e54006f72b9472148f062ee"
+    },
+    "edges.bin": {
+      "bytes": 216674944,
+      "sha256": "c3a0444e2db62227e3f93082e882d357724105331fef836a7b7697bff92e55c7"
+    },
+    "params.bin": {
+      "bytes": 11225664,
+      "sha256": "9f72c736ef2c2aaebe84fd18050dd6fbc777e4d95f8fab07b9aa11c44840549f"
+    },
+    "io.json": {
+      "bytes": 787065,
+      "sha256": "1b19cd8c91ff64d1fe2af8f3fdd09d98792ecfca229e1c102ecb08a96da1ce72"
+    }
+  }
+}

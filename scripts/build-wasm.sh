@@ -6,3 +6,4 @@ bash packages/fly-brain-wasm/build.sh
 bash packages/brain-view-wasm/build.sh
 bash packages/fly-vision-wasm/build.sh
 bash packages/fly-color-wasm/build.sh
+bash packages/banc-runtime/build.sh

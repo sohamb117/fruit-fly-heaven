@@ -1,0 +1,2 @@
+# Direct dependency; requirements-cloudrun.txt pins its complete resolved graph.
+google-cloud-firestore==2.30.0

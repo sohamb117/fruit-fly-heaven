@@ -1,0 +1,10 @@
+{
+  "backup": "reports/gcp-deployment/coordinator-after-launch.sqlite3",
+  "bytes": 57344,
+  "integrity": "ok",
+  "completedResults": 9,
+  "jobsAllGenerations": {
+    "completed": 9,
+    "pending": 7
+  }
+}

@@ -3,10 +3,14 @@ import {createBrainViewModule} from '/view-engine/index.js';
 import {uiElement as $,uiQueryAll,onUIFrame} from './ui-elements.js';
 const fmt=n=>Math.round(n).toLocaleString();
 
-export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
+export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0,base='/anatomy/'}){
   const runtime=await createBrainViewModule();
-  async function get(name,type){const r=await fetch('/anatomy/'+name);if(!r.ok)throw new Error(`Anatomy ${name}: HTTP ${r.status}`);return type?new type(await r.arrayBuffer()):r.json();}
+  async function get(name,type){const r=await fetch(base+name);if(!r.ok)throw new Error(`Anatomy ${name}: HTTP ${r.status}`);return type?new type(await r.arrayBuffer()):r.json();}
   const metadata=await get('metadata.json');
+  $('brain-canvas').setAttribute('aria-label',`Measured ${metadata.dataset} anatomy colored by simulated membrane voltage`);
+  $('em-slice').setAttribute('aria-label',`Measured ${metadata.dataset} electron microscopy with simulated activity overlays`);
+  const caption=$('em-slice').parentElement.querySelector('.scan-caption');
+  if(caption)caption.textContent=`Static scan · ${metadata.volume.spacing.map(v=>v.toFixed(3)).join(' × ')} µm voxels. Colored points: simulated activity in the slab. Scroll to zoom · click to inspect.`;
   const [positions,owners,branchPositions,branchOwners,branchEdges,surfacePositions,surfaceTriangles,volumeValues,neurons]=await Promise.all([
     get('positions.bin',Float32Array),get('neuron-indices.bin',Uint32Array),get('skeleton-positions.bin',Float32Array),get('skeleton-neurons.bin',Uint32Array),get('skeleton-edges.bin',Uint32Array),get('surface-positions.bin',Float32Array),get('surface-triangles.bin',Uint32Array),get('em-volume.bin',Uint8Array),get('neurons.json'),
   ]);
@@ -53,7 +57,7 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
     const [a,b]=axes(),corners=[];for(const [u,v]of [[0,0],[1,0],[1,1],[0,1]]){const p=[...center];p[axis]=offset;p[a]=u?hi[a]:lo[a];p[b]=v?hi[b]:lo[b];corners.push(...p);}planeGeometry.setAttribute('position',new THREE.Float32BufferAttribute(corners,3));planeGeometry.computeBoundingSphere();
     planeOutline.visible=cutMode!=='all';contourLine.visible=cutMode!=='all';sliceDirty=true;dirty=true;
   }
-  function scanMapping(){const [a,b]=axes(),w=640,h=Math.max(150,Math.round(640*extent[b]/extent[a])),cx=(lo[a]+hi[a])/2,cy=(lo[b]+hi[b])/2;return {a,b,w,h,left:cx-extent[a]*.53/scanZoom,top:cy-extent[b]*.53/scanZoom,spanX:extent[a]*1.06/scanZoom,spanY:extent[b]*1.06/scanZoom};}
+  function scanMapping(){const [a,b]=axes(),ratio=extent[b]/Math.max(extent[a],1e-6),w=Math.max(1,Math.min(640,Math.floor(4096/ratio))),h=Math.min(4096,Math.max(150,Math.round(w*ratio))),cx=(lo[a]+hi[a])/2,cy=(lo[b]+hi[b])/2;return {a,b,w,h,left:cx-extent[a]*.53/scanZoom,top:cy-extent[b]*.53/scanZoom,spanX:extent[a]*1.06/scanZoom,spanY:extent[b]*1.06/scanZoom};}
   let scanBase=null;
   function drawSlice(resample=false){
     if(!active)return;
@@ -84,7 +88,17 @@ export async function createAnatomicalViewer({onNeuronSelect,initialNeuron=0}){
   }
   function selectNeuron(index,{moveSlice=true}={}){
     selectedNeuron=index;trace=[];lastTraceTime=-1;uniforms.uSelected.value=index;
-    $('neuron-type').textContent=neurons.labels[index];$('neuron-root').textContent=neurons.ids[index];$('neuron-root').href='https://codex.flywire.ai/app/cell_details?root_id='+neurons.ids[index];
+    $('neuron-type').textContent=neurons.labels[index];$('neuron-root').textContent=neurons.ids[index];$('neuron-root').href=(metadata.cellUrl||'https://codex.flywire.ai/app/cell_details?root_id=')+neurons.ids[index];
+    if(metadata.dataset.startsWith('BANC')){
+      // Use BANC's published precomputed layers; FlyWire Codex v783 does not
+      // resolve BANC root IDs. Keep IDs as strings in the external viewer state.
+      const p=byNeuron[index],position=p>=0?Array.from(positions.slice(p*3,p*3+3),(v,k)=>v/[.004,.004,.045][k]):[125097.5,122589.5,2827.5];
+      const state={title:'BANC v888 · '+neurons.labels[index],dimensions:{x:[4e-9,'m'],y:[4e-9,'m'],z:[45e-9,'m']},position,
+        crossSectionScale:15,projectionScale:302229,layout:'xy-3d',layers:[
+          {name:'BANC EM',type:'image',source:'precomputed://'+metadata.sources.em},
+          {name:'BANC neuron',type:'segmentation',source:'precomputed://https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/neuron_meshes',segments:[neurons.ids[index]]}]};
+      $('neuron-root').href='https://neuroglancer-demo.appspot.com/#!'+encodeURIComponent(JSON.stringify(state));
+    }
     const p=byNeuron[index];marker.visible=p>=0;if(p>=0){marker.position.fromArray(positions,p*3);if(moveSlice){$('slice-position').value=String(Math.round((positions[p*3+axis]-lo[axis])/extent[axis]*1000));updatePlane();}}
     $('neuron-reading').textContent=voltage?voltage[index].toFixed(2)+' mV':'Waiting for neural state';onNeuronSelect(index);drawTrace();dirty=true;sliceDirty=true;
   }

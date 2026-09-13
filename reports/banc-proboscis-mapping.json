@@ -1,0 +1,208 @@
+{
+  "scope": "BANC target labels mapped to measured muscle actions. Relative strength and subtype averaging remain modeling priors.",
+  "source": "https://elifesciences.org/articles/54978",
+  "evidence": "McKellar et al. 2020, Table 3 and Figures 7–9: muscle activation, silencing and insertion anatomy.",
+  "strength": "Equal relative strength per named muscle class. Forces of distinct synergist classes add and saturate at 1; moment arms and class strengths remain unmeasured here.",
+  "subdivisions": "Mean within m2D (m2da/m2db), m3 (m3l/m3m), and m4 (m4a/m4b); the cited experiments do not calibrate these BANC subdivisions separately.",
+  "labella": "m6 extension and m7 abduction are separate channels. A body without those movable joints must report them as unrepresented, not reroute them into rostrum or haustellum.",
+  "unmodeledCouplings": [
+    "m9 also promotes haustellum extension",
+    "m1 also affects haustellum retraction",
+    "possible m2V haustellum flexion"
+  ],
+  "unsupported": [
+    {
+      "target": "proboscis_m8_muscle",
+      "indices": [
+        97080,
+        102699
+      ],
+      "rootIds": [
+        "720575941547120161",
+        "720575941553702042"
+      ],
+      "reason": "No supported positioning action in McKellar 2020 mapping"
+    }
+  ],
+  "targets": [
+    {
+      "target": "proboscis_m4a_muscle",
+      "muscleClass": "m4",
+      "groups": [
+        4
+      ],
+      "indices": [
+        3534,
+        53454,
+        68350,
+        164266
+      ],
+      "rootIds": [
+        "720575941402863216",
+        "720575941494208128",
+        "720575941513444089",
+        "720575941656201177"
+      ]
+    },
+    {
+      "target": "proboscis_m9_muscle",
+      "muscleClass": "m9",
+      "groups": [
+        10
+      ],
+      "indices": [
+        6055,
+        148806
+      ],
+      "rootIds": [
+        "720575941410682479",
+        "720575941623285450"
+      ]
+    },
+    {
+      "target": "proboscis_m6_muscle",
+      "muscleClass": "m6",
+      "groups": [
+        18
+      ],
+      "indices": [
+        10437,
+        25861
+      ],
+      "rootIds": [
+        "720575941430258647",
+        "720575941454380013"
+      ]
+    },
+    {
+      "target": "proboscis_m1_muscle",
+      "muscleClass": "m1",
+      "groups": [
+        34
+      ],
+      "indices": [
+        22549,
+        88494,
+        129639,
+        129724
+      ],
+      "rootIds": [
+        "720575941449780405",
+        "720575941536822514",
+        "720575941588099140",
+        "720575941588254206"
+      ]
+    },
+    {
+      "target": "proboscis_m3l_muscle",
+      "muscleClass": "m3",
+      "groups": [
+        36
+      ],
+      "indices": [
+        25660,
+        74339,
+        150941
+      ],
+      "rootIds": [
+        "720575941454079539",
+        "720575941519595447",
+        "720575941626721900"
+      ]
+    },
+    {
+      "target": "proboscis_m4b_muscle",
+      "muscleClass": "m4",
+      "groups": [
+        38
+      ],
+      "indices": [
+        25761,
+        152606
+      ],
+      "rootIds": [
+        "720575941454240169",
+        "720575941628933433"
+      ]
+    },
+    {
+      "target": "proboscis_m2db_muscle",
+      "muscleClass": "m2D",
+      "groups": [
+        47
+      ],
+      "indices": [
+        30896,
+        166441
+      ],
+      "rootIds": [
+        "720575941462808077",
+        "720575941662402360"
+      ]
+    },
+    {
+      "target": "proboscis_m2da_muscle",
+      "muscleClass": "m2D",
+      "groups": [
+        77
+      ],
+      "indices": [
+        47004,
+        67299
+      ],
+      "rootIds": [
+        "720575941484914498",
+        "720575941511829520"
+      ]
+    },
+    {
+      "target": "proboscis_m2v_muscle",
+      "muscleClass": "m2V",
+      "groups": [
+        108
+      ],
+      "indices": [
+        95909,
+        139333
+      ],
+      "rootIds": [
+        "720575941545764232",
+        "720575941603110134"
+      ]
+    },
+    {
+      "target": "proboscis_m7_muscle",
+      "muscleClass": "m7",
+      "groups": [
+        118
+      ],
+      "indices": [
+        106930,
+        130060,
+        138102,
+        151507
+      ],
+      "rootIds": [
+        "720575941558268943",
+        "720575941589105292",
+        "720575941599758121",
+        "720575941627279515"
+      ]
+    },
+    {
+      "target": "proboscis_m3m_muscle",
+      "muscleClass": "m3",
+      "groups": [
+        128
+      ],
+      "indices": [
+        139796,
+        161911
+      ],
+      "rootIds": [
+        "720575941604209142",
+        "720575941652113685"
+      ]
+    }
+  ]
+}

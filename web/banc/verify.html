@@ -1,0 +1,77 @@
+<!doctype html><html><head><meta charset="utf-8"><title>BANC numerical verification</title></head><body><p>Numerical verification harness. Synthetic circuits are test fixtures, not BANC data.</p><script type="module">
+import {fixture} from '/banc-engine/test/fixture.mjs';
+import {createWasmCore,WasmBrain} from '/banc-engine/src/wasm.js';
+import {WebGPUBrain} from '/banc-engine/src/webgpu.js';
+import {loadBancModel} from '/banc-engine/src/model.js';
+import {createRuntime} from '/banc-engine/src/index.js';
+window.verify=async function(){
+  const core=await createWasmCore(),cases=[];
+  const specifications=[
+    {name:'mixed receptors, graded and spiking, delays, gap junctions',model:fixture({n:8,graded:[0,3],edges:[{source:0,post:1,weight:3,receptor:0,delay:1},{source:1,post:2,weight:8,receptor:1,delay:7},{source:3,post:2,weight:4,receptor:4,delay:31},{source:0,post:4,weight:2,receptor:6,delay:4}],gaps:[{a:2,b:5,weight:.1}],overrides:{4:{13:.5,15:3}}}),input:new Float32Array([22,6,18,15,20,0,35,0])},
+    {name:'workgroup boundary and partial final workgroup',model:fixture({n:257,edges:[{source:0,post:256,weight:1,receptor:0}]}),input:Float32Array.from({length:257},(_,i)=>i===0?35:0)},
+    {name:'simultaneous spikes across complete and partial workgroups',model:fixture({n:257}),input:new Float32Array(257).fill(35)}
+  ];
+  for(const {name,model,input} of specifications){
+    const wasm=new WasmBrain(core,model),gpu=await WebGPUBrain.create(model),ids=Uint32Array.from({length:model.manifest.neuron_count},(_,i)=>i);
+    let maxVoltageError=0,maxRateError=0,maxStateError=0,maxSpikeDifference=0;
+    for(let chunk=0;chunk<6;chunk++){
+      const state={hunger:.6,insulin:.2,akh:.7},steps=chunk%2?63:64,traceIndex=chunk%model.manifest.neuron_count;
+      const traceWasm=wasm.step(steps,input,state,true,{traceIndex}),traceGpu=await gpu.step(steps,input,state,true,{traceIndex});
+      for(let i=0;i<traceWasm.length;i++)if(Math.abs(traceWasm[i]-traceGpu[i])>(i%8===3?0:.01))throw new Error('Per-timestep batched GPU trace mismatch');
+      const a=wasm.readState(ids),b=await gpu.readState(ids);
+      for(let i=0;i<a.length;i++){if(!Number.isFinite(b[i]))throw new Error('Nonfinite GPU state');maxStateError=Math.max(maxStateError,Math.abs(a[i]-b[i]));if(i%8===0)maxVoltageError=Math.max(maxVoltageError,Math.abs(a[i]-b[i]));if(i%8===4)maxRateError=Math.max(maxRateError,Math.abs(a[i]-b[i]));if(i%8===3)maxSpikeDifference=Math.max(maxSpikeDifference,Math.abs(a[i]-b[i]));}
+    }
+    const wa=wasm.readState(ids,{includeSpikeTime:true}),ga=await gpu.readState(ids,{includeSpikeTime:true});
+    if(JSON.stringify(wa.spikes)!==JSON.stringify(ga.spikes))throw new Error('Workgroup spike history mismatch');
+    const subset=ids.filter((_,i)=>i%2===0),fullCache=gpu.readCaches.find(c=>c.stride===9);
+    for(let pass=0;pass<4;pass++){
+      const partial=await gpu.readState(subset),full=await gpu.readState(ids,{includeSpikeTime:true});
+      if(partial.totalSpikes!==full.totalSpikes||partial.activeEver!==full.activeEver)throw new Error('Partial readout lost global counters');
+      for(let i=0;i<subset.length;i++)for(let k=0;k<8;k++)if(partial[i*8+k]!==full[subset[i]*9+k])throw new Error('Alternating readout changed neural state');
+      if(gpu.readCaches.length>2||!gpu.readCaches.includes(fullCache))throw new Error('Readout buffer cache lost bounded reuse');
+    }
+    const result={name,maxVoltageError,maxRateError,maxStateError,maxSpikeDifference,batchedTraceParity:true,alternatingReadoutParity:true,retainedSpikes:ga.spikes.length};cases.push(result);wasm.dispose();gpu.dispose();
+    if(maxVoltageError>.005||maxRateError>.01||maxSpikeDifference!==0)throw new Error(`Parity failed: ${JSON.stringify(result)}`);
+  }
+  const sharedModel=fixture({n:3,edges:[{source:0,post:1,weight:2,receptor:0}]}),first=await WebGPUBrain.create(sharedModel);
+  const second=await WebGPUBrain.create(sharedModel,{shared:first}),reference=new WasmBrain(core,sharedModel);
+  const quiet=new Float32Array(3),drive=new Float32Array([35,0,0]);
+  await first.step(64,drive);await second.step(64,quiet);reference.step(64,quiet);
+  const before=await second.readState();if(before.totalSpikes!==0)throw new Error('Shared GPU state/input cross-talk');
+  first.dispose();await second.step(64,drive);reference.step(64,drive);
+  const ids=new Uint32Array([0,1,2]),a=reference.readState(ids,{includeSpikeTime:true}),b=await second.readState(ids,{includeSpikeTime:true});
+  if(a.totalSpikes!==b.totalSpikes||a.activeEver!==b.activeEver)throw new Error('GPU population counter mismatch');
+  if(JSON.stringify(a.spikes)!==JSON.stringify(b.spikes)||b.spikes.length!==b.totalSpikes)throw new Error('Retained GPU spike history mismatch');
+  for(let i=0;i<a.length;i++)if(Math.abs(a[i]-b[i])>.005)throw new Error('Shared GPU / observer parity mismatch');
+  second.dispose();reference.dispose();cases.push({name:'Shared graph, independent inputs/state, exact spike times and retained graph lifetime',passed:true});
+  return {cases,passed:true};
+};
+window.benchmark=async function(){
+  const model=await loadBancModel(),core=await createWasmCore(),cpu=new WasmBrain(core,model),gpu=await WebGPUBrain.create(model);
+  const input=new Float32Array(model.manifest.neuron_count);
+  for(const s of model.io.sensory){if(s.kind==='vision')input[s.index]=14;if(s.kind==='odor'&&['ORN_DM1','ORN_VA2'].includes(s.cell_type))input[s.index]=20;}
+  const internal={hunger:.6,insulin:.1,akh:.7},samples=[];
+  const ids=Uint32Array.from(model.io.motor_neurons.map(m=>m.index));
+  let maxVoltageError=0,maxRateError=0,maxSpikeDifference=0;
+  for(let run=0;run<3;run++){
+    const t=performance.now();cpu.step(20,input,internal);const cpuMs=performance.now()-t;
+    const g=performance.now();await gpu.step(20,input,internal);const gpuMs=performance.now()-g;
+    const a=cpu.readState(ids),b=await gpu.readState(ids);
+    for(let i=0;i<a.length;i++){if(i%8===0)maxVoltageError=Math.max(maxVoltageError,Math.abs(a[i]-b[i]));if(i%8===4)maxRateError=Math.max(maxRateError,Math.abs(a[i]-b[i]));if(i%8===3)maxSpikeDifference=Math.max(maxSpikeDifference,Math.abs(a[i]-b[i]));}
+    samples.push({neuralMs:10,cpuMs,gpuMs});
+  }
+  const adapter=gpu.adapterInfo;cpu.dispose();gpu.dispose();return {samples,adapter,maxVoltageError,maxRateError,maxSpikeDifference,neuralMs:30,scope:'Fixed sensory-current replay; compute timing excludes readback and loading. Motor-state comparison only.'};
+};
+window.verifyFallback=async function(){
+  const descriptor=Object.getOwnPropertyDescriptor(navigator,'gpu');let runtime;
+  try{
+    Object.defineProperty(navigator,'gpu',{value:undefined,configurable:true});let reason='';
+    runtime=await createRuntime(fixture({n:2}),{backend:'auto',onFallback:message=>{reason=message;}});
+    if(runtime.brain.backend!=='wasm'||!reason.includes('unavailable'))throw new Error('Auto fallback was not reported');
+    await runtime.brain.step(2,new Float32Array(2),{hunger:0,insulin:0,akh:0});
+    let requiredFailed=false;try{await createRuntime(fixture({n:2}),{backend:'webgpu'});}catch{requiredFailed=true;}
+    if(!requiredFailed)throw new Error('Required GPU silently fell back');
+    return {autoBackend:runtime.brain.backend,reason,requiredFailed};
+  }finally{runtime?.dispose();if(descriptor)Object.defineProperty(navigator,'gpu',descriptor);else delete navigator.gpu;}
+};
+</script></body></html>

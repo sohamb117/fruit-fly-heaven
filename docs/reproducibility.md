@@ -26,7 +26,7 @@ Start the local site after preparation:
 uv run --python .venv/bin/python python scripts/serve.py --port 7842
 ```
 
-Open `http://127.0.0.1:7842/train.html` for shared training or `http://127.0.0.1:7842/?population=1` for the observation console. The training page targets the GCP coordinator at `https://flytrain.morisoba.moe` and waits for Start before loading the model and computing. That domain's activation is pending; local contributions need it to be reachable. Opening a local page does not start a new local training pool. The observation console's separate anatomical view additionally requires `scripts/prepare-banc-anatomy.py`; anatomy is unnecessary for the training preview.
+Open `http://127.0.0.1:7842/train.html` for shared training or `http://127.0.0.1:7842/?population=1` for the observation console. The training page targets the live GCP coordinator at `https://flytrain.morisoba.moe` and waits for Start before loading the model and computing. Opening a local page does not start a new local training pool. The observation console's separate anatomical view additionally requires `scripts/prepare-banc-anatomy.py`; anatomy is unnecessary for the training preview.
 
 The canonical training config pins the exact runtime and model hashes. To verify and package that existing build:
 

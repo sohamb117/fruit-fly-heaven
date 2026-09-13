@@ -1,6 +1,6 @@
 # Full implementation commit preparation
 
-Verified on 2026-09-13. The staged implementation includes the BANC v888 physiology/runtime, native FlyBody integration, original observation console, training UI/coordinator, managed Cloud Run and Firestore deployment, migration and backup tools, source locks, model assets, licenses, tests, and selected experiment summaries. No commit or push was performed during preparation.
+Verified on 2026-09-13. The implementation includes the BANC v888 physiology/runtime, native FlyBody integration, original observation console, training UI/coordinator, managed Cloud Run and Firestore deployment, migration and backup tools, source locks, model assets, licenses, tests, and selected experiment summaries. The full implementation is recorded in commit `140d99b` (`training the flies`), which appeared during final domain verification. Five final deployment-documentation updates remain staged. This preparation did not create the commit or perform a push.
 
 Datasets, installed dependencies, root distribution archives, runtime logs, training databases, exported shared checkpoints, and large raw experiment captures remain outside Git. The small BANC WASM artifacts and reference controller assets are intentionally included. The [reproducibility guide](../../docs/reproducibility.md) explains preparation and the archived inputs needed by historical analysis tools.
 
@@ -23,4 +23,6 @@ The component suites total **235 passing tests**. The twenty-seven SQLite coordi
 
 The simplified UI passed seven-origin browser checks, including mandatory contribution routing, plain visible copy, fresh checkpoint downloads, failed connections, and desktop/mobile layouts. A real browser trial on Cloud Run loaded the pinned WebGPU network and native body, rendered 80 progressing preview frames, completed its one-second posture criterion, and uploaded exactly one result. Firestore retained all fourteen previous results and now holds fifteen. A fresh Cloud Run revision retained the same count and checkpoint. These checks establish working infrastructure and one seeded posture outcome, not learned full-sequence behavior. See the [managed deployment record](../flyheaven-deployment/README.md) and [Firestore test record](../cloudrun-firestore/README.md). Earlier VM evidence remains in the [historical rollout record](../gcp-always-shared/README.md).
 
-Local test logs and the staged-file manifest are generated evidence in this directory and remain ignored. The proposed commit message is stored in `.git/PREPARED_COMMIT_MESSAGE` for review.
+The canonical domain `https://flytrain.morisoba.moe` passed all fifteen transport checks with normal certificate verification. Its idle browser check connected and downloaded the current checkpoint at desktop and mobile sizes; the service then reported nineteen accepted results. The public page was opened in Safari.
+
+Local test logs and the staged-file manifest are generated evidence in this directory and remain ignored.

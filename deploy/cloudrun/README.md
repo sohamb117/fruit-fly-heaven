@@ -1,6 +1,6 @@
 # Managed training service on Cloud Run
 
-Cloud Run is the selected hosting target. It serves the browser bundle and coordinator; contributors' computers run BANC and native FlyBody. Firestore stores shared progress independently of container lifetime. The public domain is **`https://flytrain.morisoba.moe`**. Its Google domain mapping was created on 2026-09-13; DNS and certificate verification are still pending. Until activation, the ready service is available at **`https://fly-training-yekt6i27nq-uc.a.run.app`**. Do not treat the custom domain as live until the checks below pass.
+Cloud Run serves the browser bundle and coordinator; contributors' computers run BANC and native FlyBody. Firestore stores shared progress independently of container lifetime. The live public domain is **[flytrain.morisoba.moe](https://flytrain.morisoba.moe/train.html)**. DNS, Google-managed HTTPS, browser connection and checkpoint downloads passed verification on 2026-09-13. The Google service alias **`https://fly-training-yekt6i27nq-uc.a.run.app`** also remains available.
 
 | Setting | Value |
 | --- | --- |
@@ -105,9 +105,9 @@ Use `/api/training/status` for external health verification. The internal Cloud 
 The transport verifier checks public file isolation, CORS, fresh checkpoints and oversized requests without starting a simulation. The browser verifier separately runs and submits one real trial:
 
 ```sh
-TRAINING_URL=https://fly-training-yekt6i27nq-uc.a.run.app \
+TRAINING_URL=https://flytrain.morisoba.moe \
   node scripts/verify-cloudrun-host.mjs
-TRAINING_URL=https://fly-training-yekt6i27nq-uc.a.run.app/train.html \
+TRAINING_URL=https://flytrain.morisoba.moe/train.html \
   node scripts/verify-gcp-training.mjs
 ```
 

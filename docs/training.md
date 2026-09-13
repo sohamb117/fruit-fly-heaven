@@ -2,7 +2,7 @@
 
 The shared training console evaluates one real BANC v888 network and native FlyBody at a time. Its route remains **brain → VNC → motor neurons → muscles → body**. Every Start joins the shared GCP pool; there is no unshared mode or sharing switch. Opening the page checks coordinator metadata but starts no compute. The original observation console remains in the repository at `/`.
 
-The selected host is **Cloud Run with Firestore** in project `flyheaven`. The intended public URL is `https://flytrain.morisoba.moe/train.html`; domain activation is still pending. Use the actual `run.app` URL returned by deployment until the custom domain passes DNS and HTTPS checks. See the [managed deployment guide](../deploy/cloudrun/README.md).
+The live host is **Cloud Run with Firestore** in project `flyheaven`, at **[flytrain.morisoba.moe/train.html](https://flytrain.morisoba.moe/train.html)**. DNS, Google-managed HTTPS, browser connection and checkpoint downloads passed verification on 2026-09-13. See the [managed deployment guide](../deploy/cloudrun/README.md).
 
 This is an implemented parameter-search system, not a completed behavioral controller. Autonomous food localization → approach → landing → probing/feeding → takeoff/flight has not been established. Shared checkpoints are explicitly **unverified**.
 
@@ -16,7 +16,7 @@ uv run --offline python scripts/serve.py --port 7842
 
 Open `http://127.0.0.1:7842/train.html`. Port `7843` also works if `7842` is occupied; use the same port in the browser URL. This server binds to the local machine only.
 
-1. The page is configured to check the GCP coordinator at `https://flytrain.morisoba.moe`. Local contributions need that domain to be activated. Once available, set **Intensity** and preview quality, then press **Start**. The first start loads and checks assets and calibrates the sensory interface. A failed connection never falls back to local unshared work.
+1. The page automatically checks the GCP coordinator at `https://flytrain.morisoba.moe`. Set **Intensity** and preview quality, then press **Start**. The first start loads and checks assets and calibrates the sensory interface. A failed connection never falls back to local unshared work.
 2. The neural model requests WebGPU and falls back to the same BANC model in WASM if initialization is unavailable. Native body dynamics use MuJoCo WASM. Runtime details remain in diagnostics rather than the public interface.
 3. Use **Pause**, **Resume**, or **Stop** to control computation. Hiding the tab pauses training. Intensity describes scheduling duty cycle, not a measured percentage of your computer's total CPU/GPU capacity. Turning the preview off does not reduce neural or physical simulation fidelity.
 4. **Download checkpoint** fetches the latest saved candidate directly from GCP, including its parameter vector, generation and model/config identity. It works before training starts and never substitutes a local cached checkpoint.
@@ -56,7 +56,7 @@ Leases last 30 minutes and renew every 60 seconds while a shared episode is runn
 
 The managed service stores progress in project `flyheaven`, Firestore `(default)` in `us-central1`, under `training_runs/banc888-v1-20260913`. Run metadata and the `generations`, `jobs` and `contributors` subcollections preserve candidates, assignments and accepted results across Cloud Run restarts, scale-to-zero and new revisions. The container filesystem is not the database. The [storage and migration guide](../deploy/cloudrun/README.md#preserve-or-initialize-training-history) describes importing earlier SQLite progress without resetting the experiment.
 
-Once the domain is activated, use **Download checkpoint** or the direct JSON download; before then, substitute the deployed `run.app` origin:
+Use **Download checkpoint** or the direct JSON download:
 
 ```sh
 curl --fail --output heaven-checkpoint.json https://flytrain.morisoba.moe/api/training/checkpoint
@@ -68,7 +68,7 @@ For complete history, use the [private Firestore export procedure](../deploy/clo
 
 ## Contribute from another computer
 
-After domain activation, open `https://flytrain.morisoba.moe/train.html` and press **Start**. The page runs simulations on your own computer and sends their results to the GCP pool. The matching downloaded client joins the same pool automatically. Until activation, the deployed `run.app` page can use its own origin; the downloaded client's fixed custom-domain connection is not yet usable.
+Open `https://flytrain.morisoba.moe/train.html` and press **Start**. The page runs simulations on your own computer and sends their results to the GCP pool. The matching downloaded client joins the same pool automatically through this domain. The deployed `run.app` page also connects to the same stored run.
 
 ### Ready-to-copy contributor archive
 

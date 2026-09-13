@@ -38,7 +38,7 @@ The real HTTPS browser check passed at `https://fly-training-yekt6i27nq-uc.a.run
 
 Desktop (1440 px) and mobile (390 px) screenshots were visually inspected. The fly, floor/food surface, controls and chart render in the existing theme without horizontal overflow. The preview buffer is 320×180. Public copy contains none of the removed coordinator/model-status prose. No page, network or substantive console errors occurred.
 
-Firestore now holds **15 accepted results**. Deploying a fresh revision, `fly-training-verified-20260913`, preserved that count and the exact checkpoint. Private server/configuration/database paths returned 404, expected browser origins passed preflight, and an unapproved origin was rejected.
+After this trial, Firestore held **15 accepted results**. Deploying a fresh revision, `fly-training-verified-20260913`, preserved that count and the exact checkpoint. Private server/configuration/database paths returned 404, expected browser origins passed preflight, and an unapproved origin was rejected.
 
 The internal startup probe `/healthz` passes inside Cloud Run. Public requests to that exact path receive a Google HTML 404 while the application, API and other paths work; external health checks therefore use `/api/training/status`.
 
@@ -48,4 +48,8 @@ Cloud Build `891afbed-d2bf-4692-a4bd-f86761c49eeb` published the final image `us
 
 ## Custom domain
 
-Google's mapping connects `flytrain.morisoba.moe` to `fly-training`. The authoritative Cloudflare servers and public resolvers return the required DNS-only CNAME to `ghs.googlehosted.com`; no restrictive CAA record was found. Google marked the domain certificate provisioned at 22:04:10 UTC. Public TLS and browser verification follow before the canonical domain is reported live. No insecure browser or certificate overrides are used.
+Google's mapping connects `flytrain.morisoba.moe` to `fly-training`. The authoritative Cloudflare servers and public resolvers return the required DNS-only CNAME to `ghs.googlehosted.com`; no restrictive CAA record was found. Google marked the domain certificate provisioned at 22:04:10 UTC. Trusted HTTPS first returned 200 at 22:09:56 UTC, after a brief interval when the ready mapping still closed TLS connections. Normal system DNS and IPv6 then passed too. The issued certificate covers `flytrain.morisoba.moe`, uses Google Trust Services, and expires on 2026-12-12; Google manages renewal.
+
+At 22:10 UTC, all fifteen transport checks passed against the canonical domain using normal Node TLS validation. The live API showed nineteen accepted results and generation two. Chrome connected through the canonical hostname, downloaded the exact current checkpoint, and passed the idle UI checks at 1440, 390 and 320 px without starting any worker or model download. The desktop and mobile screenshots were visually inspected. No DNS override, insecure browser flag or certificate bypass was used for these final checks. The working canonical page was opened in Safari.
+
+Generated evidence remains ignored beside this report: `custom-domain-tls.json`, `domain-http/http-verification.json`, and `domain-idle/result.json` with screenshots. The certificate evidence includes an earlier explicit public-resolver connection; the final HTTP and browser checks used the ordinary system resolver.

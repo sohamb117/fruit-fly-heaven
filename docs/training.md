@@ -65,7 +65,7 @@ Open `http://127.0.0.1:7842/train.html`. Port `7843` also works if `7842` is occ
 
 1. The page automatically checks the GCP coordinator at `https://flytrain.morisoba.moe`. Set **Intensity** and preview quality, then press **Start**. The first start loads and checks assets and calibrates the sensory interface. A failed connection never falls back to local unshared work.
 2. This cohort explicitly runs the pinned BANC neural binary in WASM; body dynamics also use MuJoCo WASM. It does not fall back to or mix in Dawn/WebGPU evaluations. Runtime details stay in diagnostics.
-3. Use **Pause**, **Resume**, or **Stop** to control computation. Hiding the tab pauses training. Intensity describes scheduling duty cycle, not a measured percentage of your computer's total CPU/GPU capacity. Turning the preview off does not reduce neural or physical simulation fidelity.
+3. Use **Pause**, **Resume**, or **Stop** to control computation. Training continues when you switch tabs. Intensity describes scheduling duty cycle, not a measured percentage of your computer's total CPU/GPU capacity. Turning the preview off does not reduce neural or physical simulation fidelity.
 4. **Download checkpoint** fetches the latest saved candidate directly from GCP, including its parameter vector, generation and model/config identity. It works before training starts and never substitutes a local cached checkpoint.
 5. Local storage retains counters and unsent completed results for retry. Accepted results and shared checkpoints are saved on GCP. The coordinator assigns the task stage; the contributor cannot select an unshared task.
 
@@ -97,7 +97,7 @@ The browser cohort's two positive/negative search pairs share a seed within each
 
 The UI distinguishes episodes completed on this computer from results accepted by the coordinator. Exact retries of an accepted result are idempotent. Expired, reassigned, incompatible, or altered results are rejected and are not counted as contributions. Completed but unsent results are retained locally for retry against their original coordinator. There is no unshared fallback when submission fails.
 
-Leases last 30 minutes and renew every 60 seconds while a shared episode is running and unpaused. Paused or hidden tabs stop renewing. A pause longer than the lease can invalidate the result; resuming computation does not resurrect an expired lease. **Stop** releases incomplete work. A completed result awaiting upload keeps its original lease until normal expiry so a later Start can retry submission; temporary upload failure does not proactively invalidate that result. Disconnected leases still expire on the server.
+Leases last 30 minutes and renew every 60 seconds while an episode is running and unpaused. Switching tabs keeps training and lease renewal active; only preview drawing and idle status polling are suspended while hidden. Manual **Pause** stops computation and lease renewal. A pause longer than the lease can invalidate the result; resuming computation does not resurrect an expired lease. **Stop** releases incomplete work. A completed result awaiting upload keeps its original lease until normal expiry so a later Start can retry submission; temporary upload failure does not proactively invalidate that result. Disconnected leases still expire on the server.
 
 ## Download checkpoints and full history
 

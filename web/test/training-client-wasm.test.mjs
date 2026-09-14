@@ -40,6 +40,7 @@ function setup({mutateReady=value=>value,mutateResult=value=>value,automatic=tru
       if(offline)throw new Error('Coordinator offline');
       if(path.endsWith('/status'))return Response.json(status());
       if(path.endsWith('/lease'))return Response.json({job});
+      if(path.endsWith('/heartbeat'))return Response.json({renewed:true});
       if(path.endsWith('/result')){accepted++;submitted.resolve(JSON.parse(options.body));return Response.json({accepted:true});}
       if(path.endsWith('/release'))return Response.json({released:true});
       throw new Error('Unexpected fixture request '+path);
@@ -92,6 +93,32 @@ test('Pause, Resume and intensity reach the running worker; Stop cancels and rel
   assert(worker.messages.some(m=>m.type==='budget'&&m.dutyCycle===.25&&m.previewHz===3));
   await f.client.stop();await f.client.loop;assert(worker.messages.some(m=>m.type==='cancel'));assert.equal(worker.terminated,true);
   assert.equal(f.calls.filter(c=>c.path.endsWith('/release')).length,1);assert.equal(f.calls.some(c=>c.path.endsWith('/result')),false);
+});
+
+test('hiding the tab keeps the trial, uploads and lease renewals running while manual Pause remains explicit',async t=>{
+  const previousDocument=Object.getOwnPropertyDescriptor(globalThis,'document'),document=new EventTarget();document.hidden=false;
+  Object.defineProperty(globalThis,'document',{value:document,configurable:true});
+  let heartbeatTick;
+  t.mock.method(globalThis,'setInterval',(callback,milliseconds)=>{assert.equal(milliseconds,60000);heartbeatTick=callback;return 1;});
+  t.mock.method(globalThis,'clearInterval',()=>{});
+  const f=setup({automatic:false});
+  t.after(async()=>{await f.client.dispose();if(previousDocument)Object.defineProperty(globalThis,'document',previousDocument);else delete globalThis.document;});
+  await f.client.initialize();await f.client.start();await f.evaluating.promise;
+  const worker=f.workers[0],renewals=()=>f.calls.filter(call=>call.path.endsWith('/heartbeat')).length;
+  document.hidden=true;document.dispatchEvent(new Event('visibilitychange'));
+  assert.equal(f.client.state.phase,'training');assert.equal(f.client.running,true);assert.equal(f.client.paused,false);
+  assert.equal(worker.messages.some(message=>message.type==='pause'),false);
+  heartbeatTick();assert.equal(renewals(),1);
+  f.client.pause();assert.equal(f.client.state.phase,'paused');heartbeatTick();assert.equal(renewals(),1);
+  document.hidden=false;document.dispatchEvent(new Event('visibilitychange'));
+  document.hidden=true;document.dispatchEvent(new Event('visibilitychange'));
+  assert.equal(f.client.paused,true,'Visibility changes must not undo a manual pause');
+  assert.equal(worker.messages.filter(message=>message.type==='pause').length,1);
+  f.client.resume();heartbeatTick();assert.equal(renewals(),2);
+  const counted=deferred();f.client.addEventListener('state',event=>{if(event.detail.contributedEpisodes===1){f.client.pause();counted.resolve();}});
+  worker.complete();await f.submitted.promise;await counted.promise;
+  assert.equal(document.hidden,true);assert.equal(f.client.state.completedEpisodes,1);assert.equal(f.client.state.contributedEpisodes,1);
+  await f.client.stop();await f.client.loop;assert.equal(worker.terminated,true);
 });
 
 test('guarded WASM still fails closed when the coordinator is unavailable and cannot run a local optimizer',async()=>{

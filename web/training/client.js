@@ -25,8 +25,6 @@ export class TrainingClient extends EventTarget {
     this.state={phase:'idle',message:'Ready',backend:null,stage:null,episode:0,generation:0,completedEpisodes:0,contributedEpisodes:0,simSeconds:0,wallSeconds:0,
       bestReturn:null,lastReturn:null,history:[],parameters:[],checkpointStatus:'unverified',coordinator:{connected:false},curriculum:[],error:null};
     this.contributorId=crypto.randomUUID();
-    this.visibility=()=>{if(globalThis.document?.hidden&&this.running&&!this.paused)this.pause('Paused');};
-    globalThis.document?.addEventListener('visibilitychange',this.visibility);
   }
   emit(patch={}) {Object.assign(this.state,patch);this.dispatchEvent(detailEvent('state',structuredClone(this.state)));}
   async initialize() {
@@ -361,5 +359,5 @@ export class TrainingClient extends EventTarget {
   fail(error) {this.running=false;this.paused=false;this.worker?.postMessage({type:'cancel'});if(this.heartbeat)clearInterval(this.heartbeat);this.heartbeat=null;
     if(this.activeLease){const lease=this.activeLease;this.activeLease=null;if(!this.hasPendingResult(lease))this.releaseLease(lease);}
     this.persist();this.emit({phase:'error',message:error.message,error:error.message});}
-  async dispose() {await this.stop();globalThis.document?.removeEventListener('visibilitychange',this.visibility);}
+  async dispose() {await this.stop();}
 }

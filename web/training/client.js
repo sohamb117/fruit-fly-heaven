@@ -17,14 +17,16 @@ export function trainingCoordinatorURL(location,developmentSameOrigin=false){
 
 /** Local and shared training orchestration. Loading this class starts no compute. */
 export class TrainingClient extends EventTarget {
-  constructor({workerFactory=()=>new Worker(new URL('./worker.js',import.meta.url),{type:'module'}),storage=globalThis.localStorage,fetcher=globalThis.fetch?.bind(globalThis),sharedOnly=false,coordinatorUrl}={}) {
+  constructor({workerFactory=()=>new Worker(new URL('./observer-worker.js',import.meta.url),{type:'module'}),storage=globalThis.localStorage,fetcher=globalThis.fetch?.bind(globalThis),sharedOnly=false,coordinatorUrl}={}) {
     super();Object.assign(this,{workerFactory,storage,fetcher});
     const requiredCoordinatorUrl=sharedOnly?this.coordinatorUrl(coordinatorUrl):null;
     Object.defineProperties(this,{sharedOnly:{value:!!sharedOnly},requiredCoordinatorUrl:{value:requiredCoordinatorUrl}});
     this.pending=new Map();this.nextId=0;this.runToken=0;this.running=false;this.paused=false;this.worker=null;this.round=null;this.options={dutyCycle:.6,previewHz:6,mode:sharedOnly?'shared':'local',...(sharedOnly?{coordinatorUrl:requiredCoordinatorUrl}:{})};
-    this.state={phase:'idle',message:'Ready',backend:null,stage:null,episode:0,generation:0,completedEpisodes:0,contributedEpisodes:0,simSeconds:0,wallSeconds:0,
+    this.state={phase:'idle',activity:null,message:'Ready',backend:null,stage:null,episode:0,generation:0,completedEpisodes:0,contributedEpisodes:0,simSeconds:0,wallSeconds:0,
       bestReturn:null,lastReturn:null,history:[],parameters:[],checkpointStatus:'unverified',coordinator:{connected:false},curriculum:[],error:null};
     this.contributorId=crypto.randomUUID();
+    this.brainObservation={enabled:false,indices:[]};
+    this.evaluationInstance=0;
   }
   emit(patch={}) {Object.assign(this.state,patch);this.dispatchEvent(detailEvent('state',structuredClone(this.state)));}
   async initialize() {
@@ -59,6 +61,12 @@ export class TrainingClient extends EventTarget {
     worker.addEventListener('message',event=>{
       if(this.worker!==worker)return;
       const message=event.data;
+      if(message.type==='brain'){
+        const snapshot=message.snapshot;
+        if(this.brainObservation.enabled&&snapshot?.jobId===this.state.activeJob?.jobId)this.dispatchEvent(detailEvent('brain',snapshot));
+        return;
+      }
+      if(message.type==='brain-error'){this.dispatchEvent(detailEvent('brain-error',{message:message.message||'Brain view unavailable'}));return;}
       if(message.type==='frame'){this.dispatchEvent(detailEvent('frame',message.frame));return;}
       if(message.type==='progress'){
         this.emit({message:message.message||message.phase||this.state.message,...(Number.isFinite(message.simSeconds)?{episodeSimSeconds:message.simSeconds}:{})});return;
@@ -81,6 +89,7 @@ export class TrainingClient extends EventTarget {
       const info=message.info||message;
       if(info.configHash!==this.configHash||info.modelFingerprint!==this.config.modelFingerprint)throw new Error('Worker and page loaded different training builds; reload the page');
       this.validateExecution(info);
+      this.worker.postMessage({type:'observe-brain',...this.brainObservation});
       this.emit({backend:info.backend,modelFingerprint:info.modelFingerprint,message:'Ready'});
       if(message.frame)this.dispatchEvent(detailEvent('frame',message.frame));return info;
     }).catch(error=>{worker.terminate();if(this.worker===worker){this.worker=null;this.workerReady=null;}throw error;});
@@ -93,6 +102,14 @@ export class TrainingClient extends EventTarget {
   setBudget({dutyCycle=this.options.dutyCycle,previewHz=this.options.previewHz}={}) {
     if(!Number.isFinite(dutyCycle)||dutyCycle<.1||dutyCycle>1||!Number.isFinite(previewHz)||previewHz<0||previewHz>15)throw new Error('Invalid compute or preview budget');
     Object.assign(this.options,{dutyCycle,previewHz});this.worker?.postMessage({type:'budget',dutyCycle,previewHz});
+  }
+  setBrainObservation({enabled=false,indices=this.brainObservation.indices}={}) {
+    if(typeof enabled!=='boolean'||(!Array.isArray(indices)&&!(indices instanceof Uint32Array))||indices.length>4096||
+      (enabled&&!indices.length)||Array.from(indices).some(index=>!Number.isSafeInteger(index)||index<0||index>0xffffffff)||new Set(indices).size!==indices.length)
+      throw new Error('Invalid brain observation');
+    if(enabled===this.brainObservation.enabled&&indices.length===this.brainObservation.indices.length&&Array.from(indices).every((index,i)=>index===this.brainObservation.indices[i]))return;
+    this.brainObservation={enabled,indices:Array.from(indices)};
+    this.worker?.postMessage({type:'observe-brain',...this.brainObservation});
   }
   async start(options={}) {
     if(this.running||this.starting)throw new Error('Training is already running');
@@ -122,8 +139,10 @@ export class TrainingClient extends EventTarget {
     }
     if(runToken!==this.runToken)return;
     this.running=true;this.paused=false;this.started=performance.now();this.wallBefore=this.state.wallSeconds;
-    try{await this.ensureWorker();if(!this.running)return;this.emit({phase:'training',message:'Running',error:null});
-      this.loop=(this.options.mode==='shared'?this.runShared(runToken):this.runLocal(runToken)).catch(error=>{if(runToken===this.runToken&&error.name!=='AbortError')this.fail(error);}).finally(()=>{if(runToken===this.runToken){this.running=false;this.persist();}});
+    try{await this.ensureWorker();if(!this.running)return;this.emit({phase:'training',activity:this.options.mode==='shared'?'waiting':'evaluating',message:'Running',error:null});
+      this.loop=(this.options.mode==='shared'?this.runShared(runToken):this.runLocal(runToken)).catch(error=>{
+        if(runToken===this.runToken&&(error.name!=='AbortError'||this.running))this.fail(error.name==='AbortError'?codedError('Training was interrupted. Press Start to retry.','training_interrupted'):error);
+      }).finally(()=>{if(runToken===this.runToken){this.running=false;this.persist();}});
     }catch(error){if(runToken!==this.runToken||error.name==='AbortError')return;this.running=false;this.fail(error);throw error;}
   }
   async runnable(token=this.runToken) {while(this.paused&&this.running&&token===this.runToken)await delay(50);if(!this.running||token!==this.runToken)throw abortError();}
@@ -139,13 +158,14 @@ export class TrainingClient extends EventTarget {
     this.worker?.terminate();this.worker=null;this.workerReady=null;
     const lease=this.activeLease;this.activeLease=null;
     if(this.started)this.state.wallSeconds=this.wallBefore+(performance.now()-this.started)/1000;
-    this.persist();this.emit({phase:'stopped',message:this.outbox?'Stopped · upload pending':'Stopped'});
+    this.persist();this.emit({phase:'stopped',activity:null,message:this.outbox?'Stopped · upload pending':'Stopped'});
     if(lease&&!this.hasPendingResult(lease))await this.releaseLease(lease);
   }
   async evaluate(job,role='exploration',token=this.runToken) {
     if(this.sharedOnly&&(role!=='contribution'||!this.activeLease||this.activeLease.jobId!==job.jobId))throw new Error('Shared training only evaluates jobs assigned by its coordinator');
     await this.runnable(token);validateParameters(job.parameters,this.config);
-    this.emit({episode:this.state.completedEpisodes+1,stage:job.stage,message:`${role==='validation'?'Evaluating validation seed':role==='test'?'Evaluating independent test seed':'Running episode'} ${job.seed}`,episodeSimSeconds:0});
+    this.emit({episode:this.state.completedEpisodes+1,stage:job.stage,activity:'evaluating',message:`${role==='validation'?'Evaluating validation seed':role==='test'?'Evaluating independent test seed':'Running episode'} ${job.seed}`,episodeSimSeconds:0,
+      activeJob:{jobId:job.jobId??job.id??null,instance:++this.evaluationInstance,generation:job.generation??this.state.generation,seed:job.seed,parameters:job.parameters.slice()}});
     const reply=await this.rpc('evaluate',{job,previewHz:this.options.previewHz,dutyCycle:this.options.dutyCycle});
     await this.runnable(token);if(reply.result?.cancelled)throw abortError();const result=validateResult(reply.result,this.config);
     this.validateProvenance(result,job);
@@ -223,6 +243,12 @@ export class TrainingClient extends EventTarget {
     try{const response=await this.fetcher(`${url}/api/training${path}`,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:undefined,
       body:body?JSON.stringify(body):undefined,signal:controller.signal,credentials:'omit',cache:'no-store'});
       const value=await response.json();if(!response.ok){const error=new Error(value.error||`Coordinator returned ${response.status}`);error.status=response.status;throw error;}return value;
+    }catch(error){
+      // This controller only aborts for a network timeout. Stop invalidates the
+      // run token separately; transport aborts must never look like user Stop.
+      if(controller.signal.aborted)throw codedError('Connection timed out. Press Start to retry.','api_timeout');
+      if(error.name==='AbortError')throw codedError('Connection interrupted. Press Start to retry.','api_interrupted');
+      throw error;
     }finally{clearTimeout(timer);}
   }
   async connectCoordinator(value) {
@@ -287,17 +313,19 @@ export class TrainingClient extends EventTarget {
     if(!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     const url=this.state.coordinator.url;
     if(this.outbox&&this.outboxUrl===this.state.coordinator.url){
+      this.emit({activity:'uploading',message:'Uploading'});
       try{const accepted=await this.api('/result',this.outbox,url);await this.runnable(token);if(accepted.accepted!==true)throw new Error('Coordinator did not accept the saved result');this.outbox=null;this.state.contributedEpisodes++;this.persist();this.emit({message:'Uploaded'});}
       catch(error){if([400,404,409,410,422].includes(error.status)){this.outbox=null;this.persist();this.emit({message:'Starting a new run'});}else throw error;}
     }
     while(this.running&&token===this.runToken){
-      await this.runnable(token);const response=await this.api('/lease',{contributorId:this.contributorId,modelFingerprint:this.config.modelFingerprint,configHash:this.configHash},url);
+      await this.runnable(token);this.emit({activity:'waiting',message:'Waiting for work'});
+      const response=await this.api('/lease',{contributorId:this.contributorId,modelFingerprint:this.config.modelFingerprint,configHash:this.configHash},url);
       const job=response.job===undefined?response:response.job;
       if(job)job.coordinatorUrl=url;
       if(!this.running||token!==this.runToken){if(job)await this.releaseLease(job);throw abortError();}
       if(job)this.activeLease=job;
       await this.runnable(token);
-      if(!job){this.emit({message:'Waiting'});await delay(Math.min(response.waitMs||2000,10000));continue;}
+      if(!job){await delay(Math.min(response.waitMs||2000,10000));continue;}
       if(job.modelFingerprint!==this.config.modelFingerprint||job.configHash!==this.configHash)throw new Error('Incompatible shared job');
       validateParameters(job.parameters,this.config);if(!this.config.stages.some(s=>s.id===job.stage))throw new Error('Unknown shared task');
       const heartbeat=this.heartbeat=setInterval(()=>{if(this.running&&!this.paused)this.api('/heartbeat',this.leaseIdentity(job),url).catch(error=>this.emit({message:`Lease renewal: ${error.message}`}));},60000);
@@ -310,7 +338,7 @@ export class TrainingClient extends EventTarget {
           provenance:{...result.provenance,parameters:result.parameters}};
         // Keep an unsent complete result locally; it is never silently counted as
         // contributed. Repeated accepted submissions are idempotent at the server.
-        this.outbox=payload;this.outboxUrl=url;this.persist();let accepted;
+        this.outbox=payload;this.outboxUrl=url;this.persist();this.emit({activity:'uploading',message:'Uploading'});let accepted;
         for(let attempt=0;attempt<3;attempt++){
           await this.runnable(token);try{accepted=await this.api('/result',payload,url);await this.runnable(token);if(accepted.accepted!==true)throw new Error('Coordinator did not accept this result');break;}catch(error){if(attempt===2||(error.status&&error.status<500)||error.name==='AbortError')throw error;this.emit({message:'Retrying upload'});await delay(1000*(attempt+1));}
         }
@@ -358,6 +386,6 @@ export class TrainingClient extends EventTarget {
   localViewSnapshot() {return structuredClone(Object.fromEntries(['stage','generation','parameters','checkpointStatus','bestReturn','validation','curriculum'].map(key=>[key,this.state[key]])));}
   fail(error) {this.running=false;this.paused=false;this.worker?.postMessage({type:'cancel'});if(this.heartbeat)clearInterval(this.heartbeat);this.heartbeat=null;
     if(this.activeLease){const lease=this.activeLease;this.activeLease=null;if(!this.hasPendingResult(lease))this.releaseLease(lease);}
-    this.persist();this.emit({phase:'error',message:error.message,error:error.message});}
+    this.persist();this.emit({phase:'error',activity:null,message:error.message,error:error.message});}
   async dispose() {await this.stop();}
 }

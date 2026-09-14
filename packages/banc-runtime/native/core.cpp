@@ -12,18 +12,28 @@ extern "C" void br_step(uint32_t n, uint32_t tick, uint32_t slots, uint32_t gaps
   const Edge* edges, const float* params, const float* old, float* next,
   float* history, float* kinetics, uint32_t* events) {
   const float* receptors = params + n*17;
+  // These factors and delayed row addresses are identical for every cell in
+  // this tick. Preserve the original expressions and incoming-edge order.
+  float rise[9], decay[9];
+  for(uint32_t r=0;r<9;++r) {
+    rise[r]=1-std::exp(-dt/receptors[r*3]);
+    decay[r]=1-std::exp(-dt/receptors[r*3+1]);
+  }
+  const float* delayed[32];
+  for(uint32_t delay=0;delay<slots;++delay)
+    delayed[delay]=history+((tick+slots-delay)%slots)*n;
   for(uint32_t i=0; i<n; ++i) {
     const float* p=params+i*16; const float* s=old+i*8; float* out=next+i*8;
     float drive[9]={0};
     for(uint32_t e=offsets[i];e<offsets[i+1];++e) {
       const Edge& edge=edges[e];
-      drive[edge.receptor]+=edge.weight*history[((tick+slots-edge.delay)%slots)*n+edge.source];
+      drive[edge.receptor]+=edge.weight*delayed[edge.delay][edge.source];
     }
     float conductance=p[1], reversal=p[1]*p[2], mod[4]={0};
     for(uint32_t r=0;r<9;++r) {
       float* gate=kinetics+(i*9+r)*2;
-      gate[0]+=(drive[r]-gate[0])*(1-std::exp(-dt/receptors[r*3]));
-      gate[1]+=(gate[0]-gate[1])*(1-std::exp(-dt/receptors[r*3+1]));
+      gate[0]+=(drive[r]-gate[0])*rise[r];
+      gate[1]+=(gate[0]-gate[1])*decay[r];
       if(r<5) { conductance+=gate[1]; reversal+=gate[1]*receptors[r*3+2]; }
       else mod[r-5]=gate[1]/(1+gate[1]);
     }
@@ -88,18 +98,26 @@ extern "C" int br_step_dlm(uint32_t n, uint32_t tick, uint32_t slots, uint32_t g
   const Edge* edges, const float* params, const float* old, float* next,
   float* history, float* kinetics, uint32_t* events) {
   const float* receptors = params + n*17;
+  float rise[9], decay[9];
+  for(uint32_t r=0;r<9;++r) {
+    rise[r]=1-std::exp(-dt/receptors[r*3]);
+    decay[r]=1-std::exp(-dt/receptors[r*3+1]);
+  }
+  const float* delayed[32];
+  for(uint32_t delay=0;delay<slots;++delay)
+    delayed[delay]=history+((tick+slots-delay)%slots)*n;
   for(uint32_t i=0; i<n; ++i) {
     const float* p=params+i*16; const float* s=old+i*8; float* out=next+i*8;
     float drive[9]={0};
     for(uint32_t e=offsets[i];e<offsets[i+1];++e) {
       const Edge& edge=edges[e];
-      drive[edge.receptor]+=edge.weight*history[((tick+slots-edge.delay)%slots)*n+edge.source];
+      drive[edge.receptor]+=edge.weight*delayed[edge.delay][edge.source];
     }
     float conductance=p[1], reversal=p[1]*p[2], mod[4]={0};
     for(uint32_t r=0;r<9;++r) {
       float* gate=kinetics+(i*9+r)*2;
-      gate[0]+=(drive[r]-gate[0])*(1-std::exp(-dt/receptors[r*3]));
-      gate[1]+=(gate[0]-gate[1])*(1-std::exp(-dt/receptors[r*3+1]));
+      gate[0]+=(drive[r]-gate[0])*rise[r];
+      gate[1]+=(gate[0]-gate[1])*decay[r];
       if(r<5) { conductance+=gate[1]; reversal+=gate[1]*receptors[r*3+2]; }
       else mod[r-5]=gate[1]/(1+gate[1]);
     }

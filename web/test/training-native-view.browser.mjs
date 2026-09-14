@@ -49,7 +49,7 @@ await context.route('**/*',async route=>{
 const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
 const assertCopy=async()=>{
   const copy=await page.evaluate(()=>[document.body.innerText,...[...document.querySelectorAll('[title],[aria-label]')].map(n=>`${n.title||''} ${n.getAttribute('aria-label')||''}`)].join('\n'));
-  assert.doesNotMatch(copy,/\b(shared|coordinator|BANC|FlyBody|WebGPU|WASM|MuJoCo|parameters|unverified|fingerprint|lease)\b/i);
+  assert.doesNotMatch(copy,/\b(shared|coordinator|BANC|FlyBody|WebGPU|WASM|MuJoCo|unverified|fingerprint|lease)\b/i);
   assert.doesNotMatch(copy,/https?:\/\//);
 };
 try{

@@ -27,14 +27,17 @@
     <noscript><p class="error-banner">Enable JavaScript to start training.</p></noscript>
     <div class="workspace">
       <section class="instrument preview-panel" aria-labelledby="preview-heading">
-        <div class="titlebar"><h2 id="preview-heading">Live preview</h2></div>
+        <div class="titlebar"><h2 id="preview-heading">Live preview</h2><div class="preview-tabs" role="tablist" aria-label="Preview"><button id="show-fly" type="button" role="tab" aria-selected="true" aria-controls="training-preview">Fly</button><button id="show-brain" type="button" role="tab" aria-selected="false" aria-controls="training-brain">Brain</button></div></div>
         <div class="preview-wrap">
           <div id="training-preview" role="img" aria-label="3D fly preview"></div>
+          <div id="training-brain" role="img" aria-label="3D brain activity. Drag or use arrow keys to rotate, plus and minus to zoom. Click a neuron to inspect." hidden></div>
           <div id="preview-empty" class="preview-empty"><span class="crosshair" aria-hidden="true">+</span><strong>Press Start</strong></div>
           <div class="preview-overlay"><span id="preview-label"></span><span id="preview-clock"></span></div>
           <div class="preview-caption"><span id="preview-status"></span><button id="recenter-preview" type="button" disabled>Reset view</button></div>
         </div>
         <dl class="preview-readouts"><div><dt>Trial</dt><dd id="preview-candidate">—</dd></div><div><dt>Score</dt><dd id="preview-reward">—</dd></div><div><dt>Time</dt><dd id="preview-time">—</dd></div></dl>
+        <p id="brain-reading" class="brain-reading" hidden>Click a neuron to inspect.</p>
+        <div id="brain-legend" class="brain-legend" hidden><span>Voltage <i class="voltage-scale"></i> −75 → −35 mV</span><span><i class="spike-dot"></i> Spike</span></div>
       </section>
       <section class="instrument stage-panel" aria-labelledby="stage-heading">
         <div class="titlebar"><h2 id="stage-heading">Current task</h2></div>
@@ -44,6 +47,14 @@
           <div class="progress-label"><label for="stage-progress">Tasks completed</label><span id="stage-progress-value">0 / 6</span></div>
           <progress id="stage-progress" max="6" value="0" aria-label="Tasks completed"></progress>
           <ol id="stage-list" class="stage-list" aria-label="Tasks"></ol>
+        </div>
+      </section>
+      <section class="instrument parameters-panel" aria-labelledby="parameters-heading">
+        <div class="titlebar"><h2 id="parameters-heading">Parameters</h2><span id="parameter-count" class="instrument-id">0</span></div>
+        <div class="panel-body">
+          <div class="parameter-tools"><p id="parameter-context">No trial yet</p><div><label for="parameter-search">Find parameter</label><input id="parameter-search" type="search" placeholder="Muscle or neuron" autocomplete="off"></div></div>
+          <div class="table-wrap"><table aria-label="Current fly parameters"><thead><tr><th scope="col">Name</th><th scope="col">Value</th></tr></thead><tbody id="parameter-rows"></tbody></table></div>
+          <div class="parameter-pages"><button id="parameter-previous" type="button" disabled>Previous</button><span id="parameter-page">0 / 0</span><button id="parameter-next" type="button" disabled>Next</button></div>
         </div>
       </section>
       <section class="instrument timeline-panel" aria-labelledby="timeline-heading">

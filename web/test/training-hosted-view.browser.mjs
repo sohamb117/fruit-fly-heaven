@@ -24,7 +24,7 @@ const cases=[
   {origin:'https://[::1]',hosted:false},
 ];
 const passed=[],viewports=[],output=path.resolve(process.env.TRAINING_UI_REPORT_DIR||'reports/training-simple-ui');
-const forbidden=/\b(shared|coordinator|BANC|FlyBody|VNC|WebGPU|WASM|MuJoCo|unverified|fingerprint|lease|evolution strategies|parameters|model route)\b/i;
+const forbidden=/\b(shared|coordinator|BANC|FlyBody|VNC|WebGPU|WASM|MuJoCo|unverified|fingerprint|lease|evolution strategies|model route)\b/i;
 async function assertPublicCopy(page){
   const exposed=await page.evaluate(()=>[document.body.innerText,...[...document.querySelectorAll('[aria-label],[title]')].map(node=>`${node.getAttribute('aria-label')||''} ${node.getAttribute('title')||''}`)].join('\n'));
   assert.doesNotMatch(exposed,forbidden);

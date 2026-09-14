@@ -75,6 +75,7 @@ def wasm_result(coordinator, job, owner, score):
     value = result(coordinator, job, owner, score)
     del value['provenance']['nativeWebGPU']
     value['provenance'].update(backend='wasm', neuralEngine='wasm',
+                              parameters=copy.deepcopy(job['parameters']),
                               wasmExecution=copy.deepcopy(coordinator.acceptance_config['nativeExecution']))
     return value
 
@@ -136,6 +137,61 @@ class WasmGuardTests(unittest.TestCase):
             self.assertEqual(caught.exception.code, 'provenance_mismatch')
         self.assertEqual(self.coordinator.status()['acceptedResults'], 0)
         self.assertTrue(self.coordinator.result(valid)['accepted'])
+
+    def test_actual_browser_payload_shape_requires_no_native_top_level_vector_or_duration(self):
+        job = self.lease()
+        body = wasm_result(self.coordinator, job, 'browser', 0.)
+        # web/training/client.js uploads the actual vector only inside
+        # provenance; environment.js supplies these four assignment fields.
+        del body['parameters']
+        del body['provenance']['durationSeconds']
+        self.assertTrue(self.coordinator.result(body)['accepted'])
+        self.assertTrue(self.coordinator.result(body)['duplicate'])
+        self.assertEqual(self.coordinator.status()['acceptedResults'], 1)
+
+    def test_guarded_wasm_rejects_missing_or_wrong_applied_vector_despite_matching_claimed_hash(self):
+        job = self.lease()
+        valid = wasm_result(self.coordinator, job, 'browser', 0.)
+        for vector in (None, [], [True], [job['parameters'][0] + .01], 'not a vector'):
+            body = copy.deepcopy(valid)
+            body['provenance']['parameters'] = vector
+            with self.subTest(vector=vector), self.assertRaises(module.APIError) as caught:
+                self.coordinator.result(body)
+            self.assertEqual(caught.exception.code, 'provenance_mismatch')
+        body = copy.deepcopy(valid)
+        del body['provenance']['parameters']
+        # Even a correct top-level vector must not replace the applied-vector
+        # field that the browser records in its execution provenance.
+        with self.assertRaises(module.APIError) as caught:
+            self.coordinator.result(body)
+        self.assertEqual(caught.exception.code, 'provenance_mismatch')
+        self.assertEqual(self.coordinator.status()['acceptedResults'], 0)
+        self.assertTrue(self.coordinator.result(valid)['accepted'])
+
+    def test_guarded_wasm_requires_exact_assignment_identity_in_provenance(self):
+        job = self.lease()
+        valid = wasm_result(self.coordinator, job, 'browser', 0.)
+        for key, wrong in (('parametersHash', '0'*64), ('sign', -job['sign']),
+                           ('pairId', 'g0-p999'), ('generation', job['generation'] + 1)):
+            for missing in (True, False):
+                body = copy.deepcopy(valid)
+                if missing:
+                    del body['provenance'][key]
+                else:
+                    body['provenance'][key] = wrong
+                with self.subTest(key=key, missing=missing), self.assertRaises(module.APIError) as caught:
+                    self.coordinator.result(body)
+                self.assertEqual(caught.exception.code, 'provenance_mismatch')
+        self.assertEqual(self.coordinator.status()['acceptedResults'], 0)
+        self.assertTrue(self.coordinator.result(valid)['accepted'])
+
+    def test_guarded_wasm_native_producer_payload_with_both_parameter_fields_remains_valid(self):
+        job = self.lease()
+        body = wasm_result(self.coordinator, job, 'browser', 0.)
+        for key in ('parametersHash', 'durationSeconds', 'generation', 'sign', 'pairId'):
+            body[key] = job[key]
+        self.assertEqual(body['parameters'], body['provenance']['parameters'])
+        self.assertTrue(self.coordinator.result(body)['accepted'])
 
     def test_wasm_clock_completion_and_cancellation_rules_remain_strict(self):
         job = self.lease(); valid = wasm_result(self.coordinator, job, 'browser', 0.)

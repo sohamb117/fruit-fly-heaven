@@ -304,6 +304,16 @@ class CoordinatorRules:
                 if (provenance.get("backend") != "wasm" or provenance.get("neuralEngine") != "wasm"
                         or not isinstance(wasm, dict) or wasm != pins or "nativeWebGPU" in provenance):
                     raise APIError(409, "provenance_mismatch", "Guarded jobs require the pinned WASM execution class")
+                # Browser results put the applied vector in provenance, not
+                # the optional top-level native-client field. Require the
+                # assignment evidence already emitted by browser workers.
+                for key in ("parametersHash", "sign", "pairId", "generation"):
+                    if key not in provenance:
+                        raise APIError(409, "provenance_mismatch", f"Result provenance requires {key}")
+                applied = provenance.get("parameters")
+                if (not isinstance(applied, list) or applied != expected["parameters"]
+                        or any(isinstance(value, bool) for value in applied)):
+                    raise APIError(409, "provenance_mismatch", "Applied parameters do not match lease")
             metrics = payload.get("metrics", {})
             elapsed, steps = metrics.get("simSeconds"), metrics.get("steps")
             valid_clock = (type(elapsed) in (int, float) and math.isfinite(elapsed) and 0 < elapsed <= self.duration+1e-7

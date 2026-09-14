@@ -6,9 +6,10 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {prepareTrainingBrain} from './prepare-training-brain.mjs';
 
 const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const output=path.join(repo,'dist/training-client');
+const defaultOutput=path.join(repo,'dist/training-client');
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const json=value=>JSON.stringify(value,null,2)+'\n';
 const prefixes=[['/body-engine/','packages/flybody-runtime/node_modules/@mujoco/mujoco/'],['/banc-engine/','packages/banc-runtime/'],['/banc-data/','data/prepared/banc888/'],['/body-model/','models/']];
@@ -151,24 +152,55 @@ export function readExperimentBundle(bytes){
   return {configBytes,overrides};
 }
 
-export async function packageTrainingClient({experimentBundle=null}={}){
+// UI-only releases can retain the exact released simulation, including its
+// matching native source. Never substitute locally edited model files.
+export async function openModelBundle(directory,{configHash,modelFingerprint}){
+  const root=await fs.realpath(directory),manifestPath=path.join(root,'bundle-manifest.json');
+  const bytes=await fs.readFile(manifestPath),manifest=JSON.parse(bytes),manifestHash=digest(bytes);
+  if(manifest.kind!=='local-contributor-client'||manifest.configHash!==configHash||manifest.modelFingerprint!==modelFingerprint||!Array.isArray(manifest.files))throw new Error('Frozen model bundle identity mismatch');
+  const records=new Map();
+  for(const record of manifest.files){
+    const url=safeUrl('/'+record.path);
+    if(records.has(url)||!Number.isSafeInteger(record.bytes)||record.bytes<0||!/^[a-f0-9]{64}$/.test(record.sha256))throw new Error('Invalid frozen model bundle manifest');
+    records.set(url,record);
+  }
+  async function file(url){
+    safeUrl(url);const record=records.get(url);if(!record)throw new Error('Frozen model bundle is missing '+url);
+    const target=path.join(root,url.slice(1));
+    for(let current=target;current!==root;current=path.dirname(current))if((await fs.lstat(current)).isSymbolicLink())throw new Error('Symlink in frozen model bundle');
+    if(!(await fs.stat(target)).isFile()||(await fs.stat(target)).size!==record.bytes||await hashFile(target)!==record.sha256)throw new Error('Frozen model bundle checksum mismatch: '+url);
+    return {path:target,record};
+  }
+  const config=await file('/training/config.json');
+  if(config.record.sha256!==configHash)throw new Error('Frozen model bundle configuration mismatch');
+  return {root,file,has:url=>records.has(safeUrl(url)),async verifyManifest(){if(await hashFile(manifestPath)!==manifestHash)throw new Error('Frozen model manifest changed during packaging');}};
+}
+
+export async function packageTrainingClient({experimentBundle=null,modelBundle=null,outputDirectory=defaultOutput}={}){
+  await fs.mkdir(path.resolve(outputDirectory),{recursive:true});
+  const output=await fs.realpath(outputDirectory);
   const configSource=experimentBundle?path.resolve(experimentBundle):path.join(repo,'web/training/config.json');
   const inputBytes=await fs.readFile(configSource),inputHash=digest(inputBytes);
   const {configBytes,overrides}=experimentBundle?readExperimentBundle(inputBytes):{configBytes:inputBytes,overrides:new Map()};
   const config=JSON.parse(configBytes),configHash=digest(configBytes);
   if(!config.assets||Object.keys(config.assets).length<1||manifestFingerprint(config.assets)!==config.modelFingerprint)throw new Error('Finalize the canonical training asset manifest first');
   const id='fruit-fly-training-client-'+configHash.slice(0,12),bundle=path.join(output,id);
+  const frozen=modelBundle?await openModelBundle(modelBundle,{configHash,modelFingerprint:config.modelFingerprint}):null;
+  if(frozen&&path.resolve(bundle)===frozen.root)throw new Error('Choose a different --output-dir to preserve the frozen model bundle');
   await fs.mkdir(output,{recursive:true});const staging=await fs.mkdtemp(path.join(output,'.pack-')),stage=path.join(staging,id);await fs.mkdir(stage);
-  const records=new Map();
+  const records=new Map(),frozenSources=new Map();
   async function add(url,{relative=repositoryPath(url),expectedHash,expectedBytes,kind='model'}={}){
     safeUrl(url);const existing=records.get(url);
     if(existing){if(expectedHash&&existing.sha256!==expectedHash||expectedBytes!==undefined&&existing.bytes!==expectedBytes)throw new Error('Conflicting bundle identity: '+url);return;}
     const target=path.join(stage,url.slice(1));await fs.mkdir(path.dirname(target),{recursive:true});
-    if(overrides.has(url))await fs.writeFile(target,overrides.get(url));
+    const useFrozen=frozen&&(Object.hasOwn(config.assets,url)||kind==='graph'||kind==='source'||kind==='license'||url.startsWith('/banc-engine/')||url.startsWith('/body-engine/'));
+    if(useFrozen){const source=await frozen.file(url);await fs.copyFile(source.path,target);frozenSources.set(url,source);}
+    else if(overrides.has(url))await fs.writeFile(target,overrides.get(url));
     else await fs.copyFile(await sourceFile(relative),target);
     const sha256=await hashFile(target),bytes=(await fs.stat(target)).size;
     if(expectedHash&&sha256!==expectedHash||expectedBytes!==undefined&&bytes!==expectedBytes)throw new Error('Source checksum mismatch: '+relative);
-    records.set(url,{path:url.slice(1),bytes,sha256,kind,source:overrides.has(url)?'generated experiment asset from '+path.relative(repo,configSource):relative});
+    if(useFrozen&&sha256!==frozenSources.get(url).record.sha256)throw new Error('Frozen model bundle changed during copy: '+url);
+    records.set(url,{path:url.slice(1),bytes,sha256,kind,source:useFrozen?'frozen model bundle '+path.relative(repo,frozen.root)+url:overrides.has(url)?'generated experiment asset from '+path.relative(repo,configSource):relative});
   }
   async function generated(url,content,kind='instructions',source='generated by scripts/package-training-client.mjs'){
     safeUrl(url);if(records.has(url))throw new Error('Duplicate generated path: '+url);const target=path.join(stage,url.slice(1));await fs.mkdir(path.dirname(target),{recursive:true});await fs.writeFile(target,content);
@@ -182,7 +214,8 @@ export async function packageTrainingClient({experimentBundle=null}={}){
       if(!/^[a-zA-Z0-9_-]+\.(bin|json)$/.test(name)||!/^[a-f0-9]{64}$/.test(record.sha256)||!Number.isSafeInteger(record.bytes)||record.bytes<0)throw new Error('Unsafe graph file: '+name);
       await add('/banc-data/'+name,{expectedHash:record.sha256,expectedBytes:record.bytes,kind:'graph'});
     }
-    for(const url of ['/train.html','/training/config.json','/training/view.js','/training/client.js','/training/optimizer.js','/training/preview.js','/training/train.css','/training/package.json'])await add(url,{kind:'client',...(url==='/training/config.json'?{expectedHash:configHash}:{})});
+    for(const url of ['/train.html','/training/config.json','/training/view.js','/training/client.js','/training/optimizer.js','/training/preview.js','/training/brain-preview.js','/training/observer-worker.js','/training/observer-runtime.js','/training/train.css','/training/package.json'])await add(url,{kind:'client',...(url==='/training/config.json'?{expectedHash:configHash}:{})});
+    await generated('/training/brain-sample.json',JSON.stringify(await prepareTrainingBrain(config))+'\n','presentation');
     // Explicit entry points above define the code allowlist. Reject missing code
     // imports; local HTML/CSS images/fonts may be included only below /assets,
     // /fonts, /training or /vendor. No directory recursion and no remote assets.
@@ -211,6 +244,7 @@ export async function packageTrainingClient({experimentBundle=null}={}){
     const mujoco=JSON.parse(await fs.readFile(path.join(stage,'licenses/mujoco-package.json'),'utf8'));
     if(!/^\d+\.\d+\.\d+$/.test(mujoco.version)||mujoco.license!=='Apache-2.0')throw new Error('Unexpected MuJoCo license/version; review attribution');
     for(const name of ['LICENSE']){
+      if(frozen){await add('/licenses/MuJoCo-'+name,{kind:'license'});continue;}
       const url=`https://raw.githubusercontent.com/google-deepmind/mujoco/${mujoco.version}/${name}`,response=await fetch(url,{signal:AbortSignal.timeout(15000)});
       if(!response.ok)throw new Error('Missing pinned MuJoCo notice: '+url);const bytes=Buffer.from(await response.arrayBuffer());
       if(bytes.length<100||bytes.length>1024*1024)throw new Error('Unexpected license size');await generated('/licenses/MuJoCo-'+name,bytes,'license',url);
@@ -219,7 +253,8 @@ export async function packageTrainingClient({experimentBundle=null}={}){
     // upstream repository root or in the npm package. Include only the notice
     // from the exact same installed release; do not guess another license.
     let thirdPartyNotice=false;
-    for(const python of await fs.readdir(path.join(repo,'.venv/lib')).catch(()=>[])){
+    if(frozen?.has('/licenses/MuJoCo-LICENSES_THIRD_PARTY.md')){await add('/licenses/MuJoCo-LICENSES_THIRD_PARTY.md',{kind:'license'});thirdPartyNotice=true;}
+    for(const python of frozen?[]:await fs.readdir(path.join(repo,'.venv/lib')).catch(()=>[])){
       if(!/^python[0-9.]+$/.test(python))continue;
       const relative=`.venv/lib/${python}/site-packages/mujoco-${mujoco.version}.dist-info/licenses/LICENSES_THIRD_PARTY.md`;
       if(!(await fs.stat(path.join(repo,relative)).catch(()=>null))?.isFile())continue;
@@ -238,7 +273,12 @@ export async function packageTrainingClient({experimentBundle=null}={}){
     const verification=await httpVerify(stage,manifest);
     const stagedZip=path.join(staging,id+'.zip');const archive=JSON.parse(await run('uv',['run','--offline','python','-',stage,stagedZip],{input:archiveSource}));
     // Refuse a snapshot assembled while any local source changed.
-    for(const record of files)if(!record.source.startsWith('generated ')&&!record.source.startsWith('https://')&&await hashFile(await sourceFile(record.source))!==record.sha256)throw new Error('Source changed during packaging: '+record.source);
+    for(const record of files){
+      const frozenSource=frozenSources.get('/'+record.path);
+      if(frozenSource){if(await hashFile(frozenSource.path)!==record.sha256)throw new Error('Frozen model source changed during packaging: '+record.path);}
+      else if(!record.source.startsWith('generated ')&&!record.source.startsWith('https://')&&await hashFile(await sourceFile(record.source))!==record.sha256)throw new Error('Source changed during packaging: '+record.source);
+    }
+    await frozen?.verifyManifest();
     if(digest(await fs.readFile(configSource))!==inputHash)throw new Error('Configuration source changed during packaging');
     const zip=path.join(output,id+'.zip'),sha256=await hashFile(stagedZip),bytes=(await fs.stat(stagedZip)).size;
     // Existing output is generated content only; never remove arbitrary paths.
@@ -251,6 +291,7 @@ export async function packageTrainingClient({experimentBundle=null}={}){
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
   const args=process.argv.slice(2);
-  if(args.length>1||(args.length===1&&!args[0].startsWith('--experiment-bundle=')))throw new Error('Usage: package-training-client.mjs [--experiment-bundle=PATH]');
-  packageTrainingClient({experimentBundle:args[0]?.slice('--experiment-bundle='.length)||null}).catch(error=>{console.error(error.stack||error);process.exitCode=1;});
+  const options={},names={'experiment-bundle':'experimentBundle','model-bundle':'modelBundle','output-dir':'outputDirectory'};
+  for(const arg of args){const match=/^--(experiment-bundle|model-bundle|output-dir)=(.+)$/.exec(arg);if(!match||Object.hasOwn(options,names[match?.[1]]))throw new Error('Usage: package-training-client.mjs [--experiment-bundle=PATH] [--model-bundle=PATH] [--output-dir=PATH]');options[names[match[1]]]=match[2];}
+  packageTrainingClient(options).catch(error=>{console.error(error.stack||error);process.exitCode=1;});
 }

@@ -165,7 +165,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     if(brain.timeMs!==0)throw new Error('Wing event observation requires a fresh neural baseline');
     const reader=createWingMotorEventReader({indices:wingIndices,params:base.params,dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,eventContract});
     emitMotorEvents=async()=>{
-     const state9=await brain.readState(wingIndices,{includeSpikeTime:true}),packet=reader.read(state9,brain.timeMs);
+     const state9=await brain.readState(wingIndices,{includeSpikeTime:true,includeStatistics:false,includeSpikeHistory:false}),packet=reader.read(state9,brain.timeMs);
      // The opt-in body consumes owned event state before an optional observer
      // receives its packet. Observation is never required to drive the body.
      if(config.wingEventExcitation!==undefined)body.acceptWingMotorEvents(packet);
@@ -304,7 +304,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     if(brain.timeMs!==0)throw new Error('Wing event observation requires a fresh neural baseline');
     const reader=createWingMotorEventReader({indices:wingIndices,params:base.params,dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,eventContract});
     emitMotorEvents=async()=>{
-     const state9=await brain.readState(wingIndices,{includeSpikeTime:true}),packet=reader.read(state9,brain.timeMs);
+     const state9=await brain.readState(wingIndices,{includeSpikeTime:true,includeStatistics:false,includeSpikeHistory:false}),packet=reader.read(state9,brain.timeMs);
      // The opt-in body consumes owned event state before an optional observer
      // receives its packet. Observation is never required to drive the body.
      if(config.wingEventExcitation!==undefined)body.acceptWingMotorEvents(packet);

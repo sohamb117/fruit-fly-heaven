@@ -48,6 +48,23 @@ function setup({mutateReady=value=>value,mutateResult=value=>value,automatic=tru
   return {client,workers,calls,config,job,evaluating,submitted,setOffline:value=>offline=value};
 }
 
+function holdApiRequest(t,client,path){
+  const requested=deferred(),fetcher=client.fetcher,setTimeout=globalThis.setTimeout;
+  let expire;
+  t.mock.method(globalThis,'setTimeout',(callback,milliseconds,...args)=>{
+    if(milliseconds===15000){expire=callback;return {};}
+    return setTimeout(callback,milliseconds,...args);
+  });
+  client.fetcher=(url,options)=>{
+    if(new URL(url).pathname!==path)return fetcher(url,options);
+    return new Promise((resolve,reject)=>{
+      options.signal.addEventListener('abort',()=>reject(new DOMException('Timed out fixture request','AbortError')),{once:true});
+      requested.resolve();
+    });
+  };
+  return {requested:requested.promise,expire:()=>expire()};
+}
+
 test('browser eligibility follows the explicit execution class without opening Dawn runs',()=>{
   assert.equal(browserTrainingAvailable(wasmConfigFixture(base)),true);
   assert.equal(browserTrainingAvailable(nativeConfigFixture(base)),false);
@@ -95,6 +112,25 @@ test('Pause, Resume and intensity reach the running worker; Stop cancels and rel
   assert.equal(f.calls.filter(c=>c.path.endsWith('/release')).length,1);assert.equal(f.calls.some(c=>c.path.endsWith('/result')),false);
 });
 
+test('brain observation is opt-in, isolated from training errors and tied to the current assigned vector',async()=>{
+  const f=setup({automatic:false}),received=[],errors=[];
+  f.client.addEventListener('brain',event=>received.push(event.detail));f.client.addEventListener('brain-error',event=>errors.push(event.detail));
+  f.client.setBrainObservation({enabled:true,indices:[3,7]});assert.equal(f.workers.length,0);
+  assert.throws(()=>f.client.setBrainObservation({enabled:true,indices:[0x100000000]}),/Invalid/);
+  await f.client.initialize();await f.client.start();await f.evaluating.promise;
+  const worker=f.workers[0],job=f.client.state.activeJob;assert.equal(Object.hasOwn(job,'leaseToken'),false);assert.deepEqual(job.parameters,f.job.parameters);
+  assert(worker.messages.some(message=>message.type==='observe-brain'&&message.enabled&&message.indices.join(',')==='3,7'));
+  const snapshot={jobId:job.jobId,neuralTimeMs:10};worker.send({type:'brain',snapshot});worker.send({type:'brain',snapshot:{jobId:'old-job'}});
+  worker.send({type:'brain-error',message:'Readout unavailable'});await Promise.resolve();
+  assert.deepEqual(received,[snapshot]);assert.equal(errors.length,1);assert.equal(f.client.running,true);
+  f.client.setBrainObservation({enabled:false});worker.send({type:'brain',snapshot});await Promise.resolve();assert.equal(received.length,1);
+  f.client.emit({parameters:f.client.state.parameters.map(()=>0)});assert.deepEqual(f.client.state.activeJob.parameters,f.job.parameters);
+  await f.client.stop();await f.client.loop;assert.equal(f.client.state.activeJob,job);
+  const restarted=deferred();f.client.addEventListener('state',event=>{if(event.detail.activeJob?.instance>job.instance)restarted.resolve();});
+  await f.client.start();await restarted.promise;assert(f.client.state.activeJob.instance>job.instance,'A re-leased job has a fresh evaluation identity');
+  await f.client.stop();await f.client.loop;
+});
+
 test('hiding the tab keeps the trial, uploads and lease renewals running while manual Pause remains explicit',async t=>{
   const previousDocument=Object.getOwnPropertyDescriptor(globalThis,'document'),document=new EventTarget();document.hidden=false;
   Object.defineProperty(globalThis,'document',{value:document,configurable:true});
@@ -125,4 +161,38 @@ test('guarded WASM still fails closed when the coordinator is unavailable and ca
   const f=setup();await f.client.initialize();f.setOffline(true);await assert.rejects(f.client.start(),/offline/);
   assert.equal(f.workers.length,0);await assert.rejects(f.client.start({mode:'local'}),/always contributes/);
   await assert.rejects(f.client.runLocal(f.client.runToken),/always contributes/);await f.client.dispose();
+});
+
+test('a lease API timeout becomes an error instead of silently leaving a stopped loop labeled training',async t=>{
+  const f=setup({automatic:false});await f.client.initialize();
+  const request=holdApiRequest(t,f.client,'/api/training/lease');await f.client.start();await request.requested;
+  assert.equal(f.client.state.activity,'waiting');request.expire();await f.client.loop;
+  assert.equal(f.client.running,false);assert.equal(f.client.state.phase,'error');assert.equal(f.client.state.activity,null);
+  assert.match(f.client.state.error,/Connection timed out/);assert.equal(f.client.pending.size,0);
+  await f.client.dispose();
+});
+
+test('an API timeout after intentional Stop cannot replace the stopped state',async t=>{
+  const f=setup({automatic:false});await f.client.initialize();
+  const request=holdApiRequest(t,f.client,'/api/training/lease');await f.client.start();await request.requested;
+  await f.client.stop();request.expire();await f.client.loop;
+  assert.equal(f.client.running,false);assert.equal(f.client.state.phase,'stopped');assert.equal(f.client.state.error,null);
+  assert.equal(f.workers[0].terminated,true);
+});
+
+test('a timed-out restored upload stays in the outbox and reports the failure',async t=>{
+  const f=setup({automatic:false});await f.client.initialize();
+  f.client.outbox={...f.client.leaseIdentity(f.job),objective:-1};f.client.outboxUrl=origin;
+  const saved=structuredClone(f.client.outbox),request=holdApiRequest(t,f.client,'/api/training/result');
+  await f.client.start();await request.requested;assert.equal(f.client.state.activity,'uploading');
+  request.expire();await f.client.loop;
+  assert.equal(f.client.state.phase,'error');assert.match(f.client.state.error,/Connection timed out/);
+  assert.deepEqual(f.client.outbox,saved);assert.equal(f.client.state.contributedEpisodes,0);
+  await f.client.dispose();
+});
+
+test('unexpected worker cancellation reports an interruption without counting an incomplete trial',async()=>{
+  const f=setup({mutateResult:r=>({...r,cancelled:true})});await f.client.initialize();await f.client.start();await f.client.loop;
+  assert.equal(f.client.running,false);assert.equal(f.client.state.phase,'error');assert.match(f.client.state.error,/Training was interrupted/);
+  assert.equal(f.client.state.completedEpisodes,0);assert.equal(f.client.state.contributedEpisodes,0);await f.client.dispose();
 });

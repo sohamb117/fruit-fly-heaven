@@ -16,7 +16,7 @@ function healthFor(device){
 
 const readoutShader=`
 @group(0) @binding(0) var<storage,read> state:array<f32>;
-struct ReadConfig {count:u32,stride:u32,ids:array<u32>}
+struct ReadConfig {count:u32,stride:u32,statistics:u32,ids:array<u32>}
 @group(0) @binding(1) var<storage,read> config:ReadConfig;
 @group(0) @binding(2) var<storage,read_write> output:array<f32>;
 @group(0) @binding(3) var<storage,read> kinetics:array<f32>;
@@ -26,7 +26,7 @@ struct ReadConfig {count:u32,stride:u32,ids:array<u32>}
    for(var k=0u;k<8u;k++){output[id.x*config.stride+k]=state[config.ids[id.x]*8u+k];}
    if(config.stride==9u){output[id.x*9u+8u]=kinetics[n*18u+config.ids[id.x]];}
  }
- if(id.x<(n+255u)/256u){
+ if(config.statistics!=0u&&id.x<(n+255u)/256u){
    var spikes=0.0;var activeCount=0.0;
    for(var i=id.x*256u;i<min(n,(id.x+1u)*256u);i++){let count=state[i*8u+3u];spikes+=count;if(count>0.0){activeCount+=1.0;}}
    output[config.count*config.stride+id.x*2u]=spikes;output[config.count*config.stride+id.x*2u+1u]=activeCount;
@@ -178,36 +178,40 @@ export class WebGPUBrain {
     }finally{if(this.intrinsicStaging?.mapState==='mapped')this.intrinsicStaging.unmap();this.busy=false;}
   }
   readIntrinsicState(){this.live();if(this.busy)throw new Error('Concurrent GPU operation');return this.intrinsicState?.slice()??new Float32Array();}
-  async readState(indices=Uint32Array.from({length:this.n},(_,i)=>i),{includeSpikeTime=false}={}){
+  async readState(indices=Uint32Array.from({length:this.n},(_,i)=>i),{includeSpikeTime=false,includeStatistics=true,includeSpikeHistory=true}={}){
     this.live();if(this.busy)throw new Error('Concurrent GPU operation');
+    if(typeof includeStatistics!=='boolean'||typeof includeSpikeHistory!=='boolean')throw new TypeError('Readout statistics and spike history flags must be boolean');
     if(!(indices instanceof Uint32Array)||!indices.length||indices.some(i=>i>=this.n))throw new Error('Invalid readout indices');
     this.busy=true;let staging;
     try{
       const d=this.device;
-      const stride=includeSpikeTime?9:8,partials=Math.ceil(this.n/256),bytes=(indices.length*stride+partials*2)*4,eventBytes=includeSpikeTime?(2+SPIKE_CAPACITY*2)*4:0;
+      const stride=includeSpikeTime?9:8,partials=includeStatistics?Math.ceil(this.n/256):0,bytes=(indices.length*stride+partials*2)*4,
+        eventBytes=includeSpikeTime&&includeSpikeHistory?(2+SPIKE_CAPACITY*2)*4:0;
       // The live console alternates small motor readouts and full inspection.
       // Keep both buffers instead of destroying/reallocating them each switch.
       this.readCaches??=[];
-      let cache=this.readCaches.find(c=>c.stride===stride&&c.ids.length===indices.length&&indices.every((v,i)=>v===c.ids[i]));
+      let cache=this.readCaches.find(c=>c.stride===stride&&c.includeStatistics===includeStatistics&&c.eventBytes===eventBytes&&c.ids.length===indices.length&&indices.every((v,i)=>v===c.ids[i]));
       if(!cache){
         if(this.readCaches.length>=2){const old=this.readCaches.shift();for(const key of ['index','output','staging'])old[key].destroy();}
-        const config=new Uint32Array(indices.length+2);config.set([indices.length,stride]);config.set(indices,2);
+        const config=new Uint32Array(indices.length+3);config.set([indices.length,stride,+includeStatistics]);config.set(indices,3);
         const index=d.createBuffer({size:config.byteLength,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST});d.queue.writeBuffer(index,0,config);
         const output=d.createBuffer({size:bytes,usage:GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC});
         const buffer=d.createBuffer({size:bytes+eventBytes,usage:GPUBufferUsage.MAP_READ|GPUBufferUsage.COPY_DST});
         const bindings=this.states.map(state=>d.createBindGroup({layout:this.readPipeline.getBindGroupLayout(0),entries:[state,index,output,this.kinetics].map((buffer,binding)=>({binding,resource:{buffer}}))}));
-        cache={ids:indices.slice(),stride,index,output,staging:buffer,bindings};this.readCaches.push(cache);
+        cache={ids:indices.slice(),stride,includeStatistics,eventBytes,index,output,staging:buffer,bindings};this.readCaches.push(cache);
       }
       staging=cache.staging;const encoder=d.createCommandEncoder(),pass=encoder.beginComputePass();
       pass.setPipeline(this.readPipeline);pass.setBindGroup(0,cache.bindings[this.tick%2]);pass.dispatchWorkgroups(Math.ceil(Math.max(indices.length,partials)/64));pass.end();
       encoder.copyBufferToBuffer(cache.output,0,staging,0,bytes);
-      if(includeSpikeTime)encoder.copyBufferToBuffer(this.inputs,this.n*4,staging,bytes,eventBytes);
+      if(eventBytes)encoder.copyBufferToBuffer(this.inputs,this.n*4,staging,bytes,eventBytes);
       d.queue.submit([encoder.finish()]);
       await staging.mapAsync(GPUMapMode.READ);this.live();
       const mapped=new Float32Array(staging.getMappedRange()),result=mapped.slice(0,indices.length*stride);
-      result.totalSpikes=0;result.activeEver=0;
-      for(let i=indices.length*stride;i<bytes/4;i+=2){result.totalSpikes+=mapped[i];result.activeEver+=mapped[i+1];}
-      if(includeSpikeTime)result.spikes=decodeSpikeHistory(new Uint32Array(mapped.buffer,bytes,2+SPIKE_CAPACITY*2));
+      if(includeStatistics){
+        result.totalSpikes=0;result.activeEver=0;
+        for(let i=indices.length*stride;i<bytes/4;i+=2){result.totalSpikes+=mapped[i];result.activeEver+=mapped[i+1];}
+      }
+      if(eventBytes)result.spikes=decodeSpikeHistory(new Uint32Array(mapped.buffer,bytes,2+SPIKE_CAPACITY*2));
       return result;
     }finally{if(staging?.mapState==='mapped')staging.unmap();this.busy=false;}
   }

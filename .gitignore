@@ -12,6 +12,7 @@ node_modules/
 
 # Generated distribution archives; package-level runtime dist files are versioned.
 /dist/
+/web/training/brain-sample.json
 
 # Training state and downloaded checkpoint backups are not source artifacts.
 /data/training/

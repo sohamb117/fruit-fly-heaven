@@ -67,14 +67,20 @@ export class WasmBrain {
     try{validateIntrinsicState(this.intrinsic,result);}catch(error){this.failed=error;throw error;}
     return result;
   }
-  readState(indices,{includeSpikeTime=false}={}) {
-    this.live();const state=this.core.HEAPF32.subarray(this.states[this.tick%2]/4,this.states[this.tick%2]/4+this.n*8);
+  readState(indices,{includeSpikeTime=false,includeStatistics=true,includeSpikeHistory=true}={}) {
+    this.live();
+    if(typeof includeStatistics!=='boolean'||typeof includeSpikeHistory!=='boolean')throw new TypeError('Readout statistics and spike history flags must be boolean');
+    const state=this.core.HEAPF32.subarray(this.states[this.tick%2]/4,this.states[this.tick%2]/4+this.n*8);
     indices??=Uint32Array.from({length:this.n},(_,i)=>i);
     const stride=includeSpikeTime?9:8,out=new Float32Array(indices.length*stride);
     indices.forEach((i,k)=>{if(!Number.isInteger(i)||i<0||i>=this.n)throw new Error('Invalid readout index');out.set(state.subarray(i*8,i*8+8),k*stride);if(includeSpikeTime)out[k*stride+8]=this.core.HEAPF32[this.kinetics/4+this.n*18+i];});
-    out.totalSpikes=0;out.activeEver=0;
-    for(let i=0;i<this.n;i++){out.totalSpikes+=state[i*8+3];out.activeEver+=state[i*8+3]>0;}
-    if(includeSpikeTime)out.spikes=decodeSpikeHistory(new Uint32Array(this.core.HEAPU8.buffer,this.events,2+SPIKE_CAPACITY*2));
+    // Selected motor-event readers need counts and timestamps only. Keep the
+    // legacy global diagnostics by default, without paying for unused scans.
+    if(includeStatistics){
+      out.totalSpikes=0;out.activeEver=0;
+      for(let i=0;i<this.n;i++){out.totalSpikes+=state[i*8+3];out.activeEver+=state[i*8+3]>0;}
+    }
+    if(includeSpikeTime&&includeSpikeHistory)out.spikes=decodeSpikeHistory(new Uint32Array(this.core.HEAPU8.buffer,this.events,2+SPIKE_CAPACITY*2));
     return out;
   }
   dispose(){if(!this.disposed){this.allocations.forEach(p=>this.core._free(p));if(this.shared&&--this.shared.references===0)this.shared.pointers.forEach(p=>this.core._free(p));this.disposed=true;}}

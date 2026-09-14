@@ -60,7 +60,7 @@ function fixture(){
  fixture.makeBrain=()=>({timeMs:0,disposed:false,backend:fixture.actualBackend??(fixture.requestedBackend==='wasm'?'wasm':'fixture'),
   async step(count){assert.equal(count,4);this.timeMs+=2;fixture.order.push('step:'+this.timeMs);},
   async readState(indices,options){
-   const stride=options?.includeSpikeTime?9:8;fixture.reads.push({time:this.timeMs,stride,indices:Array.from(indices)});fixture.order.push(`read${stride}:${this.timeMs}`);
+   const stride=options?.includeSpikeTime?9:8;fixture.reads.push({time:this.timeMs,stride,indices:Array.from(indices),options:options&&{...options}});fixture.order.push(`read${stride}:${this.timeMs}`);
    const result=new Float32Array(indices.length*stride);
    indices.forEach((id,k)=>{const spiked=this.timeMs>=2&&(id===1||id===2);result[k*stride+3]=+spiked;result[k*stride+4]=id+this.timeMs/8;
     if(stride===9)result[k*stride+8]=spiked?(id===1?(fixture.dlmTime??1.5):2):-1e30;});
@@ -106,6 +106,7 @@ test('observer reads48 sorted actual wing IDs, initializes at0 and emits owned p
  });
  assert.equal(observed.result.metrics.error,null);assert.deepEqual(observed.f.ticks,baseline.f.ticks);
  assert.deepEqual(observed.f.reads.map(row=>[row.time,row.stride,row.indices.length]),[[0,9,48],[2,8,805],[2,9,48],[4,8,805],[4,9,48]]);
+ for(const read of observed.f.reads)assert.deepEqual(read.options,read.stride===9?{includeSpikeTime:true,includeStatistics:false,includeSpikeHistory:false}:undefined);
  assert.deepEqual(packets.map(packet=>[packet.initialized,packet.fromTimeMs,packet.timeMs,packet.bodyTimeSeconds,packet.wingPhaseRadians,packet.wingFrequencyHz]),[
   [true,null,0,0,.25,235.8],[false,0,2,0,.25,235.8],[false,2,4,.002,.75,235.8]]);
  packets.forEach(packet=>assert.deepEqual(Array.from(packet.indices),Array.from({length:48},(_,i)=>i+1)));
@@ -292,6 +293,7 @@ test('maintained WASM warmup and scored blocks keep one actual backend and match
   assert.equal(result.warmupSteps,250);assert.equal(result.steps,2);assert.equal(f.brains.length,1);
   assert.equal(f.warmupBrain,f.brains[0]);assert.equal(result.releaseNeuralTimeMs,500);assert.equal(result.neuralMs,504);
   assert.equal(f.releaseSnapshot.bodyEventElapsedMs,500);assert.equal(f.releaseSnapshot.bodyEventObservedMs,500);
+  for(const read of f.reads)assert.deepEqual(read.options,read.stride===9?{includeSpikeTime:true,includeStatistics:false,includeSpikeHistory:false}:undefined);
   assert.equal(f.wasmFetches,1);assert(f.warmupAborted);assert(f.brains[0].disposed);
  }finally{environment.dispose();}
 });

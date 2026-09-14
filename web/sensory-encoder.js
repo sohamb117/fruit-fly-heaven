@@ -1,6 +1,7 @@
 import {sensoryRates} from './body-world.js';
 import {validateColorMapping} from './color-vision.js';
 import {bancBodyRate} from './banc-ground-sense.js';
+import {validateTegulaSensoryManifest,createTegulaInputMapper} from './banc-tegula.js';
 
 const clamp=(n,lo=0,hi=100)=>Math.max(lo,Math.min(hi,Number.isFinite(n)?n:0));
 const mean=a=>a.length?a.reduce((s,n)=>s+n,0)/a.length:0;
@@ -17,10 +18,11 @@ export function validateSensoryManifest(manifest,neuronCount){
   for(const channel of manifest.channels){if(!channel.indices.length)throw new Error('Empty body-sense channel');channel.indices.forEach(check);}
   const bodyIds=new Set(manifest.channels.flatMap(c=>c.indices)),transducerIds=new Set();
   for(const s of manifest.body_transducers||[]){
-    if(!bodyIds.has(s.index)||transducerIds.has(s.index)||!['load','touch','position','velocity','vibration','rotation'].includes(s.kind))throw new Error('Invalid body transducer');
-    if(s.kind!=='rotation'&&(!Number.isInteger(s.leg)||s.leg<0||s.leg>5))throw new Error('Invalid sensory leg');
+    if(!bodyIds.has(s.index)||transducerIds.has(s.index)||!['load','touch','position','velocity','vibration','rotation','wing_strain'].includes(s.kind))throw new Error('Invalid body transducer');
+    if(!['rotation','wing_strain'].includes(s.kind)&&(!Number.isInteger(s.leg)||s.leg<0||s.leg>5))throw new Error('Invalid sensory leg');
     transducerIds.add(s.index);
   }
+  validateTegulaSensoryManifest(manifest);
 }
 
 export function bodyInputRates(feedback,enabled=true){
@@ -41,6 +43,7 @@ export class SensoryEncoder{
     validateSensoryManifest(manifest,manifest.neuron_count);
     this.manifest=manifest;this.groups=groups;this.environment=environment;
     this.tasteMapper=tasteMapper;
+    this.tegula=manifest.tegula_model===undefined?null:createTegulaInputMapper(manifest.tegula_model);
     this.bodyTransducers=new Map((manifest.body_transducers||[]).map(s=>[s.index,s]));
     // Exclusions prevent an unsupported modality from borrowing a broad
     // channel's fallback if console artifacts are combined across versions.
@@ -58,6 +61,9 @@ export class SensoryEncoder{
     this.lightDrive=new Float32Array(this.adapted.length);this.lastSequence=-1;this.lastFrameTime=null;this.lastKey=null;
   }
   update(pose,frame,{odor=true,taste=true,vision=true,bodySense=true,graded=null,color=null}={}){
+    // Validate opt-in feedback before caching the update key: a failed sample
+    // may be corrected and retried, and never borrows aggregate body rates.
+    const tegula=this.tegula?.rates(pose.feedback,bodySense,pose.bodyTime);
     const key=[pose.bodyTime,frame?.sequence,odor,taste,vision,bodySense,graded?.serial,color?.serial].join('|');
     if(key===this.lastKey)return null;
     this.lastKey=key;
@@ -91,11 +97,15 @@ export class SensoryEncoder{
       this.ratesHz[offset++]=hz;sums[side]+=hz;counts[side]++;
     }
     const body=bodyInputRates(pose.feedback,bodySense);
+    if(tegula)Object.assign(body,tegula);
     const nativeLegs=pose.feedback?.legs?.some(leg=>Number.isFinite(leg.loadBodyWeights));
     for(const c of this.manifest.channels){
-      if((this.bodyTransducers.size||this.bodyExclusions.size)&&nativeLegs){
+      if(tegula&&(c.key==='tegula_left'||c.key==='tegula_right')){
+        this.ratesHz.fill(body[c.key],offset,offset+c.indices.length);offset+=c.indices.length;continue;
+      }
+      if(this.bodyExclusions.size||(this.bodyTransducers.size&&nativeLegs)){
         let sum=0;
-        for(const index of c.indices){const sensor=this.bodyTransducers.get(index),rate=this.bodyExclusions.has(index)?0:sensor?bancBodyRate(sensor,pose.feedback,bodySense):body[c.key];this.ratesHz[offset++]=rate;sum+=rate;}
+        for(const index of c.indices){const sensor=nativeLegs&&this.bodyTransducers.get(index),rate=this.bodyExclusions.has(index)?0:sensor?bancBodyRate(sensor,pose.feedback,bodySense):body[c.key];this.ratesHz[offset++]=rate;sum+=rate;}
         body[c.key]=sum/c.indices.length;
       }else{this.ratesHz.fill(body[c.key],offset,offset+c.indices.length);offset+=c.indices.length;}
     }

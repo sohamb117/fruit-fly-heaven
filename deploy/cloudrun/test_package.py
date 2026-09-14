@@ -47,9 +47,21 @@ class PackageTest(unittest.TestCase):
         target.write_bytes(data)
         self.files.append({"path": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(), "kind": kind})
 
-    def build(self):
+    def build(self, config_path=None):
         with patch.object(package, "REPO", self.repo), patch.object(package, "HERE", self.here):
-            return package.build(self.bundle, self.root / "output")
+            return package.build(self.bundle, self.root / "output", config_path)
+
+    def test_explicit_experiment_configuration_preserved(self):
+        experiment = self.root / "experiment.json"
+        experiment.write_bytes((self.repo / "web/training/config.json").read_bytes())
+        (self.repo / "web/training/config.json").write_text('{"modelFingerprint":"other"}')
+        with self.assertRaisesRegex(ValueError, "model/config"):
+            self.build()
+        result = self.build(experiment)
+        output = Path(result["directory"])
+        self.assertEqual((output / "config.json").read_bytes(), experiment.read_bytes())
+        self.assertEqual((output / "public/training/config.json").read_bytes(), experiment.read_bytes())
+        self.assertEqual(result["configHash"], package.digest(experiment))
 
     def test_public_allowlist_and_compression(self):
         (self.bundle / "secrets.env").write_text("not in manifest")
@@ -69,6 +81,15 @@ class PackageTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "checksum mismatch"):
             self.build()
         self.assertFalse((self.root / "output").exists())
+
+    def test_browser_and_server_configuration_mismatch_rejected(self):
+        changed = b'{"modelFingerprint":"stale"}'
+        (self.bundle / "training/config.json").write_bytes(changed)
+        record = next(row for row in self.files if row["path"] == "training/config.json")
+        record.update(bytes=len(changed), sha256=hashlib.sha256(changed).hexdigest())
+        self.save()
+        with self.assertRaisesRegex(ValueError, "Browser and coordinator"):
+            self.build()
 
     def test_private_manifest_entry_rejected(self):
         self.add("backup.sqlite3", b"private", "client")

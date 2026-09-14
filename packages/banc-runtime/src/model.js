@@ -1,3 +1,4 @@
+import {intrinsicLayout} from './cell-models.js';
 export const STATE_STRIDE=8, PARAM_STRIDE=16;
 export const SPIKE_CAPACITY=16384;
 export function decodeSpikeHistory(words){
@@ -29,15 +30,18 @@ export function validateModel(model) {
   if(!params.every(Number.isFinite))throw new Error('Nonfinite physiology');
   for(let i=0;i<n;i++)if([0,1,6,10].some(k=>params[i*16+k]<=0))throw new Error('Nonpositive physiology constant');
   for(const r of m.receptors)if(!(r.rise_ms>0&&r.decay_ms>0&&Number.isFinite(r.reversal_mv)))throw new Error('Invalid receptor kinetics');
+  intrinsicLayout(model);
   return model;
 }
 export function initialBuffers(model) {
   const {manifest:m,params}=model,n=m.neuron_count;
-  const packed=new Float32Array(n*17+27);packed.set(params);
+  const layout=intrinsicLayout(model),packed=new Float32Array(layout.packedLength);packed.set(params);
+  for(let k=0;k<layout.count;k++)packed[n*17+27+layout.cells[k].index]=k+1;
   m.receptors.forEach((r,i)=>packed.set([r.rise_ms,r.decay_ms,r.reversal_mv],n*17+i*3));
   const state=new Float32Array(n*8);
   for(let i=0;i<n;i++)state[i*8]=params[i*16+2];
-  const kinetics=new Float32Array(n*19);kinetics.fill(-1e30,n*18);
+  const kinetics=new Float32Array(layout.kineticsLength);kinetics.fill(-1e30,n*18,n*19);
+  for(let k=0;k<layout.count;k++)kinetics.set([.146,.146,0,0],n*19+k*4);
   return {packed,state,history:new Float32Array(n*historySlots(model)),kinetics};
 }
 export function validateStep(steps,input,n,internal) {

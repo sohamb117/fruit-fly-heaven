@@ -37,8 +37,8 @@ try{
   // evaluator. These values are not behavioral evidence and are not persisted.
   await page.evaluate(()=>heavenTraining.client.dispatchEvent(new CustomEvent('state',{detail:{...structuredClone(heavenTraining.client.state),
     message:'UI regression fixture — no training evaluation',history:[
-      {episode:1,stage:'posture',return:-.25,success:false,role:'ui-regression-fixture'},
-      {episode:2,stage:'posture',return:.75,success:false,role:'ui-regression-fixture'}],completedEpisodes:2,lastReturn:.75,bestReturn:.75}})));
+      {episode:1,stage:heavenTraining.client.config.stage,return:-.25,success:false,role:'ui-regression-fixture'},
+      {episode:2,stage:heavenTraining.client.config.stage,return:.75,success:false,role:'ui-regression-fixture'}],completedEpisodes:2,lastReturn:.75,bestReturn:.75}})));
   const populatedChart=await page.locator('#reward-chart').evaluate(svg=>({hiddenAttribute:svg.hasAttribute('hidden'),display:getComputedStyle(svg).display,
     width:svg.getBoundingClientRect().width,height:svg.getBoundingClientRect().height,path:svg.querySelector('#reward-path').getAttribute('d'),dots:svg.querySelectorAll('#reward-dots circle').length}));
   assert.equal(await page.locator('#reward-chart').isVisible(),true);assert.equal(await page.locator('#history-empty').isVisible(),false);

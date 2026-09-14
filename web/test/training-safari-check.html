@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Native worker check · development</title>
+<link rel="icon" href="data:,">
+<style>
+  body{background:#102017;color:#e2ecd8;font:16px system-ui;max-width:900px;margin:36px auto;padding:0 20px}button{font:inherit;padding:10px 16px;cursor:pointer}button:disabled{cursor:default}#preview{width:min(100%,640px);aspect-ratio:16/9;background:#08100c;margin:20px 0}#preview canvas{width:100%;height:100%;image-rendering:pixelated}pre{white-space:pre-wrap;overflow-wrap:anywhere}small{color:#becab5}
+</style>
+<h1>Native worker check</h1>
+<p id="scope">Development diagnostic: one real BANC/FlyBody baseline episode and worker lifecycle checks. No optimizer or coordinator upload. Passing this check does not mean the fly learned to fly.</p>
+<button id="run">Run native check</button> <button id="stop" disabled>Stop check</button>
+<p id="status" role="status">Ready. Opening this page starts no simulation.</p>
+<div id="preview" aria-label="Low-resolution native fly preview"></div>
+<small id="preview-status">320 × 180 preview; native simulation fidelity is unchanged.</small>
+<pre id="details"></pre>
+<script type="module">
+import {NativeFlyPreview} from '/training/preview.js';
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const sha=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');
+const assert=(condition,message)=>{if(!condition)throw new Error(message);};
+let worker=null,report=null,activeTrial=null,pending=new Map(),saveQueue=Promise.resolve(),lastSave=0;
+const preview=new NativeFlyPreview($('preview'),{onStatus:value=>{if(value.error)$('preview-status').textContent=value.text;}});
+preview.setQuality('low');
+function status(text){$('status').textContent=text;}
+function describe(){
+  const e=activeTrial?.evaluation??report?.evaluation,p=activeTrial?.progress??report?.progress;
+  $('details').textContent=JSON.stringify({phase:report?.phase,backend:report?.ready?.backend,stage:report?.job?.stage,
+    trial:activeTrial?.name,completedTrials:report?.trials?.filter(t=>t.evaluation).length,totalTrials:report?.plan?.jobs.length,
+    simSeconds:e?.simSeconds??p?.simSeconds,reason:e?.reason,score:e?.return,behavioralSuccess:e?.success,
+    steps:e?.steps??p?.steps,frames:report?.plan?activeTrial?.framesReceived:report?.framesReceived,wallSeconds:report?Math.round((performance.now()-report.startedWall)/1000):0,
+    runtimeChecksPassed:report?.passed,failure:report?.failure},null,2);
+}
+function save(){
+  report.updatedAt=new Date().toISOString();const body=JSON.stringify(report);
+  saveQueue=saveQueue.catch(()=>{}).then(async()=>{const response=await fetch('/__check_result',{method:'POST',headers:{'Content-Type':'application/json'},body});if(!response.ok)throw new Error(`Could not save report: HTTP ${response.status}`);});
+  return saveQueue;
+}
+function rejectPending(error){for(const value of pending.values()){clearTimeout(value.timer);value.reject(error);}pending.clear();}
+function request(message,type,timeout=20*60*1000){
+  return new Promise((resolve,reject)=>{const key=type+':'+message.id,timer=setTimeout(()=>{pending.delete(key);reject(new Error(`Timed out waiting for ${key}`));},timeout);pending.set(key,{resolve,reject,timer});worker.postMessage(message);});
+}
+function receive(message){
+  if(message.type==='error'){report.errors.push(message.message);rejectPending(new Error(message.message));return;}
+  if(message.type==='ready'&&message.frame)preview.setFrame(message.frame);
+  if(message.type==='frame'){
+    preview.setFrame(message.frame);
+    if(message.id===activeTrial?.id){
+      const capture=report.plan?activeTrial:report,limit=report.plan?60:600;
+      capture.framesReceived++;const frame={...message.frame,wallSeconds:(performance.now()-report.startedWall)/1000};
+      if(capture.frames.length<limit)capture.frames.push(frame);else{capture.frames[limit-1]=frame;capture.framesOmitted++;}
+    }else if(message.id==='cancel-check')report.pausedFrames++;
+  }
+  if(message.type==='progress'){
+    report.progress=message;if(message.id===activeTrial?.id)activeTrial.progress=message;describe();
+    status(message.phase==='initializing'?(message.message||'Initializing native model…'):`${activeTrial?.name||'Baseline'} · ${message.stage}: ${(message.simSeconds||0).toFixed(3)} simulated seconds`);
+    if(performance.now()-lastSave>10000){lastSave=performance.now();save().catch(error=>{$('details').textContent+='\n'+error.message;});}
+  }
+  const key=message.type+':'+message.id,waiter=pending.get(key);
+  if(waiter){clearTimeout(waiter.timer);pending.delete(key);waiter.resolve(message);}
+}
+function validatePlan(plan,config,configHash){
+  assert(plan.schemaVersion===1&&plan.kind==='motor-interface-causal-sweep','Unsupported diagnostic plan');
+  assert(plan.configHash===configHash&&plan.modelFingerprint===config.modelFingerprint,'Diagnostic plan pins a different build');
+  assert(JSON.stringify(plan.parameterNames)===JSON.stringify(config.parameters.map(p=>p.name)),'Diagnostic parameter names differ');
+  assert(Array.isArray(plan.jobs)&&plan.jobs.length>0&&plan.jobs.length<=32,'Invalid diagnostic job count');
+  const names=new Set();
+  for(const job of plan.jobs){
+    assert(typeof job.name==='string'&&job.name.length>0&&!names.has(job.name),'Diagnostic job names must be unique');names.add(job.name);
+    assert(Number.isInteger(job.seed)&&job.seed>=0&&job.seed<=0xffffffff,'Invalid diagnostic seed');
+    const stage=config.stages.find(s=>s.id===job.stage);assert(stage&&job.durationSeconds===stage.durationSeconds,'Diagnostic job must use the full configured horizon');
+    assert(Array.isArray(job.parameters)&&job.parameters.length===config.parameters.length,'Diagnostic parameter count mismatch');
+    assert(job.parameters.every((value,i)=>Number.isFinite(value)&&value>=config.parameters[i].min&&value<=config.parameters[i].max),'Diagnostic parameters outside bounds');
+  }
+  if(plan.motorReplayCapture){
+    const capture=plan.motorReplayCapture,urls=['/test/training-motor-capture-worker.js','/test/training-motor-capture.js','/test/training-safari-check.html'];
+    assert(plan.jobs.length===1,'Exact motor capture is limited to one diagnostic trial');
+    assert(Number.isFinite(capture.seconds)&&capture.seconds>0&&capture.seconds<=.5&&Math.abs(capture.seconds/.002-Math.round(capture.seconds/.002))<1e-9,'Invalid motor capture horizon');
+    assert(Object.keys(capture.assets||{}).length===urls.length&&urls.every(url=>/^[a-f0-9]{64}$/.test(capture.assets[url])),'Capture observer sources must be pinned');
+  }
+}
+async function verifyObserverSources(settings){
+  if(!settings)return;
+  for(const [url,digest] of Object.entries(settings.assets)){
+    const response=await fetch(url,{cache:'no-store'});assert(response.ok&&await sha(await response.arrayBuffer())===digest,'Capture observer source changed: '+url);
+  }
+}
+async function verifyConfig(configHash){
+  const response=await fetch('/training/config.json');assert(response.ok,'Could not recheck configuration');
+  assert(await sha(await response.arrayBuffer())===configHash,'Configuration changed during native check');
+}
+function verifyEvaluation(e,job,capture,config){
+  assert(e.reason!=='simulation_error'&&!e.cancelled,`Native evaluation failed: ${e.metrics?.error||e.reason}`);
+  assert(Number.isInteger(e.steps)&&e.steps>0&&e.metrics?.finalNeuralSpikes>0,'No neural/body execution evidence');
+  assert(Number.isFinite(e.return)&&Math.abs(e.simSeconds-e.steps*config.bodyBlockMs/1000)<1e-9,'Invalid result or body clock');
+  assert(e.configHash===report.configHash&&e.modelFingerprint===config.modelFingerprint&&e.environmentVersion===config.environmentVersion,'Evaluation provenance mismatch');
+  assert(JSON.stringify(e.parameters)===JSON.stringify(job.parameters)&&e.seed===job.seed&&e.stage===job.stage,'Evaluation does not match assigned diagnostic job');
+  assert(e.provenance?.configHash===report.configHash&&e.provenance?.bodyBackend==='mujoco-wasm','Missing evaluation provenance');
+  assert(capture.frames.length>=2,'Missing native frame sequence');
+  const final=capture.frames.at(-1);capture.clockParityMs=Math.abs(final.neuralMs-final.simSeconds*1000);
+  assert(capture.frames.every(f=>f.position.every(Number.isFinite))&&capture.clockParityMs<1e-7,'Invalid native pose or neural/body clock divergence');
+  assert(e.simSeconds<=job.durationSeconds+1e-9,'Evaluation exceeded its configured horizon');
+  if(report.plan?.motorReplayCapture){
+    const replay=e.motorReplay,maximumSteps=Math.round(report.plan.motorReplayCapture.seconds/.002);
+    assert(replay?.schemaVersion===1&&replay.kind==='training-native-motor-replay','Missing exact motor replay capture');
+    assert(replay.physicalStateWritesByRecorder===0&&replay.scene.nativeHeightfieldExact===true,'Invalid capture state/scene contract');
+    assert(replay.dimensions.motorCount===replay.scene.io.motor_neurons.length&&replay.motorNeuronIndices.length===replay.dimensions.motorCount,'Incomplete captured motor identities');
+    assert(replay.steps.length===Math.min(e.steps,maximumSteps)&&replay.steps.every((step,index)=>step.index===index&&Math.abs(step.timeAfter-(index+1)*.002)<1e-9),'Capture skipped actual physical feedback steps');
+    assert(replay.provenance.configHash===report.configHash&&replay.provenance.modelFingerprint===config.modelFingerprint,'Capture provenance mismatch');
+  }
+}
+$('stop').onclick=()=>{report.phase='stopped';worker?.terminate();rejectPending(new Error('Diagnostic stopped by user'));};
+$('run').onclick=async()=>{
+  $('run').disabled=true;$('stop').disabled=false;status('Loading configuration…');
+  activeTrial=null;lastSave=0;
+  report={kind:'safari-native-worker-check',schemaVersion:1,date:new Date().toISOString(),startedWall:performance.now(),userAgent:navigator.userAgent,
+    scope:'One actual BANC/native FlyBody baseline; fixed configured horizon and initial parameter vector. Runtime checks are not training or behavioral validation.',
+    phase:'initializing',errors:[],frames:[],framesReceived:0,framesOmitted:0,pausedFrames:0,passed:false};
+  try{
+    const response=await fetch('/training/config.json');assert(response.ok,'Config unavailable');const bytes=await response.arrayBuffer(),config=JSON.parse(new TextDecoder().decode(bytes));
+    report.configHash=await sha(bytes);report.modelFingerprint=config.modelFingerprint;
+    const planResponse=await fetch('/__check_plan');assert(planResponse.ok,'Diagnostic plan endpoint unavailable');
+    const planRecord=await planResponse.json();let jobs;
+    if(planRecord.plan){
+      validatePlan(planRecord.plan,config,report.configHash);report.plan=planRecord.plan;report.planFileSha256=planRecord.sha256;report.trials=[];
+      report.scope='Sequential fixed operator interventions in the real BANC/native FlyBody loop. No optimizer, adaptive selection, coordinator upload, or automatic winner/promotion claim. Neural parameter values are pinned by each full vector; neural activity still responds to body feedback.';
+      report.framePolicy='First 59 preview frames and the latest/final frame, at most 60 per trial. Preview samples do not exhaust native physics steps.';
+      $('scope').textContent=`Development causal diagnostic: ${report.plan.jobs.length} pinned real BANC/FlyBody trials, run one at a time. No optimizer or coordinator upload. Every outcome is retained; completion does not establish learning.`;
+      jobs=report.plan.jobs;
+    }else{
+      jobs=[{name:'baseline',parameters:config.parameters.map(p=>p.initial),seed:888,stage:config.stage,durationSeconds:config.durationSeconds,generation:0,pairId:'safari-native-check',sign:1}];
+    }
+    report.job=jobs[0];
+    const captureSettings=report.plan?.motorReplayCapture;await verifyObserverSources(captureSettings);
+    if(captureSettings)report.captureScope='Read-only exact motor replay capture, first 0.5 seconds at most. No counterfactual mechanics or altered evaluation horizon.';
+    await save();worker=new Worker(captureSettings?'/test/training-motor-capture-worker.js':'/training/worker.js',{type:'module'});worker.onmessage=event=>receive(event.data);
+    worker.onerror=event=>{const message=event.message||'Native worker error';report.errors.push(message);rejectPending(new Error(message));};
+    report.ready=await request({type:'initialize',id:'initialize',configUrl:'/training/config.json',...(captureSettings?{motorReplayCapture:captureSettings}:{})},'ready');
+    assert(report.ready.configHash===report.configHash&&report.ready.modelFingerprint===config.modelFingerprint,'Worker build differs from page configuration');
+    assert(['webgpu','wasm'].includes(report.ready.backend)&&report.ready.bodyBackend==='mujoco-wasm','Unexpected simulation backend');
+    assert(report.ready.frame.feet.length===6&&report.ready.frame.wings.length===2,'Missing native preview landmarks');
+    for(let index=0;index<jobs.length;index++){
+      const job=jobs[index];await verifyConfig(report.configHash);
+      activeTrial={id:report.plan?`trial-${index}`:'baseline',name:job.name,job,phase:'evaluating',startedAt:new Date().toISOString(),startedWall:performance.now(),frames:[],framesReceived:0,framesOmitted:0,runtimeChecksPassed:false};
+      if(report.plan)report.trials.push(activeTrial);
+      report.job=job;report.phase='evaluating';report.progress=null;describe();await save();
+      const e=(await request({type:'evaluate',id:activeTrial.id,job,previewHz:3,dutyCycle:1},'evaluation')).result;
+      activeTrial.evaluation=e;activeTrial.wallSeconds=(performance.now()-activeTrial.startedWall)/1000;
+      if(!report.plan)report.evaluation=e;
+      report.phase='checking';describe();await save();
+      verifyEvaluation(e,job,report.plan?activeTrial:report,config);await verifyConfig(report.configHash);
+      activeTrial.runtimeChecksPassed=true;activeTrial.phase='complete';await save();
+    }
+    status('Checking pause, cancellation, and stop…');
+    report.pause=await request({type:'pause',id:'pause'},'paused',10000);
+    const cancelled=request({type:'evaluate',id:'cancel-check',job:report.job,previewHz:3,dutyCycle:1},'evaluation',30000);
+    await sleep(150);assert(report.pausedFrames===0,'Paused evaluator advanced native frames');
+    report.budget=await request({type:'budget',id:'budget',previewHz:0,dutyCycle:.5},'budget',10000);
+    await request({type:'cancel',id:'cancel'},'cancelling',10000);report.cancelled=(await cancelled).result;
+    assert(report.cancelled.cancelled===true&&report.cancelled.steps===0,'Cancellation advanced the paused evaluator');
+    await request({type:'stop',id:'stop'},'stopped',10000);report.stopped=true;
+    await verifyConfig(report.configHash);await verifyObserverSources(captureSettings);report.configUnchanged=true;
+    assert(report.errors.length===0,'Worker emitted errors');report.passed=true;report.phase='complete';
+    if(report.plan)status(`Causal diagnostic complete · ${report.trials.length} trials retained. Runtime checks passed; no winner or learning claim has been assigned.`);
+    else{const e=report.evaluation;status(`Native check passed · ${e.backend} · ${e.reason} · ${e.simSeconds.toFixed(3)} simulated seconds. Flight goal ${e.success?'achieved in this baseline':'not achieved'}.`);}
+  }catch(error){
+    if(activeTrial&&activeTrial.phase!=='complete'){activeTrial.phase=report.phase==='stopped'?'stopped':'failed';activeTrial.failure=error.stack||error.message;}
+    report.passed=false;report.failure=error.stack||error.message;report.phase=report.phase==='stopped'?'stopped':'failed';status(`Native check ${report.phase}: ${error.message}`);
+  }
+  finally{
+    worker?.terminate();worker=null;rejectPending(new Error('Diagnostic finished'));report.wallSeconds=(performance.now()-report.startedWall)/1000;describe();
+    try{await save();}catch(error){status(`Report could not be saved: ${error.message}`);}
+    $('run').disabled=false;$('stop').disabled=true;
+  }
+};
+</script>
+</html>

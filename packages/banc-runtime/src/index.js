@@ -12,3 +12,5 @@ export async function createRuntime(model,{backend='auto',onFallback=()=>{},wasm
   brain??=new WasmBrain(core,model);
   return {brain,createMuscles:count=>new WasmMuscles(core,count),createJoints:joints=>new WasmJoints(core,joints),dispose:()=>brain.dispose()};
 }
+
+export {intrinsicLayout,DLM_CELLS,DLM_PROFILE} from './cell-models.js';

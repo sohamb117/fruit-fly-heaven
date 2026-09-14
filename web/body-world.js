@@ -1,3 +1,4 @@
+import {validateMaintainedScene,maintainedFloorHeightScene} from './flight-scene-profile.js';
 // Brain readouts and explicitly modeled behavior programs drive body mechanics.
 // The direct controller remains available without behavior-program assistance.
 const TAU=Math.PI*2, STEP=1/60;
@@ -76,7 +77,8 @@ function applyFlightProgram(f,a){
   return a;
 }
 
-export function createHabitat(fruit){
+export function createHabitat(fruit,sceneValue){
+  const scene=validateMaintainedScene(sceneValue);
   function nearest(f,x,z){
     if(f.kind==='apple')return {x:f.x,z:f.z,d:Math.hypot(x-f.x,z-f.z)};
     let best=Infinity,px=f.x,pz=f.z,beyondEndpoint=false;
@@ -91,6 +93,7 @@ export function createHabitat(fruit){
   }
   function surface(x,z){
     let y=1.5+.0037*(x*x+z*z),fruitIndex=-1,nx=-.0074*x,ny=1,nz=-.0074*z;
+    if(scene&&x*x+z*z>(scene.floorCapRadiusCm*10)**2){y=maintainedFloorHeightScene(x,z,scene);nx=0;nz=0;}
     for(let i=0;i<fruit.length;i++){
       const f=fruit[i],p=nearest(f,x,z);
       // The original banana tube is open at its endpoint tangent planes.
@@ -116,7 +119,7 @@ export function createHabitat(fruit){
     }
     return Math.min(1,concentration);
   }
-  return {surface,odor,fruit,ceiling:Math.max(...fruit.map(f=>f.y+f.radius))+30};
+  return {surface,odor,fruit,ceiling:scene?scene.ceilingCm*10:Math.max(...fruit.map(f=>f.y+f.radius))+30,...(scene?{maintainedScene:scene}:{})};
 }
 
 export function sensoryRates(f,habitat,{odor=true,taste=true}={}){
@@ -172,8 +175,8 @@ export function applyNeuralOutput(fly,output){
 }
 
 export class BodyWorld {
-  constructor(fruit,flies,{flightEnabled=true,motorCoupling=true,movementMode='direct'}={}){
-    this.habitat=createHabitat(fruit);this.flies=flies;this.flightEnabled=flightEnabled;this.motorCoupling=motorCoupling;
+  constructor(fruit,flies,{flightEnabled=true,motorCoupling=true,movementMode='direct',maintainedScene}={}){
+    this.habitat=createHabitat(fruit,maintainedScene);this.flies=flies;this.flightEnabled=flightEnabled;this.motorCoupling=motorCoupling;
     this.setMovementMode(movementMode);
     this.time=0;this.accumulator=0;this.takeoffs=0;this.landings=0;
     for(const f of flies){

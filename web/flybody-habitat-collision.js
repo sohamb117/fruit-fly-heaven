@@ -1,3 +1,4 @@
+import {validateMaintainedScene,maintainedFloorHeightScene} from './flight-scene-profile.js';
 import * as THREE from './vendor/three.module.js';
 
 const TAU=2*Math.PI,RADIAL_SEGMENTS=12,TUBE_SEGMENTS=60;
@@ -15,8 +16,10 @@ const pointOnBanana=(f,t)=>{
  */
 export function createFlybodyHabitatCollision(habitat,{resolution=257,extent=6.6}={}){
   if(!Number.isInteger(resolution)||resolution<3||!(extent>0)||!Number.isFinite(habitat.ceiling))throw new Error('Invalid habitat collision dimensions');
+  const scene=validateMaintainedScene(habitat.maintainedScene);
+  if(scene&&(resolution!==257||extent!==6.6||habitat.ceiling!==scene.ceilingCm*10))throw new Error('Spacious curriculum requires its original central grid and declared ceiling');
   const hasFruit=Array.isArray(habitat.fruit),fruit=hasFruit?habitat.fruit:[];
-  const floor=hasFruit?(x,z)=>1.5+.0037*(x*x+z*z):(x,z)=>habitat.surface(x,z).y;
+  const floor=scene?(x,z)=>maintainedFloorHeightScene(x,z,scene):hasFruit?(x,z)=>1.5+.0037*(x*x+z*z):(x,z)=>habitat.surface(x,z).y;
   const heights=new Float32Array(resolution*resolution);let maximum=0;
   for(let row=0;row<resolution;row++)for(let col=0;col<resolution;col++){
     const h=floor((col/(resolution-1)*2-1)*extent*10,(row/(resolution-1)*2-1)*extent*10)/10;
@@ -24,14 +27,25 @@ export function createFlybodyHabitatCollision(habitat,{resolution=257,extent=6.6
     heights[row*resolution+col]=h;maximum=Math.max(maximum,h);
   }
   maximum=Math.max(maximum,1e-6);
+  // Keep original normalization and sample spacing for central grid parity.
+  if(scene)maximum=(1.5+.0037*((extent*10)**2+(extent*10)**2))/10;
   for(let i=0;i<heights.length;i++)heights[i]/=maximum;
   const assets=[`<hfield name="habitat" nrow="${resolution}" ncol="${resolution}" size="${extent} ${extent} ${maximum} .1"/>`];
   const contact='friction=".6 .005 .0001" condim="3" contype="1" conaffinity="1"';
   const geoms=[`<geom name="ground" type="hfield" hfield="habitat" ${contact}/>`];
-  geoms.push(`<geom name="ceiling" type="plane" pos="0 0 ${habitat.ceiling/10+.15}" quat="0 1 0 0" size="7 7 .1"/>`);
+  geoms.push(`<geom name="ceiling" type="plane" pos="0 0 ${habitat.ceiling/10+.15}" quat="0 1 0 0" size="${scene?scene.radiusCm+1:7} ${scene?scene.radiusCm+1:7} .1"/>`);
   for(let k=0;k<64;k++){
     const a=TAU*k/64,half=TAU/128;
-    geoms.push(`<geom name="wall${k}" type="box" pos="${6.4*Math.cos(a)} ${6.4*Math.sin(a)} 3" euler="0 0 ${a}" size=".05 ${6.4*Math.tan(half)} 4"/>`);
+    const radius=scene?scene.radiusCm-.1:6.4,center=scene?(scene.ceilingCm+.15-1)/2:3,halfHeight=scene?(scene.ceilingCm+.15+1)/2:4;
+    geoms.push(`<geom name="wall${k}" type="box" pos="${radius*Math.cos(a)} ${radius*Math.sin(a)} ${center}" euler="0 0 ${a}" size=".05 ${radius*Math.tan(half)} ${halfHeight}"/>`);
+  }
+  if(scene){
+    // Four non-overlapping slabs surround the unchanged-size central square.
+    // Their top meets its capped edge; no enormous/coarser heightfield is used.
+    const outer=scene.radiusCm+1,inner=extent,top=maintainedFloorHeightScene(inner*10,0,scene)/10;
+    const center=(outer+inner)/2,width=(outer-inner)/2,z=(top-1)/2,h=(top+1)/2;
+    const slabs=[[center,0,width,outer],[-center,0,width,outer],[0,center,inner,width],[0,-center,inner,width]];
+    slabs.forEach(([x,y,sx,sy],i)=>geoms.push(`<geom name="curriculum_apron${i}" type="box" pos="${x} ${y} ${z}" size="${sx} ${sy} ${h}" ${contact}/>`));
   }
   const fruitGeomNames={},stats={bananas:0,bananaSlices:0,bananaTips:0,apples:0,fruitGeoms:0,vertices:0,triangles:0};
   function mesh(name,fruitIndex,vertices,faces,origin){
@@ -72,6 +86,6 @@ export function createFlybodyHabitatCollision(habitat,{resolution=257,extent=6.6
     stats.bananas++;
   });}finally{sphere.dispose();}
   return {assets:assets.join(''),geoms:geoms.join(''),heights,fruitGeomNames,groundName:'ground',stats,
-    representation:'Original 60x12 banana tube rings as convex slices; original 12x8 sphere mesh for apples/tips; bowl-only heightfield.',
+    representation:scene?'Original fruit solids, capped central bowl heightfield and four flat outer apron slabs; explicit spacious curriculum.':'Original 60x12 banana tube rings as convex slices; original 12x8 sphere mesh for apples/tips; bowl-only heightfield.',
     limitations:['Adjacent banana slices form a compound convex approximation; end caps close the original open tube rings.','Decorative spots, mold and stems are not load-bearing collision solids.','Bowl heightfield retains its existing tessellation; this helper does not correct unstable wing actuation.']};
 }

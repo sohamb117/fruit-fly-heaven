@@ -140,6 +140,10 @@ def make_server(coordinator, public_root, manifest_path, *, host="127.0.0.1", po
                                   model_fingerprint=coordinator.model_fingerprint)
     server = training_coordinator.make_server(coordinator, host=host, port=port,
                                              allowed_origins=origins, max_body_bytes=max_body_bytes)
+    # A static bundle can be healthy while its imported job history is unusable.
+    # Cloud Run must validate that history before promoting the new revision.
+    if ready is None:
+        ready = lambda: bool(coordinator.status())
     original_handler = server.RequestHandlerClass
 
     class Handler(original_handler):

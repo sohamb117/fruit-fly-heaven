@@ -1,0 +1,20 @@
+# Proposed full-body maintained-flight integration
+
+Staged only. `canonical-fullbody.patch` combines11 files against the archived/current canonical sources. It has not been applied. Existing native diagnostic plans and their source files remain unchanged.
+
+The patch adds the tested full articulated-body airborne warm-up/environment/reset contract, the optional spacious maintained-flight scene, the optional activation-amplitude wing transfer and its corrected telemetry. It includes the version2 vertical-speed score: COM height difference across a fresh contact-free50ms window, with the existing−1cm/s threshold and1e−9 numerical comparison tolerance. All other flight qualification, failure and full-horizon requirements stay fixed. The first-coordinate semantic migration and scene activation are configuration/model metadata choices; this patch does not modify canonical configuration, models or checkpoints.
+
+Grounded evaluator scheduling and arithmetic remain verbatim. Without a scene profile, habitat surface/odor and generated collision output remain exactly the default. Without a power-transfer profile, the existing wing interpretation and telemetry remain unchanged. Fullbody here excludes the optional reduced dynamics adapters, frozen-joint mouth fallback and reduced reset dimensions; telemetry only recognizes the explicit reduced layout if that separate model is ever integrated.
+
+The spacious scene requires matching exact `config.maintainedScene` and `metadata.maintained_scene` values: `{schemaVersion:1,profile:'spacious-maintained-flight-v1',radiusCm:50,ceilingCm:50,floorCapRadiusCm:6.5}`. It is restricted to fullbody direct physics and a maintained-flight-only stage list. Central heightfield sample spacing/vertices and fruit/odor are preserved; cap-straddling triangles can differ within one grid cell at the6.5cm boundary. Four outer apron slabs meet the capped floor. Preview geometry follows the same radius/floor cap; no product text or controls change.
+
+`prepare.mjs` copies the ten frozen spacious proposal files, applies only the root's listed v2 replacements to its bounds-aware scorer, then copies the exact corrected telemetry source. `provenance.json` records every input/output hash and the merge substitutions. The patch builds against the source archive where available and rejects changed originals. The corrected telemetry reports `amplitude*clamp(rawDrive*fixedActivationGain)` under the new profile.
+
+Validation:56/56 pure/mock tests pass, all11 source syntax checks pass, and `git apply --check` succeeds. This includes9 environment scheduling/lifecycle tests,6 root-reset tests,13 maintained objective/clock tests,10 vertical-window tests,7 scene/default-parity tests and11 telemetry tests. Existing descent fixtures now move height consistently with velocity; the v2 exact−1 boundary fixture found the numerical tolerance issue before this merge. No neural or native simulation ran for this proposal. Component native evidence remains in the original source-pinned diagnostic reports and is not rerun or promoted by these tests.
+
+```sh
+node --import ./reports/flight-maintained-fullbody-integration/test-loader.mjs --test reports/flight-maintained-fullbody-integration/environment.test.mjs reports/flight-maintained-fullbody-integration/reset.test.mjs reports/flight-maintained-fullbody-integration/maintained-flight.test.mjs reports/flight-maintained-fullbody-integration/vertical-window.test.mjs reports/flight-maintained-fullbody-integration/scene.test.mjs reports/flight-reduced-native-staging/telemetry-v2/telemetry.test.mjs
+git apply --check reports/flight-maintained-fullbody-integration/canonical-fullbody.patch
+```
+
+Apply only after the parent finishes the native control comparisons. This replaces the earlier maintained-only proposal; do not apply both patches sequentially. After integration, rebuild the manifest and prepare a fresh exact-source bundle/backend plan. The report-only training recipe remains deliberately draft until the initial amplitude/frequency and final scene/scorer are chosen. No old checkpoint or score is compatible with the first-coordinate migration or revised task.

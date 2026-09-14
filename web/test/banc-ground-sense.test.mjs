@@ -46,7 +46,7 @@ test('unassigned joint-angle bristle abstains without suppressing mapped positio
 });
 test('prepared SNta35 identity is excluded from collision while all mapped position receptors remain',async()=>{
  const source=JSON.parse(await readFile(new URL('../../data/prepared/banc888/console/sensory-inputs.json',import.meta.url)));
- const active=source.body_transducers.filter(hasBancUnassignedBristlePosition),excluded=(source.body_transducer_exclusions||[]).filter(s=>s.function==='joint_angle');
+ const active=source.body_transducers.filter(hasBancUnassignedBristlePosition),excluded=(source.body_transducer_exclusions||[]).filter(s=>s.function==='joint_angle'&&s.cell_class==='bristle_neuron');
  assert.equal(active.length+excluded.length,1);assert.equal([...active,...excluded][0].index,42986);
  for(const sensor of excluded){
   assert.equal(sensor.root_id,'720575941480808867');assert.equal(sensor.cell_type,'SNta35');

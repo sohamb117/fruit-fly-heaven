@@ -1,3 +1,4 @@
+import {matchMaintainedScene} from './flight-scene-profile.js';
 import {BodyWorld,jointPose,senseBody,decodeMotorOutput} from './body-world.js';
 import {FlyBodyPhysics,flybodyScene} from './flybody-physics.js';
 import {createWasmCore,WasmMuscles} from '/banc-engine/src/index.js';
@@ -17,7 +18,9 @@ export async function createBancBodyFactory(){
 
 export class FlyBodyWorld extends BodyWorld{
   constructor(fruit,flies,options,{mj,core,xml,metadata,io}){
-    super(fruit.map(f=>({...f,remaining:10})),flies,options);
+    const curriculumScene=matchMaintainedScene(options?.maintainedScene,metadata.maintained_scene);
+    if(curriculumScene&&(options?.movementMode!=='direct'||metadata.dynamics_variant!==undefined||metadata.joints.length!==50))throw new Error('Spacious curriculum requires the full native direct body');
+    super(fruit.map(f=>({...f,remaining:10})),flies,curriculumScene?{...options,maintainedScene:curriculumScene}:options);
     Object.assign(this,{mj,metadata,io});this.backend='mujoco-wasm';this.bodies=new Map();
     const scene=flybodyScene(xml,this.habitat);this.model=mj.MjModel.from_xml_string(scene.xml);this.model.hfield_data.set(scene.heights);
     this.mouthLandmarks=createMouthLandmarks(this.model,metadata);
@@ -116,6 +119,7 @@ export class FlyBodyWorld extends BodyWorld{
     f.feedback.halterePower=b.halterePower;f.feedback.haltereSteering=b.haltereSteering;
     f.feedback.legFoodContact=b.legFoodContact;f.feedback.wingFoodContact=b.wingFoodContact;f.feedback.mouthFoodContact=b.mouthFoodContact;
     f.feedback.wingPhase=b.wingPhase;f.feedback.wingFrequency=b.wings.config.frequency_hz;
+    if(b._wingLoadFeedback)f.feedback.wingLoad=b.readWingLoadFeedback();
     f.feedback.legs.forEach((leg,i)=>{
       const side=i<3?'left':'right',segment=`T${i%3+1}`,tibia=b.byJoint.get(`tibia_${segment}_${side}`),coxa=b.byJoint.get(`coxa_${segment}_${side}`);
       leg.loadBodyWeights=b.legLoads[i];leg.support=clamp(b.legLoads[i]*6);leg.collision=b.legCollisions[i];

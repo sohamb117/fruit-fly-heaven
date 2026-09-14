@@ -5,6 +5,7 @@ import hashlib
 import http.client
 import importlib.util
 import json
+import math
 from pathlib import Path
 import shutil
 import subprocess
@@ -20,15 +21,17 @@ spec.loader.exec_module(module)
 
 def fixture(pairs=2):
     return {
-        "schemaVersion": 1, "environmentVersion": "banc-flybody-rl-v1",
+        "schemaVersion": 1, "environmentVersion": "banc-flybody-flight-objective-v3",
         "modelFingerprint": hashlib.sha256(("fixture.wasm:" + "b" * 64 + "\n").encode()).hexdigest(),
         "assets": {"fixture.wasm": "b" * 64},
         "algorithm": "antithetic-evolution-strategies", "dtMs": .5, "bodyBlockMs": 2,
         "parameters": [{"name": "gain_log", "min": -2, "max": 2, "initial": 0}],
         "optimizer": {"populationPairs": pairs, "sigma": .25, "learningRate": .035, "maximumUpdate": .15, "seed": 888},
         "objective": {"min": -10, "max": 10, "direction": "maximize"},
-        "stage": "posture", "durationSeconds": 1,
-        "stages": [{"id": "posture", "durationSeconds": 1}],
+        "stage": "landing", "durationSeconds": 8,
+        "stages": [{"id": "takeoff", "durationSeconds": 3},
+                   {"id": "flight", "durationSeconds": 5},
+                   {"id": "landing", "durationSeconds": 8}],
         "contribution": {"leaseSeconds": 10, "maxRequestBytes": 1024},
     }
 
@@ -81,7 +84,8 @@ class CoordinatorTests(CoordinatorFixture):
         self.assertEqual(positive["seed"], negative["seed"])
         self.assertEqual((positive["sign"], negative["sign"]), (1, -1))
         self.assertAlmostEqual(positive["parameters"][0], -negative["parameters"][0])
-        self.assertEqual(positive["durationSeconds"], 1)
+        self.assertEqual(positive["stage"], self.config["stage"])
+        self.assertEqual(positive["durationSeconds"], self.config["durationSeconds"])
 
     def test_job_generation_is_deterministic_across_databases(self):
         other = module.TrainingCoordinator(Path(self.temp.name) / "other.sqlite3", self.config, clock=lambda: self.now)
@@ -207,7 +211,7 @@ class CoordinatorTests(CoordinatorFixture):
         self.assertEqual(checkpoint["generation"], 1)
         self.assertGreater(checkpoint["parameters"][0], initial[0])
         self.assertLessEqual(checkpoint["parameters"][0], .15)
-        self.assertEqual(checkpoint["stage"], "posture")
+        self.assertEqual(checkpoint["stage"], self.config["stage"])
         self.assertEqual(checkpoint["status"], "unverified")
         self.assertFalse(checkpoint["heldOutValidated"])
         self.assertFalse(self.coordinator.status()["automaticCurriculumPromotion"])
@@ -253,6 +257,34 @@ class CoordinatorTests(CoordinatorFixture):
         with self.assertRaisesRegex(ValueError, "pending"):
             module.TrainingCoordinator(Path(self.temp.name) / "pending.sqlite3", pending)
 
+    def test_changed_reward_contract_does_not_mix_existing_scores(self):
+        job = self.lease()
+        self.coordinator.result(self.result_body(job, objective=.3))
+        before = self.coordinator.status()
+        changed = copy.deepcopy(self.config)
+        changed["environmentVersion"] = "banc-flybody-flight-interface-v2"
+        with self.assertRaisesRegex(ValueError, "different configHash"):
+            module.TrainingCoordinator(self.database, changed)
+        self.assertEqual(self.coordinator.status(), before)
+
+    def test_repository_default_assigns_the_entire_flight_cycle(self):
+        config, config_hash = module.read_config(ROOT / "web/training/config.json")
+        self.assertEqual(config["environmentVersion"], "banc-flybody-flight-interpreter27-v6")
+        self.assertEqual(len(config["parameters"]), 27)
+        self.assertTrue(all(p["name"].startswith("flight_") for p in config["parameters"]))
+        self.assertEqual(config["stage"], "landing")
+        self.assertEqual(config["durationSeconds"], 8)
+        coordinator = module.TrainingCoordinator(Path(self.temp.name) / "current.sqlite3", config, config_hash)
+        try:
+            identity = {"contributorId": "current-fixture", "configHash": config_hash,
+                        "modelFingerprint": config["modelFingerprint"]}
+            job = coordinator.lease(identity)["job"]
+            self.assertEqual(job["stage"], "landing")
+            self.assertEqual(job["durationSeconds"], 8)
+            self.assertFalse(coordinator.status()["automaticCurriculumPromotion"])
+        finally:
+            coordinator.close()
+
     def test_config_hash_is_exact_file_bytes(self):
         path = Path(self.temp.name) / "config.json"
         raw = json.dumps(self.config, indent=2).encode() + b"\n"
@@ -277,7 +309,9 @@ class CoordinatorTests(CoordinatorFixture):
         pairs = []
         for index in (0, 2):
             plus, minus = records[index:index+2]
-            pairs.append({"noise": json.loads(plus["noise"]), "results": {
+            pairs.append({"noise": json.loads(plus["noise"]), "jobs": [
+                {"sign": 1, "parameters": json.loads(plus["parameters"])},
+                {"sign": -1, "parameters": json.loads(minus["parameters"])}], "results": {
                 "1": {"return": plus["score"], "success": False, "steps": 0, "simSeconds": 0},
                 "-1": {"return": minus["score"], "success": False, "steps": 0, "simSeconds": 0}}})
         payload = {"config": self.config, "configHash": self.coordinator.config_hash,
@@ -292,6 +326,164 @@ checkpoint:readCheckpoint(x.checkpoint,x.config,x.configHash)}));"""
         self.assertEqual(actual["parameters"], payload["checkpoint"]["parameters"])
         self.assertEqual(actual["checkpoint"]["parameters"], actual["parameters"])
         self.assertEqual(actual["checkpoint"]["status"], "unverified")
+
+
+def preview_frame():
+    return {"time": .6, "simSeconds": .1, "stage": "landing", "position": [0, 0, 3],
+            "quaternion": [1, 0, 0, 0], "feet": [[0, 0, 1]]*6,
+            "legs": [[[0, 0, 2], [0, 0, 1], [0, 0, 0]]]*6,
+            "bowl": {"radiusCm": 50, "floor": {"baseCm": .15, "radialCoefficientPerCm": .037, "capRadiusCm": 6.5}},
+            "phase": "warmup", "vision": False, "neuralMs": 600, "neuralSpikes": 1500}
+
+
+class ObserverStatusTests(CoordinatorFixture):
+    def test_recent_trials_are_bounded_ordered_and_contain_only_public_metrics(self):
+        self.assertIsNone(self.coordinator.status()["lastParameterUpdate"])
+        for i in range(124):
+            self.now += 1
+            job = self.lease()
+            body = self.result_body(job, objective=0)
+            body["metrics"].update(success=False, simSeconds=.1, wallSeconds=2,
+                                   privateLabel="do not expose", nested={"token": "private"})
+            self.coordinator.result(body)
+        state = self.coordinator.status()
+        self.assertEqual(len(state["recentTrials"]), 120)
+        self.assertEqual([row["episode"] for row in state["recentTrials"]], list(range(5, 125)))
+        self.assertEqual(state["recentWallSeconds"], 240)
+        self.assertEqual(state["lastParameterUpdate"], {"generation": 31, "changedCount": 0,
+                         "parameterCount": 1, "completedAt": self.now})
+        self.assertEqual(set(state["recentTrials"][0]), {"episode", "generation", "stage", "return", "success", "simSeconds", "wallSeconds", "completedAt"})
+        text = json.dumps(state["recentTrials"])
+        for private in ("leaseToken", "contributor", "parameters", "private", "token"):
+            self.assertNotIn(private, text)
+
+    def test_last_update_counts_actual_center_change_and_ignores_candidate_noise(self):
+        for i in range(4):
+            job = self.lease()
+            self.coordinator.result(self.result_body(job, objective=job["parameters"][0]))
+        state = self.coordinator.status()
+        self.assertNotEqual(state["checkpoint"]["parameters"], [0.])
+        self.assertEqual(state["lastParameterUpdate"]["changedCount"], 1)
+        self.lease()
+        self.assertEqual(self.coordinator.status()["lastParameterUpdate"], state["lastParameterUpdate"])
+
+    def test_preview_persists_sanitized_separately_and_becomes_stale_on_completion(self):
+        job = self.lease()
+        frame = preview_frame()
+        frame["ignored"] = {"contributorId": "not public", "html": "<script>"}
+        identity = {**self.identity(), "jobId": job["jobId"], "leaseToken": job["leaseToken"]}
+        checkpoint = self.coordinator.checkpoint()
+        self.coordinator.heartbeat({**identity, "previewFrame": frame})
+        state = self.coordinator.status()
+        self.assertEqual(state["checkpoint"], checkpoint)
+        self.assertEqual(state["acceptedResults"], 0)
+        self.assertFalse(state["latestFrame"]["stale"])
+        self.assertEqual(state["latestFrame"]["frame"], preview_frame())
+        self.assertEqual(state["latestFrame"]["serverReceivedAt"], self.now)
+        self.coordinator.close()
+        self.coordinator = module.TrainingCoordinator(self.database, self.config, clock=lambda: self.now)
+        self.assertEqual(self.coordinator.status()["latestFrame"], state["latestFrame"])
+        self.coordinator.result(self.result_body(job))
+        self.assertTrue(self.coordinator.status()["latestFrame"]["stale"])
+        for i in range(3):
+            self.coordinator.result(self.result_body(self.lease()))
+        self.assertIsNone(self.coordinator.status()["latestFrame"])
+
+    def test_invalid_preview_or_invalid_lease_cannot_write_or_extend_telemetry(self):
+        job = self.lease()
+        identity = {**self.identity(), "jobId": job["jobId"], "leaseToken": job["leaseToken"]}
+        variants = []
+        for key, value in (("position", [1e7, 0, 0]), ("quaternion", [0, 0, 0, 0]),
+                           ("phase", "<script>"), ("feet", [[0, 0, 0]]*7),
+                           ("stage", "different"), ("wings", [None]),
+                           ("ignored", ["x"*1000]*40)):
+            frame = preview_frame(); frame[key] = value; variants.append(frame)
+        self.now += 1
+        for frame in variants:
+            self.assert_api_error("invalid_preview", lambda: self.coordinator.heartbeat({**identity, "previewFrame": frame}))
+        self.assertEqual(self.coordinator.db.execute("SELECT expires FROM jobs WHERE job_id=?", (job["jobId"],)).fetchone()[0], job["leaseExpiresAt"])
+        self.assertIsNone(self.coordinator.status()["latestFrame"])
+        self.assert_api_error("stale_lease", lambda: self.coordinator.heartbeat({**identity, "leaseToken": "x"*32, "previewFrame": preview_frame()}))
+        self.now = job["leaseExpiresAt"]+1
+        self.assert_api_error("lease_expired", lambda: self.coordinator.heartbeat({**identity, "previewFrame": preview_frame()}))
+        self.assertIsNone(self.coordinator.status()["latestFrame"])
+
+
+class BoundedOptimizerTests(unittest.TestCase):
+    @staticmethod
+    def bounded_rules():
+        config = fixture()
+        config["parameters"] = [
+            {"name": "near_upper", "min": -1, "max": 1, "initial": .99},
+            {"name": "near_lower", "min": -1, "max": 1, "initial": -.99},
+            {"name": "frequency", "min": math.log(.8), "max": math.log(1.1), "initial": .09},
+            {"name": "narrow", "min": -.001, "max": .001, "initial": 0},
+        ]
+        rules = module.CoordinatorRules()
+        rules._configure(config)
+        return rules
+
+    @unittest.skipUnless(shutil.which("node"), "Node is needed for browser/server optimizer parity")
+    def test_bound_clipped_assigned_jobs_match_js_for_native_and_json_storage(self):
+        rules = self.bounded_rules()
+        old, jobs = rules._generation_records(0, rules.initial)
+        # These are the actual deterministic assigned vectors. Establish that
+        # both near-bound and narrow-range coordinates were really clipped.
+        clipped = set()
+        for job in jobs:
+            job["score"] = -job["parameters"][0] + job["parameters"][1] - job["parameters"][2]
+            for axis, parameter in enumerate(job["parameters"]):
+                requested = rules.initial[axis] + job["sign"]*rules.sigma*job["noise"][axis]
+                if parameter != requested:
+                    clipped.add(axis)
+        self.assertEqual(clipped, {0, 1, 2, 3})
+        pairs = []
+        for index in range(0, len(jobs), 2):
+            plus, minus = jobs[index:index+2]
+            pairs.append({"noise": plus["noise"], "jobs": [
+                {"sign": job["sign"], "parameters": job["parameters"]} for job in (plus, minus)],
+                "results": {str(job["sign"]): {"return": job["score"], "success": False,
+                            "steps": 0, "simSeconds": 0} for job in (plus, minus)}})
+        payload = {"config": rules.config, "round": {"baseline": rules.initial, "pairs": pairs}}
+        code = """import {updateGeneration} from './web/training/optimizer.js';
+let raw='';for await(const chunk of process.stdin)raw+=chunk;const x=JSON.parse(raw);
+console.log(JSON.stringify(updateGeneration(x.round,x.config)));"""
+        completed = subprocess.run(["node", "--input-type=module", "-e", code], cwd=ROOT,
+                                   input=json.dumps(payload), text=True, capture_output=True, check=True, timeout=10)
+        expected = json.loads(completed.stdout)
+        self.assertNotEqual(expected, rules.initial)
+        self.assertEqual(rules._next_center(old, jobs), expected)
+        # Firestore uses arrays; SQLite stores these same assigned vectors as JSON.
+        json_jobs = [{**job, "parameters": json.dumps(job["parameters"]), "noise": json.dumps(job["noise"])}
+                     for job in jobs]
+        self.assertEqual(rules._next_center({**old, "center": json.dumps(old["center"])}, json_jobs), expected)
+
+        # Ensure the fixture exposes the previous raw-noise bug rather than
+        # accidentally matching because a final bound hides every difference.
+        gradient = [0.] * len(rules.initial)
+        for index in range(0, len(jobs), 2):
+            plus, minus = jobs[index:index+2]
+            for axis, noise in enumerate(plus["noise"]):
+                gradient[axis] += (plus["score"]-minus["score"])*noise
+        scale = rules.learning_rate/(2*rules.pairs*rules.sigma)
+        old_result = [max(low, min(high, value+max(-rules.maximum_update, min(rules.maximum_update, scale*grad))))
+                      for value, grad, (low, high) in zip(rules.initial, gradient, rules.bounds)]
+        self.assertNotEqual(expected, old_result)
+
+    def test_equal_rewards_cannot_move_a_bound_clipped_center(self):
+        rules = self.bounded_rules()
+        old, jobs = rules._generation_records(0, rules.initial)
+        for job in jobs:
+            job["score"] = -3.
+        self.assertEqual(rules._next_center(old, jobs), rules.initial)
+
+    def test_zero_realized_separation_cannot_move_even_with_different_rewards(self):
+        rules = self.bounded_rules()
+        old, jobs = rules._generation_records(0, rules.initial)
+        for job in jobs:
+            job["parameters"] = list(rules.initial)
+            job["score"] = 10*job["sign"]
+        self.assertEqual(rules._next_center(old, jobs), rules.initial)
 
 
 class HTTPTests(CoordinatorFixture):
@@ -334,6 +526,13 @@ class HTTPTests(CoordinatorFixture):
         self.assertEqual(self.request("POST", "result", result)[2]["duplicate"], False)
         self.assertEqual(self.request("POST", "result", result)[2]["duplicate"], True)
         self.assertEqual(self.request("GET", "checkpoint")[2]["status"], "unverified")
+
+    def test_compact_status_drops_only_config(self):
+        full = self.request("GET", "status")[2]
+        compact = self.request("GET", "status?compact=1")[2]
+        self.assertIn("config", full)
+        self.assertEqual(compact, {key: value for key, value in full.items() if key != "config"})
+        self.assertEqual(self.request("GET", "status?compact=0")[2], full)
 
     def test_http_checkpoint_download_has_safe_filename_and_no_cache(self):
         status, headers, checkpoint = self.request("GET", "checkpoint?filename=arbitrary.txt", origin=None)

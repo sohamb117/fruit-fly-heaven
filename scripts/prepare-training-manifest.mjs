@@ -8,17 +8,18 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const prefixes=[['/body-engine/','packages/flybody-runtime/node_modules/@mujoco/mujoco/'],['/banc-engine/','packages/banc-runtime/'],['/banc-data/','data/prepared/banc888/'],['/body-model/','models/']];
 const resolve=url=>{const match=prefixes.find(([prefix])=>url.startsWith(prefix));return path.join(root,match?match[1]+url.slice(match[0].length):'web'+url);};
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
-const urls=new Set([
-  '/training/worker.js','/training/environment.js','/banc-engine/src/index.js',
-  '/banc-engine/src/neural.wgsl','/banc-engine/dist/core.js','/banc-engine/dist/core.wasm',
+export async function buildTrainingAssetManifest(){
+ const urls=new Set([
+  '/training/worker.js','/training/environment.js','/motor-decoder.js','/banc-engine/src/index.js',
+  '/banc-engine/src/neural.wgsl','/banc-engine/src/neural-dlm.wgsl','/banc-engine/dist/core.js','/banc-engine/dist/core.wasm',
   '/body-engine/mujoco.js','/body-engine/mujoco.wasm',
   '/body-model/flybody-mujoco.xml','/body-model/flybody-mujoco.json',
   '/banc-data/manifest.json','/banc-data/io.json','/banc-data/console/groups.json','/banc-data/console/sensory-inputs.json',
   '/body-model/banc-taste-peg-annotations.json',
   '/habitat.json',
-]);
-const assets={};
-for(const url of urls){
+ ]);
+ const assets={};
+ for(const url of urls){
   const bytes=await fs.readFile(resolve(url));assets[url]=digest(bytes);
   if(!url.endsWith('.js'))continue;
   // ES module source dependencies, including literal dynamic imports. Fetch
@@ -28,10 +29,15 @@ for(const url of urls){
   for(const pattern of patterns)for(const match of source.matchAll(pattern)){
     const dependency=match[1];if(dependency.startsWith('.')||dependency.startsWith('/'))urls.add(new URL(dependency,'http://local'+url).pathname);
   }
+ }
+ const assetsSorted=Object.fromEntries(Object.entries(assets).sort(([a],[b])=>a.localeCompare(b)));
+ const modelFingerprint=digest(Object.entries(assetsSorted).map(([url,sha])=>`${url}:${sha}\n`).join(''));
+ return {assets:assetsSorted,modelFingerprint};
 }
-const sorted=Object.fromEntries(Object.entries(assets).sort(([a],[b])=>a.localeCompare(b)));
-const fingerprint=digest(Object.entries(sorted).map(([url,sha])=>`${url}:${sha}\n`).join(''));
-const configPath=path.join(root,'web/training/config.json'),config=JSON.parse(await fs.readFile(configPath,'utf8'));
-config.assets=sorted;config.modelFingerprint=fingerprint;
-const encoded=JSON.stringify(config,null,2)+'\n';await fs.writeFile(configPath,encoded);
-console.log(JSON.stringify({assets:Object.keys(sorted).length,modelFingerprint:fingerprint,configHash:digest(encoded),configuration:'web/training/config.json'}));
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ const {assets,modelFingerprint}=await buildTrainingAssetManifest();
+ const configPath=path.join(root,'web/training/config.json'),config=JSON.parse(await fs.readFile(configPath,'utf8'));
+ config.assets=assets;config.modelFingerprint=modelFingerprint;
+ const encoded=JSON.stringify(config,null,2)+'\n';await fs.writeFile(configPath,encoded);
+ console.log(JSON.stringify({assets:Object.keys(assets).length,modelFingerprint,configHash:digest(encoded),configuration:'web/training/config.json'}));
+}

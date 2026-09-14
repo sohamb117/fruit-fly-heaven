@@ -1,0 +1,11 @@
+The search found a useful candidate, while the aggregated generation-4 center regressed. This distinction is supported by the predeclared paired tests, not by parameter movement alone.
+
+The primary center comparison loses takeoffs (1/3 to 0/3) and mean continuous qualified flight (130 to 111 ms). Two seeds lose airtime; one gains 28 ms. All three terminate earlier. The 20 changed center coordinates therefore do not demonstrate useful center learning. Its frequency coordinate reaches the upper bound, but these evaluations vary all coordinates together and cannot attribute the regression causally to frequency alone.
+
+The separate candidate `g3-p0-neg`, selected from the 32 training returns before viewing any held-out result, improves qualified flight on all three held-out seeds: 136→338, 82→354 and 172→352 ms. It takes off on 3/3 instead of 1/3. Mean added qualified airtime is 218 ms. All three score gains reflect greater earned progress under the same constant physical-failure penalty of 3, rather than different sampled terminal crash severity.
+
+This is evidence that the current parameter search can discover a better-performing vector that transfers to these three withheld initializations. It does not show that the ES center update retained that improvement, that more optimization will necessarily succeed, or that the model matches biological flight. There are no full task successes, no one-second continuous qualified flights, and no landings. Every episode still ends in excessive rotation. The selected candidate's longest total episode is 1.106 seconds, but its longest qualified flight is only 0.354 seconds; survival time must not be described as maintained flight.
+
+The original primary comparison remains the primary result; the pre-evaluation amendment and candidate-selection rule are preserved in the frozen protocol. Three held-out seeds are a small check, not a general performance estimate. Reusing them to select subsequent changes would make them development data; fresh declared seeds are needed for the next independent comparison.
+
+All nine configuration, source, backend, assignment, complete-result and paired initial-state gates passed. The exact values and provenance are in [comparison.json](comparison.json). This assessment used only those saved results and ran no simulation or training update.

@@ -19,7 +19,7 @@ from google.api_core.exceptions import Aborted
 
 from training_coordinator import (
     APIError, CoordinatorRules, canonical, finite_number, fingerprint, identifier,
-    read_config,
+    read_config, RECENT_TRIAL_LIMIT,
 )
 
 
@@ -48,6 +48,7 @@ class FirestoreCoordinator(CoordinatorRules):
         self.generations = self.run.collection("generations")
         self.jobs = self.run.collection("jobs")
         self.contributors = self.run.collection("contributors")
+        self.telemetry = self.run.collection("telemetry")
         try:
             if initialize:
                 self._transaction(self._initialize)
@@ -78,13 +79,13 @@ class FirestoreCoordinator(CoordinatorRules):
                 time.sleep(.025 + secrets.randbelow(1000)/1000*ceiling)
 
     def _metadata(self, *, ready=True):
-        return checked_document({"schemaVersion": SCHEMA, "ready": ready,
+        return checked_document({"schemaVersion": self.storage_schema, "ready": ready,
             "configHash": self.config_hash, "modelFingerprint": self.model_fingerprint,
             "config": self.config, "currentGeneration": 0, "acceptedResults": 0,
             "contributorsCount": 0})
 
     def _validate_metadata(self, value, *, require_ready=True):
-        if (value.get("schemaVersion") != SCHEMA or value.get("configHash") != self.config_hash
+        if (value.get("schemaVersion") != self.storage_schema or value.get("configHash") != self.config_hash
                 or value.get("modelFingerprint") != self.model_fingerprint
                 or canonical(value.get("config")) != canonical(self.config)):
             raise ValueError("Firestore run uses a different training configuration or schema")
@@ -122,8 +123,10 @@ class FirestoreCoordinator(CoordinatorRules):
 
     def _batch(self, tx, generation):
         rows = [snapshot.to_dict() for snapshot in self.jobs.where(
-            filter=FieldFilter("generation", "==", generation)).stream(transaction=tx)]
-        if len(rows) != 2*self.pairs:
+            filter=FieldFilter("generation", "==", generation["generation"])).stream(transaction=tx)]
+        if self.guarded:
+            self._validate_guard_batch(generation, rows)
+        elif len(rows) != 2*self.pairs:
             raise APIError(503, "invalid_history", "Current training job batch is incomplete")
         return sorted(rows, key=lambda row: (row["pair_id"], -row["sign"]))
 
@@ -142,7 +145,7 @@ class FirestoreCoordinator(CoordinatorRules):
 
         def assign(tx):
             _, current = self._read_current(tx)
-            rows = self._batch(tx, current["generation"])
+            rows = self._batch(tx, current)
             now = self.clock()
             # Completed generations cannot contain an active lease. Reading the
             # complete bounded current batch enforces one lease per contributor.
@@ -180,19 +183,27 @@ class FirestoreCoordinator(CoordinatorRules):
                 raise APIError(503, "invalid_history", "Lease is outside the current training generation")
             generation_ref = self.generations.document(str(row["generation"]))
             generation = generation_ref.get(transaction=tx).to_dict()
-            rows = self._batch(tx, row["generation"])
+            allowed_statuses = ("evaluating", "checking") if self.guarded else ("evaluating",)
+            if not generation or generation["status"] not in allowed_statuses:
+                raise APIError(503, "invalid_history", "Training generation cannot accept results")
+            rows = self._batch(tx, generation)
             contributor_ref = self.contributors.document(hashlib.sha256(contributor.encode()).hexdigest())
             contributor_snapshot = contributor_ref.get(transaction=tx)
             contributor_record = contributor_snapshot.to_dict() if contributor_snapshot.exists else {
                 "contributorId": contributor, "acceptedResults": 0}
-            if not generation or generation["status"] != "evaluating":
-                raise APIError(503, "invalid_history", "Training generation cannot accept results")
             accepted = {**row, "state": "completed", "score": score, "completed": now,
                         "result_hash": result_hash, "result": canonical(payload)}
             rows = [accepted if item["job_id"] == row["job_id"] else item for item in rows]
-            advanced = all(item["state"] == "completed" for item in rows)
+            transition = self._guard_transition(generation, rows, now) if self.guarded else None
+            advanced = (transition is not None and transition["nextGeneration"] is not None
+                        if self.guarded else all(item["state"] == "completed" for item in rows))
             next_generation = None
-            if advanced:
+            if self.guarded and transition:
+                next_generation = transition["nextGeneration"]
+                checked_document(transition["generation"])
+                for new_job in transition["jobs"]:
+                    checked_document(new_job)
+            elif advanced:
                 next_generation = self._generation_records(row["generation"]+1,
                                                            self._next_center(generation, rows), created=now)
             # All reads are finished before any writes. The metadata update
@@ -202,8 +213,13 @@ class FirestoreCoordinator(CoordinatorRules):
                 "acceptedResults": contributor_record["acceptedResults"]+1, "lastAcceptedAt": now})
             updates = {"acceptedResults": metadata["acceptedResults"]+1,
                        "contributorsCount": metadata["contributorsCount"]+(not contributor_snapshot.exists)}
-            if advanced:
+            if self.guarded and transition:
+                tx.set(generation_ref, transition["generation"])
+                for new_job in transition["jobs"]:
+                    tx.create(self.jobs.document(new_job["job_id"]), new_job)
+            elif advanced:
                 tx.update(generation_ref, {"status": "unverified", "finished": now})
+            if advanced:
                 self._write_generation(tx, *next_generation)
                 updates["currentGeneration"] = row["generation"]+1
             tx.update(self.run, updates)
@@ -231,6 +247,7 @@ class FirestoreCoordinator(CoordinatorRules):
 
     def heartbeat(self, payload):
         contributor = self._identity(payload)
+        preview = self._preview_frame(payload)
 
         def renew(tx):
             self._read_metadata(tx)
@@ -241,6 +258,10 @@ class FirestoreCoordinator(CoordinatorRules):
                 raise APIError(410, "lease_expired", "Expired leases cannot be renewed")
             expires = self.clock()+self.lease_seconds
             tx.update(self.jobs.document(row["job_id"]), {"expires": expires})
+            if preview is not None:
+                # Geometry is JSON to avoid Firestore's nested-array limitation.
+                tx.set(self.telemetry.document("latest"), {"job_id": row["job_id"],
+                       "generation": row["generation"], "received": self.clock(), "frame_json": canonical(preview)})
             return {"renewed": True, "jobId": row["job_id"], "leaseExpiresAt": expires}
 
         return self._transaction(renew)
@@ -251,8 +272,15 @@ class FirestoreCoordinator(CoordinatorRules):
     def status(self):
         def status(tx):
             metadata, current = self._read_current(tx)
-            return self._status_from_rows(current, self._batch(tx, current["generation"]),
-                                          metadata["acceptedResults"], metadata["contributorsCount"])
+            rows = self._batch(tx, current)
+            recent = [snapshot.to_dict() for snapshot in self.jobs.order_by(
+                "completed", direction=firestore.Query.DESCENDING).limit(RECENT_TRIAL_LIMIT).stream(transaction=tx)]
+            previous = None
+            if current["generation"]:
+                previous = self.generations.document(str(current["generation"]-1)).get(transaction=tx).to_dict()
+            telemetry = self.telemetry.document("latest").get(transaction=tx).to_dict()
+            return {**self._status_from_rows(current, rows, metadata["acceptedResults"], metadata["contributorsCount"]),
+                    **self._observer_status(current, recent, metadata["acceptedResults"], previous, telemetry, rows)}
         return self._transaction(status, read_only=True)
 
 
@@ -269,7 +297,7 @@ def read_sqlite_history(source, config, config_hash=None):
             raise ValueError("SQLite source failed its integrity check")
         meta = dict(connection.execute("SELECT key,value FROM meta"))
         if (meta.get("configHash") != rules.config_hash or meta.get("modelFingerprint") != rules.model_fingerprint
-                or meta.get("schemaVersion") != "1" or meta.get("config") != canonical(config)):
+                or meta.get("schemaVersion") != str(rules.storage_schema) or meta.get("config") != canonical(config)):
             raise ValueError("SQLite source uses a different configuration or schema")
         generations = [dict(row) for row in connection.execute("SELECT * FROM generations ORDER BY generation")]
         jobs = [dict(row) for row in connection.execute("SELECT * FROM jobs ORDER BY generation,pair_id,sign DESC")]
@@ -277,13 +305,17 @@ def read_sqlite_history(source, config, config_hash=None):
         connection.close()
     if not generations or [row["generation"] for row in generations] != list(range(len(generations))):
         raise ValueError("SQLite generations must be a contiguous nonempty history")
+    if rules.guarded:
+        generations = [rules._normalize_guard_generation(row) for row in generations]
     grouped, contributors = defaultdict(list), {}
     for generation in generations:
-        generation["center"] = json.loads(generation["center"])
+        generation["center"] = rules._array(generation["center"])
         if len(generation["center"]) != len(rules.bounds):
             raise ValueError("Invalid historical parameter vector")
         for value, (low, high) in zip(generation["center"], rules.bounds):
             finite_number(value, low, high, "historical parameter")
+    if generations[0]["center"] != rules.initial:
+        raise ValueError("History initial center differs from the configured initial parameters")
     for job in jobs:
         job["noise"], job["parameters"] = json.loads(job["noise"]), json.loads(job["parameters"])
         if job["generation"] not in range(len(generations)) or job["state"] not in ("pending", "leased", "completed"):
@@ -315,6 +347,17 @@ def read_sqlite_history(source, config, config_hash=None):
     for generation in generations:
         number = generation["generation"]
         batch = grouped[number]
+        if rules.guarded:
+            rules._validate_guard_batch(generation, batch)
+            complete = all(job["state"] == "completed" for job in batch)
+            if number < len(generations)-1:
+                if not complete or generation["status"] != "unverified":
+                    raise ValueError("An older generation has unfinished jobs")
+                if rules._guard_selected_center(generation, batch) != generations[number+1]["center"]:
+                    raise ValueError("Historical acceptance decision does not match its next generation")
+            elif complete or generation["status"] not in ("evaluating", "checking"):
+                raise ValueError("Current guarded generation is inconsistent")
+            continue
         expected_ids = {f"g{number}-p{pair}-{sign}" for pair in range(rules.pairs) for sign in ("pos", "neg")}
         if len(batch) != 2*rules.pairs or {job["job_id"] for job in batch} != expected_ids:
             raise ValueError("Historical generation has an incomplete job batch")

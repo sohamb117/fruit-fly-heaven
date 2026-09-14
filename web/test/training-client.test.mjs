@@ -2,11 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
-import {TrainingClient} from '../training/client.js';
+import {TrainingClient,trainingCoordinatorURL} from '../training/client.js';
 const base=JSON.parse(await fs.readFile(new URL('../training/config.json',import.meta.url),'utf8'));
 const storage=()=>{const data=new Map();return {getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};};
+test('only an explicit loopback development build uses its local coordinator',()=>{
+ for(const origin of ['http://127.0.0.1:7845','http://localhost:7845','http://[::1]:7845']){
+  assert.equal(trainingCoordinatorURL(new URL(origin)),'https://flytrain.morisoba.moe');
+  assert.equal(trainingCoordinatorURL(new URL(origin),true),origin);
+ }
+ assert.equal(trainingCoordinatorURL(new URL('https://flies.example'),true),'https://flies.example');
+ assert.equal(trainingCoordinatorURL(new URL('http://outside.example'),true),'https://flytrain.morisoba.moe');
+});
 function setup({delayed=false,mutateResult=x=>x}={}){
- const config=structuredClone(base);config.stages=config.stages.slice(0,1);config.optimizer.populationPairs=1;
+ const config=structuredClone(base);config.stages=config.stages.filter(s=>s.id===config.stage);config.optimizer.populationPairs=1;
  const encoded=JSON.stringify(config),configHash=createHash('sha256').update(encoded).digest('hex'),workers=[];
  class Worker extends EventTarget{
   constructor(){super();this.messages=[];this.dead=false;workers.push(this);}
@@ -24,7 +32,7 @@ function setup({delayed=false,mutateResult=x=>x}={}){
  return {client:new TrainingClient({workerFactory:()=>new Worker(),storage:storage(),fetcher:async()=>new Response(encoded)}),workers,config,configHash};
 }
 test('opening training settings starts neither compute nor a worker',async()=>{
- const {client,workers}=setup();await client.initialize();assert.equal(client.state.phase,'ready');assert.equal(workers.length,0);assert.equal(client.running,false);await client.dispose();
+ const {client,workers,config}=setup();await client.initialize();assert.equal(client.state.phase,'ready');assert.equal(client.state.stage,config.stage);assert.equal(workers.length,0);assert.equal(client.running,false);await client.dispose();
 });
 test('wrong worker parameters, seed, or clock are not counted or scored',async()=>{
  for(const mutateResult of [r=>({...r,seed:r.seed+1}),r=>({...r,parameters:r.parameters.map((v,i)=>i===0?v+.01:v)}),r=>({...r,steps:r.steps+1}),r=>({...r,provenance:undefined})]){
@@ -39,7 +47,7 @@ test('a lease issued after Stop is released at its original coordinator',async()
  client.state.coordinator={connected:true,url};client.running=true;
  const loop=client.runShared(client.runToken);await new Promise(r=>setTimeout(r,0));await client.stop();
  client.state.coordinator.url='http://127.0.0.1:9999';
- resolveLease(Response.json({job:{jobId:'late-job',leaseToken:'token',parameters:client.parameters.slice(),stage:'posture',seed:888,durationSeconds:1,modelFingerprint:config.modelFingerprint,configHash}}));
+ resolveLease(Response.json({job:{jobId:'late-job',leaseToken:'token',parameters:client.parameters.slice(),stage:config.stage,seed:888,durationSeconds:config.durationSeconds,modelFingerprint:config.modelFingerprint,configHash}}));
  await assert.rejects(loop,{name:'AbortError'});assert.equal(calls.length,2);assert.equal(calls[1].endpoint,url+'/api/training/release');
  assert.equal(client.state.contributedEpisodes,0);await client.dispose();
 });

@@ -33,10 +33,11 @@ test('incomplete/invalid returns cannot update a policy',()=>{
   for(const bad of [NaN,Infinity,config.objective.max+1])assert.throws(()=>validateResult(result(bad),config));
 });
 test('checkpoint import rejects incompatibility and discards purported validation',()=>{
-  const c=checkpoint(config,'abc',initial,2,'posture',{status:'validated',score:10});
+  const c=checkpoint(config,'abc',initial,2,config.stage,{status:'validated',score:10});
   assert.equal(readCheckpoint(c,config,'abc').status,'unverified');
   assert.throws(()=>readCheckpoint(c,config,'def'));
   assert.throws(()=>readCheckpoint({...c,parameters:[NaN,...initial.slice(1)]},config,'abc'));
   assert.throws(()=>readCheckpoint({...c,modelFingerprint:'wrong'},config,'abc'));
   assert.throws(()=>readCheckpoint({...c,parameterNames:[]},config,'abc'));
+  assert.throws(()=>readCheckpoint({...c,stage:'posture'},config,'abc'),/Invalid checkpoint progress/);
 });

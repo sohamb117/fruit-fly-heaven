@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "kind": "motor-decoder-experiment-template",
+  "config": {
+    "schemaVersion": 2,
+    "environmentVersion": "banc-masked-motor-decoder-v1-maintained-flight",
+    "algorithm": "antithetic-evolution-strategies",
+    "controller": "BANC motor events through a constrained dynamical actuator decoder",
+    "vision": false,
+    "dtMs": 0.5,
+    "bodyBlockMs": 2,
+    "optimizer": {
+      "populationPairs": 2,
+      "sigma": 0.02,
+      "learningRate": 0.035,
+      "maximumUpdate": 0.15,
+      "seed": 888173,
+      "acceptance": {
+        "profile": 1,
+        "proposal": "best-search-job",
+        "seedCount": 3
+      }
+    },
+    "objective": {
+      "min": -10,
+      "max": 10,
+      "direction": "maximize"
+    },
+    "stage": "maintained_flight",
+    "durationSeconds": 5,
+    "stages": [
+      {
+        "id": "maintained_flight",
+        "label": "Maintain flight",
+        "durationSeconds": 5,
+        "description": "Maintain powered controlled flight after an explicitly airborne live-BANC warm-up. No takeoff or landing credit."
+      }
+    ],
+    "validation": {
+      "seeds": [
+        190888,
+        290888,
+        490888,
+        590888,
+        690888,
+        790888,
+        890888,
+        990888,
+        1190888,
+        1290888,
+        1390888,
+        888,
+        520888
+      ],
+      "testSeeds": [
+        2490888,
+        2590888,
+        2690888
+      ],
+      "minimumImprovement": 0.0001,
+      "requiredSuccesses": 2
+    },
+    "contribution": {
+      "leaseSeconds": 1800,
+      "maxRequestBytes": 262144
+    },
+    "notes": [
+      "Local experiment with one native fly per evaluation and a fixed BANC neural model.",
+      "Decoder coefficients act only on anatomically mapped ipsilateral wing actuators. No root state, target or reward enters the decoder.",
+      "Individual event excitation uses the declared fixed priors; learned finite impulse responses use 0, 1 and 4 ms history and wing phase.",
+      "The existing power-driven wingbeat generator and native body remain the mechanical baseline. This is an engineering model, not identified physiology.",
+      "A complete guarded generation is required before a behavioral candidate replaces the incumbent. Parameter changes and behavioral success are reported separately.",
+      "Full articulated body with ordinary collision/friction; phenomenological claw adhesion is explicitly disabled. No gripping or climbing claim.",
+      "The fixed activation-amplitude-v1 metadata profile is retained for compatibility; normalized decoder power bypasses its gain.",
+      "Five scored seconds follow 0.5 seconds of live neural/body warm-up with the root held only during initialization; no takeoff or landing credit."
+    ],
+    "wingEventExcitation": {
+      "steering": {
+        "riseMs": 1,
+        "decayMs": 5,
+        "recruitmentGain": 0.6931471805599453
+      },
+      "dlm": {
+        "riseMs": 6.2,
+        "decayMs": 82,
+        "recruitmentGain": 0.6931471805599453
+      },
+      "dvm": {
+        "riseMs": 6.2,
+        "decayMs": 82,
+        "recruitmentGain": 0.6931471805599453
+      }
+    },
+    "intrinsicModels": {
+      "schema": 1,
+      "profile": "dlm-snl-2023-v1",
+      "cells": [
+        {
+          "index": 12322,
+          "root_id": "720575941432491145"
+        },
+        {
+          "index": 31143,
+          "root_id": "720575941463144336"
+        },
+        {
+          "index": 41465,
+          "root_id": "720575941479034563"
+        },
+        {
+          "index": 74497,
+          "root_id": "720575941519783640"
+        },
+        {
+          "index": 84317,
+          "root_id": "720575941533190337"
+        },
+        {
+          "index": 127563,
+          "root_id": "720575941583644382"
+        },
+        {
+          "index": 135445,
+          "root_id": "720575941596050112"
+        },
+        {
+          "index": 157417,
+          "root_id": "720575941640465439"
+        },
+        {
+          "index": 160138,
+          "root_id": "720575941645403000"
+        },
+        {
+          "index": 173140,
+          "root_id": "720575941692400603"
+        }
+      ],
+      "ionic_step_ms": 0.1,
+      "initial_gates": {
+        "h": 0.146,
+        "b": 0.146
+      },
+      "event_policy": "threshold-10ms-guard"
+    },
+    "tegulaFeedback": {
+      "schema": 1,
+      "profile": "tegula-fluid-load-v1",
+      "maxRateHz": 100,
+      "halfLoadNative": 0.1390686725503348
+    },
+    "initialCondition": {
+      "schemaVersion": 1,
+      "profile": "airborne-live-warmup-v1",
+      "warmupSeconds": 0.5,
+      "bodyVariant": "full-native",
+      "rootQpos": [
+        0,
+        0,
+        3.5,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    "maintainedScene": {
+      "schemaVersion": 1,
+      "profile": "spacious-maintained-flight-v1",
+      "radiusCm": 50,
+      "ceilingCm": 50,
+      "floorCapRadiusCm": 6.5
+    },
+    "parameterContract": "banc-masked-motor-decoder-v1",
+    "freezeNeuralParameters": true
+  },
+  "parameterSearchScales": {
+    "power": 0.1,
+    "steering": 0.05
+  },
+  "stopAfterGeneration": 1,
+  "modelFixture": {
+    "sourceXmlSha256": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
+    "sourceMetadataSha256": "c1348adf19decee75abbbb1d2be8a5ef6ac8cfe4fe4850083a502b62877c4a48",
+    "clawAdhesionGainScale": 0,
+    "powerTransfer": {
+      "schemaVersion": 1,
+      "profile": "activation-amplitude-v1",
+      "activationGain": 1.999999638880142
+    },
+    "tegulaReference": {
+      "priorFile": "reports/flight-tegula-inputs/recruitment-prior.json",
+      "priorSha256": "57b7b024b4a56cfcb57edab8f85a0d0f410c57dffb74947fa0b132b312415524",
+      "referenceFile": "reports/flight-tegula-inputs/load-observability/result.json",
+      "referenceSha256": "b674e02b317fff35d637027361686bfe04e22acc21b4dd09781f95535a61a9c6"
+    },
+    "expectedXmlSha256": "697aadc8a4df253537f1a03a786ece20fa57f22883d55ea24320a59c15b14583",
+    "expectedMetadataSha256": "a842121877df5cfaa050a20298d98603f011ca7a576c93635eecf7dc601daf7a"
+  },
+  "nativeBackendPrerequisites": {
+    "backend": "dawn-metal",
+    "module": "reports/native-webgpu-tooling/backend.mjs",
+    "packageLock": "reports/native-webgpu-tooling/package-lock.json",
+    "note": "Preexisting local Dawn tooling and its installed dependencies are required for native evaluation. Preparation hashes these files but does not install or execute them. Historical tegula reference paths are provenance labels only; preparation does not read them."
+  }
+}

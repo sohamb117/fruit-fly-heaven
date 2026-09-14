@@ -1,28 +1,75 @@
 # Training and shared contributions
 
-The shared training console evaluates one real BANC v888 network and native FlyBody at a time. Its route remains **brain → VNC → motor neurons → muscles → body**. Every Start joins the shared GCP pool; there is no unshared mode or sharing switch. Opening the page checks coordinator metadata but starts no compute. The original observation console remains in the repository at `/`.
+The live browser entry evaluates one BANC v888 network and FlyBody/MuJoCo body in WASM at a time. Its route remains **brain → VNC → motor neurons → muscles → body**. **Start** executes a coordinator-assigned trial on the visitor's computer; **Pause** suspends computation, and **Stop** releases unfinished work. Every completed contribution goes to the GCP pool; there is no unshared mode or sharing switch. Opening the page checks metadata but starts no simulation. The original observation console remains in the repository at `/`.
 
-The live host is **Cloud Run with Firestore** in project `flyheaven`, at **[flytrain.morisoba.moe/train.html](https://flytrain.morisoba.moe/train.html)**. DNS, Google-managed HTTPS, browser connection and checkpoint downloads passed verification on 2026-09-13. See the [managed deployment guide](../deploy/cloudrun/README.md).
+The host is **Cloud Run with Firestore** in project `flyheaven`, at **[flytrain.morisoba.moe/train.html](https://flytrain.morisoba.moe/train.html)**. The live browser release is [`reports/motor-decoder-v1/browser-wasm-001`](../reports/motor-decoder-v1/browser-wasm-001/README.md), config hash `1f3b0935af592a3edf283f02ae2d7eb570fa5c2a6acd225b429b6624d6ed328f`, for namespace `banc888-motor-decoder-wasm-20260914`. On 2026-09-14, revision `fly-training-rbe4741deef91` received 100% of traffic; public and coordinator config identities matched and all 15 transport checks passed. Safari Start/Pause/Resume, the low-resolution 3D preview and a 672-parameter generation-zero checkpoint download were verified. One actual Safari WASM trial completed and was accepted into Firestore, with every check passing in the [read-only result audit](../reports/flyheaven-decoder-deployment-20260914/browser-wasm-audit-002.json). See the [managed deployment guide](../deploy/cloudrun/README.md).
+
+This cohort searches **672 individual wing motor-decoder coefficients** during `maintained_flight`: 24 power weights and 648 steering coefficients. Its initial values match the final native checkpoint, but the WASM run starts at generation 0 with zero inherited results or fitness. The native decoder namespace `banc888-motor-decoder-v1-20260914` is retained with 17 accepted results at generation 1; the earlier 14-parameter namespace `banc888-v1-20260913` is also retained. Different execution backends and config identities never share scores.
+
+The browser run uses the schema-2 acceptance guard. Four search trials (two positive/negative pairs) nominate a candidate; three fresh candidate/incumbent seed pairs then determine whether to retain it. Only a strictly positive mean paired improvement replaces the incumbent. The page uses the pinned BANC WASM binary directly and does not request WebGPU or require native Dawn tooling. GCP schedules work and saves results and checkpoints; it does not simulate the fly.
+
+The first accepted trial, audited at 2026-09-14 19:54:45 UTC, used the exact assigned vector and WASM pin. Its candidate differed from the initial vector in all 672 coefficients (24 power, 648 steering; maximum absolute change 0.00647658, L2 change 0.02735765). It ended with `excessive_rotation` after 0.222 scored seconds following 0.5 seconds of warmup: return −2.9524, best qualified flight 0.034 seconds, and no task success. Execution took 109.7049 seconds; evaluation wall time including pauses was 302.4048 seconds. The browser automatically started trial two. The saved generation-zero checkpoint still differed in **0 of 672 coefficients**, because candidate-retention comparisons had not finished. This verifies browser computation and hosted result storage; it does not show stable flight or a retained improvement.
 
 This is an implemented parameter-search system, not a completed behavioral controller. Autonomous food localization → approach → landing → probing/feeding → takeoff/flight has not been established. Shared checkpoints are explicitly **unverified**.
 
-## Run locally
+## Earlier experiments and native diagnostics
 
-Run these commands from the repository root. If the prepared data and runtime assets are already present, no model rebuild is needed.
+The earlier canonical `banc-flybody-flight-interpreter27-v6` profile uses an eight-second takeoff, maintained-airtime and landing episode. It is a separate 27-parameter experiment, not the browser WASM entry above. Criteria version 3 ranks physical failures by measured task progress minus a constant penalty. The archive evidence below describes those earlier builds; their scores and checkpoints cannot be resumed under a different objective or backend.
+
+The earlier development-bundle builder can separately enable individual wing motor events (`--wing-events`), the ten-cell DLM conductance model (`--dlm-ionic`), and native wing-load input to 26 tegula sensory neurons (`--tegula-load`). The current decoder experiment declares its event, DLM and tegula priors explicitly in its own pinned configuration. These preserve the BANC graph and remain model assumptions. See the [DLM implementation and numerical evidence](../reports/flight-dlm-runtime/README.md), [actual DLM flight comparison](../reports/flight-dlm-live/comparison/README.md), and [tegula anatomy and load measurements](../reports/flight-tegula-inputs/README.md). Neither numerical agreement nor a complete signal route establishes stable flight.
+
+For native research runs, `scripts/serve-training-dev.py` serves a prepared development bundle and durable local coordinator. `scripts/contribute-training-native.mjs` executes assigned jobs and uploads them to its selected coordinator. HTTP is limited to loopback; HTTPS requires an explicit backend plan, and a Dawn plan pins its loader and package lock. This is a separate native workflow, not a prerequisite for browser contribution. Native Dawn and browser WASM are not assumed numerically interchangeable. The [v8 guarded experiment](../reports/flight-development-v8/README.md) introduced the candidate-retention guard now used by the browser cohort.
+
+The completed [v6 held-out comparison](../reports/flight-development-v6/held-out-comparison/README.md) separates the optimizer's center from its best training candidate. The center regressed from 130 ms to 111 ms mean qualified flight. The candidate selected using training scores improved all three new seeds to 338/354/352 ms, but every trial still crashed. The [v7 comparison](../reports/flight-development-v7/held-out-comparison/README.md) starts from that exact candidate and uses smaller frequency, deployment and power search steps with the same neural/body environment and criteria version 3. Its final center again regressed, from 336 ms to 223 ms on three fresh seeds. The best training candidate averaged 369 ms, with mixed paired changes of −84/+164/+18 ms. Every held-out episode still crashed; neither run established sustained flight or landing.
+
+The completed [v8 guarded run](../reports/flight-development-v8/README.md) rejected both proposed updates after 28 real evaluations. It preserved all 27 saved coordinates. Six independent evaluations reproduced the retained checkpoint exactly across three new seeds, averaging 392 ms qualified flight with no sustained-flight or landing success. This demonstrates correct rejection and checkpoint retention, not new learning or stable flight. Search was then paused to investigate the steering signal and its physiological input path.
+
+Subsequent [native-step contact traces](../reports/flight-boundary-diagnostic/README.md) reproduce all three retained-checkpoint trajectories exactly. Their main flight bouts lose qualification before any later environmental contact. A [paired boundary-contact ablation](../reports/flight-boundary-ablation/README.md) prevents one seed's original wall-triggered spin and extends survival from734ms to1.530s, but leaves qualified flight unchanged at504ms and ends in a ground crash. This separates the collision failure from the earlier flight-control limitation; disabled boundary collisions are not a training fix.
+
+The opt-in [haltere input A/B/C check](../reports/flight-haltere-live/README.md) adds direct mechanical-current inputs at the existing0.5ms neural timestep. `stepSequence` batches them in one WebGPU submission; constant-input replay matches the prior physics digest and all wing motor events exactly. The mechanical prior changes the trajectory but does not improve the first seed's504ms qualified flight. The left hDVM pathway supplies zero haltere muscle power in that replay. Receptor orientations, current sensitivity and virtual motion remain explicit unmeasured priors; the canonical configuration does not enable this pathway. That diagnostic did not justify resuming training by itself.
+
+The native contributor attaches its latest actual preview frame to lease heartbeats about every five wall-clock seconds and flushes a final frame before submitting a result. This bounded geometry telemetry is separate from scores and checkpoint history; it starts no additional simulation. The monitor labels frames as recorded and may show the same pose until the next native frame arrives. Heartbeats serialize requests and drain before lease release; invalid preview geometry is omitted while ordinary lease renewal continues.
+
+## Maintained-flight task
+
+The browser cohort uses `maintained_flight`. It places the full articulated body at root pose `[0,0,3.5,1,0,0,0]`, runs 0.5 seconds of live BANC, event and muscle dynamics while holding only the root, then releases it for up to five scored seconds. Neural/native clocks and histories continue across release; no root correction is applied afterward. This stage awards no takeoff or landing credit. Earlier `takeoff`, `flight` and `landing` stages retain their grounded starts.
+
+Maintained-flight criteria version 2 measures vertical speed from the COM height change across a fresh, contact-free 50 ms window. The threshold remains −1 cm/s, with a 1e−9 cm/s numerical tolerance; the existing support, attitude, power and 20 ms angular-speed RMS gates remain active. Contact clears the flight bout and its support window. Success requires reaching the full five-second horizon with at least one continuous qualified second immediately beforehand; merely surviving five seconds does not pass.
+
+The browser experiment uses the explicit `spacious-maintained-flight-v1` scene: 50 cm radius, 50 cm ceiling and a floor capped beyond 6.5 cm, preserving central fruit and odor. Config and model metadata declare the same profile. It retains all articulated body joints and zero phenomenological claw adhesion, with normal collisions and friction. The optional structurally reduced body is not used.
+
+### Earlier amplitude experiments
+
+The earlier 27-parameter amplitude experiment opts into `wing_actuation.power_transfer = {schemaVersion:1, profile:"activation-amplitude-v1", activationGain:1.999999638880142}`. Its first learned multiplier becomes an amplitude after fixed activation normalization: `exp(theta[0]) * clamp(rawMuscleForce * activationGain)`, bounded at one. The remaining 26 parameter meanings stay unchanged. This historical interpreter is distinct from the current 672-coefficient decoder, whose normalized power bypasses that transfer.
+
+The [local run declaration](../reports/flight-maintained-amplitude-local-v2/declaration.json) records the run started on 2026-09-14 at `http://127.0.0.1:7862/`, using a pinned Dawn/Metal contributor and the standard coordinator. Its initial amplitude is 0.80, frequency multiplier 1, and other 25 coordinates come from the explicit migration vector. Search uses sigma 0.10 with amplitude/deployment/frequency scales 0.10/0.25/0.05 and steering scales 1. Two guarded generations allow at most 28 accepted evaluations: eight search jobs plus three matched candidate/incumbent pairs per generation. A rejected proposal preserves all 27 saved coordinates. At launch no learned update had been established; checkpoints remain unverified. See the [run recipe](../reports/flight-maintained-training-plan/README.md) for the fixed seeds, source archive and reserved final comparison.
+
+The separate amplitude-0.81 diagnostic survived five scored seconds without contacts and stayed within 23.39° of level. Under the v2 score it had a 2.668-second best qualified bout and 4.25 seconds total qualified flight, but ended descending at −1.746 cm/s and **did not succeed**. It is evidence of a useful mechanical operating region, not trained success or completion of the food-to-feeding flight sequence.
+
+Inspect that archived amplitude run without changing its frozen sources:
 
 ```sh
-uv run --offline python scripts/serve.py --port 7842
+.venv/bin/python scripts/report-flight-training.py reports/flight-maintained-amplitude-local-v2/coordinator.sqlite3 --last-generations 2 --output reports/flight-maintained-amplitude-local-v2/training-progress.json
+```
+
+## Run locally
+
+Use the matching extracted contributor archive. For the generated bundle already present in this checkout, run from the repository root:
+
+```sh
+cd dist/training-client/fruit-fly-training-client-1f3b0935af59
+python3 serve.py --port 7842
 ```
 
 Open `http://127.0.0.1:7842/train.html`. Port `7843` also works if `7842` is occupied; use the same port in the browser URL. This server binds to the local machine only.
 
 1. The page automatically checks the GCP coordinator at `https://flytrain.morisoba.moe`. Set **Intensity** and preview quality, then press **Start**. The first start loads and checks assets and calibrates the sensory interface. A failed connection never falls back to local unshared work.
-2. The neural model requests WebGPU and falls back to the same BANC model in WASM if initialization is unavailable. Native body dynamics use MuJoCo WASM. Runtime details remain in diagnostics rather than the public interface.
+2. This cohort explicitly runs the pinned BANC neural binary in WASM; body dynamics also use MuJoCo WASM. It does not fall back to or mix in Dawn/WebGPU evaluations. Runtime details stay in diagnostics.
 3. Use **Pause**, **Resume**, or **Stop** to control computation. Hiding the tab pauses training. Intensity describes scheduling duty cycle, not a measured percentage of your computer's total CPU/GPU capacity. Turning the preview off does not reduce neural or physical simulation fidelity.
 4. **Download checkpoint** fetches the latest saved candidate directly from GCP, including its parameter vector, generation and model/config identity. It works before training starts and never substitutes a local cached checkpoint.
 5. Local storage retains counters and unsent completed results for retry. Accepted results and shared checkpoints are saved on GCP. The coordinator assigns the task stage; the contributor cannot select an unshared task.
 
-The shared coordinator combines eight paired exploration episodes into each generation. Shared results do not automatically promote the curriculum; independent scientific validation is required. The internal research client retains separate local search/test APIs, but the contributor UI disables those paths. The current stages are posture (1 simulated second), approach (3), feeding (3), flight (2), landing (3), and the complete sequence (8). Episode duration is simulated time, so a run can take substantially longer in wall-clock time.
+The current coordinator assigns four search trials and, normally, six fresh candidate/incumbent comparison trials per generation. Each evaluates maintained flight after the explicit unscored warmup above. The horizon is five simulated seconds; a physical failure can end it earlier. This does not train takeoff, landing, feeding or the complete behavioral sequence. Episode duration is simulated time, so wall-clock execution can be much longer.
 
 ## Start an isolated development coordinator
 
@@ -30,8 +77,8 @@ In a second terminal, with the same finalized build:
 
 ```sh
 uv run --offline python scripts/training_coordinator.py \
-  --config web/training/config.json \
-  --database data/training/coordinator.sqlite3 \
+  --config reports/motor-decoder-v1/browser-wasm-001/config.json \
+  --database reports/motor-decoder-v1/isolated-wasm.sqlite3 \
   --port 7850
 ```
 
@@ -46,7 +93,7 @@ curl --fail http://127.0.0.1:7850/api/training/checkpoint
 
 This localhost coordinator command is for isolated development/API tests. The contributor UI has a fixed coordinator: its own origin when hosted on public HTTPS, or `https://flytrain.morisoba.moe` when served locally. It checks config/model identity automatically, and **Start** leases and executes work. A separate development pool needs an explicitly configured client build; the public UI provides no coordinator switch.
 
-Each shared generation contains four positive/negative pairs, or eight jobs. Both signs of a pair use the same episode seed. Multiple contributors receive distinct leased jobs, and each contributor has at most one active lease. The coordinator specifies the stage and duration; the page cannot override them. The default shared stage is posture, and shared reports never automatically promote the curriculum.
+The browser cohort's two positive/negative search pairs share a seed within each pair. Multiple contributors receive distinct leased jobs, and each contributor has at most one active lease. The coordinator fixes the `maintained_flight` stage, duration and exact parameter vector; the page cannot override them. After all four search results arrive, it assigns the three paired acceptance seeds.
 
 The UI distinguishes episodes completed on this computer from results accepted by the coordinator. Exact retries of an accepted result are idempotent. Expired, reassigned, incompatible, or altered results are rejected and are not counted as contributions. Completed but unsent results are retained locally for retry against their original coordinator. There is no unshared fallback when submission fails.
 
@@ -54,7 +101,7 @@ Leases last 30 minutes and renew every 60 seconds while a shared episode is runn
 
 ## Download checkpoints and full history
 
-The managed service stores progress in project `flyheaven`, Firestore `(default)` in `us-central1`, under `training_runs/banc888-v1-20260913`. Run metadata and the `generations`, `jobs` and `contributors` subcollections preserve candidates, assignments and accepted results across Cloud Run restarts, scale-to-zero and new revisions. The container filesystem is not the database. The [storage and migration guide](../deploy/cloudrun/README.md#preserve-or-initialize-training-history) describes importing earlier SQLite progress without resetting the experiment.
+The browser cohort's durable location is project `flyheaven`, Firestore `(default)` in `us-central1`, under `training_runs/banc888-motor-decoder-wasm-20260914`. Run metadata and `generations`, `jobs` and `contributors` preserve candidates, assignments and accepted results across Cloud Run restarts, scale-to-zero and new revisions; preview telemetry is separate. The native decoder's 17-result, generation-1 history remains in `training_runs/banc888-motor-decoder-v1-20260914`, and the earlier 14-parameter run remains in `training_runs/banc888-v1-20260913`. The container filesystem is not the database. See the [storage guide](../deploy/cloudrun/README.md#preserve-or-initialize-training-history).
 
 Use **Download checkpoint** or the direct JSON download:
 
@@ -62,7 +109,7 @@ Use **Download checkpoint** or the direct JSON download:
 curl --fail --output heaven-checkpoint.json https://flytrain.morisoba.moe/api/training/checkpoint
 ```
 
-The JSON contains the latest generation's 14 trainable parameters, generation, and frozen model/config fingerprints. It is not a copy of the entire BANC graph or native body assets. Downloads are uncached, and shared candidates remain unverified.
+The JSON contains the deployed build's trainable parameter vector, generation, and frozen model/config fingerprints. The live browser release contains 672 decoder coefficients; verify the config hash above before treating a download as this cohort's checkpoint. Older deployments have different contracts. The checkpoint is not a copy of the entire BANC graph or body assets. Downloads are uncached, and candidates remain unverified.
 
 For complete history, use the [private Firestore export procedure](../deploy/cloudrun/README.md#checkpoints-and-private-full-history-backups). It requires an operator-owned private Cloud Storage bucket and exports all nested records. The public endpoint exposes only the current parameter checkpoint. Full exports include contributor identifiers and lease tokens and remain private. Earlier VM/SQLite backup instructions are retained only in the [alternative VM guide](../deploy/gcp/README.md#verify-and-maintain).
 
@@ -72,7 +119,7 @@ Open `https://flytrain.morisoba.moe/train.html` and press **Start**. The page ru
 
 ### Ready-to-copy contributor archive
 
-The generated [contributor ZIP](../dist/training-client/fruit-fly-training-client-1bad7d5c80d5.zip) includes the prepared model and browser client, so recipients do not need to clone the repository, download BANC data, install Node, or compile WASM. Its [SHA256 sidecar](../dist/training-client/fruit-fly-training-client-1bad7d5c80d5.zip.sha256), [file manifest](../dist/training-client/fruit-fly-training-client-1bad7d5c80d5.manifest.json), and [packaging verification](../dist/training-client/fruit-fly-training-client-1bad7d5c80d5.verification.json) are beside it under `dist/training-client/`. These are local generated artifacts, not public download URLs; an operator can distribute the ZIP and checksum together.
+The generated [contributor ZIP](../dist/training-client/fruit-fly-training-client-1f3b0935af59.zip) includes the prepared model and browser client, so recipients do not need to clone the repository, download BANC data, install Node, or compile WASM. Its [SHA256 sidecar](../dist/training-client/fruit-fly-training-client-1f3b0935af59.zip.sha256), [file manifest](../dist/training-client/fruit-fly-training-client-1f3b0935af59.manifest.json), and [packaging verification](../dist/training-client/fruit-fly-training-client-1f3b0935af59.verification.json) are beside it under `dist/training-client/`. These are local generated artifacts, not public download URLs; an operator can distribute the ZIP and checksum together. Packaging verification does not establish that this release is live or that a browser trial passed.
 
 Extract the ZIP completely, open a terminal in its folder, and run:
 
@@ -82,17 +129,18 @@ python3 serve.py --port 7842
 # With uv installed: uv run --offline python serve.py --port 7842
 ```
 
-Python 3.9 or newer is sufficient; the server uses only the standard library. It verifies every bundled file before binding to localhost. Open `http://127.0.0.1:7842/train.html` and press **Start**. It automatically uses the GCP pool. Do not open the HTML through `file://`. This archive contains the shared training client and labels its navigation accordingly. The repository's original observation UI remains unchanged.
+Python 3.9 or newer is sufficient; the server uses only the standard library. It verifies every bundled file before binding to localhost. Open `http://127.0.0.1:7842/train.html` and press **Start**. It automatically uses the matching live GCP pool. Do not open the HTML through `file://`. The archive contains the training client; the repository's original observation UI remains unchanged.
 
 To build a new matching archive from an already prepared checkout:
 
 ```sh
-node scripts/package-training-client.mjs
+node scripts/package-training-client.mjs \
+  --experiment-bundle=reports/motor-decoder-v1/browser-wasm-001/bundle.json
 ```
 
-The builder needs Node, `uv`/Python for ZIP creation and verification, the prepared runtime/model files, and access to the pinned upstream MuJoCo license text. It copies a strict file allowlist: the canonical training manifest's assets, every prepared graph file referenced by the BANC manifest, the explicit training UI, required presentation assets, and source/license notices. It never copies whole data, dependency, or repository directories. Every model and graph hash must match; it also rejects sources changed during the build. Output names use the first 12 characters of the config hash. The current archive has 71 entries and is about 59 MB compressed, 247 MB of payload before compression. ZIP CRC/decompressed hashes and HTTP hashes/MIME types/isolation headers are verified without starting the neural model.
+The builder needs Node, `uv`/Python for ZIP creation and verification, prepared runtime/model files, and the pinned upstream MuJoCo license text. It copies an allowlist of experiment assets, graph buffers, training UI and source/license notices. Every model and graph hash must match; sources changed during packaging are rejected. Output names use the first 12 config-hash characters. This archive has 92 entries, about 59 MB compressed and 248 MB before compression. Archive and HTTP integrity checks run without starting the neural model.
 
-A separate [real bundle-worker smoke](../reports/training-bundle-smoke/result.json) loaded this archive's WebGPU BANC network and native MuJoCo body, advanced 200 ms with 419,301 neural spikes, and passed pause, cancellation and stop checks without errors. This verifies the packaged runtime paths and execution; it does not establish learned behavior or completion of a curriculum stage.
+An [earlier bundle-worker smoke](../reports/training-bundle-smoke/result.json) loaded a different archive's WebGPU BANC network and MuJoCo body, advanced 200 ms, and checked pause/cancellation/stop. That historical result does not verify the new browser WASM archive or establish learned behavior.
 
 The selected [Cloud Run deployment](../deploy/cloudrun/README.md) serves the page and coordinator on one Google-managed HTTPS origin, with durable Firestore state. It uses request-based billing, 1 vCPU, 512 MiB, concurrency 8, and zero to two instances. Contributor simulation still runs in the browser. The browser requires HTTPS for non-loopback coordinator URLs.
 
@@ -153,44 +201,129 @@ npm ci --prefix packages/flybody-runtime
 uv run --python .venv/bin/python python scripts/prepare-flybody-runtime.py
 uv run --python .venv/bin/python python scripts/prepare-banc-console.py
 
-node scripts/prepare-training-manifest.mjs
+node scripts/prepare-motor-decoder-experiment.mjs \
+  reports/motor-decoder-v1/NEW_BROWSER_RUN --backend=wasm
 ```
 
-The BANC downloader checks its source lock. The training loader checks the prepared graph buffers against the pinned BANC manifest, checks the sensory supplement's graph identities, and verifies the training asset hashes. Anatomy preparation is optional for separate anatomy views and is not needed for this training preview. Checked-in BANC `dist/core.js` and `dist/core.wasm` avoid needing a compiler for ordinary use. If changing native BANC runtime code, rebuild it with the repository's Emscripten setup before rebuilding the training manifest:
+Choose an unused output directory. `--backend=wasm` requires no Dawn loader, package lock or installation. It creates a new experiment; contributors should use the operator's already-matching archive instead of generating their own config to bypass an identity mismatch.
+
+The BANC downloader checks its source lock. The training loader checks graph buffers and source/model assets against their pinned manifests. Anatomy preparation is not needed for this preview. Checked-in BANC `dist/core.js` and `dist/core.wasm` avoid needing a compiler for ordinary use. If changing native BANC runtime code, rebuild it with the repository's Emscripten setup before preparing another experiment:
 
 ```sh
 source references/emsdk/emsdk_env.sh
 bash packages/banc-runtime/build.sh
-node scripts/prepare-training-manifest.mjs
+node scripts/prepare-motor-decoder-experiment.mjs \
+  reports/motor-decoder-v1/ANOTHER_BROWSER_RUN --backend=wasm
 ```
 
-[`prepare-training-manifest.mjs`](../scripts/prepare-training-manifest.mjs) pins the executable environment, source dependencies, native model, runtime binaries, and model manifests in [`web/training/config.json`](../web/training/config.json). `modelFingerprint` hashes the ordered URL/digest manifest; `configHash` hashes the exact config file bytes. The prepared BANC manifest in turn pins its graph buffers. A pending or inconsistent manifest cannot start the coordinator.
+The experiment builder pins executable sources, model overrides, runtime binaries and model manifests in its generated `config.json`. The older [`prepare-training-manifest.mjs`](../scripts/prepare-training-manifest.mjs) still prepares the separate canonical profile in `web/training/config.json`. In both cases, `modelFingerprint` hashes the ordered URL/digest manifest and `configHash` hashes the exact config bytes. The BANC manifest pins its graph buffers. A pending or inconsistent manifest cannot start the coordinator.
 
 Rebuild this manifest after changes to the training environment, neural/body implementation, shaders, runtime binaries, sensory assets, or physical model. Stop active runs before changing a served build, then distribute matching code/config/assets and use a new Firestore run namespace or development SQLite database. **Do not regenerate a contributor's config merely to bypass a mismatch with someone else's coordinator.** Install the operator's exact matching build instead. Even a whitespace change to the config changes its hash.
 
 ## What is being optimized
 
-Version 1 applies 14 bounded parameters in log space, with each multiplier equal to `exp(theta)` and initial `theta = 0`:
+The live browser cohort optimizes **672 bounded motor-decoder coefficients**, not neural weights:
+
+| Parameter family | Count | Inputs and output |
+| --- | ---: | --- |
+| Power weights | 24 | Individual DLM/DVM motor excitation to ipsilateral wing power |
+| Steering coefficients | 648 | 24 steering MNs × 3 axes × 3 lags (0/1/4 ms) × 3 phase bases (constant/sine/cosine) |
+
+The coefficients use individual event-derived excitation and wing phase. The decoder receives no root pose, target or reward. Neural physiology, synapses, sensory gains, muscle dynamics, the existing wingbeat generator and native mechanics stay fixed. These fitted coefficients remain engineering hypotheses; changing them is not proof of improved flight or identified biological physiology.
+
+### Earlier 27-parameter interpreter
+
+The historical interpreter applies **27 bounded parameters** in log space, with each multiplier equal to `exp(theta)`. Its canonical defaults use `theta = 0`; separately pinned development runs declare other initial vectors:
 
 | Parameter family | Count | Target |
 | --- | ---: | --- |
-| Synaptic gain | 2 | Excitatory and inhibitory chemical weights |
-| Neural leak scaling | 5 | Wing, leg, probing and grip motor classes; descending neurons |
-| Sensory gain | 3 | Taste, odor and body transduction |
-| Motor-to-muscle scale | 4 | Wing, leg, probing and grip muscles |
+| Power | 1 | Muscle force to wingbeat power |
+| Deployment time | 1 | Wing deployment time constant |
+| Frequency | 1 | Wingbeat frequency multiplier |
+| Steering mean angle | 12 | One gain per steering muscle type |
+| Steering stroke amplitude | 12 | One gain per steering muscle type |
 
-The connectome topology and native physical model remain fixed. These broad learned gains are hypotheses, not cell-specific measurements or calibrated biological physiology. Reward and task goals score episodes; they do not write limb trajectories or body forces. Stage-dependent placement and initial velocity are recorded initial conditions, not a flight controller.
+The twelve types are b1, b2, b3, i1, i2, iii1, iii3, iii4, iv1, iv2, iv3, and iv4. Left/right homologues share a learned coefficient, while their muscle forces stay separate. Fixed anatomical axis/sign bases remain modeling assumptions; these two coefficients per type cannot learn arbitrary phase or torque directions. There are no redundant trainable global steering gains.
 
-The optimizer uses four antithetic pairs, Gaussian perturbation scale `sigma = 0.25`, learning rate `0.035`, and maximum coordinate update `0.15`. For each coordinate, it adds
+BANC neuron physiology, chemical weights, gap junctions, sensory transduction, native muscle dynamics, other limb mappings, and the native physical model remain fixed. Body feedback still changes neural activity within an episode. These learned interpreter gains are hypotheses, not cell-specific measurements or calibrated biological physiology. Reward and task goals score episodes; they do not write limb trajectories or body forces. All three flight tasks start grounded; landing cannot receive an airborne reset that bypasses takeoff.
+
+The objective requires observed foot support before takeoff, a rise above the initial body height, and controlled powered flight. The full-cycle task then requires at least one continuous second of flight followed by a stable landing on loaded feet. Standing still cannot complete the task; a ballistic hop, repeated brief hops, or body/wing contact cannot substitute for sustained flight and a foot-supported landing. Terminal crashes remain penalized even after earlier flight milestones. These criteria are explicit engineering targets, not measured biological thresholds.
+
+Version 5 recognizes a foot-origin departure even if its first airborne sample has low upward velocity or the wings deploy later. A brief foot recontact starts a fresh flight bout; it cannot accumulate airtime across hops. Body/wing contact invalidates the previous support history. Confirmation still requires powered ascent, clearance, airborne acceleration consistent with lift, and continuous controlled flight. Angular control uses a 20 ms RMS magnitude at the existing 20 rad/s limit, while attitude and catastrophic rotation are checked every sample. This is a sampled recoil-tolerant criterion, not a measurement of all wingbeat harmonics. A frozen 195-step native regression receives 184 ms flight credit but still fails its later crash at 390 ms.
+
+For a separate reduced flight benchmark, `scripts/prepare-flight-development-bundle.mjs` writes immutable model overrides under `reports/`. It disables the uncalibrated phenomenological claw adhesion while preserving normal contacts and friction. The full/default physical model stays unchanged. Its power 1.5 and steering 0.05 starting values are operator-selected diagnostic controls, not learned values. This benchmark cannot validate gripping, climbing, or the omitted adhesion mechanism. Its distinct configuration hash, model fingerprint and environment version prevent pooling with the full model.
+
+An optional model metadata field, `motor_excitation.steering = {kind: "hill", halfActivationHz: 80, exponent: 1}`, replaces the `clamp(rateHz / 80)` recruitment rule only for the 24 wing-steering mappings. It preserves separate left/right signals; power muscles and every other muscle retain their original rule. Missing metadata preserves the old implementation byte-for-byte. The curve constants are explicit modeling priors, outside the 27 learned gains, and are not measured physiology.
+
+Another optional field, `wing_actuation.steering_force_reference`, declares all twelve per-type force references in `[0,1]`. The interpreter then uses `gain × (force − reference)` for both bias and amplitude. At that declared operating point it produces the calibrated wing table exactly, independently of gain; left/right deviations remain separate. Without the field, the original absolute-force arithmetic is preserved. The published steering derivative uses activity deviations, but its numerical activity baselines are not transferable WASM forces. A reference must be declared and tested for this model; it is not an extra learned parameter or a measured physiological baseline. The bundle builder's `--force-reference=...` accepts a pinned reference derived from the frozen native force calibration, separately from any optional Hill candidate.
+
+`scripts/calibrate-steering-recruitment.mjs` derives tied per-type gain corrections from a frozen, exactly reproduced native muscle trajectory. Passing its candidate JSON as the bundle builder's second argument creates a separately pinned opt-in model. The correction matches aggregate mean muscle force before the steering basis over 100–280 ms; individual sides, startup, temporal variation and live feedback can still differ. Both mappings require paired live evaluation before interpreting this as a flight improvement. The canonical model does not opt in automatically.
+
+The [paired live evaluation](../reports/steering-recruitment-live/README.md) did not justify adopting this curve: one selection seed matched the old flight metrics and the other lost takeoff and crashed earlier. The preceding [one-generation training run](../reports/flight-development-v5/README.md) changed 10 of 27 parameters but also worsened both selection episodes. Those runs are stopped; parameter movement and input desaturation alone are not evidence that this flight system learns.
+
+The [sensory observability audit](../reports/flight-sensory-observability/README.md) finds identical full encoder outputs for opposite angular velocities at a fixed native airborne state. Current rotation priors preserve organ/side identity but discard direction; later motion or contacts can still provide indirect differences. The separate [classical controller assay](../reports/flight-classical-control/README.md) maintains the reduced plant within 8.03 degrees of level for 1.5 seconds using bounded synthetic steering forces and direct diagnostic feedback. It establishes actuator control authority, not autonomous BANC flight, takeoff, landing, or realistic muscle dynamics.
+
+The [paired muscle-delay assay](../reports/flight-muscle-latency/README.md) reuses that exact controller and initial plant state. The direct-force trajectory reproduces the earlier result exactly. Adding the actual 28 native muscles, with prepared trim activation and explicit fatigue compensation, still passes the 1.5-second control: maximum tilt is 6.68 degrees. Adding the existing nominal 50 ms rate smoother before those muscles produces 112.62 degrees of tilt and fails. This isolates a concrete sensitivity to the current output filtering; it does not prove every controller with that delay must fail. These are synthetic controller inputs, not BANC flight.
+
+The [afferent robustness checks](../reports/flight-afferent-identification/robustness/AGGREGATE.md) retain some early motor spike-timing responses across two conditioned neural states, but do not establish a dependable three-axis feedback map. Endpoint spike counts can hide transient timing changes. The [primary physiology review](../reports/flight-sensory-observability/motor-timing-review.md) supports preserving individual spikes and distinguishing power from steering muscles; it does not supply a universal measured steering-force kernel. Optimizing the existing 27 gains cannot restore discarded timing, assign missing sensory directions, or calibrate the fixed neural physiology.
+
+The [proximal sensory correction](../reports/flight-proximal-sensory-repair/README.md) removes unsupported generic body-motion input from50 explicitly annotated proximal hair-plate sensors while preserving their graph membership. Its single-seed native regression increased qualifying flight from102ms to166ms and registered takeoff, but still failed from excessive rotation at480ms. This local result is not stable flight or a trained-policy improvement. The [frozen sensory-family assay](../reports/flight-sensory-families/run/RESULTS.md) also shows strong DLM recruitment from odor input alone and native body transducers alone; the fallback is not the unique cause of high motor firing.
+
+`createWingMotorEventReader` provides guarded event observation using cumulative counts and last-spike timestamps at the existing 0.5 ms neural / 2 ms body exchange. It accepts only spiking neurons with at least 2 ms refractory time, checks every interval and count, and emits no historical events when first initialized. It does not depend on the global recent-spike ring, convert rates into artificial spikes, or change muscle excitation. Event transport and a validated event-to-force model are separate requirements.
+
+The optional developer `onMotorEvents` evaluation hook records this signal before each body block. Its [live paired check](../reports/flight-motor-event-observer/README.md) recovered all 1,460 wing-MN events and matched the recorded physics digest exactly with observation disabled. Both runs still crashed at 388 ms. Raw counts in the 100–280 ms startup window showed individual DLM rates of 83.3–155.6 Hz and no b1 spikes, so neural calibration also remains unresolved. The evaluator's per-job `captureMotorEvents` and `capturePhysicsDigest` options are diagnostic recording only; the contributor interface and optimizer do not use them.
+
+Read-only native evaluation supports an explicitly planned `dawn-metal` backend through the isolated [diagnostic tooling](../reports/native-webgpu-tooling/README.md). Its plans pin the loader and package lock; fallback results are rejected. On the paired legacy cases it took 14.35 active wall seconds per simulated second versus 97.05 for WASM, excluding setup. Native Metal, Safari and WASM outcomes must be identified separately: the observed neural trajectories are not numerically interchangeable. No production dependency or contributor backend was changed by this diagnostic installation.
+
+`scripts/serve-training-dev.py --bundle reports/flight-development-v5/bundle.json --database reports/flight-development-v5/coordinator.sqlite3 --port 7849` serves this benchmark through the existing loopback coordinator and original training UI. `node scripts/contribute-training-native.mjs http://127.0.0.1:7849/ reports/flight-development-v5/contributor 8` evaluates eight assigned jobs with the actual WASM neural backend and native MuJoCo. Every result goes to that coordinator; this is a development contributor, not a separate optimizer or a Safari/WebGPU result. Creating `STOP` inside the contributor report directory cancels its current job without submitting an incomplete result. Parameter updates must still be checked with the reporter and then compared on held-out episodes.
+
+Flight support is inferred from the native whole-body center-of-mass velocity over a 50 ms contact-free window, excluding the ground's launch impulse. This includes moving wing and limb mass; thorax motion alone could mistake internal recoil for lift. Foot support uses upward world-space contact force on distinct tarsal feet, with separate body/wing collision counts. Success is checked at the complete episode horizon, so an early hop or landing followed by a crash cannot pass. Finite failed attempts retain bounded earned flight progress minus a severity penalty, giving the optimizer a signal even when no candidate completes the task.
+
+The earlier schema-1 optimizer uses four antithetic pairs, Gaussian perturbation scale `sigma = 0.25`, learning rate `0.035`, and maximum coordinate update `0.15`. For each coordinate, it adds
 
 ```text
 clamp(learningRate / (2 * pairCount * sigma)
-      * sum((return_plus - return_minus) * noise), -0.15, 0.15)
+      * sum((return_plus - return_minus)
+            * (assigned_plus - assigned_minus) / (2 * sigma)), -0.15, 0.15)
 ```
 
-to the baseline log parameter and clips to its configured bounds. Returns must be finite and within `[-10, 10]`. The server deterministically generates jobs and sends explicit parameter arrays and seeds; contributor-side random-number implementations do not choose shared perturbations. Shared aggregation updates the candidate only after all eight jobs are accepted, always with status `unverified`.
+to the baseline log parameter and clips to its configured bounds. Using the actual assigned separation accounts for clipping near parameter bounds and matches the browser implementation. Returns must be finite and within `[-10, 10]`. The server deterministically generates jobs and sends explicit parameter arrays and seeds; contributor-side random-number implementations do not choose shared perturbations. Shared aggregation updates the candidate only after all eight jobs are accepted, always with status `unverified`.
+
+Each parameter may declare `searchScale` in `(0, 1]`; omission is exactly equivalent to1. Assigned perturbations become `sigma * searchScale * noise`. The update still uses the actual assigned separation, so this also preconditions local updates by approximately `searchScale²`; the physical-coordinate update cap is unchanged. Search scales are configuration values, not additional learned parameters. Changing them changes the configuration hash and requires a new coordinator namespace. The local v7 run uses0.5 for power and deployment,0.15 for frequency, and1 for the24 steering coefficients. Existing configurations without scales retain their exact sampling and update behavior.
+
+### Current guarded checkpoint selection
+
+The **schema-2 acceptance guard** nominates the highest-scoring search vector, with lexical job-ID tie-breaking. The browser cohort uses two antithetic pairs, `sigma = 0.02`, power search scale `0.1` and steering search scale `0.05`. The coordinator compares the nominee and incumbent on three fresh matched training seeds. Only a strictly positive mean paired return replaces the incumbent; ties and regressions retain it. Bounds/scales apply to search, but the legacy gradient's `learningRate` and `maximumUpdate` do not constrain this sampled-candidate nomination.
+
+During comparison, `/checkpoint` returns the incumbent. Phase transitions, results, comparisons and the selected successor are stored atomically. A browser-cohort generation normally uses 10 evaluations: four search plus six comparisons. Earlier four-pair runs used 14. An exactly identical proposal skips comparison. Rejections still complete a generation and are distinct from stalled or incomplete work. These comparisons are training data, not held-out validation; checkpoints remain `unverified`.
+
+The browser cohort declares `optimizer.acceptance.nativeExecution = {backend:"wasm", moduleSha256:...}`, where the hash must equal the pinned `/banc-engine/dist/core.wasm` asset. Result provenance must identify `backend:"wasm"`, `neuralEngine:"wasm"` and the exact `wasmExecution` pin, without fabricated native WebGPU metadata. Termination/cancellation flags and the 0.5 ms neural / 2 ms body timing contract are checked; partial or infrastructure-failed evaluations are rejected. The earlier Dawn guard remains supported under its separate strict loader/package-lock pins and namespace. The two backends never share fitness.
 
 `vision: false` is deliberate in this version. The model receives odor, taste and body feedback; the low-resolution 3D preview is an observer view, not retinal input. Neural integration is fixed at `0.5 ms` and the neural/body exchange block at `2 ms`. Budget and preview controls do not change these values. This version does not establish visual food localization or fix the known rigid-wing/contact and unsigned sensory-feedback limitations.
+
+## Development flight checks
+
+Stop active contributors before changing the served model, then regenerate the manifest. Use a new database for this 27-parameter contract. The development server serves the original training UI and its local coordinator together:
+
+```sh
+node scripts/prepare-training-manifest.mjs
+.venv/bin/python -B scripts/serve-training-dev.py --port 7845 \
+  --database reports/training-flight-27/coordinator.sqlite3
+```
+
+Open `http://127.0.0.1:7845/train.html` in Safari. This explicitly marked development build evaluates coordinator-assigned jobs and preserves results in the specified SQLite file. The public client still has no coordinator switch or unshared training mode.
+
+Before starting optimization, check that every interpreter coefficient affects native actuation, then evaluate equal-wing mechanical controls and the complete neural/body baseline. A passing control-sensitivity test is not evidence of takeoff or stable flight. Diagnostic rig constraints and synthetic muscle drive must never be presented as autonomous neural behavior.
+
+During training, inspect completed generation updates and behavioral results independently:
+
+```sh
+.venv/bin/python -B scripts/report-flight-training.py \
+  reports/training-flight-27/coordinator.sqlite3 --last-generations 2 \
+  --output reports/training-flight-27/progress.json
+```
+
+The report includes every named parameter delta, the number changed, and update norms. It distinguishes unfinished generations, real changes, equal-score no-update, and other zero updates. A changed parameter vector or a less severe crash does not establish learning; compare takeoff, sustained airtime, and landing on fresh evaluation episodes.
 
 ## Validation and limits
 
@@ -207,4 +340,4 @@ uv run --offline python -W error::ResourceWarning \
 
 These tests use synthetic objectives to validate infrastructure and algebra. Passing them is not evidence that a trained fly completes any behavioral stage.
 
-The earlier VM deployment passed trusted public HTTPS, a real browser WebGPU contribution and native preview, checkpoint persistence after service restart, and private-path rejection; that [historical evidence](../reports/gcp-deployment/README.md) does not validate the managed deployment. The [Cloud Run guide](../deploy/cloudrun/README.md#verify-a-release) lists its separate release checks. Current UI checks are `node web/test/training-hosted-view.browser.mjs` and `node scripts/verify-training-ui-idle.mjs`; `node scripts/verify-gcp-training.mjs` runs one real contribution against a deployed pool. The earlier local UI/evaluation reports record the prior optional-sharing interface; the current contributor page exposes shared jobs only. Internal research APIs still support independent evaluation.
+The earlier VM deployment passed HTTPS, a browser WebGPU contribution and checkpoint persistence checks; that [historical evidence](../reports/gcp-deployment/README.md) does not validate the new WASM release. The [Cloud Run guide](../deploy/cloudrun/README.md#verify-a-release) separates transport checks from an actual browser WASM trial. The older `verify-gcp-training.mjs` asserts WebGPU and is not a WASM release verifier. UI-only checks also cannot substitute for an accepted real episode. The contributor page exposes coordinator-assigned jobs only; internal research APIs retain independent evaluation support.

@@ -1,4 +1,18 @@
+import {intrinsicLayout,validateIntrinsicState,DLM_MAX_TIME_MS} from './cell-models.js';
 import {validateModel,initialBuffers,validateStep,historySlots,SPIKE_CAPACITY,decodeSpikeHistory} from './model.js';
+
+const deviceHealth=new WeakMap();
+function healthFor(device){
+  let health=deviceHealth.get(device);
+  if(!health){
+    health={lost:null};deviceHealth.set(device,health);
+    // One subscription per device. Capturing each short-lived episode brain
+    // here would retain every disposed wrapper until the shared device dies.
+    device.lost.then(info=>{health.lost=new Error(`WebGPU device lost: ${info.message}. Restart to reset neural state.`);});
+    device.addEventListener('uncapturederror',event=>{health.lost=event.error;});
+  }
+  return health;
+}
 
 const readoutShader=`
 @group(0) @binding(0) var<storage,read> state:array<f32>;
@@ -32,17 +46,18 @@ export class WebGPUBrain {
     if(!gpu)throw new Error('WebGPU unavailable');
     const adapter=await gpu.requestAdapter({powerPreference:'high-performance'});
     if(!adapter)throw new Error('No WebGPU adapter');
-    const n=model.manifest.neuron_count;
-    const largest=Math.max(model.edges.byteLength,n*historySlots(model)*4,n*19*4,(n*17+27)*4,(n+2+SPIKE_CAPACITY*2)*4,8);
+    const n=model.manifest.neuron_count,layout=intrinsicLayout(model);
+    const largest=Math.max(model.edges.byteLength,n*historySlots(model)*4,layout.kineticsLength*4,layout.packedLength*4,(n+2+SPIKE_CAPACITY*2)*4,8);
     if(largest>adapter.limits.maxStorageBufferBindingSize||largest>adapter.limits.maxBufferSize)throw new Error(`GPU storage limit too small for BANC (${Math.ceil(largest/1048576)} MiB required)`);
-    const device=await adapter.requestDevice({requiredLimits:{maxStorageBufferBindingSize:largest,maxBufferSize:Math.max(largest,32768),maxStorageBuffersPerShaderStage:8}});
+    // Optional schedules must not exclude adapters that fit the original graph.
+    // Request available copy-buffer capacity; each sequence checks its own size.
+    const largestBuffer=Math.max(largest,32768,Math.min(adapter.limits.maxBufferSize,128*(256+n*4)));
+    const device=await adapter.requestDevice({requiredLimits:{maxStorageBufferBindingSize:largest,maxBufferSize:largestBuffer,maxStorageBuffersPerShaderStage:8}});
     const brain=new WebGPUBrain(device,model);brain.adapterInfo={vendor:adapter.info?.vendor,architecture:adapter.info?.architecture,device:adapter.info?.device,description:adapter.info?.description};
     try{await brain.init();return brain;}catch(e){brain.dispose();throw e;}
   }
-  constructor(device,model){this.device=device;this.model=model;this.n=model.manifest.neuron_count;this.tick=0;this.backend='webgpu';this.buffers=[];this.disposed=false;this.lost=null;this.busy=false;
-    device.lost.then(info=>{if(!this.disposed)this.lost=new Error(`WebGPU device lost: ${info.message}. Restart to reset neural state.`);});
-    device.addEventListener('uncapturederror',event=>{this.lost=event.error;});
-  }
+  constructor(device,model){this.device=device;this.model=model;this.n=model.manifest.neuron_count;this.tick=0;this.intrinsic=intrinsicLayout(model);this.eventContract=this.intrinsic.eventContract;this.intrinsicDeclaration=JSON.stringify(model.manifest.intrinsic_models);this.backend='webgpu';this.buffers=[];this.disposed=false;this.health=healthFor(device);this.busy=false;}
+  get lost(){return this.health.lost;}
   buffer(array,usage=GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST|GPUBufferUsage.COPY_SRC){
     const b=this.device.createBuffer({size:Math.max(4,array.byteLength),usage,mappedAtCreation:true});
     new Uint8Array(b.getMappedRange()).set(new Uint8Array(array.buffer,array.byteOffset,array.byteLength));b.unmap();this.buffers.push(b);return b;
@@ -50,7 +65,7 @@ export class WebGPUBrain {
   async init(){
     const d=this.device,{packed,state,history,kinetics}=initialBuffers(this.model);
     if(!this.shared){
-    const response=await fetch(new URL('./neural.wgsl',import.meta.url));if(!response.ok)throw new Error('Missing neural WGSL');
+    const response=await fetch(new URL(this.intrinsic.count?'./neural-dlm.wgsl':'./neural.wgsl',import.meta.url));if(!response.ok)throw new Error('Missing neural WGSL');
     const module=d.createShaderModule({code:await response.text()});
     const info=await module.getCompilationInfo();const errors=info.messages.filter(m=>m.type==='error');
     if(errors.length)throw new Error(errors.map(e=>e.message).join('\n'));
@@ -63,6 +78,10 @@ export class WebGPUBrain {
     this.shared={references:1,buffers:this.buffers.splice(0),offsets:this.offsets,edges:this.edges,params:this.params,pipeline:this.pipeline,readPipeline:this.readPipeline};
     }else for(const key of ['offsets','edges','params','pipeline','readPipeline'])this[key]=this.shared[key];
     this.states=[this.buffer(state),this.buffer(state)];this.history=this.buffer(history);this.kinetics=this.buffer(kinetics);
+    if(this.intrinsic.count){
+      this.intrinsicState=kinetics.slice(this.n*19);
+      this.intrinsicStaging=this.buffer(this.intrinsicState,GPUBufferUsage.MAP_READ|GPUBufferUsage.COPY_DST);
+    }
     this.inputs=this.buffer(new Uint32Array(this.n+2+SPIKE_CAPACITY*2));
     this.traceStaging=this.buffer(new Float32Array(128*8),GPUBufferUsage.MAP_READ|GPUBufferUsage.COPY_DST);
     this.config=this.buffer(new Uint32Array(128*64),GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST);
@@ -73,11 +92,12 @@ export class WebGPUBrain {
         .concat({binding:7,resource:{buffer:this.config,offset:k*256,size:32}},{binding:8,resource:{buffer:this.inputs}})})));
     this.allocatedBytes=this.buffers.reduce((sum,b)=>sum+b.size,0);
   }
-  live(){if(this.disposed)throw new Error('Brain disposed');if(this.lost)throw this.lost;}
+  live(){if(this.disposed)throw new Error('Brain disposed');if(this.lost)throw this.lost;if(this.failed)throw this.failed;if((this.intrinsic.count||this.model.manifest.intrinsic_models!==undefined)&&(this.model.manifest.dt_ms!==.5||JSON.stringify(this.model.manifest.intrinsic_models)!==this.intrinsicDeclaration))throw new Error('Intrinsic model declaration changed after construction');}
   get timeMs(){return this.tick*this.model.manifest.dt_ms;}
   async step(steps,input,internal={hunger:0,insulin:0,akh:0},gaps=true,{traceIndex=null}={}){
     this.live();if(this.busy)throw new Error('Concurrent GPU operation');validateStep(steps,input,this.n,internal);
     if(traceIndex!==null&&(!Number.isInteger(traceIndex)||traceIndex<0||traceIndex>=this.n))throw new Error('Invalid trace index');
+    if(this.intrinsic.count&&(this.tick+steps)*.5>=DLM_MAX_TIME_MS)throw new Error('DLM event timestamp precision exhausted');
     this.busy=true;
     try{
       const d=this.device,uniform=new ArrayBuffer(steps*256),u=new Uint32Array(uniform),f=new Float32Array(uniform);
@@ -93,13 +113,71 @@ export class WebGPUBrain {
           if(k+1<steps){pass=encoder.beginComputePass();pass.setPipeline(this.pipeline);}
         }
       }
-      if(traceIndex===null)pass.end();d.queue.submit([encoder.finish()]);
+      if(traceIndex===null)pass.end();
+      if(this.intrinsic.count)encoder.copyBufferToBuffer(this.kinetics,this.n*19*4,this.intrinsicStaging,0,this.intrinsic.count*16);
+      d.queue.submit([encoder.finish()]);
+      if(this.intrinsic.count){
+        await this.intrinsicStaging.mapAsync(GPUMapMode.READ);
+        this.intrinsicState=new Float32Array(this.intrinsicStaging.getMappedRange()).slice();
+        try{validateIntrinsicState(this.intrinsic,this.intrinsicState);}catch(error){this.failed=error;throw error;}
+      }
       let trace;
       if(traceIndex!==null){await this.traceStaging.mapAsync(GPUMapMode.READ,0,steps*32);trace=new Float32Array(this.traceStaging.getMappedRange(0,steps*32)).slice();}
       else await d.queue.onSubmittedWorkDone();
       this.live();this.tick+=steps;return trace;
-    }finally{if(this.traceStaging.mapState==='mapped')this.traceStaging.unmap();this.busy=false;}
+    }finally{if(this.traceStaging.mapState==='mapped')this.traceStaging.unmap();if(this.intrinsicStaging?.mapState==='mapped')this.intrinsicStaging.unmap();this.busy=false;}
   }
+  async stepSequence(inputs,internal={hunger:0,insulin:0,akh:0},gaps=true){
+    this.live();if(this.busy)throw new Error('Concurrent GPU operation');
+    if(!Array.isArray(inputs))throw new Error('inputs must be an array of current vectors');
+    const steps=inputs.length;
+    // Reject a bad later vector without uploading or advancing any state.
+    validateStep(steps,inputs[0],this.n,internal);
+    for(let k=1;k<steps;k++)validateStep(steps,inputs[k],this.n,internal);
+    if(this.intrinsic.count&&(this.tick+steps)*.5>=DLM_MAX_TIME_MS)throw new Error('DLM event timestamp precision exhausted');
+    let capacity=this.sequenceCapacity??0;
+    if(capacity<steps){capacity=1;while(capacity<steps)capacity*=2;}
+    const scheduleBytes=capacity*(256+this.n*4);
+    if(scheduleBytes>this.device.limits.maxBufferSize)throw new Error(`GPU buffer limit too small for ${steps}-tick input sequence (${scheduleBytes} bytes for capacity ${capacity})`);
+    this.busy=true;
+    try{
+      const d=this.device;
+      if((this.sequenceCapacity??0)<steps){
+        const values=new Float32Array(capacity*(64+this.n));
+        const buffer=d.createBuffer({size:values.byteLength,usage:GPUBufferUsage.COPY_SRC|GPUBufferUsage.COPY_DST});
+        const previous=this.sequenceBuffer;
+        if(previous){previous.destroy();this.buffers.splice(this.buffers.indexOf(previous),1);}
+        this.buffers.push(buffer);this.allocatedBytes+=buffer.size-(previous?.size??0);
+        this.sequenceBuffer=buffer;this.sequenceValues=values;this.sequenceCapacity=capacity;
+      }
+      const values=this.sequenceValues,u=new Uint32Array(values.buffer),slots=historySlots(this.model),currentWord=this.sequenceCapacity*64;
+      for(let k=0;k<steps;k++){
+        u.set([this.n,this.tick+k,slots,+gaps],k*64);
+        values.set([this.model.manifest.dt_ms,internal.hunger,internal.insulin,internal.akh],k*64+4);
+        values.set(inputs[k],currentWord+k*this.n);
+      }
+      // A single upload carries aligned uniforms and all per-tick currents.
+      d.queue.writeBuffer(this.sequenceBuffer,0,values,0,currentWord+steps*this.n);
+      const encoder=d.createCommandEncoder();
+      encoder.copyBufferToBuffer(this.sequenceBuffer,0,this.config,0,steps*256);
+      for(let k=0;k<steps;k++){
+        // inputs also holds spike history after n words. Never copy that tail.
+        encoder.copyBufferToBuffer(this.sequenceBuffer,(currentWord+k*this.n)*4,this.inputs,0,this.n*4);
+        const pass=encoder.beginComputePass();pass.setPipeline(this.pipeline);
+        pass.setBindGroup(0,this.bindings[k][(this.tick+k)%2]);pass.dispatchWorkgroups(Math.ceil(this.n/128));pass.end();
+      }
+      if(this.intrinsic.count)encoder.copyBufferToBuffer(this.kinetics,this.n*19*4,this.intrinsicStaging,0,this.intrinsic.count*16);
+      d.queue.submit([encoder.finish()]);
+      if(this.intrinsic.count){
+        // This final map also waits for every preceding dispatch and copy.
+        await this.intrinsicStaging.mapAsync(GPUMapMode.READ);
+        this.intrinsicState=new Float32Array(this.intrinsicStaging.getMappedRange()).slice();
+        try{validateIntrinsicState(this.intrinsic,this.intrinsicState);}catch(error){this.failed=error;throw error;}
+      }else await d.queue.onSubmittedWorkDone();
+      this.live();this.tick+=steps;
+    }finally{if(this.intrinsicStaging?.mapState==='mapped')this.intrinsicStaging.unmap();this.busy=false;}
+  }
+  readIntrinsicState(){this.live();if(this.busy)throw new Error('Concurrent GPU operation');return this.intrinsicState?.slice()??new Float32Array();}
   async readState(indices=Uint32Array.from({length:this.n},(_,i)=>i),{includeSpikeTime=false}={}){
     this.live();if(this.busy)throw new Error('Concurrent GPU operation');
     if(!(indices instanceof Uint32Array)||!indices.length||indices.some(i=>i>=this.n))throw new Error('Invalid readout indices');
@@ -133,5 +211,5 @@ export class WebGPUBrain {
       return result;
     }finally{if(staging?.mapState==='mapped')staging.unmap();this.busy=false;}
   }
-  dispose(){if(!this.disposed){this.disposed=true;this.buffers.forEach(b=>b.destroy());for(const cache of this.readCaches||[])for(const key of ['index','output','staging'])cache[key].destroy();if(!this.shared||--this.shared.references===0){this.shared?.buffers.forEach(b=>b.destroy());this.device.destroy();}}}
+  dispose(){if(!this.disposed){this.disposed=true;this.buffers.forEach(b=>b.destroy());this.sequenceValues=null;for(const cache of this.readCaches||[])for(const key of ['index','output','staging'])cache[key].destroy();if(!this.shared||--this.shared.references===0){this.shared?.buffers.forEach(b=>b.destroy());this.device.destroy();}}}
 }

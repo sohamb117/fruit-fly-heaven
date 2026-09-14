@@ -41,12 +41,12 @@ def content_type(name):
                 extension, mimetypes.guess_type(name)[0] or "application/octet-stream")
 
 
-def build(bundle, output):
+def build(bundle, output, config_path=None):
     bundle = Path(bundle).resolve(strict=True)
     output = Path(output).resolve()
     if output.exists():
         raise ValueError("Output already exists; choose a fresh build directory")
-    canonical = REPO / "web/training/config.json"
+    canonical = Path(config_path).resolve(strict=True) if config_path else REPO / "web/training/config.json"
     config = json.loads(canonical.read_bytes())
     source_manifest = json.loads((bundle / "bundle-manifest.json").read_text())
     config_hash = digest(canonical)
@@ -93,6 +93,8 @@ def build(bundle, output):
         for url, expected in config["assets"].items():
             if records.get(url, {}).get("sha256") != expected:
                 raise ValueError("Missing model asset: " + url)
+        if records.get("/training/config.json", {}).get("sha256") != config_hash:
+            raise ValueError("Browser and coordinator configurations differ")
         manifest = {"schemaVersion": 1, "configHash": config_hash,
                     "modelFingerprint": config["modelFingerprint"], "files": records}
         (stage / "public-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
@@ -118,5 +120,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--config", type=Path, help="Exact deployed configuration; defaults to the canonical browser profile")
     args = parser.parse_args()
-    print(json.dumps(build(args.bundle, args.output), indent=2))
+    print(json.dumps(build(args.bundle, args.output, args.config), indent=2))

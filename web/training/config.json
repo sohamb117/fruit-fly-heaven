@@ -1,47 +1,67 @@
 {
   "schemaVersion": 1,
-  "environmentVersion": "banc-flybody-flight-interface-v2",
-  "modelFingerprint": "8bfd755893d540ed11e249c36ad7ae73d6a955c78bc57a3899ad18cc8c2bee13",
+  "environmentVersion": "banc-flybody-flight-interpreter27-v6",
+  "modelFingerprint": "3d69a7b84ebb7917652f330f67bdf749b61c596fe3df5c2fd35d5550475412cf",
   "assets": {
     "/banc-data/console/groups.json": "8e3932032920f2f5821f247fbf17ee2f7ce0b400b143105147095128d1e3e3b8",
-    "/banc-data/console/sensory-inputs.json": "fc685a45a56a7e68d2fb9c7b6a30b02c7c538d2a9242f27856d6224aaf2a3387",
+    "/banc-data/console/sensory-inputs.json": "e3e84354b1bf0117e78cb583fb2535007a3c62718fe23dc9d527fe9374318aa4",
     "/banc-data/io.json": "1b19cd8c91ff64d1fe2af8f3fdd09d98792ecfca229e1c102ecb08a96da1ce72",
     "/banc-data/manifest.json": "f567256d88eceecafaf7faa6917967ab5554fe7dbab4446c4fa4016a432cd6b7",
-    "/banc-engine/dist/core.js": "0e79704b469d012ca2c2728479107ecaaa4ff491fb3bcfcec7f9eb71debc93c9",
-    "/banc-engine/dist/core.wasm": "bcbc77058e9f310a8faba078d16fdff2fdb3bea9d1836d80f80cda2598451d6a",
-    "/banc-engine/src/index.js": "679cccc05578c0b6b6fcc79090cc4223ebe33d5fceb5897a4c5536da193641c8",
-    "/banc-engine/src/model.js": "dad31d83216b36b1ede9df65eb9098092cf6dd9f6f2a33309fa8879c268df9ef",
+    "/banc-engine/dist/core.js": "e1c4aa63f0c3460ca1af9fc89f12dedfb691b8a43d707f1348fdcca3cd0ed685",
+    "/banc-engine/dist/core.wasm": "9a1fec8f6e798f7ff3b28b8788f868dd59c376afbac5d040c1baba36986a4616",
+    "/banc-engine/src/cell-models.js": "ac4432ce03e9968ffdbddbce2d7d57cd9a58205b52e94b46cdb91ecba5c929ed",
+    "/banc-engine/src/index.js": "3642efd0c92cd4fac237de9aa66dee457a7565bbd479750f5356706e7e65be15",
+    "/banc-engine/src/model.js": "753b6e505f5ad7378d99a5e588336aefb186020e1d884ab835d9054fed640a59",
+    "/banc-engine/src/motor-events.js": "0df3636646451cd951f0834ac7e3ea98991f2776910331d6d597eb5d753b21c2",
+    "/banc-engine/src/neural-dlm.wgsl": "f9a67ff00bcf69b32291594061db1c975b6ed5e72e89f2f7b328efcbaf12c3d1",
     "/banc-engine/src/neural.wgsl": "84a75736d2435f94a396b10ce292f9a825f47ab83d54bb67249a0865873cd520",
-    "/banc-engine/src/wasm.js": "e2e332df6fa900e1d66de9fb4eca43e678ae3fbb41a791d0d37047cf2f8312d0",
-    "/banc-engine/src/webgpu.js": "e076a35780bfba9a0edf5afda548bd25ca6d8877589c7107155f84042715e431",
+    "/banc-engine/src/wasm.js": "362c2d919df81ec8df14e259b51ecb601bd732b21c8439e945673e6db43858ba",
+    "/banc-engine/src/webgpu.js": "4fcfe8e4d73a37d9ad30d6817c99eca1ef5e3b6970e080de3fe32327828f76a3",
     "/banc-ground-sense.js": "dc78d621534d1f6babc7b6995fbe55e4e203f5efc09a89b499f09d289cdcc1d3",
+    "/banc-haltere.js": "54b4edd55a803ede1957ffae1ffb9b9397774c60acb0732b6846fe65b787c37e",
     "/banc-proboscis.js": "97e20dac51c05f6791a5a56e5cb4c5ffeb2b758bbdcb40ba69dbb50a303e83f0",
     "/banc-sensory-current.js": "24bb83d02f7680cd79ab60f7d9b48ab3da5a0946bac9dbfa0b42c8eaa03d0c51",
     "/banc-taste.js": "c792a196b4ca0682b1aad8c2623d3141bf65047867e1e48947cad5793fafeaed",
+    "/banc-tegula.js": "510d21180106ec9554332bee7a73581fb4118734641944bdefc528eefe01cc8c",
     "/banc/embodiment.js": "e8dad58ae67f95ed32d2efd443367dd8a54d328faaf3e5a78ae606fc13472f71",
     "/body-engine/mujoco.js": "cb6752b9eab4f4cf9eac57911b58fea48cb808f323a563674f051935794fccdb",
     "/body-engine/mujoco.wasm": "41dce8820addd75f9d4f6cbb11ff136ecdbaaa29541db4c323ce2d9e4c8a7661",
     "/body-model/banc-taste-peg-annotations.json": "2c6b173502ef8e05d584ab9fddfdcca7fe88f9f572aad2ef69e001bf42469c48",
     "/body-model/flybody-mujoco.json": "c1348adf19decee75abbbb1d2be8a5ef6ac8cfe4fe4850083a502b62877c4a48",
     "/body-model/flybody-mujoco.xml": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
-    "/body-world.js": "6493bc72bbb6fa939a7ad5e785b01928d1e0df2c62cdfddf2cc6a712c8fc440c",
+    "/body-world.js": "d4c2f4403d360c588cc8f8eea0f7e77d58b7ac5c1890153d18ee7d35d8011b88",
     "/color-vision.js": "487545a8b6446993752d0c099a89371a4592230b781f89462ee5e89b0afa322d",
+    "/flight-scene-profile.js": "f4a5718337d7e07e8f255a188a2c2f09c927dcf2e7e68079762fbdcfb069810b",
     "/flybody-contact-environment.js": "52c1acfd16613cd45eaa7a5f5f0f75d00dd62f7214c145a7f2f7771a2d26f8e8",
-    "/flybody-habitat-collision.js": "d2d850e1c93871bd10213782e53884ba53e0002f51597abe3f8d9ad67f7b4944",
+    "/flybody-habitat-collision.js": "66fad6d0f7bee690041ce9558f42c052e516ac4e4601cd4c05550fbe0e9211d7",
     "/flybody-leg-actuation.js": "0bdad8d1366e485e91987be4e5439c6c744740654b0534f8083bd2a231e8833e",
+    "/flybody-motor-excitation.js": "08a86498507273b818b6ee61b4170cdb9a415390b2b669ee4fa32b7b933f1051",
     "/flybody-mouth-pose.js": "0d45e769033fb49239e8f91dd6467569e5fe8d31a2dcab8f9c5ad96928107696",
-    "/flybody-physics.js": "3378d510367581f899702a95fd862d918828043afa70014d7503c22b5cd9e855",
+    "/flybody-physics.js": "0bab69bfcf4571a867a956c6afbb338fcac1a13ce9c9b4e9c71cb54a0f100457",
     "/flybody-stance.js": "1e1734753645f2070874afcf3eb72325ff6c9ee3473f1487cbd10dd0ebff1abd",
+    "/flybody-wing-event-excitation.js": "b1c1ec0719e0f0284e382cb1b6bf7b463c4d0d9363b797d9a1ed815a57cadea8",
+    "/flybody-wing-load.js": "dc3b0d0a4d2be760e012e6f4bda63694b9f9b60f6f70674354fe9173a558ed9b",
     "/flybody-wing-pose.js": "2eadef6980b88683aeee6450eed68e2cda697a847d004121b742ebc59ffebc73",
-    "/flybody-wings.js": "45f765d15b6e9d920072a58b5449da4debc53ef5e6d4596bc71b21ae7e1a01d7",
-    "/flybody-world.js": "e8894bdbee7448c6b69ff5b7cb44f10ea8c0f8fb7b9a1467e23b1e398f6547d3",
+    "/flybody-wings.js": "2403d9923456bb71ac6c1498ea55b64b01d876adea43d6343a889719b933cf57",
+    "/flybody-world.js": "3725e993af982e33100d0554f6aacc634215bcb476ab93175cfdb86bf75f30ea",
     "/habitat.json": "adbb5d59f97091dad6d946f9b392cf0fbde4387777ecfa98b81aa75bd2a636be",
-    "/sensory-encoder.js": "7024729f40c3f398adcd68990e276c14041ddd612f8cbc67a41bdef890a00dcb",
-    "/training/environment.js": "f86e1b192976092f6cd17e23035917ebadfaa02a54fd2d0dfa950c714682985e",
-    "/training/episode.js": "a7261459eba3f0fd59e59e3b4bbefcd62a2dfba9daceaa4d2a08701925a390d0",
+    "/motor-decoder.js": "eafbf251c2b32bd8fe1f46f4f0b1ba2450e45e7a812116472887618ae89c45a4",
+    "/sensory-encoder.js": "8fa0cb18f6b9ec9c3c7ec6870e3e6203363c07094cb1b68e61d48dc13f251375",
+    "/training/airborne-reset-contract.js": "0a8f2131f5933b2af6dfa13f87dd8d46d577c0d74c080a446df6215869305600",
+    "/training/airborne-reset.js": "4f2014411b3faf213fc236e6d719d333c1d59d8a8225727475dc24e4c417eb26",
+    "/training/brain-resources.js": "90d6a3a7ca3377fe2d3a18f0f6f0eb41996c60ceca45e5e72bb2a534bbc626e8",
+    "/training/config-schema.js": "236f968d32938621f2ec2446e98e8b1f0ca1a53ae46e5d853552c01becc01b6d",
+    "/training/environment.js": "b52bc2b34ee22ae504e138a50674d7db11f448dafd44759eaa4fed654b2eeb0f",
+    "/training/episode.js": "4603456a741d2761412ef91de228740d44c0a66fb5f55a15897b5f637aab55a4",
+    "/training/flight-objective.js": "ef12a8352464eaa4d10dc4527663e8101a8567858ae4af60746c510dd029690c",
+    "/training/flight-observation.js": "a6b6ffd086950ec46a57764427be46a249cc732860590210265f54616d92b52f",
+    "/training/flight-parameters.js": "6392fcab849eef6f2fdfc20d5eab0cd246b63705caedb114d7a09caebc1f385d",
+    "/training/flight-telemetry.js": "6ba0613840fda4259a7f9b620f6ac3526b076271c354cccee4c7aaf109c6393b",
+    "/training/maintained-flight-objective.js": "ff666aef8a80a333c43451c726cad84d3f879153bf54484b76a03f42358c83cd",
     "/training/worker.js": "d207d2c7c3b7d197d74c6e980b7afd3aea6e18fdf2abedb307e30b9bb028725f",
     "/vendor/three.core.js": "3718df126d69c125362a03340913204470d8c50238605150e57f808840fb7759",
-    "/vendor/three.module.js": "bbf5ed13fe4373f5bd38b14ea8e62e9f157327da5638edc6d3863e08b167c9c7"
+    "/vendor/three.module.js": "bbf5ed13fe4373f5bd38b14ea8e62e9f157327da5638edc6d3863e08b167c9c7",
+    "/virtual-haltere.js": "f88e0e23b850ebaec1b7ee350934e87815b9fef354036efade30322dea7dc3ac"
   },
   "algorithm": "antithetic-evolution-strategies",
   "controller": "BANC v888 brain → VNC → motor neurons → native muscle dynamics → learned thin flight interpreter → calibrated FlyBody wingbeat manifold",
@@ -49,76 +69,6 @@
   "dtMs": 0.5,
   "bodyBlockMs": 2,
   "parameters": [
-    {
-      "name": "synapse_exc_log_gain",
-      "label": "Excitatory synapses",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "synapse_inh_log_gain",
-      "label": "Inhibitory synapses",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "motor_wing_log_leak",
-      "label": "Wing motor excitability",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "motor_leg_log_leak",
-      "label": "Leg motor excitability",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "motor_probe_log_leak",
-      "label": "Probing motor excitability",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "motor_grip_log_leak",
-      "label": "Claw motor excitability",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "descending_log_leak",
-      "label": "Descending neuron excitability",
-      "min": -0.693147,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "sensory_taste_log_gain",
-      "label": "Taste transduction",
-      "min": -1.386294,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "sensory_odor_log_gain",
-      "label": "Odor transduction",
-      "min": -1.386294,
-      "max": 0.693147,
-      "initial": 0
-    },
-    {
-      "name": "sensory_body_log_gain",
-      "label": "Body transduction",
-      "min": -1.386294,
-      "max": 0.693147,
-      "initial": 0
-    },
     {
       "name": "flight_power_log_gain",
       "label": "BANC async-wing power → FlyBody power",
@@ -141,38 +91,171 @@
       "initial": 0
     },
     {
-      "name": "flight_steering_bias_log_gain",
-      "label": "Steering mean-angle gain",
+      "name": "flight_b1_muscle_bias_log_gain",
+      "label": "b1 mean-angle gain",
       "min": -2.995732,
       "max": 0.693147,
       "initial": 0
     },
     {
-      "name": "flight_steering_amplitude_log_gain",
-      "label": "Steering stroke-amplitude gain",
+      "name": "flight_b1_muscle_amplitude_log_gain",
+      "label": "b1 stroke-amplitude gain",
       "min": -2.995732,
       "max": 0.693147,
       "initial": 0
     },
     {
-      "name": "muscle_leg_log_gain",
-      "label": "Leg motor to muscle scale",
-      "min": -1.386294,
-      "max": 1.386294,
+      "name": "flight_b2_muscle_bias_log_gain",
+      "label": "b2 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
       "initial": 0
     },
     {
-      "name": "muscle_probe_log_gain",
-      "label": "Probing motor to muscle scale",
-      "min": -1.386294,
-      "max": 1.386294,
+      "name": "flight_b2_muscle_amplitude_log_gain",
+      "label": "b2 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
       "initial": 0
     },
     {
-      "name": "muscle_grip_log_gain",
-      "label": "Claw motor to muscle scale",
-      "min": -1.386294,
-      "max": 1.386294,
+      "name": "flight_b3_muscle_bias_log_gain",
+      "label": "b3 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_b3_muscle_amplitude_log_gain",
+      "label": "b3 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_i1_muscle_bias_log_gain",
+      "label": "i1 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_i1_muscle_amplitude_log_gain",
+      "label": "i1 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_i2_muscle_bias_log_gain",
+      "label": "i2 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_i2_muscle_amplitude_log_gain",
+      "label": "i2 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iii1_muscle_bias_log_gain",
+      "label": "iii1 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iii1_muscle_amplitude_log_gain",
+      "label": "iii1 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iii3_muscle_bias_log_gain",
+      "label": "iii3 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iii3_muscle_amplitude_log_gain",
+      "label": "iii3 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iii4_muscle_bias_log_gain",
+      "label": "iii4 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iii4_muscle_amplitude_log_gain",
+      "label": "iii4 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv1_muscle_bias_log_gain",
+      "label": "iv1 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv1_muscle_amplitude_log_gain",
+      "label": "iv1 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv2_muscle_bias_log_gain",
+      "label": "iv2 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv2_muscle_amplitude_log_gain",
+      "label": "iv2 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv3_muscle_bias_log_gain",
+      "label": "iv3 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv3_muscle_amplitude_log_gain",
+      "label": "iv3 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv4_muscle_bias_log_gain",
+      "label": "iv4 mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_iv4_muscle_amplitude_log_gain",
+      "label": "iv4 stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
       "initial": 0
     }
   ],
@@ -188,44 +271,26 @@
     "max": 10,
     "direction": "maximize"
   },
-  "stage": "posture",
-  "durationSeconds": 1,
+  "stage": "landing",
+  "durationSeconds": 8,
   "stages": [
     {
-      "id": "posture",
-      "label": "Stand & recover",
-      "durationSeconds": 1,
-      "description": "Stay upright and supported after a small seeded disturbance."
-    },
-    {
-      "id": "approach",
-      "label": "Find & approach food",
+      "id": "takeoff",
+      "label": "Take off",
       "durationSeconds": 3,
-      "description": "Reduce distance to food from an off-food starting pose using odor and body feedback."
-    },
-    {
-      "id": "feeding",
-      "label": "Probe & feed",
-      "durationSeconds": 3,
-      "description": "Coordinate actual mouth contact, extension and pumping to transfer food."
+      "description": "Leave measured foot support and establish controlled powered flight."
     },
     {
       "id": "flight",
-      "label": "Take off & stabilize",
-      "durationSeconds": 2,
-      "description": "Leave support and sustain controlled upright powered flight."
+      "label": "Stay airborne",
+      "durationSeconds": 5,
+      "description": "Take off and maintain at least one continuous second of controlled powered flight."
     },
     {
       "id": "landing",
-      "label": "Approach & land",
-      "durationSeconds": 3,
-      "description": "Establish stable food contact after a controlled airborne approach."
-    },
-    {
-      "id": "sequence",
-      "label": "Complete the cycle",
+      "label": "Take off, fly & land",
       "durationSeconds": 8,
-      "description": "Localize food, approach, land, probe and feed, then take off and fly in the required order."
+      "description": "Take off from the ground, sustain controlled powered flight, and settle upright on loaded feet."
     }
   ],
   "validation": {
@@ -247,9 +312,11 @@
   },
   "notes": [
     "Parameters are learned control hypotheses, not measured biological physiology.",
-    "Version 2 uses odor, taste and body feedback. The observer preview is not retinal input.",
-    "The five flight parameters tune only the BANC→FlyBody transfer; calibrated wingbeat tables, native aerodynamics and connectome topology stay fixed.",
-    "No target pose, reward or task stage enters the motor decoder.",
-    "Shared contributor returns are unverified; checkpoints require independent local evaluation before promotion."
+    "The default eight-second episode requires grounded takeoff, sustained powered flight, and stable foot-supported landing. Posture alone earns no positive reward.",
+    "Odor, taste and body feedback remain active. The observer preview is not retinal input.",
+    "The 27-parameter search fits power, deployment time, frequency, and separate mean-angle/amplitude gains for 12 steering muscle types. Bilateral homologues share gains but receive separate muscle forces. BANC physiology, synapses, sensory transduction, muscle dynamics, other limb mappings, native aerodynamics and wingbeat tables stay fixed.",
+    "Reward and task stage never enter the motor decoder. Flight thresholds are declared modeling criteria.",
+    "Contributor returns are unverified; a changed objective requires a new coordinator run and independent evaluation.",
+    "Objective criteria v3: physical failures retain measured takeoff, controlled airtime and landing progress with one constant penalty. Terminal crash severity does not rank equal-progress trials. Qualification, full horizons and invalid/external-force rejection stay fixed."
   ]
 }

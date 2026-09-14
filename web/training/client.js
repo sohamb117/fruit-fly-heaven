@@ -4,6 +4,16 @@ const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');
 const detailEvent=(type,detail)=>new CustomEvent(type,{detail});
 const abortError=()=>new DOMException('Training stopped','AbortError');
+const codedError=(message,code)=>Object.assign(new Error(message),{code});
+export const browserTrainingAvailable=config=>!!config&&(config.schemaVersion!==2||config.optimizer?.acceptance?.nativeExecution?.backend==='wasm');
+
+// The explicit development server marks its own HTML. Ordinary downloaded
+// clients keep using the hosted pool; this never enables an unshared mode.
+export function trainingCoordinatorURL(location,developmentSameOrigin=false){
+  const loopback=location.hostname==='localhost'||location.hostname.endsWith('.localhost')||location.hostname==='[::1]'||/^127(?:\.\d{1,3}){3}$/.test(location.hostname);
+  const hosted=location.protocol==='https:'&&!loopback;
+  return hosted||(loopback&&developmentSameOrigin===true)?location.origin:'https://flytrain.morisoba.moe';
+}
 
 /** Local and shared training orchestration. Loading this class starts no compute. */
 export class TrainingClient extends EventTarget {
@@ -12,7 +22,7 @@ export class TrainingClient extends EventTarget {
     const requiredCoordinatorUrl=sharedOnly?this.coordinatorUrl(coordinatorUrl):null;
     Object.defineProperties(this,{sharedOnly:{value:!!sharedOnly},requiredCoordinatorUrl:{value:requiredCoordinatorUrl}});
     this.pending=new Map();this.nextId=0;this.runToken=0;this.running=false;this.paused=false;this.worker=null;this.round=null;this.options={dutyCycle:.6,previewHz:6,mode:sharedOnly?'shared':'local',...(sharedOnly?{coordinatorUrl:requiredCoordinatorUrl}:{})};
-    this.state={phase:'idle',message:'Ready',backend:null,stage:'posture',episode:0,generation:0,completedEpisodes:0,contributedEpisodes:0,simSeconds:0,wallSeconds:0,
+    this.state={phase:'idle',message:'Ready',backend:null,stage:null,episode:0,generation:0,completedEpisodes:0,contributedEpisodes:0,simSeconds:0,wallSeconds:0,
       bestReturn:null,lastReturn:null,history:[],parameters:[],checkpointStatus:'unverified',coordinator:{connected:false},curriculum:[],error:null};
     this.contributorId=crypto.randomUUID();
     this.visibility=()=>{if(globalThis.document?.hidden&&this.running&&!this.paused)this.pause('Paused');};
@@ -22,9 +32,9 @@ export class TrainingClient extends EventTarget {
   async initialize() {
     this.emit({phase:'loading',message:'Loading'});
     try {
-      const response=await this.fetcher(new URL('./config.json',import.meta.url));if(!response.ok)throw new Error('Training settings are unavailable');
+      const response=await this.fetcher(new URL('./config.json',import.meta.url),{cache:'no-store'});if(!response.ok)throw new Error('Training settings are unavailable');
       const bytes=await response.arrayBuffer();this.config=validateConfig(JSON.parse(new TextDecoder().decode(bytes)));this.configHash=await hash(bytes);
-      this.key=`heaven-training-v1:${this.configHash}`;this.parameters=this.config.parameters.map(p=>p.initial);this.completedStages=new Set();this.savedValidation=null;
+      this.key=`heaven-training-v1:${this.configHash}`;this.parameters=this.config.parameters.map(p=>p.initial);this.state.stage=this.config.stage;this.completedStages=new Set();this.savedValidation=null;
       try {
         const raw=this.storage?.getItem(this.key);if(raw){const saved=JSON.parse(raw),c=readCheckpoint(saved.checkpoint,this.config,this.configHash);this.parameters=c.parameters;
           this.state.stage=c.stage;this.state.generation=c.generation;this.state.completedEpisodes=Number.isSafeInteger(saved.completedEpisodes)?saved.completedEpisodes:0;
@@ -37,13 +47,15 @@ export class TrainingClient extends EventTarget {
         }
       } catch {this.emit({message:'Loading'});}
       this.emit({phase:'ready',message:'Ready',modelFingerprint:this.config.modelFingerprint,configHash:this.configHash,parameters:this.parameters.slice(),
-        curriculum:this.config.stages.map(s=>({...s,status:'available'})),config:this.config,checkpointStatus:'unverified'});
+        curriculum:this.config.stages.map(s=>({...s,status:'available'})),config:this.config,checkpointStatus:'unverified',browserTrainingAvailable:browserTrainingAvailable(this.config)});
       return this;
     }catch(error){this.fail(error);throw error;}
   }
   async ensureWorker() {
+    if(this.config&&!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     if(this.workerReady)return this.workerReady;
     if(!this.config)await this.initialize();
+    if(!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     if(this.sharedOnly&&(!this.state.coordinator.connected||this.state.coordinator.url!==this.requiredCoordinatorUrl))throw new Error('The shared coordinator must be connected before training can start');
     const worker=this.worker=this.workerFactory();
     worker.addEventListener('message',event=>{
@@ -70,6 +82,7 @@ export class TrainingClient extends EventTarget {
       if(this.worker!==worker)throw abortError();
       const info=message.info||message;
       if(info.configHash!==this.configHash||info.modelFingerprint!==this.config.modelFingerprint)throw new Error('Worker and page loaded different training builds; reload the page');
+      this.validateExecution(info);
       this.emit({backend:info.backend,modelFingerprint:info.modelFingerprint,message:'Ready'});
       if(message.frame)this.dispatchEvent(detailEvent('frame',message.frame));return info;
     }).catch(error=>{worker.terminate();if(this.worker===worker){this.worker=null;this.workerReady=null;}throw error;});
@@ -97,7 +110,9 @@ export class TrainingClient extends EventTarget {
       options={...options,mode:'shared',coordinatorUrl:this.requiredCoordinatorUrl};
     }
     if(!this.config)await this.initialize();
+    if(!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     const previousMode=this.options.mode,nextMode=options.mode||previousMode;
+    if(this.config.schemaVersion===2&&nextMode!=='shared')throw new Error('This run requires assigned training jobs');
     if(previousMode!=='shared'&&nextMode==='shared')this.localView=this.localViewSnapshot();
     if(previousMode==='shared'&&nextMode==='local'&&this.localView){this.emit(this.localView);this.localView=null;}
     this.options={...this.options,...options};this.setBudget(this.options);
@@ -148,10 +163,24 @@ export class TrainingClient extends EventTarget {
       seed:job.seed,stage:job.stage,dtMs:this.config.dtMs,bodyBlockMs:this.config.bodyBlockMs,bodyBackend:'mujoco-wasm'};
     for(const [name,value] of Object.entries(expected))if(result[name]!==value||result.provenance?.[name]!==value)throw new Error(`Episode provenance mismatch: ${name}`);
     if(!['webgpu','wasm'].includes(result.backend)||result.provenance.backend!==result.backend||result.backend!==this.state.backend)throw new Error('Episode neural backend mismatch');
+    this.validateExecution(result.provenance);
     validateParameters(result.parameters,this.config);
     if(result.parameters.some((v,i)=>v!==job.parameters[i]))throw new Error('Episode parameters differ from assigned job');
-    for(const name of ['generation','pairId','sign'])if(job[name]!==undefined&&result.provenance[name]!==job[name])throw new Error(`Episode job mismatch: ${name}`);
+    for(const name of ['generation','pairId','sign','parametersHash'])if(job[name]!==undefined&&result.provenance[name]!==job[name])throw new Error(`Episode job mismatch: ${name}`);
     if(Math.abs(result.simSeconds-result.steps*this.config.bodyBlockMs/1000)>1e-8||result.simSeconds>job.durationSeconds+1e-8)throw new Error('Episode time does not match its physics steps');
+    if(this.config.schemaVersion===2){
+      const physicalFailure=result.terminated===true&&result.success===false&&['outside_habitat','excessive_rotation','overturned'].includes(result.reason);
+      const fullOutcome=(result.reason==='stage_success'&&result.success===true&&result.terminated===true)||(result.reason==='time_limit'&&result.success===false&&result.terminated===false);
+      if(result.steps<=0||result.simSeconds<=0||typeof result.terminated!=='boolean'||result.cancelled!==false||
+        !(physicalFailure||(Math.abs(result.simSeconds-job.durationSeconds)<=1e-8&&fullOutcome)))throw new Error('This run requires a complete trial or physical failure');
+    }
+  }
+  validateExecution(value){
+    if(this.config.schemaVersion!==2)return;
+    const expected=this.config.optimizer.acceptance.nativeExecution,actual=value?.wasmExecution;
+    if(expected.backend!=='wasm'||value?.backend!=='wasm'||value?.neuralEngine!=='wasm'||Object.hasOwn(value,'nativeWebGPU')||
+      !actual||Object.keys(actual).length!==2||actual.backend!=='wasm'||actual.moduleSha256!==expected.moduleSha256)
+      throw new Error('Training execution does not match this run');
   }
   async validateCandidate(parameters,stage,{independent=false,token=this.runToken}={}) {
     const definition=this.config.stages.find(s=>s.id===stage),results=[];
@@ -162,6 +191,7 @@ export class TrainingClient extends EventTarget {
   }
   async runLocal(token) {
     if(this.sharedOnly)throw new Error('This training page always contributes to shared training');
+    if(this.config.schemaVersion===2)throw new Error('This run requires assigned training jobs');
     while(this.running&&token===this.runToken){
       await this.runnable(token);const stage=this.state.stage;
       if(!this.savedValidation){this.savedValidation=await this.validateCandidate(this.parameters,stage,{token});this.emit({bestReturn:this.savedValidation.meanReturn,validation:this.savedValidation});}
@@ -179,7 +209,7 @@ export class TrainingClient extends EventTarget {
       this.persist();
       if(accepted.passed){const next=this.config.stages[this.config.stages.findIndex(s=>s.id===stage)+1];
         if(next){this.emit({stage:next.id,message:`Validation goals passed; advancing to ${next.label}`,checkpointStatus:'unverified',bestReturn:null,validation:null});this.savedValidation=null;this.testValidation=null;}
-        else {this.running=false;this.emit({phase:'ready',message:'The complete-cycle stage passed local validation. Evaluate independent test seeds before export.'});}
+        else {this.running=false;this.emit({phase:'ready',message:`${this.config.stages.find(s=>s.id===stage).label} passed local validation. Evaluate independent test seeds before export.`});}
       }
     }
   }
@@ -202,28 +232,61 @@ export class TrainingClient extends EventTarget {
     const url=this.coordinatorUrl(value||this.requiredCoordinatorUrl);
     if(this.sharedOnly&&url!==this.requiredCoordinatorUrl)throw new Error('This training page uses its fixed shared coordinator');
     const token=this.runToken,request=this.connectionRequest=(this.connectionRequest||0)+1;
+    const statusRequest=this.statusRequest=(this.statusRequest||0)+1;
     if(!this.config)await this.initialize();let status;
     try{status=await this.api('/status',null,url);}
-    catch(error){if(token===this.runToken&&request===this.connectionRequest&&!this.running)this.emit({coordinator:{connected:false,url}});throw error;}
+    catch(error){if(token===this.runToken&&request===this.connectionRequest&&statusRequest===this.statusRequest&&!this.running)this.emit({coordinator:{...this.state.coordinator,connected:false,url},syncError:{message:error.message,code:error.code}});throw error;}
     if(token!==this.runToken||request!==this.connectionRequest||this.running)throw abortError();
-    if(status.modelFingerprint!==this.config.modelFingerprint||status.configHash!==this.configHash)throw new Error('Coordinator uses a different build. Install the matching training site and model assets.');
-    if(status.checkpoint)this.sharedCheckpoint=readCheckpoint(status.checkpoint,this.config,this.configHash);
-    if(this.sharedOnly&&!status.checkpoint)throw new Error('The shared coordinator did not provide its current checkpoint');
-    if(this.sharedOnly)this.parameters=this.sharedCheckpoint.parameters.slice();
-    this.emit({coordinator:{...status,connected:true,url},...(this.sharedOnly?{parameters:this.parameters.slice(),stage:this.sharedCheckpoint.stage,generation:this.sharedCheckpoint.generation,checkpointStatus:'shared-unverified'}:{}),message:'Ready'});return status;
+    if(statusRequest!==this.statusRequest)throw abortError();
+    try{this.applyCoordinatorStatus(status,url,{message:'Ready'});}
+    catch(error){this.emit({coordinator:{...this.state.coordinator,connected:false,url},syncError:{message:error.message,code:error.code}});throw error;}
+    return status;
   }
-  async disconnectCoordinator() {if(this.sharedOnly)throw new Error('Sharing is always enabled; use Pause or Stop to control compute');this.connectionRequest=(this.connectionRequest||0)+1;if(this.running&&this.options.mode==='shared')await this.stop();this.emit({coordinator:{connected:false},message:'Coordinator disconnected'});}
+  applyCoordinatorStatus(status,url,extra={}) {
+    if(status.modelFingerprint!==this.config.modelFingerprint||status.configHash!==this.configHash)
+      throw codedError('Coordinator uses a different build. Install the matching training site and model assets.','build_mismatch');
+    let current;
+    try{if(status.checkpoint)current=readCheckpoint(status.checkpoint,this.config,this.configHash);}
+    catch(error){throw codedError(error.message,'build_mismatch');}
+    if(this.sharedOnly&&!current)throw codedError('The shared coordinator did not provide its current checkpoint','build_mismatch');
+    const previous=this.state.coordinator;
+    // Responses can finish out of order while a trainer advances the run.
+    if(previous.url===url&&((Number.isFinite(previous.generation)&&status.generation<previous.generation)||
+      (Number.isFinite(previous.acceptedResults)&&status.acceptedResults<previous.acceptedResults)))return false;
+    if(current)this.sharedCheckpoint=current;
+    if(this.sharedOnly&&current)this.parameters=current.parameters.slice();
+    this.emit({coordinator:{...status,connected:true,url},syncError:null,
+      ...(this.sharedOnly&&current?{parameters:current.parameters.slice(),stage:current.stage,generation:current.generation,checkpointStatus:'shared-unverified'}:{}),...extra});
+    return true;
+  }
+  async refreshCoordinatorStatus() {
+    if(!this.config)await this.initialize();
+    if(this.starting)throw abortError();
+    const url=this.requiredCoordinatorUrl||this.state.coordinator.url;
+    const token=this.runToken,request=this.statusRequest=(this.statusRequest||0)+1;
+    try{
+      const status=await this.api('/status?compact=1',null,url);
+      if(token!==this.runToken||request!==this.statusRequest)throw abortError();
+      this.applyCoordinatorStatus(status,url);return status;
+    }catch(error){
+      if(error.name!=='AbortError'&&token===this.runToken&&request===this.statusRequest)
+        this.emit({coordinator:{...this.state.coordinator,connected:false,url},syncError:{message:error.message,code:error.code}});
+      throw error;
+    }
+  }
+  async disconnectCoordinator() {if(this.sharedOnly)throw new Error('Sharing is always enabled; use Pause or Stop to control compute');this.connectionRequest=(this.connectionRequest||0)+1;this.statusRequest=(this.statusRequest||0)+1;if(this.running&&this.options.mode==='shared')await this.stop();this.emit({coordinator:{connected:false},message:'Coordinator disconnected'});}
   async downloadSharedCheckpoint() {
     if(!this.config)await this.initialize();
     const url=this.requiredCoordinatorUrl||this.state.coordinator.url;
     const value=await this.api('/checkpoint',null,url);
-    readCheckpoint(value,this.config,this.configHash);
+    try{readCheckpoint(value,this.config,this.configHash);}catch(error){throw codedError(error.message,'build_mismatch');}
     return structuredClone(value);
   }
   leaseIdentity(job) {return {jobId:job.jobId,leaseToken:job.leaseToken,contributorId:this.contributorId,modelFingerprint:this.config.modelFingerprint,configHash:this.configHash};}
   hasPendingResult(job) {return !!this.outbox&&this.outbox.jobId===job.jobId&&this.outbox.leaseToken===job.leaseToken&&this.outboxUrl===job.coordinatorUrl;}
   async releaseLease(job) {try{await this.api('/release',this.leaseIdentity(job),job.coordinatorUrl);}catch{/* The server also expires disconnected leases. */}}
   async runShared(token) {
+    if(!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     const url=this.state.coordinator.url;
     if(this.outbox&&this.outboxUrl===this.state.coordinator.url){
       try{const accepted=await this.api('/result',this.outbox,url);await this.runnable(token);if(accepted.accepted!==true)throw new Error('Coordinator did not accept the saved result');this.outbox=null;this.state.contributedEpisodes++;this.persist();this.emit({message:'Uploaded'});}
@@ -242,7 +305,10 @@ export class TrainingClient extends EventTarget {
       const heartbeat=this.heartbeat=setInterval(()=>{if(this.running&&!this.paused)this.api('/heartbeat',this.leaseIdentity(job),url).catch(error=>this.emit({message:`Lease renewal: ${error.message}`}));},60000);
       try{
         const result=await this.evaluate(job,'contribution',token);
-        const payload={...this.leaseIdentity(job),objective:result.return,metrics:{success:result.success,simSeconds:result.simSeconds,steps:result.steps,reason:result.reason},
+        const evidence={};
+        for(const key of ['hasTakenOff','takeoffTime','flightSeconds','bestFlightSeconds','landingSeconds','landingTime','diagnostics','initialCondition','finalObservation','wallSeconds','setupWallSeconds','executionWallSeconds'])
+          if(result.metrics?.[key]!==undefined)evidence[key]=result.metrics[key];
+        const payload={...this.leaseIdentity(job),objective:result.return,metrics:{...evidence,success:result.success,terminated:result.terminated,cancelled:result.cancelled,simSeconds:result.simSeconds,steps:result.steps,reason:result.reason},
           provenance:{...result.provenance,parameters:result.parameters}};
         // Keep an unsent complete result locally; it is never silently counted as
         // contributed. Repeated accepted submissions are idempotent at the server.
@@ -251,10 +317,12 @@ export class TrainingClient extends EventTarget {
           await this.runnable(token);try{accepted=await this.api('/result',payload,url);await this.runnable(token);if(accepted.accepted!==true)throw new Error('Coordinator did not accept this result');break;}catch(error){if(attempt===2||(error.status&&error.status<500)||error.name==='AbortError')throw error;this.emit({message:'Retrying upload'});await delay(1000*(attempt+1));}
         }
         this.outbox=null;this.state.contributedEpisodes++;this.activeLease=null;
-        const status=await this.api('/status',null,url);
+        const statusRequest=this.statusRequest=(this.statusRequest||0)+1,status=await this.api('/status',null,url);
         await this.runnable(token);
-        this.emit({coordinator:{...status,url,connected:true},generation:status.generation,checkpointStatus:'shared-unverified',message:'Uploaded'});
-        if(status.checkpoint){this.sharedCheckpoint=readCheckpoint(status.checkpoint,this.config,this.configHash);if(this.sharedOnly)this.parameters=this.sharedCheckpoint.parameters.slice();this.emit({parameters:this.sharedCheckpoint.parameters});}
+        if(statusRequest===this.statusRequest){
+          this.applyCoordinatorStatus(status,url,{generation:status.generation,checkpointStatus:'shared-unverified',message:'Uploaded'});
+          if(this.sharedCheckpoint)this.emit({parameters:this.sharedCheckpoint.parameters.slice()});
+        }
         this.persist();
       }finally{clearInterval(heartbeat);if(this.heartbeat===heartbeat)this.heartbeat=null;}
     }

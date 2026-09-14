@@ -22,7 +22,7 @@ try{
   const configResponse=await request('/training/config.json');assert.equal(configResponse.status,200);
   const raw=Buffer.from(await configResponse.arrayBuffer()),config=JSON.parse(raw);
   const digest=value=>createHash('sha256').update(value).digest('hex');
-  report.configHash=digest(raw);assert.equal(report.configHash,digest(await readFile('web/training/config.json')));
+  report.configHash=digest(raw);assert.equal(report.configHash,digest(await readFile(process.env.TRAINING_CONFIG||'web/training/config.json')));
   const statusResponse=await request('/api/training/status');assert.equal(statusResponse.status,200);
   const status=await statusResponse.json();
   assert.equal(status.configHash,report.configHash);assert.equal(status.modelFingerprint,config.modelFingerprint);

@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "environmentVersion": "banc-flybody-interface-v2",
+  "modelFingerprint": "4db4297e05933cf811fc47c8a90ccd1ff2eccb241e74bb0c0aa9c634928fb981",
+  "assets": {
+    "/banc-data/console/groups.json": "8e3932032920f2f5821f247fbf17ee2f7ce0b400b143105147095128d1e3e3b8",
+    "/banc-data/console/sensory-inputs.json": "fc685a45a56a7e68d2fb9c7b6a30b02c7c538d2a9242f27856d6224aaf2a3387",
+    "/banc-data/io.json": "1b19cd8c91ff64d1fe2af8f3fdd09d98792ecfca229e1c102ecb08a96da1ce72",
+    "/banc-data/manifest.json": "f567256d88eceecafaf7faa6917967ab5554fe7dbab4446c4fa4016a432cd6b7",
+    "/banc-engine/dist/core.js": "f651de3c46ad71d4bae5dbf77800ddbe1dfe24fabe362d9343abeaf498fb4f98",
+    "/banc-engine/dist/core.wasm": "72759e482d1477dade6d66b4163ab4ac986510e8714f6384935bd0e2e9e81fe9",
+    "/banc-engine/src/calibrated-muscles.js": "20464481b7b3504df444c493d774138b1dce7ebc177a44051154e368f494f60d",
+    "/banc-engine/src/index.js": "679cccc05578c0b6b6fcc79090cc4223ebe33d5fceb5897a4c5536da193641c8",
+    "/banc-engine/src/model.js": "dad31d83216b36b1ede9df65eb9098092cf6dd9f6f2a33309fa8879c268df9ef",
+    "/banc-engine/src/neural.wgsl": "84a75736d2435f94a396b10ce292f9a825f47ab83d54bb67249a0865873cd520",
+    "/banc-engine/src/wasm.js": "e2e332df6fa900e1d66de9fb4eca43e678ae3fbb41a791d0d37047cf2f8312d0",
+    "/banc-engine/src/webgpu.js": "e076a35780bfba9a0edf5afda548bd25ca6d8877589c7107155f84042715e431",
+    "/banc-ground-sense.js": "dc78d621534d1f6babc7b6995fbe55e4e203f5efc09a89b499f09d289cdcc1d3",
+    "/banc-proboscis.js": "97e20dac51c05f6791a5a56e5cb4c5ffeb2b758bbdcb40ba69dbb50a303e83f0",
+    "/banc-sensory-current.js": "24bb83d02f7680cd79ab60f7d9b48ab3da5a0946bac9dbfa0b42c8eaa03d0c51",
+    "/banc-taste.js": "c792a196b4ca0682b1aad8c2623d3141bf65047867e1e48947cad5793fafeaed",
+    "/banc/embodiment.js": "e8dad58ae67f95ed32d2efd443367dd8a54d328faaf3e5a78ae606fc13472f71",
+    "/body-engine/mujoco.js": "cb6752b9eab4f4cf9eac57911b58fea48cb808f323a563674f051935794fccdb",
+    "/body-engine/mujoco.wasm": "41dce8820addd75f9d4f6cbb11ff136ecdbaaa29541db4c323ce2d9e4c8a7661",
+    "/body-model/banc-taste-peg-annotations.json": "2c6b173502ef8e05d584ab9fddfdcca7fe88f9f572aad2ef69e001bf42469c48",
+    "/body-model/flybody-mujoco.json": "c1348adf19decee75abbbb1d2be8a5ef6ac8cfe4fe4850083a502b62877c4a48",
+    "/body-model/flybody-mujoco.xml": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
+    "/body-world.js": "6493bc72bbb6fa939a7ad5e785b01928d1e0df2c62cdfddf2cc6a712c8fc440c",
+    "/color-vision.js": "487545a8b6446993752d0c099a89371a4592230b781f89462ee5e89b0afa322d",
+    "/flybody-contact-environment.js": "52c1acfd16613cd45eaa7a5f5f0f75d00dd62f7214c145a7f2f7771a2d26f8e8",
+    "/flybody-habitat-collision.js": "d2d850e1c93871bd10213782e53884ba53e0002f51597abe3f8d9ad67f7b4944",
+    "/flybody-leg-actuation.js": "0bdad8d1366e485e91987be4e5439c6c744740654b0534f8083bd2a231e8833e",
+    "/flybody-mouth-pose.js": "0d45e769033fb49239e8f91dd6467569e5fe8d31a2dcab8f9c5ad96928107696",
+    "/flybody-physics.js": "97aae4e46c4a6638eaa0926df6ee90e7afe62a19065262a5501a1f31aaf0df8d",
+    "/flybody-stance.js": "1e1734753645f2070874afcf3eb72325ff6c9ee3473f1487cbd10dd0ebff1abd",
+    "/flybody-wing-pose.js": "2eadef6980b88683aeee6450eed68e2cda697a847d004121b742ebc59ffebc73",
+    "/flybody-wings.js": "d39681da97e2ff0a87b541c2e6efac293d40babbbeac372c94b928ff4b5cc9bf",
+    "/flybody-world.js": "e8894bdbee7448c6b69ff5b7cb44f10ea8c0f8fb7b9a1467e23b1e398f6547d3",
+    "/habitat.json": "adbb5d59f97091dad6d946f9b392cf0fbde4387777ecfa98b81aa75bd2a636be",
+    "/motor-interface.js": "5769b7f437d56bc23858d197128c5539135e6a67fc04804d95b05fbb19f2f03a",
+    "/sensory-encoder.js": "7024729f40c3f398adcd68990e276c14041ddd612f8cbc67a41bdef890a00dcb",
+    "/training/behavior-criteria-v2.js": "5ee2770b223ebdae3792bd592c337652c72e53a2a5fe73e3e9713475ef3e4647",
+    "/training/contact-observation.js": "24d4187a300a238b543787a624d7399a2362d01175a1dd2faec93e6e7bfc1313",
+    "/training/environment.js": "042c74328523380903571158cb16c4e46a7b334df2d976a9fc3c617159cdd677",
+    "/training/episode.js": "ee69ddca80712c52a33ee670e95adcc1170af5e2ad379a937c9135f11ba9609c",
+    "/training/interface-parameters.js": "08519e141d53844d5037f3ddeacb144791a9b366fca65539e6c1534a6ab15518",
+    "/training/worker.js": "d207d2c7c3b7d197d74c6e980b7afd3aea6e18fdf2abedb307e30b9bb028725f",
+    "/vendor/three.core.js": "3718df126d69c125362a03340913204470d8c50238605150e57f808840fb7759",
+    "/vendor/three.module.js": "bbf5ed13fe4373f5bd38b14ea8e62e9f157327da5638edc6d3863e08b167c9c7"
+  },
+  "algorithm": "antithetic-evolution-strategies",
+  "controller": "BANC v888 brain → VNC → motor neurons → muscles → native FlyBody",
+  "vision": false,
+  "dtMs": 0.5,
+  "bodyBlockMs": 2,
+  "parameters": [
+    {
+      "name": "hindGripScale",
+      "label": "Hind adhesion force",
+      "min": 0.25,
+      "max": 1,
+      "initial": 1
+    },
+    {
+      "name": "deploymentPowerSpan",
+      "label": "Continuous wing opening range",
+      "min": 0,
+      "max": 0.5,
+      "initial": 0
+    }
+  ],
+  "optimizer": {
+    "populationPairs": 4,
+    "sigma": 0.25,
+    "learningRate": 0.035,
+    "maximumUpdate": 0.15,
+    "seed": 888
+  },
+  "objective": {
+    "min": -10,
+    "max": 10,
+    "direction": "maximize"
+  },
+  "stage": "posture",
+  "durationSeconds": 2,
+  "stages": [
+    {
+      "id": "posture",
+      "label": "Stand & recover",
+      "durationSeconds": 2,
+      "description": "Stay upright and supported after a small seeded disturbance."
+    },
+    {
+      "id": "approach",
+      "label": "Find & approach food",
+      "durationSeconds": 3,
+      "description": "Reduce distance to food from an off-food starting pose using odor and body feedback."
+    },
+    {
+      "id": "feeding",
+      "label": "Probe & feed",
+      "durationSeconds": 3,
+      "description": "Coordinate actual mouth contact, extension and pumping to transfer food."
+    },
+    {
+      "id": "flight",
+      "label": "Take off & stabilize",
+      "durationSeconds": 2,
+      "description": "Leave support and sustain controlled upright powered flight."
+    },
+    {
+      "id": "landing",
+      "label": "Approach & land",
+      "durationSeconds": 3,
+      "description": "Establish stable food contact after a controlled airborne approach."
+    },
+    {
+      "id": "sequence",
+      "label": "Complete the cycle",
+      "durationSeconds": 8,
+      "description": "Localize food, approach, land, probe and feed, then take off and fly in the required order."
+    }
+  ],
+  "validation": {
+    "seeds": [
+      190888,
+      290888
+    ],
+    "testSeeds": [
+      490888,
+      590888,
+      690888
+    ],
+    "minimumImprovement": 0.0001,
+    "requiredSuccesses": 2
+  },
+  "contribution": {
+    "leaseSeconds": 1800,
+    "maxRequestBytes": 262144
+  },
+  "notes": [
+    "Research experiment: neural parameters are frozen; only the named interface values vary.",
+    "Bounds are engineering hypotheses informed by recorded-input ablations, not measured physiology.",
+    "A new config/model/run identity is mandatory. Legacy checkpoints are never relabeled.",
+    "Unvalidated candidates cannot be deployed or promoted. Stable short replay is not flight."
+  ],
+  "parameterContract": "banc-motor-interface-v2",
+  "behaviorCriteriaVersion": 2,
+  "freezeNeuralParameters": true,
+  "experimentKind": "motor-interface-calibration",
+  "deploymentGate": "calibration_required",
+  "referenceInterface": {}
+}

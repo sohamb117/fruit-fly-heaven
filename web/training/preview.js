@@ -102,9 +102,10 @@ export class NativeFlyPreview{
     if(frame.bowl?.floor){
       const radius=frame.bowl.radiusCm,base=frame.bowl.floor.baseCm,coefficient=frame.bowl.floor.radialCoefficientPerCm;
       if([radius,base,coefficient].every(Number.isFinite)&&radius>0){
-        const positions=[],indices=[],rings=20,sectors=64;
+        const cap=frame.bowl.floor.capRadiusCm,radii=Number.isFinite(cap)?[...new Set([...Array.from({length:21},(_,i)=>radius*i/20),cap])].filter(r=>r>=0&&r<=radius).sort((a,b)=>a-b):null;
+        const positions=[],indices=[],rings=radii?radii.length-1:20,sectors=64;
         for(let ring=0;ring<=rings;ring++)for(let sector=0;sector<=sectors;sector++){
-          const r=radius*ring/rings,a=2*Math.PI*sector/sectors;positions.push(r*Math.cos(a),r*Math.sin(a),base+coefficient*r*r);
+          const r=radii?radii[ring]:radius*ring/rings,a=2*Math.PI*sector/sectors;positions.push(r*Math.cos(a),r*Math.sin(a),base+coefficient*(Number.isFinite(cap)?Math.min(r,cap)**2:r*r));
         }
         for(let r=0;r<rings;r++)for(let s=0;s<sectors;s++){const a=r*(sectors+1)+s,b=a+sectors+1;indices.push(a,b,a+1,a+1,b,b+1);}
         const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setIndex(indices);geometry.computeVertexNormals();

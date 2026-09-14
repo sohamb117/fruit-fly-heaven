@@ -11,10 +11,10 @@ const config=JSON.parse(configBytes),configHash=createHash('sha256').update(conf
 const origin='https://shared.example';
 function setup(){
   const calls=[],workers=[],stored=new Map();let generation=3,unavailable=false,resultFailure=false;
-  const current=()=>({...checkpoint(config,configHash,config.parameters.map(()=>.1),generation,'posture',{status:'unverified'}),createdAt:1234,provenance:'Fixture server metadata',completedGenerations:generation});
+  const current=()=>({...checkpoint(config,configHash,config.parameters.map(p=>Math.max(p.min,Math.min(p.max,.1))),generation,config.stage,{status:'unverified'}),createdAt:1234,provenance:'Fixture server metadata',completedGenerations:generation});
   const status=()=>({configHash,modelFingerprint:config.modelFingerprint,generation,checkpoint:current()});
   const job={jobId:'fixture-job',leaseToken:'fixture-token',generation:3,pairId:'fixture-pair',sign:1,seed:888,
-    stage:'posture',durationSeconds:1,configHash,modelFingerprint:config.modelFingerprint,parameters:current().parameters};
+    stage:config.stage,durationSeconds:config.durationSeconds,configHash,modelFingerprint:config.modelFingerprint,parameters:current().parameters};
   class FixtureWorker extends EventTarget{
     constructor(){super();workers.push(this);}
     postMessage(message){
@@ -24,7 +24,8 @@ function setup(){
         const j=message.job,provenance={environmentVersion:config.environmentVersion,configHash,modelFingerprint:config.modelFingerprint,
           backend:'wasm',bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,
           seed:j.seed,stage:j.stage,generation:j.generation,pairId:j.pairId,sign:j.sign};
-        send({type:'evaluation',id:message.id,result:{...provenance,provenance,parameters:[...j.parameters],return:0,success:false,steps:1,simSeconds:.002,reason:'orchestration fixture'}});
+        send({type:'evaluation',id:message.id,result:{...provenance,provenance,parameters:[...j.parameters],return:0,success:false,steps:1,simSeconds:.002,reason:'orchestration fixture',
+          metrics:{hasTakenOff:false,bestFlightSeconds:0,diagnostics:{maximumAngularSpeed:90},finalObservation:{up:.6,wingPower:.8}}}});
       }
     }
     terminate(){this.terminated=true;}
@@ -84,6 +85,9 @@ test('Start without a mode runs and submits an assigned shared job',async()=>{
   await client.start();await accepted;await client.stop();await client.loop;
   assert.equal(client.state.completedEpisodes,1);assert.equal(client.state.contributedEpisodes,1);
   assert.equal(calls.filter(call=>call.path.endsWith('/result')).length,1);
+  const payload=JSON.parse(calls.find(call=>call.path.endsWith('/result')).options.body);
+  assert.equal(payload.metrics.hasTakenOff,false);assert.equal(payload.metrics.bestFlightSeconds,0);
+  assert.equal(payload.metrics.diagnostics.maximumAngularSpeed,90);assert.equal(payload.metrics.finalObservation.wingPower,.8);
   assert.equal(client.state.history[0].role,'contribution');assert.equal(workers[0].terminated,true);
 });
 

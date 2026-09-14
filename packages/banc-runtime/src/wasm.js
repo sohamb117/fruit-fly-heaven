@@ -1,3 +1,4 @@
+import {intrinsicLayout,validateIntrinsicState,DLM_MAX_TIME_MS} from './cell-models.js';
 import {validateModel,initialBuffers,validateStep,historySlots,SPIKE_CAPACITY,decodeSpikeHistory} from './model.js';
 
 export async function createWasmCore(options={}) {
@@ -8,6 +9,8 @@ export class WasmBrain {
   constructor(core,model,{shared=null}={}) {
     if(shared){shared.live();if(shared.core!==core||shared.model!==model)throw new Error('Shared WASM graph must use the same core and model');}
     else validateModel(model);
+    this.intrinsic=intrinsicLayout(model);this.eventContract=this.intrinsic.eventContract;this.intrinsicDeclaration=JSON.stringify(model.manifest.intrinsic_models);
+    if(this.intrinsic.count&&typeof core._br_step_dlm!=='function')throw new Error('WASM binary lacks DLM profile support');
     this.core=core;this.model=model;this.n=model.manifest.neuron_count;
     this.tick=0;this.backend='wasm';this.allocations=[];this.disposed=false;
     const {packed,state,history,kinetics}=initialBuffers(model);
@@ -21,20 +24,48 @@ export class WasmBrain {
     }catch(e){this.dispose();throw e;}
   }
   get timeMs(){return this.tick*this.model.manifest.dt_ms;}
-  live(){if(this.disposed)throw new Error('Brain disposed');}
+  live(){if(this.disposed)throw new Error('Brain disposed');if(this.failed)throw this.failed;if((this.intrinsic.count||this.model.manifest.intrinsic_models!==undefined)&&(this.model.manifest.dt_ms!==.5||JSON.stringify(this.model.manifest.intrinsic_models)!==this.intrinsicDeclaration))throw new Error('Intrinsic model declaration changed after construction');}
   step(steps,input,internal={hunger:0,insulin:0,akh:0},gaps=true,{traceIndex=null}={}) {
     this.live();validateStep(steps,input,this.n,internal);
     if(traceIndex!==null&&(!Number.isInteger(traceIndex)||traceIndex<0||traceIndex>=this.n))throw new Error('Invalid trace index');
+    if(this.intrinsic.count&&(this.tick+steps)*.5>=DLM_MAX_TIME_MS)throw new Error('DLM event timestamp precision exhausted');
     const trace=traceIndex===null?undefined:new Float32Array(steps*8);
     const c=this.core,m=this.model.manifest;
     c.HEAPF32.set(input,this.params/4+this.n*16);
     for(let i=0;i<steps;i++){
-      c._br_step(this.n,this.tick,historySlots(this.model),+gaps,m.dt_ms,internal.hunger,internal.insulin,internal.akh,
+      const status=(this.intrinsic.count?c._br_step_dlm:c._br_step)(this.n,this.tick,historySlots(this.model),+gaps,m.dt_ms,internal.hunger,internal.insulin,internal.akh,
         this.offsets,this.edges,this.params,this.states[this.tick%2],this.states[1-this.tick%2],this.history,this.kinetics,this.events);
+      if(this.intrinsic.count&&status){this.failed=new Error('DLM ionic integration failed at cell '+(status-1));throw this.failed;}
       this.tick++;
       if(trace){const offset=this.states[this.tick%2]/4+traceIndex*8;trace.set(c.HEAPF32.subarray(offset,offset+8),i*8);}
     }
     return trace;
+  }
+  stepSequence(inputs,internal={hunger:0,insulin:0,akh:0},gaps=true) {
+    this.live();
+    if(!Array.isArray(inputs))throw new Error('inputs must be an array of current vectors');
+    const steps=inputs.length;
+    // Validate the entire schedule before advancing even the first tick.
+    validateStep(steps,inputs[0],this.n,internal);
+    for(let k=1;k<steps;k++)validateStep(steps,inputs[k],this.n,internal);
+    if(this.intrinsic.count&&(this.tick+steps)*.5>=DLM_MAX_TIME_MS)throw new Error('DLM event timestamp precision exhausted');
+    const c=this.core,m=this.model.manifest,slots=historySlots(this.model);
+    // Earlier ticks may overwrite currents or state viewed through WASM memory.
+    // Snapshot those inputs at entry, matching the GPU schedule upload semantics.
+    const schedule=inputs.map(input=>input.buffer===c.HEAPF32.buffer?input.slice():input);
+    for(let k=0;k<steps;k++){
+      c.HEAPF32.set(schedule[k],this.params/4+this.n*16);
+      const status=(this.intrinsic.count?c._br_step_dlm:c._br_step)(this.n,this.tick,slots,+gaps,m.dt_ms,internal.hunger,internal.insulin,internal.akh,
+        this.offsets,this.edges,this.params,this.states[this.tick%2],this.states[1-this.tick%2],this.history,this.kinetics,this.events);
+      if(this.intrinsic.count&&status){this.failed=new Error('DLM ionic integration failed at cell '+(status-1));throw this.failed;}
+      this.tick++;
+    }
+  }
+  readIntrinsicState(){
+    this.live();const start=this.kinetics/4+this.n*19;
+    const result=this.core.HEAPF32.slice(start,start+this.intrinsic.count*4);
+    try{validateIntrinsicState(this.intrinsic,result);}catch(error){this.failed=error;throw error;}
+    return result;
   }
   readState(indices,{includeSpikeTime=false}={}) {
     this.live();const state=this.core.HEAPF32.subarray(this.states[this.tick%2]/4,this.states[this.tick%2]/4+this.n*8);

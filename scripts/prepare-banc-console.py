@@ -71,8 +71,53 @@ def bristle_transducer_exclusion_reason(row):
     return None
 
 
+def annotation_tokens(value):
+    """BANC comma-valued annotations are exact labels, not substring matches."""
+    return sorted({token.strip() for token in (value or '').split(',') if token.strip()})
+
+
+def hair_plate_transducer_exclusion_reason(row):
+    # Preserve proximal anatomical location without pretending it identifies a
+    # reduced-model joint coordinate. In particular, CoHP labels do not choose
+    # among native coxa abduction, twist and flexion, or establish a tibia field.
+    parts = frozenset(token.lower() for token in annotation_tokens(row.get('body_part_sensory')))
+    if (row.get('cell_class') == 'hair_plate_neuron' and 'joint_angle' in function_tokens(row)
+            and parts in (frozenset(('front_leg', 'coxa')), frozenset(('front_leg', 'trochanter')))):
+        return ('Explicit proximal front-leg hair plate with joint_angle function; the annotated location has no verified '
+                'receptive-joint/axis transfer to the reduced native model. Generic body-speed and tibia/coxa aggregate '
+                'drive are withheld rather than assigning a joint or direction prior. Neural dynamics, connectivity '
+                'and sensory-channel membership are retained.')
+    return None
+
+
 def body_transducer_exclusion_reason(row):
-    return bristle_transducer_exclusion_reason(row) or auditory_transducer_exclusion_reason(row)
+    return (bristle_transducer_exclusion_reason(row) or auditory_transducer_exclusion_reason(row)
+            or hair_plate_transducer_exclusion_reason(row))
+
+
+def body_transducer_exclusion(row, index, root_id):
+    """Build the emitted exclusion without changing channels or graph identity."""
+    if row.get('super_class') not in ('sensory', 'sensory_ascending') or row.get('side') not in ('left', 'right'):
+        return None
+    auditory = auditory_transducer_exclusion_reason(row)
+    hair_plate = hair_plate_transducer_exclusion_reason(row)
+    # Keep the earlier bristle/auditory emission rules unchanged. The added
+    # hair-plate rule handles only the two explicit compound locations above.
+    if not (('leg' in (row.get('body_part_sensory') or '') and bristle_transducer_exclusion_reason(row))
+            or auditory or hair_plate):
+        return None
+    exclusion = {'index': index, 'root_id': str(root_id), 'side': row.get('side'), 'organ': row.get('body_part_sensory'),
+                 'cell_type': row.get('cell_type') or row.get('fafb_cell_type') or '', 'cell_class': row.get('cell_class'),
+                 'function': row.get('cell_function_detailed'), 'reason': body_transducer_exclusion_reason(row)}
+    if auditory:
+        exclusion['source'] = JO_MODALITY_SOURCE
+    if hair_plate:
+        exclusion.update({'cell_sub_class': row.get('cell_sub_class'), 'nerve': row.get('nerve'),
+                          'body_part_sensory_tokens': annotation_tokens(row.get('body_part_sensory')),
+                          'peripheral_target_type': row.get('peripheral_target_type'),
+                          'peripheral_target_type_tokens': annotation_tokens(row.get('peripheral_target_type')),
+                          'leg': 0 if row['side'] == 'left' else 3})
+    return exclusion
 
 
 def sha(path):
@@ -205,15 +250,8 @@ def prepare():
                     'cell_type': typ(row), 'function': row.get('cell_function_detailed'),
                     'reason': sugar_modality_exclusion_reason(row), 'identity_evidence': sugar_identity_evidence(row)}
                    for i, row in enumerate(rows) if sugar_modality_exclusion_reason(row)],
-               'body_transducer_exclusions': [
-                   {'index': i, 'root_id': str(ids[i]), 'side': row.get('side'), 'organ': row.get('body_part_sensory'),
-                    'cell_type': typ(row), 'cell_class': row.get('cell_class'), 'function': row.get('cell_function_detailed'),
-                    'reason': body_transducer_exclusion_reason(row),
-                    **({'source': JO_MODALITY_SOURCE} if auditory_transducer_exclusion_reason(row) else {})}
-                   for i, row in enumerate(rows)
-                   if row.get('super_class') in ('sensory', 'sensory_ascending') and row.get('side') in ('left', 'right')
-                   and (('leg' in (row.get('body_part_sensory') or '') and bristle_transducer_exclusion_reason(row))
-                        or auditory_transducer_exclusion_reason(row))]}
+               'body_transducer_exclusions': [exclusion for i, row in enumerate(rows)
+                   if (exclusion := body_transducer_exclusion(row, i, ids[i])) is not None]}
     projection = {**base, 'cells': projected, 'unmapped_root_ids': projection_missing, 'rate_scale_hz': 20, 'max_rate_hz': 60,
                   'ids_sha256': sha(DATA/'ids.bin'), 'model_sha256': sha(ROOT/'web/visual-model.json'), 'method': visual_note}
     old_color = json.loads((ROOT/'web/color-inputs.json').read_text())

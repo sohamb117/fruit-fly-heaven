@@ -250,6 +250,24 @@ class CloudRunServerTests(unittest.TestCase):
                 finally:
                     response.close()
 
+    def test_default_health_rejects_unusable_coordinator_history(self):
+        previous = self.server
+        self.server = server_module.make_server(self.coordinator, self.public, self.manifest_path, port=0)
+        thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            failure = coordinator_module.APIError(503, "invalid_history", "Guarded assignment differs")
+            with patch.object(self.coordinator, "status", side_effect=failure):
+                status, _, body = self.request("/healthz")
+                self.assertEqual(status, 503)
+                self.assertFalse(json.loads(body)["ready"])
+            self.assertEqual(self.request("/healthz")[0], 200)
+        finally:
+            self.server.shutdown()
+            self.server.server_close()
+            thread.join()
+            self.server = previous
+
     def test_health_reflects_readiness(self):
         status, headers, body = self.request("/healthz")
         self.assertEqual(status, 200)

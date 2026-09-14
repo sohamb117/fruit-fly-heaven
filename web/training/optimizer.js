@@ -1,11 +1,16 @@
 // Reward-based, antithetic policy search over bounded BANC calibration parameters.
 // This module never supplies motor actions or changes the physical environment.
+import {validateTrainingConfigSchema} from './config-schema.js';
+import {validateMotorDecoderTrainingConfig} from './episode.js';
 export function validateConfig(config) {
-  if (config?.schemaVersion !== 1 || config.algorithm !== 'antithetic-evolution-strategies') throw new Error('Unsupported training configuration');
-  if (!Array.isArray(config.parameters) || !config.parameters.length || config.parameters.length > 256) throw new Error('Invalid parameter schema');
+  validateTrainingConfigSchema(config);
+  if (config.algorithm !== 'antithetic-evolution-strategies') throw new Error('Unsupported training configuration');
+  const motorDecoder=validateMotorDecoderTrainingConfig(config);
+  if (!Array.isArray(config.parameters) || !config.parameters.length || config.parameters.length > (motorDecoder?motorDecoder.parameters.length:256)) throw new Error('Invalid parameter schema');
   const names = new Set();
   for (const p of config.parameters) {
     if (typeof p.name !== 'string' || names.has(p.name) || ![p.min,p.max,p.initial].every(Number.isFinite) || p.min >= p.max || p.initial < p.min || p.initial > p.max) throw new Error('Invalid parameter bounds');
+    if (p.searchScale !== undefined && (!Number.isFinite(p.searchScale) || p.searchScale <= 0 || p.searchScale > 1)) throw new Error('Invalid parameter searchScale');
     names.add(p.name);
   }
   const o = config.optimizer;
@@ -36,6 +41,7 @@ export function random(seed) {
 }
 const clamp = (x,a,b) => Math.max(a,Math.min(b,x));
 export function makeGeneration(parameters, generation, config, stage = config.stage) {
+  if (config.schemaVersion === 2) throw new Error('Guarded search must be assigned by the coordinator');
   validateParameters(parameters,config);
   if (!Number.isInteger(generation) || generation < 0) throw new Error('Invalid generation');
   const task = config.stages.find(x => x.id === stage);
@@ -45,13 +51,14 @@ export function makeGeneration(parameters, generation, config, stage = config.st
     const noise = parameters.map(() => Math.sqrt(-2*Math.log(Math.max(rng(),1e-12)))*Math.cos(2*Math.PI*rng()));
     const seed = (config.optimizer.seed + generation*1009 + i*65537) >>> 0;
     const jobs = [-1,1].map(sign => ({id:`local-${stage}-${generation}-${i}-${sign}`,pairId:i,sign,seed,stage,durationSeconds:task.durationSeconds,
-      parameters:parameters.map((x,k) => clamp(x+sign*config.optimizer.sigma*noise[k],config.parameters[k].min,config.parameters[k].max))}));
+      parameters:parameters.map((x,k) => clamp(x+sign*config.optimizer.sigma*(config.parameters[k].searchScale ?? 1)*noise[k],config.parameters[k].min,config.parameters[k].max))}));
     pairs.push({noise,jobs,results:{}});
   }
   return {generation,stage,baseline:parameters.slice(),pairs};
 }
 
 export function updateGeneration(round, config) {
+  if (config.schemaVersion === 2) throw new Error('Guarded checkpoint acceptance belongs to the coordinator');
   validateParameters(round.baseline,config);
   if (round.pairs.length !== config.optimizer.populationPairs) throw new Error('Incomplete generation');
   const delta = new Float64Array(round.baseline.length),sigma=config.optimizer.sigma;
@@ -63,6 +70,8 @@ export function updateGeneration(round, config) {
     const minusParameters=validateParameters(minusJob.parameters,config),plusParameters=validateParameters(plusJob.parameters,config);
     // Bound clipping changes the actual perturbation. Use the realized paired
     // direction rather than pretending the original Gaussian remained symmetric.
+    // searchScale stays in this direction: physical-coordinate updates are
+    // preconditioned (locally proportional to the square of the search scale).
     for (let k=0;k<delta.length;k++) {
       const realized=(plusParameters[k]-minusParameters[k])/(2*sigma);
       delta[k] += (plus.return-minus.return)*realized;

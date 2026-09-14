@@ -66,7 +66,16 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
    fly.heading=Math.atan2(food.z-fly.z,food.x-fly.x)+.4+(random()-.5)*.2;
   }else{fly.x+=(random()-.5)*.6;fly.z+=(random()-.5)*.6;fly.heading+=(random()-.5)*.3;}
   const world=bodyFactory(habitat.fruit,[fly],{movementMode:'direct',motorCoupling:true,flightEnabled:true}),body=world.bodies.get(1);
-  const originalRates=world.rates.bind(world);world.rates=f=>new Map(Array.from(originalRates(f),([index,rate])=>[index,rate*(families.has(index)?gains[`muscle_${families.get(index)}_log_gain`]:1)]));
+  body.wings.setInterpreterParameters({
+   powerGain:gains.flight_power_log_gain,
+   deploymentTauScale:gains.flight_deployment_tau_log_scale,
+   frequencyScale:gains.flight_frequency_log_scale,
+   steeringBiasGain:gains.flight_steering_bias_log_gain,
+   steeringAmplitudeGain:gains.flight_steering_amplitude_log_gain
+  });
+  const originalRates=world.rates.bind(world);world.rates=f=>new Map(Array.from(originalRates(f),([index,rate])=>{
+   const family=families.get(index),scale=family&&family!=='wing'?gains[`muscle_${family}_log_gain`]:1;return [index,rate*scale];
+  }));
   body.data.qvel.fill(0);
   if(stage==='posture'){body.data.qvel[3]=(random()-.5)*.8;body.data.qvel[4]=(random()-.5)*.8;}
   if(stage==='landing'||stage==='sequence'){
@@ -86,7 +95,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   if(disposed)throw new Error('Training environment disposed');
   cleanup();const {gains}=parameterValues(config,config.parameters.map(p=>p.initial)),applied=parameterizedModel(base,gains,externalIndices);
   try{active={...createWorld('posture',config.optimizer.seed,gains,applied.families)};active.brain=await makeBrain(applied.model);active.food=foodTarget(active.world,active.body);await checkShader();
-   return {environmentVersion:config.environmentVersion,modelFingerprint:config.modelFingerprint,configHash,backend,bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,vision:false,parameterCount:config.parameters.length,criteria:CRITERIA,trainedCellCounts:applied.counts,frame:frame('posture'),limitations:['Vision is disabled in v1; the observer preview is not retinal input.','Model parameters are learned hypotheses, not measured biological physiology.','Native rigid-wing collision and unsigned strain-feedback limitations remain unchanged.']};
+   return {environmentVersion:config.environmentVersion,modelFingerprint:config.modelFingerprint,configHash,backend,bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,vision:false,parameterCount:config.parameters.length,criteria:CRITERIA,trainedCellCounts:applied.counts,frame:frame('posture'),limitations:['Vision is disabled in v2; the observer preview is not retinal input.','Model parameters are learned hypotheses, not measured biological physiology.','Flight training changes only the thin BANC-to-FlyBody interpreter; native wingbeat tables, rigid-wing collision and fluid forces remain fixed.']};
   }finally{cleanup();}
  };
  async function evaluate(job,{checkpoint=async()=>delay(0),previewHz=6,dutyCycle=.65,getBudget,onFrame,onProgress}={}){

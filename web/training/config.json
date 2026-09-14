@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "environmentVersion": "banc-flybody-rl-v1",
+  "environmentVersion": "banc-flybody-flight-interface-v2",
   "modelFingerprint": "8bfd755893d540ed11e249c36ad7ae73d6a955c78bc57a3899ad18cc8c2bee13",
   "assets": {
     "/banc-data/console/groups.json": "8e3932032920f2f5821f247fbf17ee2f7ce0b400b143105147095128d1e3e3b8",
@@ -33,18 +33,18 @@
     "/flybody-physics.js": "3378d510367581f899702a95fd862d918828043afa70014d7503c22b5cd9e855",
     "/flybody-stance.js": "1e1734753645f2070874afcf3eb72325ff6c9ee3473f1487cbd10dd0ebff1abd",
     "/flybody-wing-pose.js": "2eadef6980b88683aeee6450eed68e2cda697a847d004121b742ebc59ffebc73",
-    "/flybody-wings.js": "cfb41da66648159c2ce92da81c0d97c63958bc4d3dd3603e459f92e9f1c7dd7d",
+    "/flybody-wings.js": "45f765d15b6e9d920072a58b5449da4debc53ef5e6d4596bc71b21ae7e1a01d7",
     "/flybody-world.js": "e8894bdbee7448c6b69ff5b7cb44f10ea8c0f8fb7b9a1467e23b1e398f6547d3",
     "/habitat.json": "adbb5d59f97091dad6d946f9b392cf0fbde4387777ecfa98b81aa75bd2a636be",
     "/sensory-encoder.js": "7024729f40c3f398adcd68990e276c14041ddd612f8cbc67a41bdef890a00dcb",
-    "/training/environment.js": "388ea7f511b521369523c001c159496a69dc121540cbf3796e0ce7e3b22a9b9d",
-    "/training/episode.js": "6667b928a405c8dd446c87dfad8a431f85c7f43145fb78af277ac455f610ed63",
+    "/training/environment.js": "f86e1b192976092f6cd17e23035917ebadfaa02a54fd2d0dfa950c714682985e",
+    "/training/episode.js": "a7261459eba3f0fd59e59e3b4bbefcd62a2dfba9daceaa4d2a08701925a390d0",
     "/training/worker.js": "d207d2c7c3b7d197d74c6e980b7afd3aea6e18fdf2abedb307e30b9bb028725f",
     "/vendor/three.core.js": "3718df126d69c125362a03340913204470d8c50238605150e57f808840fb7759",
     "/vendor/three.module.js": "bbf5ed13fe4373f5bd38b14ea8e62e9f157327da5638edc6d3863e08b167c9c7"
   },
   "algorithm": "antithetic-evolution-strategies",
-  "controller": "BANC v888 brain → VNC → motor neurons → muscles → native FlyBody",
+  "controller": "BANC v888 brain → VNC → motor neurons → native muscle dynamics → learned thin flight interpreter → calibrated FlyBody wingbeat manifold",
   "vision": false,
   "dtMs": 0.5,
   "bodyBlockMs": 2,
@@ -120,10 +120,38 @@
       "initial": 0
     },
     {
-      "name": "muscle_wing_log_gain",
-      "label": "Wing motor to muscle scale",
+      "name": "flight_power_log_gain",
+      "label": "BANC async-wing power → FlyBody power",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_deployment_tau_log_scale",
+      "label": "Wing deployment time constant",
       "min": -1.386294,
-      "max": 1.386294,
+      "max": 2.079442,
+      "initial": 0
+    },
+    {
+      "name": "flight_frequency_log_scale",
+      "label": "FlyBody wingbeat frequency",
+      "min": -0.223144,
+      "max": 0.09531,
+      "initial": 0
+    },
+    {
+      "name": "flight_steering_bias_log_gain",
+      "label": "Steering mean-angle gain",
+      "min": -2.995732,
+      "max": 0.693147,
+      "initial": 0
+    },
+    {
+      "name": "flight_steering_amplitude_log_gain",
+      "label": "Steering stroke-amplitude gain",
+      "min": -2.995732,
+      "max": 0.693147,
       "initial": 0
     },
     {
@@ -219,8 +247,9 @@
   },
   "notes": [
     "Parameters are learned control hypotheses, not measured biological physiology.",
-    "Version 1 uses odor, taste and body feedback. The observer preview is not retinal input.",
-    "Native physics and connectome topology stay fixed. No target pose, reward or task stage enters the motor decoder.",
+    "Version 2 uses odor, taste and body feedback. The observer preview is not retinal input.",
+    "The five flight parameters tune only the BANC→FlyBody transfer; calibrated wingbeat tables, native aerodynamics and connectome topology stay fixed.",
+    "No target pose, reward or task stage enters the motor decoder.",
     "Shared contributor returns are unverified; checkpoints require independent local evaluation before promotion."
   ]
 }

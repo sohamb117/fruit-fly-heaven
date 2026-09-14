@@ -54,13 +54,21 @@ export function makeGeneration(parameters, generation, config, stage = config.st
 export function updateGeneration(round, config) {
   validateParameters(round.baseline,config);
   if (round.pairs.length !== config.optimizer.populationPairs) throw new Error('Incomplete generation');
-  const delta = new Float64Array(round.baseline.length);
+  const delta = new Float64Array(round.baseline.length),sigma=config.optimizer.sigma;
   for (const pair of round.pairs) {
     const minus=validateResult(pair.results[-1],config),plus=validateResult(pair.results[1],config);
     if (!Array.isArray(pair.noise) || pair.noise.length !== delta.length || pair.noise.some(x=>!Number.isFinite(x))) throw new Error('Invalid exploration noise');
-    for (let k=0;k<delta.length;k++) delta[k] += (plus.return-minus.return)*pair.noise[k];
+    const minusJob=pair.jobs?.find(j=>j.sign===-1),plusJob=pair.jobs?.find(j=>j.sign===1);
+    if(!minusJob||!plusJob)throw new Error('Missing antithetic jobs');
+    const minusParameters=validateParameters(minusJob.parameters,config),plusParameters=validateParameters(plusJob.parameters,config);
+    // Bound clipping changes the actual perturbation. Use the realized paired
+    // direction rather than pretending the original Gaussian remained symmetric.
+    for (let k=0;k<delta.length;k++) {
+      const realized=(plusParameters[k]-minusParameters[k])/(2*sigma);
+      delta[k] += (plus.return-minus.return)*realized;
+    }
   }
-  const scale=config.optimizer.learningRate/(2*round.pairs.length*config.optimizer.sigma);
+  const scale=config.optimizer.learningRate/(2*round.pairs.length*sigma);
   return round.baseline.map((x,k)=>clamp(x+clamp(scale*delta[k],-config.optimizer.maximumUpdate,config.optimizer.maximumUpdate),config.parameters[k].min,config.parameters[k].max));
 }
 

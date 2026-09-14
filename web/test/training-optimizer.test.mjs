@@ -18,6 +18,16 @@ test('reward search improves a known objective; identical returns cannot move pa
   for(const p of round.pairs)p.results={[-1]:result(1),[1]:result(1)};
   assert.deepEqual(updateGeneration(round,config),initial);
 });
+test('bounded ES uses realized perturbations after clipping',()=>{
+  const bounded=structuredClone(config);bounded.optimizer.populationPairs=1;bounded.optimizer.sigma=.25;bounded.optimizer.learningRate=.1;
+  bounded.parameters=bounded.parameters.map((p,i)=>i===0?{...p,min:-1,max:1,initial:.99}:p);
+  const baseline=bounded.parameters.map(p=>p.initial),round=makeGeneration(baseline,0,bounded),pair=round.pairs[0];
+  pair.results[-1]=result(0);pair.results[1]=result(1);
+  const k=0,realized=(pair.jobs.find(j=>j.sign===1).parameters[k]-pair.jobs.find(j=>j.sign===-1).parameters[k])/(2*bounded.optimizer.sigma);
+  const expected=Math.min(1,baseline[k]+Math.max(-bounded.optimizer.maximumUpdate,Math.min(bounded.optimizer.maximumUpdate,bounded.optimizer.learningRate/(2*bounded.optimizer.sigma)*realized)));
+  assert.equal(updateGeneration(round,bounded)[k],expected);
+  assert.notEqual(realized,pair.noise[k]);
+});
 test('incomplete/invalid returns cannot update a policy',()=>{
   const round=makeGeneration(initial,0,config);assert.throws(()=>updateGeneration(round,config));
   for(const bad of [NaN,Infinity,config.objective.max+1])assert.throws(()=>validateResult(result(bad),config));

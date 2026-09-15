@@ -10,7 +10,7 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-SERVER_FILES = ("training_coordinator.py", "firestore_coordinator.py")
+SERVER_FILES = ("training_coordinator.py", "firestore_coordinator.py", "sequential_training.py", "firestore_sequential.py")
 
 
 def digest(path):

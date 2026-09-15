@@ -320,7 +320,8 @@ class CoordinatorRules:
                            and type(steps) is int and steps > 0 and abs(elapsed-steps*self.body_block_ms/1000) <= 1e-7)
             physical_failure = (metrics.get("terminated") is True and metrics.get("success") is False and metrics.get("reason") in
                                 ("outside_habitat", "excessive_rotation", "overturned"))
-            full_outcome = ((metrics.get("reason") == "stage_success" and metrics.get("success") is True and metrics.get("terminated") is True)
+            success_reason = "recovery_success" if expected["stage"] == "recovery" else "stage_success"
+            full_outcome = ((metrics.get("reason") == success_reason and metrics.get("success") is True and metrics.get("terminated") is True)
                             or (metrics.get("reason") == "time_limit" and metrics.get("success") is False and metrics.get("terminated") is False))
             if (not valid_clock or type(metrics.get("success")) is not bool
                     or type(metrics.get("terminated")) is not bool or metrics.get("cancelled") is not False

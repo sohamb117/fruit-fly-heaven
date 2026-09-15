@@ -63,6 +63,6 @@ export function createTrainingWorkerController({postMessage,createEnvironment,cl
 
 if(typeof WorkerGlobalScope!=='undefined'&&globalThis instanceof WorkerGlobalScope){
  const controller=createTrainingWorkerController({postMessage:value=>self.postMessage(value),close:()=>self.close(),
-  createEnvironment:async(config,options)=>(await import('./environment.js')).createTrainingEnvironment(config,options)});
+  createEnvironment:async(config,options)=>(await import('./sequential-environment.js')).createSequentialTrainingEnvironment(config,options)});
  self.onmessage=event=>{controller.handle(event.data).catch(error=>self.postMessage({type:'error',message:error.stack||error.message,recoverable:false}));};
 }

@@ -145,7 +145,8 @@ const experimentSourceUrls=new Set([
     'wing-event-excitation','wing-load','wing-pose','wings','world'].map(name=>'/flybody-'+name+'.js'),
   ...['airborne-reset-contract','airborne-reset','brain-resources','compact-vision','config-schema','environment',
     'episode','flight-objective','flight-observation','flight-parameters','flight-telemetry','maintained-flight-objective',
-    'retinal-sensor','sensory-feedback','worker'].map(name=>'/training/'+name+'.js'),
+    'retinal-sensor','sensory-feedback','worker','sensorimotor-parameters','recovery-objective',
+    'sequential-environment','decoder-calibration','flight-teacher'].map(name=>'/training/'+name+'.js'),
   ...['cell-models','index','model','motor-events','wasm','webgpu'].map(name=>'/banc-engine/src/'+name+'.js'),
   '/banc-engine/dist/core.js','/body-engine/mujoco.js','/vendor/three.core.js','/vendor/three.module.js',
 ]);
@@ -166,7 +167,7 @@ export function readExperimentBundle(bytes){
   const overrides=new Map();
   for(const [url,value]of Object.entries(bundle.assets)){
     safeUrl(url);
-    if(!experimentModelUrls.includes(url)&&!experimentSourceUrls.has(url)&&url!==experimentCatalogUrl)
+    if(!experimentModelUrls.includes(url)&&!experimentSourceUrls.has(url)&&url!==experimentCatalogUrl&&url!=='/body-model/flight-teacher-calibration-v1.json')
       throw new Error('Unsupported experiment asset: '+url);
     if(!Object.hasOwn(config.assets,url))throw new Error('Unpinned experiment asset: '+url);
     if(typeof value!=='string'||digest(value)!==config.assets[url])throw new Error('Experiment asset checksum mismatch: '+url);
@@ -239,7 +240,7 @@ export async function packageTrainingClient({experimentBundle=null,modelBundle=n
       if(!/^[a-zA-Z0-9_-]+\.(bin|json)$/.test(name)||!/^[a-f0-9]{64}$/.test(record.sha256)||!Number.isSafeInteger(record.bytes)||record.bytes<0)throw new Error('Unsafe graph file: '+name);
       await add('/banc-data/'+name,{expectedHash:record.sha256,expectedBytes:record.bytes,kind:'graph'});
     }
-    for(const url of ['/train.html','/training/config.json','/training/view.js','/training/client.js','/training/optimizer.js','/training/preview.js','/training/brain-preview.js','/training/observer-worker.js','/training/observer-runtime.js','/training/train.css','/training/package.json'])await add(url,{kind:'client',...(url==='/training/config.json'?{expectedHash:configHash}:{})});
+    for(const url of ['/train.html','/training/config.json','/training/view.js','/training/client.js','/training/optimizer.js','/training/preview.js','/training/brain-preview.js','/training/eye-preview.js','/training/eye-observer-runtime.js','/training/observer-worker.js','/training/observer-runtime.js','/training/train.css','/training/package.json'])await add(url,{kind:'client',...(url==='/training/config.json'?{expectedHash:configHash}:{})});
     await generated('/training/brain-sample.json',JSON.stringify(await prepareTrainingBrain(config))+'\n','presentation');
     // Explicit entry points above define the code allowlist. Reject missing code
     // imports; local HTML/CSS images/fonts may be included only below /assets,

@@ -3,8 +3,9 @@ export {FLIGHT_CRITERIA as CRITERIA,createFlightScore as createEpisodeScore} fro
 import {FLIGHT_PARAMETER_NAMES,flightParametersToInterpreter,DEFAULT_FLIGHT_INTERPRETER} from './flight-parameters.js';
 import {validateTrainingConfigSchema,validateTrainingVisionConfig} from './config-schema.js';
 import {MOTOR_DECODER_VERSION,buildMotorDecoderContract,validateMotorDecoderContract,validateMotorDecoderVector} from '../motor-decoder.js';
+import {SENSORIMOTOR_CONTRACT,applySensorimotorParameters} from './sensorimotor-parameters.js';
 export const PARAMETER_NAMES=FLIGHT_PARAMETER_NAMES;
-export const STAGES=['takeoff','flight','landing'];
+export const STAGES=['takeoff','flight','landing','maintained_flight','recovery'];
 export const clip=(v,a,b)=>Math.max(a,Math.min(b,v));
 export function seededRandom(seed){let value=seed>>>0;return()=>{value+=0x6D2B79F5;let t=value;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
 /** Validate the explicit decoder declaration without reinterpreting old vectors.
@@ -30,6 +31,8 @@ export function parameterValues(config,parameters,io){
  validateTrainingConfigSchema(config);
  if(config.dtMs!==.5||config.bodyBlockMs!==2)throw new Error('Unsupported training configuration');
  validateTrainingVisionConfig(config);
+ if(config.parameterContract===SENSORIMOTOR_CONTRACT)
+  return {...applySensorimotorParameters(config,parameters,io),interpreter:DEFAULT_FLIGHT_INTERPRETER};
  const decoder=validateMotorDecoderTrainingConfig(config,io);
  if(decoder){
   const vector=Array.from(validateMotorDecoderVector(decoder,parameters));

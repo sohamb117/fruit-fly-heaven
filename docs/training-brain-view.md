@@ -1,4 +1,4 @@
-# Training brain view
+# Training brain and eye views
 
 The **Brain** tab displays 4,096 measured BANC v888 neuron anchors from the current fly, colored by its simulated membrane voltage and recent spikes. Selecting a point shows its neuron identity, voltage and filtered rate. These are representative anatomical points, not full neuron skeletons. Missing anatomical locations are omitted. Every neuron and connection remains in the simulation.
 
@@ -28,3 +28,13 @@ node scripts/package-training-client.mjs \
 ```
 
 The frozen bundle supplies pinned model assets, graph files and matching native sources. Current UI and observer sources are packaged separately. Identity, missing-file and checksum mismatches fail packaging; there is no fallback to edited model files.
+
+## Eyes
+
+The **Eyes** tab displays the current fly's left and right sensory-camera images. Each camera currently produces 256 × 128 RGB pixels. The motion encoder uses luminance derived from those same rendered pixels; the color display does not imply biological color-vision calibration. Camera geometry, surface textures and receptive-field mappings remain simulation priors.
+
+The observer reads only the most recent frame already consumed by the sensory pipeline, after a completed physics block. It never renders another camera image or advances the brain, sensors or physics. It transfers owned display copies at most twice per wall second while Eyes is selected, the page is visible and preview quality is enabled. A future larger retinal configuration is downsampled only for display; sensory input is unchanged.
+
+The displayed time is the retinal capture time, including the unscored setup interval. It can lag the body's current time because the sensory camera has its own sampling cadence. Trial identity, evaluation request identity, frame sequence and capture time reject stale images, including across the three demonstration episodes of a decoder-fit assignment. Paused and completed trials label retained images accordingly.
+
+Images travel only from the browser worker to the two canvas views. They are excluded from coordinator requests, result metrics, local checkpoint persistence and the evaluation progress watchdog. Disabling Eyes stops image copying while training continues. Runs with vision disabled show an unavailable message rather than a fabricated scene.

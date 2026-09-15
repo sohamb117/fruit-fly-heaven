@@ -54,10 +54,12 @@ def preflight(origin, lease_timeout_seconds=180):
     names = [p.get("name") for p in parameters]
     if not all(isinstance(name, str) for name in names) or len(set(names)) != len(names):
         raise ValueError("Preflight config has invalid parameter names")
+    phases = config.get("trainingSequence", {}).get("phases")
+    allowed_stages = {p["stage"] for p in phases} if phases else {config.get("stage")}
     for value in (status, status.get("checkpoint"), downloaded):
         if not isinstance(value, dict) or value.get("configHash") != config_hash or value.get("modelFingerprint") != model:
             raise ValueError("Preflight website and coordinator identities differ")
-        if type(value.get("generation")) is not int or value["generation"] < 0 or value.get("stage") != config.get("stage"):
+        if type(value.get("generation")) is not int or value["generation"] < 0 or value.get("stage") not in allowed_stages:
             raise ValueError("Preflight checkpoint progress is invalid")
     for value in (status["checkpoint"], downloaded):
         vector = value.get("parameters")
@@ -68,10 +70,25 @@ def preflight(origin, lease_timeout_seconds=180):
             if (type(number) not in (int, float) or not math.isfinite(number)
                     or not parameter["min"] <= number <= parameter["max"]):
                 raise ValueError("Preflight checkpoint parameters are invalid")
+        if phases:
+            completed = value.get("completedPhases")
+            if (not isinstance(completed, list) or len(completed) > len(phases)
+                    or any(not isinstance(entry, dict) or entry.get("phaseId") != phases[i]["id"] for i, entry in enumerate(completed))
+                    or value["stage"] != phases[min(len(completed), len(phases)-1)]["stage"]):
+                raise ValueError("Preflight sequence checkpoint progress is invalid")
+    if phases:
+        sequence = status.get("sequence", {})
+        index = len(status["checkpoint"]["completedPhases"])
+        if (type(sequence.get("phaseIndex")) is not int or sequence["phaseIndex"] != index
+                or sequence.get("phaseId") != phases[min(index, len(phases)-1)]["id"]
+                or status["stage"] != status["checkpoint"]["stage"]):
+            raise ValueError("Preflight sequence phase is inconsistent")
     if status["generation"] != status["checkpoint"]["generation"] or downloaded["generation"] < status["generation"]:
         raise ValueError("Preflight checkpoint generation is inconsistent")
     if (downloaded["generation"] == status["generation"]
-            and downloaded["parameters"] != status["checkpoint"]["parameters"]):
+            and (downloaded["parameters"] != status["checkpoint"]["parameters"]
+                 or downloaded["stage"] != status["checkpoint"]["stage"]
+                 or downloaded.get("completedPhases") != status["checkpoint"].get("completedPhases"))):
         raise ValueError("Preflight checkpoint changed without a generation update")
     return {"configHash": config_hash, "modelFingerprint": model,
             "generation": downloaded["generation"], "parameterCount": len(names), "leaseSeconds": status["leaseSeconds"]}

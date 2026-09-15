@@ -93,6 +93,26 @@ class CloudFixture:
 
 
 class DeploymentTests(unittest.TestCase):
+    def test_sequence_preflight_allows_resumed_stage_and_rejects_phase_disagreement(self):
+        cloud = CloudFixture()
+        cloud.config["stage"] = "maintained_flight"
+        cloud.config["trainingSequence"] = {"phases": [
+            {"id": "legs", "stage": "maintained_flight"}, {"id": "landing", "stage": "landing"}]}
+        cloud.raw_config = json.dumps(cloud.config).encode()
+        cloud.config_hash = hashlib.sha256(cloud.raw_config).hexdigest()
+        original = cloud.checkpoint
+        cloud.checkpoint = lambda: {**original(), "completedPhases": [{"phaseId": "legs"}]}
+        cloud.mutate_status = lambda value: {**value, "sequence": {"phaseIndex": 1, "phaseId": "landing"}}
+        with patch.object(deploy, "fetch_bytes", cloud.fetch):
+            self.assertEqual(deploy.preflight(PRIMARY)["generation"], 4)
+            cloud.mutate_status = lambda value: {**value, "sequence": {"phaseIndex": 0, "phaseId": "legs"}}
+            with self.assertRaisesRegex(ValueError, "phase is inconsistent"):
+                deploy.preflight(PRIMARY)
+            cloud.mutate_status = lambda value: {**value, "sequence": {"phaseIndex": 1, "phaseId": "landing"}}
+            cloud.mutate_checkpoint = lambda value: {**value, "completedPhases": [{"phaseId": "wrong"}]}
+            with self.assertRaisesRegex(ValueError, "sequence checkpoint progress"):
+                deploy.preflight(PRIMARY)
+
     def test_guarded_update_does_not_create_a_service_without_protected_old_traffic(self):
         with patch.object(deploy, "command", return_value="[]") as command:
             with self.assertRaisesRegex(ValueError, "existing Cloud Run service"):

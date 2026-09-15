@@ -2,11 +2,13 @@
 // This module never supplies motor actions or changes the physical environment.
 import {validateTrainingConfigSchema} from './config-schema.js';
 import {validateMotorDecoderTrainingConfig} from './episode.js';
+import {sensoryParameterCount} from './sensorimotor-parameters.js';
 export function validateConfig(config) {
   validateTrainingConfigSchema(config);
   if (config.algorithm !== 'antithetic-evolution-strategies') throw new Error('Unsupported training configuration');
-  const motorDecoder=validateMotorDecoderTrainingConfig(config);
-  if (!Array.isArray(config.parameters) || !config.parameters.length || config.parameters.length > (motorDecoder?motorDecoder.parameters.length:256)) throw new Error('Invalid parameter schema');
+  const sensoryCount=sensoryParameterCount(config);
+  const motorDecoder=sensoryCount?config.motorDecoderContract:validateMotorDecoderTrainingConfig(config);
+  if (!Array.isArray(config.parameters) || !config.parameters.length || config.parameters.length > (motorDecoder?motorDecoder.parameters.length+sensoryCount:256)) throw new Error('Invalid parameter schema');
   const names = new Set();
   for (const p of config.parameters) {
     if (typeof p.name !== 'string' || names.has(p.name) || ![p.min,p.max,p.initial].every(Number.isFinite) || p.min >= p.max || p.initial < p.min || p.initial > p.max) throw new Error('Invalid parameter bounds');

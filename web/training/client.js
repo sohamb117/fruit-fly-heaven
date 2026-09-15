@@ -5,6 +5,7 @@ const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SH
 const detailEvent=(type,detail)=>new CustomEvent(type,{detail});
 const abortError=()=>new DOMException('Training stopped','AbortError');
 const codedError=(message,code)=>Object.assign(new Error(message),{code});
+const expiredAssignment=error=>[409,410].includes(error?.status)&&['assignment_timeout','lease_expired','stale_lease'].includes(error.code);
 export const browserTrainingAvailable=config=>!!config&&(config.schemaVersion!==2||config.optimizer?.acceptance?.nativeExecution?.backend==='wasm');
 export const EVALUATION_STALL_MS=180000;
 
@@ -27,7 +28,9 @@ export class TrainingClient extends EventTarget {
       bestReturn:null,lastReturn:null,history:[],parameters:[],checkpointStatus:'unverified',coordinator:{connected:false},curriculum:[],error:null};
     this.contributorId=crypto.randomUUID();
     this.brainObservation={enabled:false,indices:[]};
+    this.eyeObservation={enabled:false};
     this.evaluationInstance=0;
+    this.expiredLeases=new WeakMap();
   }
   emit(patch={}) {Object.assign(this.state,patch);this.dispatchEvent(detailEvent('state',structuredClone(this.state)));}
   async initialize() {
@@ -69,6 +72,15 @@ export class TrainingClient extends EventTarget {
         return;
       }
       if(message.type==='brain-error'){this.dispatchEvent(detailEvent('brain-error',{message:message.message||'Brain view unavailable'}));return;}
+      if(message.type==='eyes'||message.type==='eyes-error'){
+        // Images stay on the worker-to-view event path. They never enter
+        // state, persistence, result metrics or the contribution outbox.
+        if(!this.eyeObservation.enabled||!this.evaluationWatch||message.id!==this.evaluationWatch.id||!this.pending.has(message.id))return;
+        if(message.type==='eyes'&&message.snapshot?.jobId===this.state.activeJob?.jobId)
+          this.dispatchEvent(detailEvent('eyes',message.snapshot));
+        else if(message.type==='eyes-error')this.dispatchEvent(detailEvent('eyes-error',{message:message.message||'Eye view unavailable'}));
+        return;
+      }
       if(message.type==='frame'){this.dispatchEvent(detailEvent('frame',message.frame));return;}
       if(message.type==='progress'){
         this.recordEvaluationProgress(message);
@@ -94,6 +106,7 @@ export class TrainingClient extends EventTarget {
       if(info.configHash!==this.configHash||info.modelFingerprint!==this.config.modelFingerprint)throw new Error('Worker and page loaded different training builds; reload the page');
       this.validateExecution(info);
       this.worker.postMessage({type:'observe-brain',...this.brainObservation});
+      this.worker.postMessage({type:'observe-eyes',...this.eyeObservation});
       this.emit({backend:info.backend,modelFingerprint:info.modelFingerprint,message:'Ready'});
       if(message.frame)this.dispatchEvent(detailEvent('frame',message.frame));return info;
     }).catch(error=>{worker.terminate();if(this.worker===worker){this.worker=null;this.workerReady=null;}throw error;});
@@ -122,7 +135,7 @@ export class TrainingClient extends EventTarget {
     // Only actual simulation clocks establish liveness. Preview/brain messages,
     // status text and repetitions of a frozen clock do not renew this deadline.
     let advanced=false;
-    for(const key of ['neuralMs','nativeTimeSeconds','simSeconds','steps','warmupSteps','warmupSeconds']){
+    for(const key of ['calibrationNeuralMs','neuralMs','nativeTimeSeconds','simSeconds','steps','warmupSteps','warmupSeconds']){
       const value=message[key];
       if(Number.isFinite(value)&&value>(watch.clocks[key]??0)){watch.clocks[key]=value;advanced=true;}
     }
@@ -154,6 +167,11 @@ export class TrainingClient extends EventTarget {
     if(enabled===this.brainObservation.enabled&&indices.length===this.brainObservation.indices.length&&Array.from(indices).every((index,i)=>index===this.brainObservation.indices[i]))return;
     this.brainObservation={enabled,indices:Array.from(indices)};
     this.worker?.postMessage({type:'observe-brain',...this.brainObservation});
+  }
+  setEyeObservation({enabled=false}={}) {
+    if(typeof enabled!=='boolean')throw new Error('Invalid eye observation');
+    if(enabled===this.eyeObservation.enabled)return;
+    this.eyeObservation={enabled};this.worker?.postMessage({type:'observe-eyes',enabled});
   }
   async start(options={}) {
     if(this.running||this.starting)throw new Error('Training is already running');
@@ -213,16 +231,16 @@ export class TrainingClient extends EventTarget {
   }
   async evaluate(job,role='exploration',token=this.runToken) {
     if(this.sharedOnly&&(role!=='contribution'||!this.activeLease||this.activeLease.jobId!==job.jobId))throw new Error('Shared training only evaluates jobs assigned by its coordinator');
-    await this.runnable(token);validateParameters(job.parameters,this.config);
+    await this.runnable(token);this.checkAssignment(job);validateParameters(job.parameters,this.config);
     this.emit({episode:this.state.completedEpisodes+1,stage:job.stage,activity:'evaluating',message:`${role==='validation'?'Evaluating validation seed':role==='test'?'Evaluating independent test seed':'Running episode'} ${job.seed}`,episodeSimSeconds:0,
-      activeJob:{jobId:job.jobId??job.id??null,instance:++this.evaluationInstance,generation:job.generation??this.state.generation,seed:job.seed,parameters:job.parameters.slice()}});
+      activeJob:{jobId:job.jobId??job.id??null,phaseId:job.phaseId,mode:job.mode,instance:++this.evaluationInstance,generation:job.generation??this.state.generation,seed:job.seed,parameters:job.parameters.slice()}});
     const reply=await this.rpc('evaluate',{job,previewHz:this.options.previewHz,dutyCycle:this.options.dutyCycle});
-    await this.runnable(token);if(reply.result?.cancelled)throw abortError();const result=validateResult(reply.result,this.config);
+    await this.runnable(token);this.checkAssignment(job);if(reply.result?.cancelled)throw abortError();const result=validateResult(reply.result,this.config);
     this.validateProvenance(result,job);
     if(result.reason==='simulation_error')throw new Error(result.metrics?.error||'Simulation failed; this episode was not scored');
     this.state.completedEpisodes++;this.state.simSeconds+=result.simSeconds;
     this.state.wallSeconds=this.wallBefore+(performance.now()-this.started)/1000;
-    const row={episode:this.state.completedEpisodes,return:result.return,success:result.success,stage:job.stage,role,reason:result.reason,simSeconds:result.simSeconds};
+    const row={episode:this.state.completedEpisodes,return:result.return,success:result.success,stage:job.stage,phaseId:job.phaseId,mode:job.mode,role,reason:result.reason,simSeconds:result.simSeconds};
     this.state.history.push(row);if(this.state.history.length>120)this.state.history.shift();
     this.emit({lastReturn:result.return,metrics:result.metrics,lastResult:row});this.persist();return result;
   }
@@ -235,10 +253,19 @@ export class TrainingClient extends EventTarget {
     validateParameters(result.parameters,this.config);
     if(result.parameters.some((v,i)=>v!==job.parameters[i]))throw new Error('Episode parameters differ from assigned job');
     for(const name of ['generation','pairId','sign','parametersHash'])if(job[name]!==undefined&&result.provenance[name]!==job[name])throw new Error(`Episode job mismatch: ${name}`);
+    if(job.mode==='decoder-fit'){
+      if(!this.config.trainingSequence||typeof result.calibration?.passed!=='boolean'||result.provenance.mode!=='decoder-fit')throw new Error('Missing calibration evidence');
+      if(result.calibration.passed){validateParameters(result.candidateParameters,this.config);
+        const count=this.config.sensorimotorSequence.sensoryParameterNames.length;
+        if(result.candidateParameters.slice(0,count).some((v,i)=>v!==job.parameters[i]))throw new Error('Fit changed sensory parameters');}
+      else if(result.candidateParameters!==null)throw new Error('Failed fit supplied weights');
+      if(result.success!==false||result.cancelled!==false)throw new Error('Demonstration cannot claim autonomous success');
+      return;
+    }
     if(Math.abs(result.simSeconds-result.steps*this.config.bodyBlockMs/1000)>1e-8||result.simSeconds>job.durationSeconds+1e-8)throw new Error('Episode time does not match its physics steps');
     if(this.config.schemaVersion===2){
       const physicalFailure=result.terminated===true&&result.success===false&&['outside_habitat','excessive_rotation','overturned'].includes(result.reason);
-      const fullOutcome=(result.reason==='stage_success'&&result.success===true&&result.terminated===true)||(result.reason==='time_limit'&&result.success===false&&result.terminated===false);
+      const fullOutcome=(result.reason===(job.stage==='recovery'?'recovery_success':'stage_success')&&result.success===true&&result.terminated===true)||(result.reason==='time_limit'&&result.success===false&&result.terminated===false);
       if(result.steps<=0||result.simSeconds<=0||typeof result.terminated!=='boolean'||result.cancelled!==false||
         !(physicalFailure||(Math.abs(result.simSeconds-job.durationSeconds)<=1e-8&&fullOutcome)))throw new Error('This run requires a complete trial or physical failure');
     }
@@ -292,7 +319,8 @@ export class TrainingClient extends EventTarget {
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
     try{const response=await this.fetcher(`${url}/api/training${path}`,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:undefined,
       body:body?JSON.stringify(body):undefined,signal:controller.signal,credentials:'omit',cache:'no-store'});
-      const value=await response.json();if(!response.ok){const error=new Error(value.error||`Coordinator returned ${response.status}`);error.status=response.status;throw error;}return value;
+      const value=await response.json();if(!response.ok){const error=new Error(value.message||value.error||`Coordinator returned ${response.status}`);error.status=response.status;
+        error.code=typeof value.code==='string'?value.code:typeof value.error==='string'?value.error:undefined;throw error;}return value;
     }catch(error){
       // This controller only aborts for a network timeout. Stop invalidates the
       // run token separately; transport aborts must never look like user Stop.
@@ -329,7 +357,7 @@ export class TrainingClient extends EventTarget {
       (Number.isFinite(previous.acceptedResults)&&status.acceptedResults<previous.acceptedResults)))return false;
     if(current)this.sharedCheckpoint=current;
     if(this.sharedOnly&&current)this.parameters=current.parameters.slice();
-    this.emit({coordinator:{...status,connected:true,url},syncError:null,
+    this.emit({coordinator:{...status,connected:true,url},syncError:null,...(status.curriculum?{curriculum:status.curriculum}:{}),
       ...(this.sharedOnly&&current?{parameters:current.parameters.slice(),stage:current.stage,generation:current.generation,checkpointStatus:'shared-unverified'}:{}),...extra});
     return true;
   }
@@ -358,6 +386,7 @@ export class TrainingClient extends EventTarget {
   }
   leaseIdentity(job) {return {jobId:job.jobId,leaseToken:job.leaseToken,contributorId:this.contributorId,modelFingerprint:this.config.modelFingerprint,configHash:this.configHash};}
   hasPendingResult(job) {return !!this.outbox&&this.outbox.jobId===job.jobId&&this.outbox.leaseToken===job.leaseToken&&this.outboxUrl===job.coordinatorUrl;}
+  checkAssignment(job) {const error=this.expiredLeases.get(job);if(error)throw error;}
   async releaseLease(job) {try{await this.api('/release',this.leaseIdentity(job),job.coordinatorUrl);}catch{/* The server also expires disconnected leases. */}}
   async renewLease(job,token) {
     if(!this.running||this.paused||token!==this.runToken||this.activeLease!==job)return;
@@ -368,8 +397,16 @@ export class TrainingClient extends EventTarget {
     try{await this.api('/heartbeat',this.leaseIdentity(job),job.coordinatorUrl);}
     catch(error){
       if(!this.running||token!==this.runToken||this.activeLease!==job)return;
+      if(expiredAssignment(error)&&!this.hasPendingResult(job)){
+        // Remember expiry even between receiving a lease and starting its RPC,
+        // or while a completed evaluation is waiting for manual Resume.
+        this.expiredLeases.set(job,error);
+        const current=this.evaluationWatch;
+        if(current?.job===job)this.abortEvaluation(error,current);
+        return;
+      }
       if([409,410].includes(error.status)&&watch&&watch===this.evaluationWatch)
-        this.abortEvaluation(codedError('This trial assignment expired. Press Start to get a new trial.','lease_expired'),watch);
+        this.abortEvaluation(error,watch);
       else this.emit({message:`Lease renewal: ${error.message}`});
     }finally{if(this.heartbeatRequest===request)this.heartbeatRequest=null;}
   }
@@ -377,19 +414,32 @@ export class TrainingClient extends EventTarget {
     if(!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     const url=this.state.coordinator.url;
     if(this.outbox&&this.outboxUrl===this.state.coordinator.url){
+      const saved=this.outbox;
       this.emit({activity:'uploading',message:'Uploading'});
-      try{const accepted=await this.api('/result',this.outbox,url);await this.runnable(token);if(accepted.accepted!==true)throw new Error('Coordinator did not accept the saved result');this.outbox=null;this.state.contributedEpisodes++;this.persist();this.emit({message:'Uploaded'});}
-      catch(error){if([400,404,409,410,422].includes(error.status)){this.outbox=null;this.persist();this.emit({message:'Starting a new run'});}else throw error;}
+      try{const accepted=await this.api('/result',saved,url);await this.runnable(token);if(accepted.accepted!==true)throw new Error('Coordinator did not accept the saved result');this.outbox=null;this.state.contributedEpisodes++;this.persist();this.emit({message:'Uploaded'});}
+      catch(error){
+        if(!expiredAssignment(error))throw error;
+        if(this.outbox===saved){this.outbox=null;this.persist();}
+        await this.runnable(token);this.emit({activity:'waiting',message:'Getting another trial'});
+      }
     }
     while(this.running&&token===this.runToken){
-      await this.runnable(token);this.emit({activity:'waiting',message:'Waiting for work'});
+      await this.runnable(token);
+      this.emit({phase:'training',activity:'waiting',message:'Waiting for work'});
       const response=await this.api('/lease',{contributorId:this.contributorId,modelFingerprint:this.config.modelFingerprint,configHash:this.configHash},url);
       const job=response.job===undefined?response:response.job;
       if(job)job.coordinatorUrl=url;
       if(!this.running||token!==this.runToken){if(job)await this.releaseLease(job);throw abortError();}
       if(job)this.activeLease=job;
       await this.runnable(token);
-      if(!job){await delay(Math.min(response.waitMs||2000,10000));continue;}
+      if(!job){
+        if(['complete','needs-review'].includes(response.status)){
+          const status=await this.api('/status',null,url);await this.runnable(token);this.applyCoordinatorStatus(status,url);
+          this.running=false;this.worker?.terminate();this.worker=null;this.workerReady=null;
+          this.emit({phase:'ready',activity:null,message:response.status==='complete'?'Sequence complete':'Validation did not pass. Review this stage before continuing.'});return;
+        }
+        await delay(Math.min(response.waitMs||2000,10000));continue;
+      }
       if(job.modelFingerprint!==this.config.modelFingerprint||job.configHash!==this.configHash)throw new Error('Incompatible shared job');
       validateParameters(job.parameters,this.config);if(!this.config.stages.some(s=>s.id===job.stage))throw new Error('Unknown shared task');
       const heartbeat=this.heartbeat=setInterval(()=>{void this.renewLease(job,token);},60000);
@@ -399,7 +449,8 @@ export class TrainingClient extends EventTarget {
         for(const key of ['hasTakenOff','takeoffTime','flightSeconds','bestFlightSeconds','landingSeconds','landingTime','diagnostics','initialCondition','finalObservation','wallSeconds','setupWallSeconds','executionWallSeconds'])
           if(result.metrics?.[key]!==undefined)evidence[key]=result.metrics[key];
         const payload={...this.leaseIdentity(job),objective:result.return,metrics:{...evidence,success:result.success,terminated:result.terminated,cancelled:result.cancelled,simSeconds:result.simSeconds,steps:result.steps,reason:result.reason},
-          provenance:{...result.provenance,parameters:result.parameters}};
+          provenance:{...result.provenance,parameters:result.parameters},
+          ...(job.mode==='decoder-fit'?{calibration:result.calibration,candidateParameters:result.candidateParameters}:{})};
         // Keep an unsent complete result locally; it is never silently counted as
         // contributed. Repeated accepted submissions are idempotent at the server.
         this.outbox=payload;this.outboxUrl=url;this.persist();this.emit({activity:'uploading',message:'Uploading'});let accepted;
@@ -414,6 +465,17 @@ export class TrainingClient extends EventTarget {
           if(this.sharedCheckpoint)this.emit({parameters:this.sharedCheckpoint.parameters.slice()});
         }
         this.persist();
+      }catch(error){
+        if(!expiredAssignment(error))throw error;
+        if(this.hasPendingResult(job)){this.outbox=null;this.persist();}
+        if(this.activeLease===job)this.activeLease=null;
+        // Pause keeps contribution enabled but must block acquiring new work.
+        // A Stop or a new run invalidates this loop instead of restarting it.
+        await this.runnable(token);
+        // A synchronous WASM evaluation must be terminated on expiry. Reload
+        // its replacement before leasing, so initialization uses no assignment.
+        if(!this.worker){await this.ensureWorker();await this.runnable(token);}
+        this.emit({phase:'training',activity:'waiting',message:'Getting another trial',error:null});
       }finally{clearInterval(heartbeat);if(this.heartbeat===heartbeat)this.heartbeat=null;}
     }
   }

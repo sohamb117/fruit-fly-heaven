@@ -1,8 +1,18 @@
 # Training and shared contributions
 
+The live [sequential sensorimotor experiment](training-sequence.md) trains 24 structural feedback parameters by family, fits the existing 672-coefficient motor decoder, then trains recovery, takeoff and landing. It runs at **[flytrain.morisoba.moe/train.html](https://flytrain.morisoba.moe/train.html)** on Cloud Run with Firestore in project `flyheaven`. Its configuration hash is `284e053d1a7b14e6a6fbe8d1ac08302350f90f55391c478feae61addef3bb446`; durable state is in `training_sequences/banc888-sensorimotor-wasm-20260915`. See the [release record](../reports/flyheaven-sequence-eyes-20260915/README.md).
+
+The [scheduling update](../reports/flyheaven-scheduling-20260915/README.md) increases search rounds to 16 trials and records that policy separately from the original configuration. Each attempt has an absolute deadline of 20 wall minutes per five assigned simulation seconds, with a ten-minute minimum. Heartbeats cannot extend it; overdue trials can be reassigned, and updated clients automatically request new work. Existing results and checkpoint values remain in the same run.
+
 The live browser entry evaluates one BANC v888 network and FlyBody/MuJoCo body in WASM at a time. Its route remains **brain → VNC → motor neurons → muscles → body**. **Start** executes a coordinator-assigned trial on the visitor's computer; **Pause** suspends computation, and **Stop** releases unfinished work. Every completed contribution goes to the GCP pool; there is no unshared mode or sharing switch. Opening the page checks metadata but starts no simulation. The original observation console remains in the repository at `/`.
 
-The host is **Cloud Run with Firestore** in project `flyheaven`, at **[flytrain.morisoba.moe/train.html](https://flytrain.morisoba.moe/train.html)**. The live browser release is [`reports/motor-decoder-v1/browser-wasm-001`](../reports/motor-decoder-v1/browser-wasm-001/README.md), config hash `1f3b0935af592a3edf283f02ae2d7eb570fa5c2a6acd225b429b6624d6ed328f`, for namespace `banc888-motor-decoder-wasm-20260914`. On 2026-09-14, revision `fly-training-rbe4741deef91` received 100% of traffic; public and coordinator config identities matched and all 15 transport checks passed. Safari Start/Pause/Resume, the low-resolution 3D preview and a 672-parameter generation-zero checkpoint download were verified. One actual Safari WASM trial completed and was accepted into Firestore, with every check passing in the [read-only result audit](../reports/flyheaven-decoder-deployment-20260914/browser-wasm-audit-002.json). See the [managed deployment guide](../deploy/cloudrun/README.md).
+**Fly**, **Brain** and **Eyes** inspect the current trial. Eyes shows separate 256 × 128 images from the existing sensory cameras, copied at most twice per second only while selected and visible. It performs no extra camera simulation, and images are never uploaded. The parameter table shows the assigned values actually used by the current fly. See [observation details](training-brain-view.md).
+
+Each phase changes only its declared parameter family. Fresh paired comparisons can accept incremental improvements before task mastery; advancing a phase also requires task success. Later updates retest previous physical tasks. An exhausted budget stops for review and preserves the best accepted values. This is simulation-based engineering calibration, not measured sensory physiology or established behavioral success.
+
+## Previous browser cohort
+
+The previous browser release was [`reports/motor-decoder-v1/browser-wasm-001`](../reports/motor-decoder-v1/browser-wasm-001/README.md), config hash `1f3b0935af592a3edf283f02ae2d7eb570fa5c2a6acd225b429b6624d6ed328f`, for namespace `training_runs/banc888-motor-decoder-wasm-20260914`. Its 104 accepted results and generation-10 checkpoint were retained when the sequence went live. The following evidence describes that earlier cohort; its scores are not imported into the new sequence. On 2026-09-14, revision `fly-training-rbe4741deef91` received 100% of traffic; public and coordinator config identities matched and all 15 transport checks passed. Safari Start/Pause/Resume, the low-resolution 3D preview and a 672-parameter generation-zero checkpoint download were verified. One actual Safari WASM trial completed and was accepted into Firestore, with every check passing in the [read-only result audit](../reports/flyheaven-decoder-deployment-20260914/browser-wasm-audit-002.json). See the [managed deployment guide](../deploy/cloudrun/README.md).
 
 This cohort searches **672 individual wing motor-decoder coefficients** during `maintained_flight`: 24 power weights and 648 steering coefficients. Its initial values match the final native checkpoint, but the WASM run starts at generation 0 with zero inherited results or fitness. The native decoder namespace `banc888-motor-decoder-v1-20260914` is retained with 17 accepted results at generation 1; the earlier 14-parameter namespace `banc888-v1-20260913` is also retained. Different execution backends and config identities never share scores.
 
@@ -57,7 +67,7 @@ Inspect that archived amplitude run without changing its frozen sources:
 Use the matching extracted contributor archive. For the generated bundle already present in this checkout, run from the repository root:
 
 ```sh
-cd dist/training-client/fruit-fly-training-client-1f3b0935af59
+cd dist/training-sequence-eyes-client/fruit-fly-training-client-284e053d1a7b
 python3 serve.py --port 7842
 ```
 
@@ -69,9 +79,11 @@ Open `http://127.0.0.1:7842/train.html`. Port `7843` also works if `7842` is occ
 4. **Download checkpoint** fetches the latest saved candidate directly from GCP, including its parameter vector, generation and model/config identity. It works before training starts and never substitutes a local cached checkpoint.
 5. Local storage retains counters and unsent completed results for retry. Accepted results and shared checkpoints are saved on GCP. The coordinator assigns the task stage; the contributor cannot select an unshared task.
 
-The current coordinator assigns four search trials and, normally, six fresh candidate/incumbent comparison trials per generation. Each evaluates maintained flight after the explicit unscored warmup above. The horizon is five simulated seconds; a physical failure can end it earlier. This does not train takeoff, landing, feeding or the complete behavioral sequence. Episode duration is simulated time, so wall-clock execution can be much longer.
+The sequence assigns four search trials, followed by paired comparisons and fresh acceptance/retention checks. Decoder fitting instead assigns demonstration trajectories before autonomous evaluation. Task horizons are three to eight simulated seconds; wall-clock execution can be much longer. Food localization, approach and feeding remain outside this sequence.
 
-## Start an isolated development coordinator
+## Earlier standalone coordinator recipe
+
+For the current sequence, use the [sequential development recipe](training-sequence.md#build-and-run). The command below is retained for the previous 672-parameter cohort and cannot serve the new 696-parameter configuration.
 
 In a second terminal, with the same finalized build:
 

@@ -263,5 +263,105 @@ class DevelopmentBundleTests(unittest.TestCase):
             module.make_server(coordinator, config_bytes, port=0, asset_overrides=overrides)
 
 
+class SequenceDevelopmentHTTPTests(unittest.TestCase):
+    """Synthetic metadata and source bytes; no worker or simulation is started."""
+    request = DevelopmentServerTests.request
+
+    def setUp(self):
+        from test_sequential_training import fixture
+        from sequential_training import SequentialTrainingCoordinator
+
+        self.temporary = tempfile.TemporaryDirectory(prefix="sequence-http-fixture-", dir=ROOT / "reports")
+        self.addCleanup(self.temporary.cleanup)
+        self.config = fixture()
+        xml = '<mujoco model="HTTP fixture"><worldbody/></mujoco>\n'
+        self.sources = {
+            "/body-model/flybody-mujoco.xml": xml,
+            "/body-model/flybody-mujoco.json": json.dumps({"xml_sha256": hashlib.sha256(xml.encode()).hexdigest()}),
+            "/training/sensorimotor-parameters.js": 'export const fixture = "pinned sensory source α";\n',
+            "/training/sequential-environment.js": 'export const fixture = "pinned sequence source";\n',
+        }
+        self.config["assets"].update({url: hashlib.sha256(value.encode()).hexdigest() for url, value in self.sources.items()})
+        self.config["assets"] = dict(sorted(self.config["assets"].items()))
+        self.config["modelFingerprint"] = hashlib.sha256("".join(
+            f"{url}:{digest}\n" for url, digest in self.config["assets"].items()).encode()).hexdigest()
+        config_text = json.dumps(self.config, indent=2, ensure_ascii=False) + "\n"
+        self.config_hash = hashlib.sha256(config_text.encode()).hexdigest()
+        bundle = dict(schemaVersion=1, kind="flight-development-bundle", configText=config_text,
+                      configHash=self.config_hash, modelFingerprint=self.config["modelFingerprint"], assets=self.sources)
+        bundle_path = Path(self.temporary.name) / "sequence.bundle.json"
+        bundle_path.write_text(json.dumps(bundle), encoding="utf-8")
+        self.config_bytes, overrides = module.load_bundle(bundle_path)
+        self.coordinator = SequentialTrainingCoordinator(Path(self.temporary.name) / "sequence.sqlite3",
+                                                        self.config, self.config_hash)
+        self.addCleanup(self.coordinator.close)
+        self.server = module.make_server(self.coordinator, self.config_bytes, port=0, asset_overrides=overrides)
+        self.addCleanup(self.server.server_close)
+        thread = threading.Thread(target=self.server.serve_forever, daemon=True)
+        thread.start()
+        self.addCleanup(thread.join)
+        self.addCleanup(self.server.shutdown)
+        # The server owns its source snapshot even when the original dict moves.
+        overrides["/training/sequential-environment.js"] = b"mutated caller data"
+
+    def test_pinned_sequence_modules_have_javascript_mime_and_exact_manifest_bytes(self):
+        status, _, config_bytes = self.request("/training/config.json")
+        self.assertEqual(status, 200)
+        self.assertEqual(config_bytes, self.config_bytes)
+        self.assertEqual(hashlib.sha256(config_bytes).hexdigest(), self.config_hash)
+        for url, expected in self.sources.items():
+            if not url.endswith(".js"):
+                continue
+            with self.subTest(url=url):
+                status, headers, body = self.request(url + "?source=pinned")
+                self.assertEqual(status, 200)
+                self.assertIn(headers["Content-Type"].split(";")[0], {"text/javascript", "application/javascript"})
+                self.assertEqual(body, expected.encode())
+                self.assertEqual(hashlib.sha256(body).hexdigest(), self.config["assets"][url])
+                self.assertEqual(headers["X-Content-Type-Options"], "nosniff")
+                self.assertEqual(headers["Cross-Origin-Embedder-Policy"], "require-corp")
+                self.assertIn("connect-src 'self'", headers["Content-Security-Policy"])
+                status, head_headers, body = self.request(url, method="HEAD")
+                self.assertEqual(status, 200)
+                self.assertEqual(int(head_headers["Content-Length"]), len(expected.encode()))
+                self.assertEqual(body, b"")
+
+    def test_sequence_status_checkpoint_and_assigned_jobs_keep_one_exact_identity(self):
+        checkpoint = json.loads(self.request("/api/training/checkpoint")[2])
+        status = json.loads(self.request("/api/training/status")[2])
+        self.assertEqual(status["config"], self.config)
+        self.assertEqual(status["checkpoint"], checkpoint)
+        self.assertEqual(status["sequence"]["phaseId"], "legs")
+        self.assertEqual(checkpoint["parameterNames"], [parameter["name"] for parameter in self.config["parameters"]])
+        self.assertEqual(len(checkpoint["parameters"]), 696)
+        self.assertEqual(checkpoint["status"], "unverified")
+        self.assertFalse(checkpoint["biologicalSuccessValidated"])
+        identity = dict(contributorId="sequence-http-fixture", configHash=self.config_hash,
+                        modelFingerprint=self.config["modelFingerprint"])
+        headers = {"Content-Type": "application/json", "Origin": f"http://127.0.0.1:{self.server.server_port}"}
+        response, _, body = self.request("/api/training/lease", method="POST", body=json.dumps(identity), headers=headers)
+        self.assertEqual(response, 200)
+        job = json.loads(body)["job"]
+        for value in (status, checkpoint, job):
+            self.assertEqual(value["configHash"], self.config_hash)
+            self.assertEqual(value["modelFingerprint"], self.config["modelFingerprint"])
+        self.assertEqual(job["parameterNames"], checkpoint["parameterNames"])
+        self.assertEqual(job["parametersHash"], module.training_coordinator.fingerprint(job["parameters"]))
+        self.assertEqual((job["phaseId"], job["stage"], job["durationSeconds"], job["mode"]),
+                         ("legs", "flight", 5, "evaluation"))
+        self.assertNotEqual(job["parameters"][:5], checkpoint["parameters"][:5])
+        self.assertEqual(job["parameters"][5:], checkpoint["parameters"][5:])
+        self.assertEqual(json.loads(self.request("/api/training/checkpoint")[2]), checkpoint)
+        response, _, body = self.request("/api/training/lease", method="POST", body=json.dumps(identity), headers=headers)
+        self.assertEqual(response, 200)
+        self.assertTrue(json.loads(body)["retry"])
+        self.assertEqual(json.loads(body)["job"], job)
+        response, _, body = self.request("/api/training/lease", method="POST",
+                                        body=json.dumps({**identity, "configHash": "0" * 64}), headers=headers)
+        self.assertEqual(response, 409)
+        self.assertEqual(json.loads(body)["error"], "incompatible_config")
+        self.assertEqual(self.coordinator.status()["acceptedResults"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

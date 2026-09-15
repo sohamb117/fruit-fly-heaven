@@ -281,15 +281,17 @@ def make_server(coordinator, public_root, manifest_path, *, host="127.0.0.1", po
 
 
 def main():
-    from firestore_coordinator import FirestoreCoordinator
-
     app_root = Path(__file__).resolve().parent.parent
     config_path = os.environ.get("TRAINING_CONFIG", str(app_root / "config.json"))
     config, config_hash = training_coordinator.read_config(config_path)
+    if "trainingSequence" in config:
+        from firestore_sequential import FirestoreSequentialCoordinator as Coordinator
+    else:
+        from firestore_coordinator import FirestoreCoordinator as Coordinator
     project = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("PROJECT_ID")
     run_id = os.environ["TRAINING_RUN_ID"]
     lease_timeout_seconds = int(os.environ.get("TRAINING_LEASE_TIMEOUT_SECONDS", "180"))
-    coordinator = FirestoreCoordinator(config, config_hash, project=project, database="(default)",
+    coordinator = Coordinator(config, config_hash, project=project, database="(default)",
                                        run_id=run_id, initialize=False, lease_timeout_seconds=lease_timeout_seconds)
     server = None
     try:

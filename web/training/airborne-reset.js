@@ -23,14 +23,14 @@ export function beginAirborneWarmup({body,world,fly,settings}){
  const original=Object.getOwnPropertyDescriptor(mj,'mj_step');
  check(original&&typeof original.value==='function'&&(original.writable||original.configurable),'Cannot install explicit native warm-up fixture');
  const held=Object.freeze([...settings.rootQpos]),warmSeconds=settings.warmupSeconds;
- let mode='warmup',directRootWrites=0,warmNativeSteps=0,releasedNativeSteps=0,releaseNativeTime=null,releaseNeuralTimeMs=null,lastRoot,disposed=false;
+ let mode='warmup',directRootWrites=0,warmNativeSteps=0,releasedNativeSteps=0,releaseNativeTime=null,releaseNeuralTimeMs=null,lastRoot,disposed=false,releaseVelocity=null;
  const resetRoot=()=>{data.qpos.set(held,0);data.qvel.fill(0,0,6);directRootWrites++;lastRoot=copyRoot(data);};
  const audit=()=>({schemaVersion:1,profile:settings.profile,mode,bodyVariant:settings.bodyVariant,rootQpos:[...held],warmupSeconds:warmSeconds,
   rootRestraintActive:mode==='warmup',rootWriteCount:directRootWrites,warmNativeSteps,releasedNativeSteps,releaseNativeTime,releaseNeuralTimeMs,
   warmupForces:'Explicit root kinematic restraint during setup only; not counted as aerodynamic support or task progress.',
   nonwingJoints:'All remain dynamic and receive their original native muscle controls; this fixture never writes nonwing positions/velocities.',
   release:'Retains native integration/warmstart, muscles, wing phase/deployment, event queues and BANC state. No clock reset or synthetic motor stream.',
-  externalForceArraysWritten:false});
+  externalForceArraysWritten:false,...(releaseVelocity?{releaseVelocity:[...releaseVelocity],releaseVelocityStatus:'Explicit one-time recovery initial condition in native cm/s and rad/s; no subsequent root intervention.'}:{})});
  try{
   resetRoot();mj.mj_forward(model,data);
   if(body._wingLoadFeedback)body._wingLoadFeedback.capture(data,data.time);
@@ -51,13 +51,21 @@ export function beginAirborneWarmup({body,world,fly,settings}){
   }});
  }catch(error){Object.defineProperty(mj,'mj_step',original);disposed=true;mode='aborted';throw error;}
  return {audit,
-  finish({neuralTimeMs}={}){
+  finish({neuralTimeMs,releaseVelocity:requestedVelocity}={}){
+   check(requestedVelocity===undefined||finite(requestedVelocity,6),'Recovery release velocity requires six finite native components');
    check(!disposed&&mode==='warmup','Airborne fixture is not warming');
    check(Math.abs(data.time-warmSeconds)<1e-8&&Math.abs(body.time-data.time)<1e-10,'Warm-up has not reached exact release boundary');
    check(Number.isFinite(neuralTimeMs)&&Math.abs(neuralTimeMs/1000-data.time)<1e-8,'Neural/native release clocks disagree');
    check(warmNativeSteps===Math.round(warmSeconds/.00005),'Unexpected native warm-up step count');
    check(body.remainder===0&&event.elapsedMs===Math.round(warmSeconds*1000)&&event.observedMs===event.elapsedMs&&event.adapter.snapshot().pending===null,'Wing event history not fully consumed at release');
    sameRoot(data,lastRoot);zeroForces(data);
+   if(requestedVelocity!==undefined){
+    releaseVelocity=[...requestedVelocity];data.qvel.set(releaseVelocity,0);directRootWrites++;
+    mj.mj_forward(model,data);
+    // Velocity-only release retains the last completed-step wing-load sample.
+    // A current-time mj_forward force is not a completed native-step sample.
+    lastRoot=copyRoot(data);
+   }
    releaseNativeTime=data.time;releaseNeuralTimeMs=neuralTimeMs;mode='released';
    body.monitor?.resetContinuity('airborne warm-up released; scoring begins');body.refresh();world.copyPose(fly,body,0);
    sameRoot(data,lastRoot);

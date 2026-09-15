@@ -4,6 +4,7 @@ import hashlib
 from http.server import SimpleHTTPRequestHandler
 import io
 import json
+import mimetypes
 from pathlib import Path
 import re
 from urllib.parse import unquote, urlsplit
@@ -19,14 +20,31 @@ PREFIXES = [
 ]
 DEVELOPMENT_META = '<meta name="heaven-training-development" content="same-origin">'
 MODEL_OVERRIDE_PATHS = frozenset({"/body-model/flybody-mujoco.xml", "/body-model/flybody-mujoco.json"})
+RUNTIME_OVERRIDE_PATHS = frozenset(
+    ["/" + name + ".js" for name in (
+        "banc-antenna", "banc-ground-sense", "banc-haltere", "banc-leg-proprioception", "banc-proboscis",
+        "banc-sensory-current", "banc-taste", "banc-tegula", "banc/embodiment", "body-world", "color-vision",
+        "flight-scene-profile", "motor-decoder", "sensory-encoder", "virtual-haltere")]
+    + ["/flybody-" + name + ".js" for name in (
+        "contact-environment", "habitat-collision", "leg-actuation", "motor-excitation", "mouth-pose", "physics",
+        "stance", "wing-event-excitation", "wing-load", "wing-pose", "wings", "world")]
+    + ["/training/" + name + ".js" for name in (
+        "airborne-reset-contract", "airborne-reset", "brain-resources", "compact-vision", "config-schema", "environment",
+        "episode", "flight-objective", "flight-observation", "flight-parameters", "flight-telemetry", "maintained-flight-objective",
+        "retinal-sensor", "sensory-feedback", "worker", "sensorimotor-parameters", "recovery-objective",
+        "sequential-environment", "decoder-calibration", "flight-teacher")]
+    + ["/banc-engine/src/" + name + ".js" for name in ("cell-models", "index", "model", "motor-events", "wasm", "webgpu")]
+    + ["/banc-engine/dist/core.js", "/body-engine/mujoco.js", "/vendor/three.core.js", "/vendor/three.module.js",
+       "/body-model/banc-leg-proprioception-v1.json", "/body-model/flight-teacher-calibration-v1.json"])
 
 
 def validate_asset_overrides(config_bytes, asset_overrides):
-    """Snapshot the two data assets; never permit executable route overrides."""
+    """Snapshot pinned model/runtime bytes; never override UI or API routes."""
     if asset_overrides is None:
         return {}
-    if not isinstance(asset_overrides, dict) or set(asset_overrides) != MODEL_OVERRIDE_PATHS:
-        raise ValueError("Development bundle must override exactly the model XML and metadata")
+    if (not isinstance(asset_overrides, dict) or not MODEL_OVERRIDE_PATHS.issubset(asset_overrides)
+            or not set(asset_overrides).issubset(MODEL_OVERRIDE_PATHS | RUNTIME_OVERRIDE_PATHS)):
+        raise ValueError("Development bundle requires model XML/metadata and supported pinned runtime assets")
     if any(not isinstance(value, (str, bytes)) for value in asset_overrides.values()):
         raise ValueError("Development model overrides must contain text or bytes")
     overrides = {url: value.encode("utf-8") if isinstance(value, str) else bytes(value)
@@ -81,10 +99,15 @@ def load_bundle(bundle_path):
     return config_bytes, overrides
 
 
-def make_server(coordinator, config_bytes, *, port=7845, asset_overrides=None):
+def make_server(coordinator, config_bytes, *, port=7845, asset_overrides=None, brain_sample=None):
     if hashlib.sha256(config_bytes).hexdigest() != coordinator.config_hash:
         raise ValueError("Served configuration and coordinator differ")
     overrides = validate_asset_overrides(config_bytes, asset_overrides)
+    if brain_sample is not None:
+        sample = json.loads(brain_sample)
+        if sample.get("modelFingerprint") != coordinator.model_fingerprint or sample.get("dataset") != "BANC v888":
+            raise ValueError("Brain display sample belongs to a different model")
+        overrides["/training/brain-sample.json"] = bytes(brain_sample)
     server = training_coordinator.make_server(coordinator, host="127.0.0.1", port=port, allowed_origins=())
     api_handler = server.RequestHandlerClass
     original_html = (ROOT / "web/train.html").read_text()
@@ -139,7 +162,7 @@ def make_server(coordinator, config_bytes, *, port=7845, asset_overrides=None):
             if content is None:
                 return super().send_head()
             self.send_response(200)
-            content_type = "application/json" if path.endswith(".json") else "application/xml; charset=utf-8" if path.endswith(".xml") else "text/html; charset=utf-8"
+            content_type = "text/html; charset=utf-8" if path in ("/", "/train.html") else mimetypes.guess_type(path)[0] or "application/octet-stream"
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(content)))
             self.end_headers()
@@ -175,10 +198,17 @@ def main():
         parser.error(str(error))
     database.parent.mkdir(parents=True, exist_ok=True)
     config_hash = hashlib.sha256(config_bytes).hexdigest()
-    coordinator = training_coordinator.TrainingCoordinator(database, json.loads(config_bytes), config_hash)
+    config = json.loads(config_bytes)
+    if config.get("trainingSequence"):
+        from sequential_training import SequentialTrainingCoordinator
+        coordinator = SequentialTrainingCoordinator(database, config, config_hash)
+    else:
+        coordinator = training_coordinator.TrainingCoordinator(database, config, config_hash)
     server = None
     try:
-        server = make_server(coordinator, config_bytes, port=args.port, asset_overrides=asset_overrides)
+        sample_path = args.bundle.resolve().parent / "brain-sample.json" if args.bundle else None
+        brain_sample = sample_path.read_bytes() if sample_path and sample_path.is_file() else None
+        server = make_server(coordinator, config_bytes, port=args.port, asset_overrides=asset_overrides, brain_sample=brain_sample)
         print(json.dumps({"url": f"http://127.0.0.1:{server.server_port}/train.html", "database": str(database),
                           "configHash": config_hash, "modelFingerprint": coordinator.model_fingerprint,
                           "stage": coordinator.stage, "durationSeconds": coordinator.duration,

@@ -50,8 +50,9 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
  const text=await fetchText(configUrl),config=JSON.parse(text),configHash=await sha(new TextEncoder().encode(text));
  if(requestedConfig&&JSON.stringify(requestedConfig)!==JSON.stringify(config))throw new Error('Initialization config differs from canonical training config');
  const initialParameters=parameterValues(config,config.parameters.map(p=>p.initial)),motorDecoderEnabled=initialParameters.motorDecoder!==undefined;
+ const sensorimotorEnabled=initialParameters.sensoryConfig!==undefined;
  const sceneProfile=validateMaintainedScene(config.maintainedScene);
- if(sceneProfile&&(config.stage!=='maintained_flight'||config.stages.some(s=>s.id!=='maintained_flight')))throw new Error('Spacious curriculum is exclusive to maintained flight');
+ if(sceneProfile&&!sensorimotorEnabled&&(config.stage!=='maintained_flight'||config.stages.some(s=>s.id!=='maintained_flight')))throw new Error('Spacious curriculum is exclusive to maintained flight');
  if(!/^[a-f0-9]{64}$/.test(config.modelFingerprint))throw new Error('Training model fingerprint is not finalized');
  if(config.neuralInputSequence!==undefined&&typeof config.neuralInputSequence!=='boolean')throw new Error('neuralInputSequence must be boolean');
  const useInputSequence=config.neuralInputSequence===true||config.haltereFeedback!==undefined;
@@ -103,8 +104,27 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
  const sensoryResources=await createTrainingSensoryResources({config,base,sensory:sensoryModel,groups,tasteMapper,projection,ids:preparedIds,sceneProfile,legCatalog});
  const externalIndices=sensoryResources.indices,visionEnabled=sensoryResources.visionEnabled;
  const mapper=await createBancSensoryCurrentMapper(core,base,{indices:externalIndices,onProfile:(_,i,n)=>onProgress?.({message:'Calibrating isolated sensory interface',completed:i+1,total:n})});
- // The neural model, sensory transduction, and native muscle physiology are fixed.
- // Only the declared wing interpreter or motor decoder receives the candidate.
+ // New sequential candidates rebuild their own observers, never the prepared
+ // graph or native body factory. Their index layout must remain identical to
+ // the already calibrated sensory-current mapping.
+ async function candidateSensors(effectiveConfig){
+  if(!sensorimotorEnabled)return {sensoryResources,haltereMapper,effectiveConfig:config};
+  if(!effectiveConfig)throw new Error('Missing candidate sensory configuration');
+  let candidateManifest=sensory,candidateHaltere=null;
+  if(effectiveConfig.tegulaFeedback!==undefined){
+   const {createTegulaSensoryManifest}=await import('../banc-tegula.js');
+   candidateManifest=createTegulaSensoryManifest({...base,ids:preparedIds},sensory,effectiveConfig.tegulaFeedback);
+  }
+  if(effectiveConfig.haltereFeedback!==undefined){
+   const settings=effectiveConfig.haltereFeedback;
+   if(!settings||typeof settings!=='object'||Array.isArray(settings)||Object.keys(settings).some(key=>!['profile','geometries','maxCurrentPa','mechanicalModel'].includes(key)))throw new Error('Invalid candidate haltere declaration');
+   candidateHaltere=createHaltereCurrentMapper({enabled:true,...settings,sensoryManifest:sensory,preparedIds});
+  }
+  const resources=await createTrainingSensoryResources({config:effectiveConfig,base,sensory:candidateManifest,groups,tasteMapper,projection,ids:preparedIds,sceneProfile,legCatalog});
+  if(resources.visionEnabled!==visionEnabled||resources.indices.length!==externalIndices.length||!resources.indices.every((id,k)=>id===externalIndices[k]))
+   throw new Error('Candidate sensory tuning changed the fixed input identity layout');
+  return {sensoryResources:resources,haltereMapper:candidateHaltere,effectiveConfig};
+ }
  const motorIndices=Uint32Array.from(base.io.motor_neurons,m=>m.index);
  let backend=null,active=null,disposed=false,lastSensorySummary=null;
  const brainResources=createTrainingBrainResources({model:brainModel,backend:wasmExecution?'wasm':'auto',
@@ -125,11 +145,11 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
    food:world.habitat.fruit.map(f=>({kind:f.kind,position:[f.x/10,f.z/10,f.y/10],radiusCm:f.radius/10,lengthCm:(f.length||0)/10,rotation:f.angle||0,path:f.path?.map(([x,y])=>[x/10,y/10,f.y/10]),remaining:f.remaining})),
    bowl:sceneProfile?{radiusCm:sceneProfile.radiusCm,floor:{baseCm:.15,radialCoefficientPerCm:.037,capRadiusCm:sceneProfile.floorCapRadiusCm},ceilingCm:sceneProfile.ceilingCm,curriculumScene:sceneProfile}:{radiusCm:6.5,floor:{baseCm:.15,radialCoefficientPerCm:.037},ceilingCm:world.habitat.ceiling/10},
    contacts:{environment:b.environmentContactCount,food:b.foodContactCount,legs:Array.from(b.legFoodContact),mouth:Array.from(b.mouthFoodContact),wings:Array.from(b.wingFoodContact)},
-   ...(haltereMapper?{haltereCurrent:clone(active.fly.sensory?.haltereCurrent??null)}:{}),
+   ...(active.haltereMapper?{haltereCurrent:clone(active.fly.sensory?.haltereCurrent??null)}:{}),
    phase:metrics.phase||'grounded',motion:active.fly.motion,metrics:{...metrics,observation:active.lastObservation,mechanics:makeFlightTelemetry(b,world.rates(active.fly))},neuralMs:active.brain?.timeMs||0,neuralSpikes:active.lastSpikes||0,vision:visionEnabled};
  }
- function createWorld(stage,seed,interpreter,motorDecoder){
-  haltereMapper?.reset?.();
+ function createWorld(stage,seed,interpreter,motorDecoder,observers={sensoryResources,haltereMapper,effectiveConfig:config}){
+  observers.haltereMapper?.reset?.();
   const random=seededRandom(seed),fly={...clone(habitat.flies[0]),id:1,brain:{time_ms:0,motor:{},motorNeuronRates:Array(motorIndices.length).fill(0)}};
   // All objectives begin in native stance. Landing must follow the fly's own
   // takeoff and flight; an airborne reset would also reward merely falling.
@@ -145,7 +165,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   world.mj.mj_forward(world.model,body.data);
   if(config.tegulaFeedback!==undefined)body.enableWingLoadFeedback({localFrame:config.tegulaFeedback.schema===2});
   body.refresh();body.monitor.resetContinuity('training episode initial condition');world.copyPose(fly,body,0);
-  return {world,body,fly,initialCondition:{stage,seed,position:[body.x,body.y,body.z],quaternion:[...body.quaternion],velocity:Array.from(body.data.qvel.slice(0,6)),airborne:body.airborne,placement:'Native grounded stance with a seeded small angular disturbance; no airborne offset or launch impulse.'}};
+  return {world,body,fly,...observers,initialCondition:{stage,seed,position:[body.x,body.y,body.z],quaternion:[...body.quaternion],velocity:Array.from(body.data.qvel.slice(0,6)),airborne:body.airborne,placement:'Native grounded stance with a seeded small angular disturbance; no airborne offset or launch impulse.'}};
   }catch(error){world.dispose();throw error;}
  }
  function observe(){
@@ -159,15 +179,17 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
  }
  const ready=async()=>{
   if(disposed)throw new Error('Training environment disposed');
-  cleanup();const {interpreter,motorDecoder}=parameterValues(config,config.parameters.map(p=>p.initial));
-  try{active={...createWorld(config.stage,config.optimizer.seed,interpreter,motorDecoder)};active.brain=await makeBrain();await checkShader();
-   return {environmentVersion:config.environmentVersion,modelFingerprint:config.modelFingerprint,configHash,backend,...executionEvidence(),bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,vision:visionEnabled,parameterCount:config.parameters.length,criteria:CRITERIA,trainedCellCounts:{},parameterScope:motorDecoderEnabled?'individual-mn-motor-decoder-only':'flight-interpreter-only',frame:frame(config.stage),limitations:[visionEnabled?'Experimental retinal motion input at mapped T4/T5 cells; receptive fields and gains are modeling priors.':'Vision is disabled; the observer preview is not retinal input.','Reward thresholds and fitted parameters are modeling assumptions, not measured biological physiology.',motorDecoderEnabled?'Only the declared individual-MN motor-decoder coefficients are trainable. Neural physiology, synapses, sensory gains, muscle dynamics, native body physics and wingbeat tables stay fixed.':'Only 27 wing-interpreter coefficients are trainable. Neural physiology, synapses, sensory gains, muscle dynamics, native body physics and wingbeat tables stay fixed.']};
+  cleanup();const {interpreter,motorDecoder,sensoryConfig}=parameterValues(config,config.parameters.map(p=>p.initial));
+  try{const observers=await candidateSensors(sensoryConfig);active={...createWorld(config.stage,config.optimizer.seed,interpreter,motorDecoder,observers)};active.brain=await makeBrain();await checkShader();
+   return {environmentVersion:config.environmentVersion,modelFingerprint:config.modelFingerprint,configHash,backend,...executionEvidence(),bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,vision:visionEnabled,parameterCount:config.parameters.length,criteria:CRITERIA,trainedCellCounts:{},parameterScope:sensorimotorEnabled?'sensory-and-individual-mn-decoder':motorDecoderEnabled?'individual-mn-motor-decoder-only':'flight-interpreter-only',frame:frame(config.stage),limitations:[visionEnabled?'Experimental retinal motion input at mapped T4/T5 cells; receptive fields and gains are modeling priors.':'Vision is disabled; the observer preview is not retinal input.','Reward thresholds and fitted parameters are modeling assumptions, not measured biological physiology.',sensorimotorEnabled?'Declared sensory scales and individual-MN decoder coefficients are tuned against simulation tasks. Anatomy, neural graph, native physics and receptive directions stay fixed; this is engineering calibration, not measured physiology.':motorDecoderEnabled?'Only the declared individual-MN motor-decoder coefficients are trainable. Neural physiology, synapses, sensory gains, muscle dynamics, native body physics and wingbeat tables stay fixed.':'Only 27 wing-interpreter coefficients are trainable. Neural physiology, synapses, sensory gains, muscle dynamics, native body physics and wingbeat tables stay fixed.']};
   }finally{cleanup();}
  };
- async function evaluate(job,{checkpoint=async()=>delay(0),previewHz=6,dutyCycle=.65,getBudget,onFrame,onProgress,onInitialState,onPhysicsStep,onMotorEvents}={}){
+ async function evaluate(job,{checkpoint=async()=>delay(0),previewHz=6,dutyCycle=.65,getBudget,onFrame,onProgress,onInitialState,onBeforePhysicsStep,onPhysicsStep,onMotorEvents}={}){
   if(disposed)throw new Error('Training environment disposed');if(active)throw new Error('Concurrent training evaluation');
+  if(sensorimotorEnabled)lastSensorySummary=null;
   if(onMotorEvents!==undefined&&typeof onMotorEvents!=='function')throw new Error('onMotorEvents must be a function');
-  const {vector,interpreter,motorDecoder}=parameterValues(config,job.parameters);
+  if(onBeforePhysicsStep!==undefined&&typeof onBeforePhysicsStep!=='function')throw new Error('onBeforePhysicsStep must be a function');
+  const {vector,interpreter,motorDecoder,sensoryConfig,sensoryCount}=parameterValues(config,job.parameters);
   if(!Number.isInteger(job.seed)||job.seed<0||job.seed>0xffffffff||!STAGES.includes(job.stage))throw new Error('Invalid episode seed or stage');
   const stageConfig=config.stages.find(s=>s.id===job.stage);
   if(!stageConfig)throw new Error('Episode stage is not configured');
@@ -178,11 +200,12 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   // rests. wallSeconds below remains total elapsed evaluation time.
   let setupStarted=null,blockStarted=null,setupWallSeconds=0,executionWallSeconds=0;
   const provenance={environmentVersion:config.environmentVersion,backend:null,bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,modelFingerprint:config.modelFingerprint,configHash,seed:job.seed,stage:job.stage,vision:visionEnabled};
+  if(sensorimotorEnabled)Object.assign(provenance,{parameterContract:config.parameterContract,sensoryParameterCount:sensoryCount,motorParameterCount:motorDecoder.length,calibrationInterpretation:'simulation-based engineering calibration'});
   for(const name of ['generation','pair','pairId','sign','parametersHash'])if(job[name]!==undefined)provenance[name]=job[name];
   let initialCondition,initialObservation,finalObservation;
   try{
-   await checkpoint();setupStarted=performance.now();active={...createWorld(job.stage,job.seed,interpreter,motorDecoder)};initialCondition=active.initialCondition;active.brain=await makeBrain();provenance.backend=backend;Object.assign(provenance,executionEvidence());await checkShader();
-   const {brain,world,body,fly}=active,sensoryFeedback=sensoryResources.create({world,body,fly}),encoder=sensoryFeedback.encoder,input=new Float32Array(base.manifest.neuron_count);
+   await checkpoint();setupStarted=performance.now();const observers=await candidateSensors(sensoryConfig);active={...createWorld(job.stage,job.seed,interpreter,motorDecoder,observers)};initialCondition=active.initialCondition;active.brain=await makeBrain();provenance.backend=backend;Object.assign(provenance,executionEvidence());await checkShader();
+   const {brain,world,body,fly,haltereMapper,effectiveConfig,sensoryResources:episodeSensoryResources}=active,sensoryFeedback=episodeSensoryResources.create({world,body,fly}),encoder=sensoryFeedback.encoder,input=new Float32Array(base.manifest.neuron_count);
    active.sensoryFeedback=sensoryFeedback;
    if(useInputSequence&&typeof brain.stepSequence!=='function')throw new Error('Per-tick current delivery is unavailable');
    const inputSequence=useInputSequence?Array.from({length:config.bodyBlockMs/config.dtMs},()=>new Float32Array(input.length)):null;
@@ -215,7 +238,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     const encoded=sensoryFeedback.update();
     if(encoded)for(let k=0;k<encoded.indices.length;k++){const index=encoded.indices[k];input[index]=mapper.current(index,encoded.ratesHz[k]);}
     if(inputSequence){
-     const sample=haltereMapper?haltereSample(body,fly,config.haltereFeedback.mechanicalModel!==undefined):null;
+     const sample=haltereMapper?haltereSample(body,fly,effectiveConfig.haltereFeedback.mechanicalModel!==undefined):null;
      for(let k=0;k<inputSequence.length;k++){
       inputSequence[k].set(input);
       if(haltereMapper){
@@ -232,7 +255,8 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     if(!state.every(Number.isFinite))throw new Error('Nonfinite BANC motor state');
     fly.brain={time_ms:brain.timeMs,motor:{},motorNeuronRates:Array.from(motorIndices,(_,k)=>state[k*8+4])};fly.senses=encoder.sample.food;fly.sensory=encoder.sample;active.lastSpikes=state.totalSpikes;
     if(emitMotorEvents)await emitMotorEvents();
-    const physicsTimeBefore=onPhysicsStep?body.time:0;
+    const physicsTimeBefore=onPhysicsStep||onBeforePhysicsStep?body.time:0;
+    onBeforePhysicsStep?.({body,world,fly,brain,input,inputSequence,encoder,sensoryFeedback,index:steps,episodeIndex:steps,phase:'scored',episodeTimeSeconds:steps*config.bodyBlockMs/1000,releaseNativeTime:0,durationSeconds:config.bodyBlockMs/1000,timeBefore:physicsTimeBefore,neuralMs:brain.timeMs});
     world.tick(config.bodyBlockMs/1000);steps++;
     onPhysicsStep?.({body,world,fly,brain,input,inputSequence,encoder,sensoryFeedback,index:steps-1,durationSeconds:config.bodyBlockMs/1000,timeBefore:physicsTimeBefore,neuralMs:brain.timeMs});
     if(Math.abs(body.time-brain.timeMs/1000)>1e-8)throw new Error('Neural/native feedback clocks diverged');
@@ -260,12 +284,14 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
  // Staged-only maintained-flight path. Grounded evaluate() below is unchanged.
  let maintainedDependencies;
  const maintainedUrls=['/training/maintained-flight-objective.js','/training/airborne-reset-contract.js','/training/airborne-reset.js'];
- async function evaluateMaintained(job,{checkpoint=async()=>delay(0),previewHz=6,dutyCycle=.65,getBudget,onFrame,onProgress,onInitialState,onPhysicsStep,onMotorEvents}={}){
+ async function evaluateMaintained(job,{checkpoint=async()=>delay(0),previewHz=6,dutyCycle=.65,getBudget,onFrame,onProgress,onInitialState,onBeforePhysicsStep,onPhysicsStep,onMotorEvents}={}){
   if(disposed)throw new Error('Training environment disposed');if(active)throw new Error('Concurrent training evaluation');
+  if(sensorimotorEnabled)lastSensorySummary=null;
   if(onMotorEvents!==undefined&&typeof onMotorEvents!=='function')throw new Error('onMotorEvents must be a function');
+  if(onBeforePhysicsStep!==undefined&&typeof onBeforePhysicsStep!=='function')throw new Error('onBeforePhysicsStep must be a function');
   if(job.captureMotorReplay===true)throw new Error('Time-zero motor replay capture is incompatible with maintained-flight release observers');
-  const {vector,interpreter,motorDecoder}=parameterValues(config,job.parameters);
-  if(!Number.isInteger(job.seed)||job.seed<0||job.seed>0xffffffff||job.stage!=='maintained_flight')throw new Error('Invalid maintained-flight seed or stage');
+  const {vector,interpreter,motorDecoder,sensoryConfig,sensoryCount}=parameterValues(config,job.parameters),isRecovery=job.stage==='recovery';
+  if(!Number.isInteger(job.seed)||job.seed<0||job.seed>0xffffffff||!['maintained_flight','recovery'].includes(job.stage))throw new Error('Invalid airborne seed or stage');
   const stageConfig=config.stages.find(s=>s.id===job.stage),duration=job.durationSeconds??stageConfig?.durationSeconds;
   if(!stageConfig||duration!==5||stageConfig.durationSeconds!==5)throw new Error('Maintained flight requires five scored seconds');
   if(config.wingEventExcitation===undefined)throw new Error('Maintained flight requires the explicit wing event interface');
@@ -274,7 +300,13 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   if(!metadata)throw new Error('Maintained flight requires pinned native body metadata');
   maintainedDependencies??=Promise.all([import('./maintained-flight-objective.js'),import('./airborne-reset-contract.js'),import('./airborne-reset.js')]);
   const [{createMaintainedFlightScore,MAINTAINED_FLIGHT_CRITERIA,maintainedFlightCriteria},{selectFlightInitialCondition,createMaintainedFlightClock},{beginAirborneWarmup}]=await maintainedDependencies;
-  const context={bodyMetadataSha256:metadata.sha256},settings=selectFlightInitialCondition(job.stage,config.initialCondition,context);
+  let recoveryModule=null,disturbance=null;
+  if(isRecovery){
+   if(!assets.some(asset=>asset.url==='/training/recovery-objective.js'))throw new Error('Unpinned recovery objective');
+   recoveryModule=await import('./recovery-objective.js');
+   disturbance=recoveryModule.createRecoveryDisturbance(config.recoveryDisturbance,job.seed);
+  }
+  const context={bodyMetadataSha256:metadata.sha256},settings=selectFlightInitialCondition('maintained_flight',config.initialCondition,context);
   if(settings.warmupSeconds!==.5)throw new Error('This maintained-flight variant requires an explicit 0.5 second warmup');
   const clock=createMaintainedFlightClock(settings,context),blockSeconds=config.bodyBlockMs/1000;
   const started=performance.now();let score,steps=0,warmupSteps=0,totalBlocks=0,termination=null,cancelled=false,error=null;
@@ -284,6 +316,8 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   let lastPacketTimeMs=null,lastAbsoluteNativeTime=0,lastAbsoluteNeuralTimeMs=0,blockPhase=null;
   const provenance={environmentVersion:config.environmentVersion,backend:null,bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,
    modelFingerprint:config.modelFingerprint,configHash,seed:job.seed,stage:job.stage,vision:visionEnabled,
+   ...(sensorimotorEnabled?{parameterContract:config.parameterContract,sensoryParameterCount:sensoryCount,motorParameterCount:motorDecoder.length,calibrationInterpretation:'simulation-based engineering calibration'}:{}),
+   ...(disturbance?{recoveryDisturbance:clone(disturbance)}:{}),
    initialConditionProfile:clone(settings),...(sceneProfile?{curriculumScene:clone(sceneProfile)}:{}),clockSemantics:'Brain, native and event clocks stay absolute; simSeconds and steps count only the scored interval.'};
   for(const name of ['generation','pair','pairId','sign','parametersHash'])if(job[name]!==undefined)provenance[name]=job[name];
   function maintainedFrame(phase){
@@ -319,9 +353,9 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
    const idle=blockWallMs*(1/duty-1);for(let remaining=idle;remaining>0;remaining-=20){await delay(Math.min(20,remaining));await checkpoint();}
   }
   try{
-   await checkpoint();setupStarted=performance.now();active={...createWorld(job.stage,job.seed,interpreter,motorDecoder)};
+   await checkpoint();setupStarted=performance.now();const observers=await candidateSensors(sensoryConfig);active={...createWorld(job.stage,job.seed,interpreter,motorDecoder,observers)};
    const preWarmupCondition=clone(active.initialCondition);active.brain=await makeBrain();provenance.backend=backend;Object.assign(provenance,executionEvidence());await checkShader();
-   const {brain,world,body,fly}=active,sensoryFeedback=sensoryResources.create({world,body,fly}),encoder=sensoryFeedback.encoder,input=new Float32Array(base.manifest.neuron_count);
+   const {brain,world,body,fly,haltereMapper,effectiveConfig,sensoryResources:episodeSensoryResources}=active,sensoryFeedback=episodeSensoryResources.create({world,body,fly}),encoder=sensoryFeedback.encoder,input=new Float32Array(base.manifest.neuron_count);
    active.sensoryFeedback=sensoryFeedback;
    if(useInputSequence&&typeof brain.stepSequence!=='function')throw new Error('Per-tick current delivery is unavailable');
    const inputSequence=useInputSequence?Array.from({length:config.bodyBlockMs/config.dtMs},()=>new Float32Array(input.length)):null;
@@ -354,7 +388,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     const encoded=sensoryFeedback.update();
     if(encoded)for(let k=0;k<encoded.indices.length;k++){const index=encoded.indices[k];input[index]=mapper.current(index,encoded.ratesHz[k]);}
     if(inputSequence){
-     const sample=haltereMapper?haltereSample(body,fly,config.haltereFeedback.mechanicalModel!==undefined):null;
+     const sample=haltereMapper?haltereSample(body,fly,effectiveConfig.haltereFeedback.mechanicalModel!==undefined):null;
      for(let k=0;k<inputSequence.length;k++){
       inputSequence[k].set(input);
       if(haltereMapper){
@@ -371,7 +405,8 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     if(!state.every(Number.isFinite))throw new Error('Nonfinite BANC motor state');
     fly.brain={time_ms:brain.timeMs,motor:{},motorNeuronRates:Array.from(motorIndices,(_,k)=>state[k*8+4])};fly.senses=encoder.sample.food;fly.sensory=encoder.sample;active.lastSpikes=state.totalSpikes;
     if(emitMotorEvents)await emitMotorEvents();
-    const physicsTimeBefore=onPhysicsStep?body.time:0;
+    const physicsTimeBefore=onPhysicsStep||onBeforePhysicsStep?body.time:0;
+    onBeforePhysicsStep?.({body,world,fly,brain,input,inputSequence,encoder,sensoryFeedback,index:totalBlocks,episodeIndex:phase==='scored'?steps:null,phase,episodeTimeSeconds:steps*blockSeconds,releaseNativeTime,durationSeconds:config.bodyBlockMs/1000,timeBefore:physicsTimeBefore,neuralMs:brain.timeMs});
     world.tick(config.bodyBlockMs/1000);totalBlocks++;if(phase==='scored')steps++;else warmupSteps++;
     onPhysicsStep?.({body,world,fly,brain,input,inputSequence,encoder,sensoryFeedback,index:totalBlocks-1,episodeIndex:phase==='scored'?steps-1:null,phase,episodeTimeSeconds:steps*blockSeconds,releaseNativeTime,durationSeconds:config.bodyBlockMs/1000,timeBefore:physicsTimeBefore,neuralMs:brain.timeMs});
     if(Math.abs(body.time-brain.timeMs/1000)>1e-8)throw new Error('Neural/native feedback clocks diverged');
@@ -386,14 +421,15 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
    }
    // Release occurs at the already consumed 500 ms boundary. Neither clock,
    // the event reader, native muscle states nor wing phase is reinitialized.
-   await checkpoint();setupStarted=performance.now();warmup.finish({neuralTimeMs:brain.timeMs});
+   await checkpoint();setupStarted=performance.now();warmup.finish({neuralTimeMs:brain.timeMs,...(disturbance?{releaseVelocity:disturbance.releaseVelocity}:{})});
    const release=clock.release(snapshot({release:true}));releaseNativeTime=release.releaseNativeTimeSeconds;releaseNeuralTimeMs=release.releaseNeuralTimeMs;
-   initialObservation=observe();score=createMaintainedFlightScore(duration,initialObservation,sceneProfile??undefined);
+   initialObservation=observe();score=isRecovery?recoveryModule.createRecoveryScore(duration,initialObservation,sceneProfile??undefined):createMaintainedFlightScore(duration,initialObservation,sceneProfile??undefined);
    warmupAudit=warmup.audit();
-   initialCondition={stage:job.stage,seed:job.seed,kind:'maintained-flight-scored-release',initialization:clone(settings),preWarmupCondition,
+   initialCondition={stage:job.stage,seed:job.seed,kind:isRecovery?'recovery-scored-release':'maintained-flight-scored-release',initialization:clone(settings),preWarmupCondition,
     position:[body.x,body.y,body.z],quaternion:[...body.quaternion],velocity:Array.from(body.data.qvel.slice(0,6)),airborne:body.airborne,
     releaseNativeTime,releaseNeuralTimeMs,episodeTimeSeconds:0,warmupSteps,warmupAudit:clone(warmupAudit),
-    placement:'Explicit airborne placement before live BANC warmup; root restraint removed at release. No takeoff or landing credit.'};
+    ...(disturbance?{recoveryDisturbance:clone(disturbance)}:{}),
+    placement:disturbance?'Explicit airborne placement and live BANC warmup, followed by one declared seeded velocity disturbance at release. No sustaining forces, takeoff or landing credit.':'Explicit airborne placement before live BANC warmup; root restraint removed at release. No takeoff or landing credit.'};
    provenance.releaseNativeTime=releaseNativeTime;provenance.releaseNeuralTimeMs=releaseNeuralTimeMs;
    onInitialState?.({body,world,fly,brain,input,inputSequence,encoder,sensoryFeedback,motorIndices,job,provenance,initialCondition,initialObservation,
     phase:'scored-release',releaseNativeTime,releaseNeuralTimeMs,episodeTimeSeconds:0,warmupSteps});
@@ -429,10 +465,10 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
    bodyBackend:'mujoco-wasm',dtMs:config.dtMs,bodyBlockMs:config.bodyBlockMs,modelFingerprint:config.modelFingerprint,configHash,provenance,
    metrics:{...(score?.state||{}),error,wallSeconds:(performance.now()-started)/1000,setupWallSeconds,executionWallSeconds,warmupExecutionWallSeconds,scoredExecutionWallSeconds,
     initialCondition,initialObservation,finalObservation,warmupAudit,releaseNativeTime,releaseNeuralTimeMs,
-    actualNeuralBackend:provenance.backend||backend,sensoryFeedback:lastSensorySummary,vision:visionEnabled,frameCountIsNotPhysicsSteps:true,criteria:maintainedFlightCriteria(sceneProfile??undefined),
+    actualNeuralBackend:provenance.backend||backend,sensoryFeedback:lastSensorySummary,vision:visionEnabled,frameCountIsNotPhysicsSteps:true,criteria:isRecovery?recoveryModule.recoveryFlightCriteria(sceneProfile??undefined):maintainedFlightCriteria(sceneProfile??undefined),
     finalPosition:lastFiniteFrame?.position,finalNeuralSpikes:lastFiniteFrame?.neuralSpikes||0}};
  }
- function evaluateWithMaintained(job,options){return job?.stage==='maintained_flight'?evaluateMaintained(job,options):evaluate(job,options);}
+ function evaluateWithMaintained(job,options){return ['maintained_flight','recovery'].includes(job?.stage)?evaluateMaintained(job,options):evaluate(job,options);}
 
  return {config,configHash,modelFingerprint:config.modelFingerprint,ready,evaluate:evaluateWithMaintained,dispose(){if(disposed)return;disposed=true;try{cleanup();}finally{brainResources.dispose();}}};
 }

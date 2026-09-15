@@ -1,6 +1,7 @@
 import {NativeFlyPreview,PREVIEW_QUALITIES} from './preview.js';
 import {TrainingClient,trainingCoordinatorURL,browserTrainingAvailable} from './client.js';
 import {TrainingBrainPreview,validateBrainSample} from './brain-preview.js';
+import {TrainingEyePreview} from './eye-preview.js';
 
 const $=id=>document.getElementById(id);
 const controls={start:$('start-training'),pause:$('pause-training'),stop:$('stop-training'),budget:$('computer-budget'),quality:$('preview-quality'),save:$('save-checkpoint')};
@@ -8,11 +9,12 @@ const coordinatorURL=trainingCoordinatorURL(window.location,document.querySelect
 const pending=new Set();
 const trainerNote=document.createElement('p');trainerNote.id='trainer-note';trainerNote.className='download-status';trainerNote.hidden=true;
 trainerNote.textContent='This run is using the connected trainer.';$('training-controls').after(trainerNote);
-const tasks={takeoff:{label:'Take off',description:'Lift off and gain height.'},flight:{label:'Stay airborne',description:'Take off and maintain controlled flight.'},maintained_flight:{label:'Maintain flight',description:'Stay airborne and in control.'},landing:{label:'Take off, fly & land',description:'Lift off, stay airborne, then land on your feet.'}};
+const tasks={takeoff:{label:'Take off',description:'Lift off and gain height.'},flight:{label:'Stay airborne',description:'Take off and maintain controlled flight.'},maintained_flight:{label:'Maintain flight',description:'Stay airborne and in control.'},recovery:{label:'Recover',description:'Regain stable flight after a disturbance.'},landing:{label:'Take off, fly & land',description:'Lift off, stay airborne, then land on your feet.'}};
 let client=null,config=null,state={phase:'idle',history:[],coordinator:{connected:false}},frame=null;
 let pollTimer=null,polling=false,disposed=false,previewState={},recordedFrameKey=null,errorSource=null;
 let renderedStageKey=null,renderedHistory=null;
 let previewTab='fly',brainState={},brainSample=null,brainLoading=null,brainError=false,parameterPage=0,parameterConfig=null,parameterDefinitions=[],renderedParameters=null;
+let eyeState={},eyeError=false;
 const nativeRun=()=>!!config&&!browserTrainingAvailable(config);
 const text=(id,value)=>{const node=$(id),next=String(value);if(node.textContent!==next)node.textContent=next;};
 const numberFormats=new Map();
@@ -27,7 +29,12 @@ const errorMessage=value=>typeof value==='string'?value:value?.message||'';
 const connectionError=error=>/network|fetch|offline|connection|unavailable|timeout|abort|coordinator.*(?:reach|connect)|returned 5\d\d/i.test(errorMessage(error));
 const active=()=>['training','loading','evaluating','validating'].includes(state.phase);
 const quality=()=>PREVIEW_QUALITIES[controls.quality.value]||PREVIEW_QUALITIES.balanced;
-const stageInfo=id=>tasks[id]||{label:'Task',description:''};
+const stageInfo=id=>{
+  const declared=config?.trainingSequence?.phases?.find(phase=>phase.id===id)||config?.stages?.find(stage=>stage.id===id);
+  return {...(tasks[id]||{label:'Task',description:''}),...(declared?.label?{label:declared.label}:{}),...(declared?.description?{description:declared.description}:{})};
+};
+const sequenceStatus=()=>state.coordinator?.sequence?.status;
+const sequenceFinished=()=>['complete','needs-review'].includes(sequenceStatus());
 function publicError(error,operation){
   const message=errorMessage(error);
   if(operation==='initialize')return 'Could not load training. Check your connection and reload.';
@@ -42,6 +49,15 @@ function publicError(error,operation){
 const showError=(error,operation)=>{const node=$('training-error');node.textContent=publicError(error,operation);node.hidden=false;errorSource=operation;};
 const clearError=()=>{$('training-error').hidden=true;errorSource=null;};
 function refreshPreview(){
+  $('recenter-preview').hidden=previewTab==='eyes';
+  if(previewTab==='eyes'){
+    const off=!quality().hz,available=config?.vision===true&&!nativeRun(),snapshot=eyePreview.snapshot;
+    $('preview-empty').hidden=!!eyeState.hasFrame&&!off&&!eyeError;
+    $('preview-empty').querySelector('strong').textContent=off?'Preview off':eyeError?'Eye view unavailable. Try again.':!available?'Eye images are off for this run.':client?.running?'Waiting for eye images…':'Press Start for eye images';
+    text('preview-status',off||eyeError||!snapshot?'':state.phase==='paused'?'Paused · last image':!client?.running||state.activity!=='evaluating'?'Last image':`${snapshot.sourceWidth} × ${snapshot.sourceHeight} per eye`);
+    const time=seconds(snapshot?.frameTimeSeconds);text('preview-clock',time);text('preview-time',time);
+    return;
+  }
   if(previewTab==='brain'){
     const off=!quality().hz,hasFrame=!!brainState.hasFrame;
     $('preview-empty').hidden=hasFrame&&!off&&!brainError;
@@ -66,18 +82,26 @@ const preview=new NativeFlyPreview($('training-preview'),{onStatus:status=>{prev
 const brainPreview=new TrainingBrainPreview($('training-brain'),{onStatus:status=>{brainState=status;if(status.error){brainError=true;syncInspection();}refreshPreview();},onSelect:value=>{
   text('brain-reading',value?`${value.label||'Neuron'} · ${value.id}${Number.isFinite(value.voltage)?` · ${numeric(value.voltage,1)} mV · ${numeric(value.rate,1)} Hz`:''}`:'Click a neuron to inspect.');
 }});
+const eyePreview=new TrainingEyePreview($('eye-left'),$('eye-right'),{onStatus:status=>{
+  eyeState=status;if(status.error){eyeError=true;syncInspection();}refreshPreview();
+}});
 $('training-preview').setAttribute('aria-label','3D fly preview. Drag or use arrow keys to rotate, plus and minus to zoom.');
 
-function budgetOptions(){return {dutyCycle:Number(controls.budget.value)/100,previewHz:previewTab==='brain'?Math.min(2,quality().hz):quality().hz};}
+function budgetOptions(){return {dutyCycle:Number(controls.budget.value)/100,previewHz:previewTab!=='fly'?Math.min(2,quality().hz):quality().hz};}
 function syncInspection(){
   brainPreview.setActive(previewTab==='brain'&&!document.hidden&&!!quality().hz&&!brainError);
   client?.setBrainObservation({enabled:previewTab==='brain'&&!document.hidden&&!!quality().hz&&!!brainSample&&!brainError,indices:brainSample?.indices||[]});
+  const eyes=previewTab==='eyes'&&!document.hidden&&!!quality().hz&&!eyeError;
+  eyePreview.setActive(eyes);
+  client?.setEyeObservation({enabled:eyes&&config?.vision===true&&!nativeRun()});
 }
 async function selectPreview(tab){
   previewTab=tab;
   if(tab==='brain')brainError=false;
-  for(const name of ['fly','brain']){$('show-'+name).setAttribute('aria-selected',String(tab===name));$('show-'+name).tabIndex=tab===name?0:-1;}
+  if(tab==='eyes')eyeError=false;
+  for(const name of ['fly','brain','eyes']){$('show-'+name).setAttribute('aria-selected',String(tab===name));$('show-'+name).tabIndex=tab===name?0:-1;}
   $('training-preview').hidden=tab!=='fly';$('training-brain').hidden=tab!=='brain';$('brain-reading').hidden=tab!=='brain';$('brain-legend').hidden=tab!=='brain';
+  $('training-eyes').hidden=tab!=='eyes';
   preview.setQuality(tab==='fly'?controls.quality.value:'off');syncInspection();if(client?.config)client.setBudget(budgetOptions());
   if(tab==='brain'&&!brainSample&&!brainLoading&&config){
     brainError=false;
@@ -90,6 +114,8 @@ async function selectPreview(tab){
 function refreshStatus(){
   let label='Ready';
   if(pending.has('connect')||!client?.config)label='Connecting…';
+  else if(sequenceStatus()==='complete')label='Completed';
+  else if(sequenceStatus()==='needs-review')label='Needs review';
   else if(nativeRun())label=!state.coordinator?.connected?'Connection lost':state.coordinator.jobs?.leased>0?'Training':'Watching';
   else if(pending.has('start')||state.phase==='loading')label='Starting…';
   else if(state.phase==='paused')label='Paused';
@@ -102,8 +128,8 @@ function refreshStatus(){
 }
 function refreshButtons(){
   const ready=!!client?.config&&!!config&&!['idle','loading'].includes(state.phase),busy=active(),paused=state.phase==='paused';
-  controls.start.disabled=nativeRun()||!ready||busy||paused||pending.has('start')||pending.has('connect');
-  controls.pause.disabled=nativeRun()||!client||!['training','paused'].includes(state.phase)||pending.has('pause');
+  controls.start.disabled=sequenceFinished()||nativeRun()||!ready||busy||paused||pending.has('start')||pending.has('connect');
+  controls.pause.disabled=sequenceFinished()||nativeRun()||!client||!['training','paused'].includes(state.phase)||pending.has('pause');
   controls.pause.textContent=paused?'Resume':'Pause';
   controls.pause.setAttribute('aria-label',paused?'Resume training':'Pause training');
   controls.stop.disabled=nativeRun()||!client||(!['training','paused','evaluating','validating','error'].includes(state.phase)&&!client.running&&!client.starting)||pending.has('stop');
@@ -122,9 +148,12 @@ async function invoke(key,action){
 
 function renderStages(){
   if(!config)return;
-  const selected=state.stage||config.stage,info=stageInfo(selected);
-  const curriculum=Array.isArray(state.curriculum)&&state.curriculum.length?state.curriculum:config.stages;
-  const key=JSON.stringify([selected,curriculum.map(stage=>[stage.id,stage.status])]);
+  const phases=config.trainingSequence?.phases;
+  const remote=state.coordinator?.curriculum;
+  const curriculum=Array.isArray(remote)&&remote.length?remote:
+    Array.isArray(state.curriculum)&&state.curriculum.length&&(!phases||state.curriculum.every(stage=>phases.some(phase=>phase.id===stage.id)))?state.curriculum:phases||config.stages;
+  const selected=phases?(state.coordinator?.sequence?.phaseId||state.activeJob?.phaseId||phases[0]?.id):(state.stage||config.stage),info=stageInfo(selected);
+  const key=JSON.stringify([selected,info,curriculum.map(stage=>[stage.id,stage.status,stageInfo(stage.id)])]);
   if(key===renderedStageKey)return;
   renderedStageKey=key;
   text('stage-title',info.label);text('stage-description',info.description);
@@ -136,7 +165,7 @@ function renderStages(){
     const li=document.createElement('li'),label=document.createElement('span'),status=document.createElement('span');
     const done=['validated','passed','complete'].includes(stage.status),current=stage.id===selected;
     li.className=done?'complete':current?'current':'';label.textContent=stageInfo(stage.id).label;
-    status.className='stage-marker';status.textContent=done?'Done':current?'Current':'';
+    status.className='stage-marker';status.textContent=done?'Done':stage.status==='needs-review'?'Needs review':current?'Current':'';
     li.append(label,status);list.append(li);
   }
 }
@@ -145,22 +174,25 @@ const svgNS='http://www.w3.org/2000/svg';
 function svgElement(tag,attributes,textValue){const element=document.createElementNS(svgNS,tag);for(const [key,value]of Object.entries(attributes))element.setAttribute(key,String(value));if(textValue!==undefined)element.textContent=String(textValue);return element;}
 function renderHistory(){
   const remote=nativeRun(),source=remote?state.coordinator?.recentTrials:state.history;
-  const history=(Array.isArray(source)?source:[]).filter(item=>Number.isFinite(item.return)),visible=history.slice(-120);
+  const isFit=item=>item?.mode==='decoder-fit';
+  const history=(Array.isArray(source)?source:[]).filter(item=>isFit(item)||Number.isFinite(item.return)),displayed=history.slice(-120);
+  const scored=history.filter(item=>!isFit(item)&&Number.isFinite(item.return)),visible=scored.slice(-120);
   const completed=remote?state.coordinator?.acceptedResults:state.completedEpisodes,update=state.coordinator?.lastParameterUpdate;
   text('timeline-heading',remote?'Training progress':'Your trials');
   $('uploaded-count').previousElementSibling.textContent=remote?'Changed values':'Uploaded';
   $('work-time').previousElementSibling.textContent=remote?'Recent time':'Time running';
   text('history-count',integer(completed??0));text('evaluations-count',integer(completed??0));
   text('uploaded-count',remote?Number.isFinite(update?.changedCount)?`${integer(update.changedCount)} / ${integer(update.parameterCount)}`:'—':integer(state.contributedEpisodes??0));
-  text('latest-reward',numeric(remote?history.at(-1)?.return:state.lastReturn??history.at(-1)?.return,3));
+  text('latest-reward',numeric(scored.at(-1)?.return??(!remote&&!history.length&&!isFit(state.lastResult)?state.lastReturn:undefined),3));
   text('work-time',seconds(remote?state.coordinator?.recentWallSeconds:state.wallSeconds??0));
   // State events own fresh clones. Compare the displayed values so progress
   // and connection updates do not rebuild an unchanged chart or trial table.
-  if(renderedHistory&&visible.length===renderedHistory.length&&visible.every((entry,i)=>{
+  if(renderedHistory&&displayed.length===renderedHistory.length&&displayed.every((entry,i)=>{
     const previous=renderedHistory[i];
-    return entry.episode===previous.episode&&entry.stage===previous.stage&&Object.is(entry.return,previous.return)&&entry.success===previous.success;
+    return entry.episode===previous.episode&&entry.stage===previous.stage&&entry.phaseId===previous.phaseId&&entry.mode===previous.mode&&entry.reason===previous.reason&&Object.is(entry.return,previous.return)&&entry.success===previous.success;
   }))return;
-  renderedHistory=visible.map(({episode,stage,return:score,success})=>({episode,stage,return:score,success}));
+  renderedHistory=displayed.map(({episode,stage,phaseId,mode,reason,return:score,success})=>({episode,stage,phaseId,mode,reason,return:score,success}));
+  text('history-empty',history.some(isFit)?'No flight scores yet':'No completed trials');
   $('history-empty').hidden=visible.length>0;$('reward-chart').toggleAttribute('hidden',!visible.length);
   if(visible.length){
     let min=Math.min(...visible.map(p=>p.return)),max=Math.max(...visible.map(p=>p.return));const padding=Math.max(.01,(max-min)*.15);
@@ -175,8 +207,9 @@ function renderHistory(){
   text('reward-range',visible.length?`Last ${visible.length} trials`:'Score');
   const rows=$('candidate-rows');rows.replaceChildren();
   for(const entry of history.slice(-5).reverse()){
-    const tr=document.createElement('tr');
-    for(const value of [entry.episode??'—',stageInfo(entry.stage).label,numeric(entry.return,3),entry.success===true?'Success':entry.success===false?'Not yet':'—']){
+    const tr=document.createElement('tr'),fit=isFit(entry);
+    const outcome=fit?(entry.reason==='fit_candidate'?'Fit candidate':'Fit incomplete'):entry.success===true?'Success':entry.success===false?'Not yet':'—';
+    for(const value of [entry.episode??'—',stageInfo(entry.phaseId||entry.stage).label,fit?'—':numeric(entry.return,3),outcome]){
       const td=document.createElement('td');td.textContent=String(value);tr.append(td);
     }rows.append(tr);
   }
@@ -185,9 +218,9 @@ function renderHistory(){
 function renderParameters(){
   if(!config)return;
   if(parameterConfig!==config){
-    parameterConfig=config;const metadata=config.motorDecoderContract?.parameters||[];
+    parameterConfig=config;const metadata=new Map((config.motorDecoderContract?.parameters||[]).map(parameter=>[parameter.name,parameter]));
     parameterDefinitions=config.parameters.map((parameter,index)=>{
-      const detail=metadata[index],target=detail?.target?.replace(/_muscle$/,'').replaceAll('_',' ');
+      const detail=metadata.get(parameter.name),target=detail?.target?.replace(/_muscle$/,'').replaceAll('_',' ');
       const label=detail?`${detail.side==='left'?'Left':'Right'} ${target} · ${detail.kind==='power'?'weight':`${detail.axis} · ${detail.lagMs} ms · ${detail.basis}`}`:parameter.name.replaceAll('_',' ');
       return {index,label,neuron:detail?.unitIndex,search:`${label} ${parameter.name} ${detail?.unitIndex??''}`.toLowerCase()};
     });
@@ -222,15 +255,16 @@ function render(next){
     if(key!==recordedFrameKey){recordedFrameKey=key;renderFrame(recorded.frame);text('preview-candidate','—');}
   }
   brainPreview.setJob(state.activeJob?.jobId??null,state.activeJob?.instance);
+  eyePreview.setJob(state.activeJob?.jobId??null,state.activeJob?.instance);
   renderStages();renderHistory();renderParameters();refreshPreview();refreshButtons();
 }
 
 function renderFrame(next){
   frame=next;preview.setFrame(frame);
   text('preview-label',stageInfo(frame.stage).label);
-  const time=previewTab==='brain'?brainPreview.snapshot?.neuralTimeMs/1000:frame.time??frame.simSeconds;
+  const time=previewTab==='brain'?brainPreview.snapshot?.neuralTimeMs/1000:previewTab==='eyes'?eyePreview.snapshot?.frameTimeSeconds:frame.time??frame.simSeconds;
   text('preview-clock',seconds(time));text('preview-time',seconds(time));
-  text('preview-candidate',integer(state.episode));text('preview-reward',numeric(frame.metrics?.return??frame.metrics?.reward,3));
+  text('preview-candidate',integer(state.episode));text('preview-reward',state.activeJob?.mode==='decoder-fit'?'—':numeric(frame.metrics?.return??frame.metrics?.reward,3));
 }
 
 controls.start.addEventListener('click',()=>invoke('start',()=>client.start({mode:'shared',coordinatorUrl:coordinatorURL,...budgetOptions()})));
@@ -239,9 +273,11 @@ controls.stop.addEventListener('click',()=>invoke('stop',()=>client.stop()));
 controls.budget.addEventListener('input',()=>{text('budget-value',`${controls.budget.value}%`);if(client?.setBudget)client.setBudget(budgetOptions());});
 controls.quality.addEventListener('change',()=>{preview.setQuality(previewTab==='fly'?controls.quality.value:'off');syncInspection();refreshPreview();invoke('quality',async()=>{if(client?.setBudget)await client.setBudget(budgetOptions());});});
 $('recenter-preview').addEventListener('click',()=>previewTab==='brain'?brainPreview.recenter():preview.recenter());
-for(const tab of ['fly','brain']){
+for(const tab of ['fly','brain','eyes']){
   $('show-'+tab).addEventListener('click',()=>selectPreview(tab));
-  $('show-'+tab).addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();const next=tab==='fly'?'brain':'fly';selectPreview(next);$('show-'+next).focus();}});
+  $('show-'+tab).addEventListener('keydown',event=>{const tabs=['fly','brain','eyes'];let index=tabs.indexOf(tab);
+    if(event.key==='ArrowLeft')index=(index+2)%3;else if(event.key==='ArrowRight')index=(index+1)%3;else if(event.key==='Home')index=0;else if(event.key==='End')index=2;else return;
+    event.preventDefault();selectPreview(tabs[index]);$('show-'+tabs[index]).focus();});
 }
 $('parameter-search').addEventListener('input',()=>{parameterPage=0;renderParameters();});
 $('parameter-previous').addEventListener('click',()=>{parameterPage--;renderParameters();});
@@ -265,7 +301,7 @@ async function pollStatus(){
   finally{polling=false;if(!disposed){refreshPreview();schedulePoll();}}
 }
 document.addEventListener('visibilitychange',()=>{syncInspection();if(document.hidden)clearTimeout(pollTimer);else pollStatus();});
-window.addEventListener('pagehide',()=>{disposed=true;clearTimeout(pollTimer);client.statusRequest=(client.statusRequest||0)+1;client?.setBrainObservation({enabled:false});preview.dispose();brainPreview.dispose();},{once:true});
+window.addEventListener('pagehide',()=>{disposed=true;clearTimeout(pollTimer);client.statusRequest=(client.statusRequest||0)+1;client?.setBrainObservation({enabled:false});client?.setEyeObservation({enabled:false});preview.dispose();brainPreview.dispose();eyePreview.dispose();},{once:true});
 
 async function initialize(){
   try{
@@ -273,7 +309,9 @@ async function initialize(){
     client.addEventListener('state',event=>render(event.detail));client.addEventListener('frame',event=>renderFrame(event.detail));
     client.addEventListener('brain',event=>{if(brainPreview.setSnapshot(event.detail)){refreshPreview();if(previewTab==='brain'){text('preview-clock',seconds(event.detail.neuralTimeMs/1000));text('preview-time',seconds(event.detail.neuralTimeMs/1000));}}});
     client.addEventListener('brain-error',()=>{brainError=true;syncInspection();refreshPreview();});
-    globalThis.heavenTraining={client,preview,brainPreview,get state(){return state;},get frame(){return frame;}};
+    client.addEventListener('eyes',event=>{if(eyePreview.setSnapshot(event.detail))refreshPreview();});
+    client.addEventListener('eyes-error',()=>{eyeError=true;syncInspection();refreshPreview();});
+    globalThis.heavenTraining={client,preview,brainPreview,eyePreview,get state(){return state;},get frame(){return frame;}};
     await client.initialize();
     await invoke('connect',()=>client.connectCoordinator(coordinatorURL));
     schedulePoll();

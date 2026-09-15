@@ -131,6 +131,36 @@ test('brain observation is opt-in, isolated from training errors and tied to the
   await f.client.stop();await f.client.loop;
 });
 
+test('eye pixels are requested on demand, correlated to the active RPC and never contribute to uploads or liveness',async()=>{
+  const f=setup({automatic:false}),received=[],errors=[];
+  f.client.addEventListener('eyes',event=>received.push(event.detail));
+  f.client.addEventListener('eyes-error',event=>errors.push(event.detail));
+  assert.deepEqual(f.client.eyeObservation,{enabled:false});
+  f.client.setEyeObservation({enabled:true});assert.equal(f.workers.length,0);
+  assert.throws(()=>f.client.setEyeObservation({enabled:1}),/Invalid eye observation/);
+  await f.client.initialize();await f.client.start();await f.evaluating.promise;
+  const worker=f.workers[0],id=worker.pendingJob.id;
+  assert(worker.messages.some(message=>message.type==='observe-eyes'&&message.enabled));
+  const snapshot={jobId:f.job.jobId,source:'sensory-retina',left:new Uint8Array([99,20,10,255]),right:new Uint8Array([10,20,99,255])};
+  const lastAdvance=f.client.evaluationWatch.lastAdvance;
+  worker.send({type:'eyes',id,snapshot});
+  worker.send({type:'eyes',id:id-1,snapshot});
+  worker.send({type:'eyes',id,snapshot:{...snapshot,jobId:'old-job'}});
+  worker.send({type:'eyes-error',id,message:'Unavailable'});
+  await Promise.resolve();
+  assert.deepEqual(received,[snapshot]);assert.equal(errors.length,1);assert.equal(f.client.running,true);
+  assert.equal(f.client.evaluationWatch.lastAdvance,lastAdvance);
+  assert.equal(JSON.stringify(f.client.state).includes('sensory-retina'),false);
+  f.client.setEyeObservation({enabled:false});worker.send({type:'eyes',id,snapshot});await Promise.resolve();
+  assert.equal(received.length,1);assert(worker.messages.some(message=>message.type==='observe-eyes'&&!message.enabled));
+  const counted=deferred();f.client.addEventListener('state',event=>{if(event.detail.contributedEpisodes===1){f.client.pause();counted.resolve();}});
+  worker.complete();const payload=await f.submitted.promise;await counted.promise;
+  assert.equal(JSON.stringify(payload).includes('sensory-retina'),false);
+  assert.equal(Object.hasOwn(payload,'snapshot'),false);
+  assert.equal(f.calls.some(call=>String(call.options.body).includes('sensory-retina')),false);
+  await f.client.stop();await f.client.loop;
+});
+
 test('hiding the tab keeps the trial, uploads and lease renewals running while manual Pause remains explicit',async t=>{
   const previousDocument=Object.getOwnPropertyDescriptor(globalThis,'document'),document=new EventTarget();document.hidden=false;
   Object.defineProperty(globalThis,'document',{value:document,configurable:true});

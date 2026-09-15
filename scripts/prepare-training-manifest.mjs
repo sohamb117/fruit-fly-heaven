@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const prefixes=[['/body-engine/','packages/flybody-runtime/node_modules/@mujoco/mujoco/'],['/banc-engine/','packages/banc-runtime/'],['/banc-data/','data/prepared/banc888/'],['/body-model/','models/']];
 const resolve=url=>{const match=prefixes.find(([prefix])=>url.startsWith(prefix));return path.join(root,match?match[1]+url.slice(match[0].length):'web'+url);};
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
-export async function buildTrainingAssetManifest({extraUrls=[],config=null}={}){
+export async function buildTrainingAssetManifest({extraUrls=[],config=null,assetOverrides={}}={}){
  const urls=new Set([
   '/training/worker.js','/training/environment.js','/motor-decoder.js','/banc-engine/src/index.js',
   '/banc-engine/src/neural.wgsl','/banc-engine/src/neural-dlm.wgsl','/banc-engine/dist/core.js','/banc-engine/dist/core.wasm',
@@ -19,10 +19,11 @@ export async function buildTrainingAssetManifest({extraUrls=[],config=null}={}){
   '/habitat.json',...extraUrls,
   ...(config?.vision===true?['/banc-data/console/visual-projections.json']:[]),
   ...(config?.legProprioception!==undefined?['/body-model/banc-leg-proprioception-v1.json']:[]),
+  ...(config?.trainingSequence?.teacherAsset?[config.trainingSequence.teacherAsset]:[]),
  ]);
  const assets={};
  for(const url of urls){
-  const bytes=await fs.readFile(resolve(url));assets[url]=digest(bytes);
+  const bytes=Object.hasOwn(assetOverrides,url)?Buffer.from(assetOverrides[url]):await fs.readFile(resolve(url));assets[url]=digest(bytes);
   if(!url.endsWith('.js'))continue;
   // ES module source dependencies, including literal dynamic imports. Fetch
   // assets with computed paths are pinned explicitly above/by model manifest.

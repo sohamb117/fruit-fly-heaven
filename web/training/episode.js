@@ -1,7 +1,7 @@
 // Pure episode/parameter rules. They observe outcomes and never issue actions.
 export {FLIGHT_CRITERIA as CRITERIA,createFlightScore as createEpisodeScore} from './flight-objective.js';
 import {FLIGHT_PARAMETER_NAMES,flightParametersToInterpreter,DEFAULT_FLIGHT_INTERPRETER} from './flight-parameters.js';
-import {validateTrainingConfigSchema} from './config-schema.js';
+import {validateTrainingConfigSchema,validateTrainingVisionConfig} from './config-schema.js';
 import {MOTOR_DECODER_VERSION,buildMotorDecoderContract,validateMotorDecoderContract,validateMotorDecoderVector} from '../motor-decoder.js';
 export const PARAMETER_NAMES=FLIGHT_PARAMETER_NAMES;
 export const STAGES=['takeoff','flight','landing'];
@@ -28,7 +28,8 @@ export function validateMotorDecoderTrainingConfig(config,io){
 }
 export function parameterValues(config,parameters,io){
  validateTrainingConfigSchema(config);
- if(config.dtMs!==.5||config.bodyBlockMs!==2||config.vision!==false)throw new Error('Unsupported training configuration');
+ if(config.dtMs!==.5||config.bodyBlockMs!==2)throw new Error('Unsupported training configuration');
+ validateTrainingVisionConfig(config);
  const decoder=validateMotorDecoderTrainingConfig(config,io);
  if(decoder){
   const vector=Array.from(validateMotorDecoderVector(decoder,parameters));

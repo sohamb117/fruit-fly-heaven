@@ -11,7 +11,7 @@ export const SENSORY_GAINS=Object.freeze({lightBaseHz:2,lightHz:18,contrastHz:40
 export function validateSensoryManifest(manifest,neuronCount){
   if(manifest.schema_version!==1||manifest.neuron_count!==neuronCount)throw new Error('Sensory annotations do not match this connectome');
   const v=manifest.vision;
-  if(v.width!==32||v.height!==16||!v.receptors.length)throw new Error('Unsupported retinal dimensions');
+  if(!Number.isInteger(v.width)||!Number.isInteger(v.height)||v.width<16||v.height<8||v.width>1024||v.height>1024||!v.receptors.length)throw new Error('Unsupported retinal dimensions');
   const seen=new Set();
   const check=i=>{if(!Number.isInteger(i)||i<0||i>=neuronCount||seen.has(i))throw new Error('Invalid or duplicate sensory neuron');seen.add(i);};
   for(const r of v.receptors){check(r.index);if(!['left','right'].includes(r.side)||!(r.u>=0&&r.u<=1&&r.v>=0&&r.v<=1))throw new Error('Invalid visual column');}
@@ -60,11 +60,11 @@ export class SensoryEncoder{
     this.adapted=new Float32Array(manifest.vision.width*manifest.vision.height*2);
     this.lightDrive=new Float32Array(this.adapted.length);this.lastSequence=-1;this.lastFrameTime=null;this.lastKey=null;
   }
-  update(pose,frame,{odor=true,taste=true,vision=true,bodySense=true,graded=null,color=null}={}){
+  update(pose,frame,{odor=true,taste=true,vision=true,luminance=true,bodySense=true,graded=null,color=null}={}){
     // Validate opt-in feedback before caching the update key: a failed sample
     // may be corrected and retried, and never borrows aggregate body rates.
     const tegula=this.tegula?.rates(pose.feedback,bodySense,pose.bodyTime);
-    const key=[pose.bodyTime,frame?.sequence,odor,taste,vision,bodySense,graded?.serial,color?.serial].join('|');
+    const key=[pose.bodyTime,frame?.sequence,odor,taste,vision,luminance,bodySense,graded?.serial,color?.serial].join('|');
     if(key===this.lastKey)return null;
     this.lastKey=key;
     const g=SENSORY_GAINS,v=this.manifest.vision,n=v.width*v.height;
@@ -93,7 +93,7 @@ export class SensoryEncoder{
     const sums=[0,0],counts=[0,0];
     for(const r of v.receptors){
       const side=r.side==='left'?0:1,x=Math.round(r.u*(v.width-1)),y=Math.round(r.v*(v.height-1));
-      const hz=vision&&validFrame?this.lightDrive[side*n+y*v.width+x]:0;
+      const hz=vision&&luminance&&validFrame?this.lightDrive[side*n+y*v.width+x]:0;
       this.ratesHz[offset++]=hz;sums[side]+=hz;counts[side]++;
     }
     const body=bodyInputRates(pose.feedback,bodySense);

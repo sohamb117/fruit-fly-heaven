@@ -17,6 +17,7 @@ const modules=new Map([
   export const measureFlightKinematics=()=>({height:0,verticalSpeed:0,speedCmPerSecond:0,position:[0,0,0]});`],
  ['./flight-telemetry.js',`export const makeFlightTelemetry=()=>({});`],
  ['./brain-resources.js',`${get} export function createTrainingBrainResources({model,backend}){f().brainModel=model;f().requestedBackend=backend;return {get backend(){return f().reportedBackend??(backend==='wasm'?'wasm':'fixture');},async create(){const b=f().makeBrain();f().brains.push(b);return b;},dispose(){f().resourcesDisposed=true;}};}`],
+ ['./sensory-feedback.js',`export async function createTrainingSensoryResources(){return {indices:new Uint32Array(),visionEnabled:false,create(){const encoder={sample:{food:null}};return {encoder,update:()=>null,summary:()=>null,dispose(){}};}};}`],
  ['/banc-engine/src/index.js',`${get} export const loadBancModel=async()=>f().base,createWasmCore=async options=>{f().wasmOptions=options;return {};}; export const intrinsicLayout=model=>{f().intrinsicModel=model;return {eventContract:f().intrinsicContract};}; export class WebGPUBrain{} export class WasmBrain{}`],
  ['../flybody-world.js',`${get} export const createBancBodyFactory=async()=>f().makeWorld;`],
  ['../sensory-encoder.js',`export class SensoryEncoder{constructor(){this.indices=new Uint32Array();this.sample={food:null};}update(){return null;}}`],

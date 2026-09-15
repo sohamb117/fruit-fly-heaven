@@ -215,5 +215,24 @@ export function createMotorDecoder(io, vector) {
     return {power, steering};
   }
   function reset() { history.forEach(h => h.fill(0)); cursor = 4; timeMs = 0; }
-  return Object.freeze({advance, sample, features, reset, contract, get timeMs() { return timeMs; }});
+  function snapshot() {
+    return {version: MOTOR_DECODER_VERSION, indices: contract.indices.slice(), weights: Array.from(weights),
+      cursor, timeMs, history: history.map(h => Array.from(h))};
+  }
+  function restore(value) {
+    requireThat(record(value) && Object.keys(value).sort().join(',') === 'cursor,history,indices,timeMs,version,weights', 'invalid snapshot fields');
+    requireThat(value.version === MOTOR_DECODER_VERSION && sameSchema(value.indices, contract.indices) &&
+      sameSchema(value.weights, Array.from(weights)), 'snapshot identity or weights differ');
+    requireThat(Number.isSafeInteger(value.timeMs) && value.timeMs >= 0 && value.cursor === (4 + value.timeMs) % 5,
+      'invalid snapshot clock');
+    requireThat(Array.isArray(value.history) && value.history.length === 5, 'invalid snapshot history');
+    for (const h of value.history) {
+      numericVector(h, UNIT_COUNT, 'snapshot excitation');
+      requireThat(Array.from(h).every(x => x >= 0 && x <= 1), 'snapshot excitation outside [0,1]');
+    }
+    // Validate everything before touching the live decoder. No body state is
+    // accepted: this restores only its existing causal motor-input history.
+    value.history.forEach((h, i) => history[i].set(h)); cursor = value.cursor; timeMs = value.timeMs;
+  }
+  return Object.freeze({advance, sample, features, reset, snapshot, restore, contract, get timeMs() { return timeMs; }});
 }

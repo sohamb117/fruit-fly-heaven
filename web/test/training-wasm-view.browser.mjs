@@ -66,6 +66,7 @@ await context.route('**/*',async route=>{
     else if(url.pathname.endsWith('/lease')){body={job:leased?null:job,waitMs:200};leased=true;}
     else if(url.pathname.endsWith('/result')){results.push(route.request().postDataJSON());body={accepted:true};}
     else if(url.pathname.endsWith('/release'))body={released:true};
+    else if(url.pathname.endsWith('/heartbeat'))body={renewed:true};
     else throw new Error('Unexpected browser fixture API '+url.pathname);
     await route.fulfill({contentType:'application/json',body:JSON.stringify(body)});return;
   }

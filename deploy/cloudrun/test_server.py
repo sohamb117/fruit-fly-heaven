@@ -6,11 +6,12 @@ import importlib.util
 import json
 from pathlib import Path
 import socket
+import sys
 import tempfile
 import threading
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 SPEC = importlib.util.spec_from_file_location("cloudrun_server", Path(__file__).with_name("server.py"))
 server_module = importlib.util.module_from_spec(SPEC)
@@ -31,6 +32,27 @@ def fixture():
         "stages": [{"id": "posture", "durationSeconds": 1}],
         "contribution": {"leaseSeconds": 10, "maxRequestBytes": 1024},
     }
+
+
+class CloudRunPolicyTests(unittest.TestCase):
+    def test_environment_wires_operational_timeout_without_changing_config(self):
+        for override, expected in ((None, 180), ("300", 300)):
+            config = fixture()
+            original = json.dumps(config, sort_keys=True)
+            constructor = Mock()
+            fake_module = Mock(FirestoreCoordinator=constructor)
+            environment = {"TRAINING_RUN_ID": "fixture-run", "GOOGLE_CLOUD_PROJECT": "fly-training-emulator"}
+            if override is not None:
+                environment["TRAINING_LEASE_TIMEOUT_SECONDS"] = override
+            with self.subTest(override=override), patch.dict(server_module.os.environ, environment, clear=True), \
+                    patch.dict(sys.modules, {"firestore_coordinator": fake_module}), \
+                    patch.object(coordinator_module, "read_config", return_value=(config, "c"*64)), \
+                    patch.object(server_module, "make_server", return_value=Mock(server_port=8080)), \
+                    patch.object(server_module.signal, "signal"), patch("builtins.print"):
+                server_module.main()
+            constructor.assert_called_once_with(config, "c"*64, project="fly-training-emulator", database="(default)",
+                                                run_id="fixture-run", initialize=False, lease_timeout_seconds=expected)
+            self.assertEqual(json.dumps(config, sort_keys=True), original)
 
 
 class CloudRunServerTests(unittest.TestCase):

@@ -79,7 +79,7 @@ class CloudFixture:
             return self.raw_config
         if url.endswith("/api/training/status?compact=1"):
             checkpoint = self.checkpoint()
-            return json.dumps(self.mutate_status({**checkpoint, "checkpoint": checkpoint})).encode()
+            return json.dumps(self.mutate_status({**checkpoint, "checkpoint": checkpoint, "leaseSeconds": 180})).encode()
         if url.endswith("/api/training/checkpoint"):
             return json.dumps(self.mutate_checkpoint(self.checkpoint())).encode()
         raise AssertionError("Unexpected HTTP request " + url)
@@ -116,6 +116,21 @@ class DeploymentTests(unittest.TestCase):
         self.assertFalse(any("/healthz" in url for url in cloud.requests))
         self.assertEqual(cloud.environments[0]["TRAINING_RUN_ID"], "fixture-run")
         self.assertEqual(cloud.environments[0]["ALLOWED_ORIGINS"], PUBLIC+","+PRIMARY)
+        self.assertEqual(cloud.environments[0]["TRAINING_LEASE_TIMEOUT_SECONDS"], "180")
+        self.assertEqual(result["leaseSeconds"], 180)
+
+    def test_wrong_lease_policy_never_promotes_and_invalid_override_never_deploys(self):
+        for timeout in (None, True, 1800, 0):
+            cloud = CloudFixture()
+            cloud.mutate_status = lambda value: {**value, "leaseSeconds": timeout}
+            with self.subTest(timeout=timeout), self.assertRaisesRegex(ValueError, "lease timeout"):
+                cloud.run()
+            self.assertEqual(cloud.promotions(), [])
+        with patch.object(deploy, "command") as command:
+            for timeout in (True, 0, 60, 180.5, 86401):
+                with self.subTest(timeout=timeout), self.assertRaisesRegex(ValueError, "Lease timeout"):
+                    deploy.deploy(IMAGE, "fixture-run", lease_timeout_seconds=timeout)
+            command.assert_not_called()
 
     def test_failed_public_preflight_preserves_old_traffic_and_removes_only_our_tag(self):
         cloud = CloudFixture()

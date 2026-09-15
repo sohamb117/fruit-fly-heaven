@@ -135,7 +135,7 @@ test('hiding the tab keeps the trial, uploads and lease renewals running while m
   const previousDocument=Object.getOwnPropertyDescriptor(globalThis,'document'),document=new EventTarget();document.hidden=false;
   Object.defineProperty(globalThis,'document',{value:document,configurable:true});
   let heartbeatTick;
-  t.mock.method(globalThis,'setInterval',(callback,milliseconds)=>{assert.equal(milliseconds,60000);heartbeatTick=callback;return 1;});
+  t.mock.method(globalThis,'setInterval',(callback,milliseconds)=>{assert([1000,60000].includes(milliseconds));if(milliseconds===60000)heartbeatTick=callback;return 1;});
   t.mock.method(globalThis,'clearInterval',()=>{});
   const f=setup({automatic:false});
   t.after(async()=>{await f.client.dispose();if(previousDocument)Object.defineProperty(globalThis,'document',previousDocument);else delete globalThis.document;});
@@ -144,7 +144,7 @@ test('hiding the tab keeps the trial, uploads and lease renewals running while m
   document.hidden=true;document.dispatchEvent(new Event('visibilitychange'));
   assert.equal(f.client.state.phase,'training');assert.equal(f.client.running,true);assert.equal(f.client.paused,false);
   assert.equal(worker.messages.some(message=>message.type==='pause'),false);
-  heartbeatTick();assert.equal(renewals(),1);
+  heartbeatTick();assert.equal(renewals(),1);await new Promise(resolve=>setTimeout(resolve,0));
   f.client.pause();assert.equal(f.client.state.phase,'paused');heartbeatTick();assert.equal(renewals(),1);
   document.hidden=false;document.dispatchEvent(new Event('visibilitychange'));
   document.hidden=true;document.dispatchEvent(new Event('visibilitychange'));

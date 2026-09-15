@@ -32,6 +32,23 @@ const jsonCopy = value => JSON.parse(JSON.stringify(value));
 const coefficient = (contract, unit, axis, lagMs, basis) => contract.parameters.findIndex(p =>
   p.kind === 'steering' && p.unitIndex === unit.index && p.axis === axis && p.lagMs === lagMs && p.basis === basis);
 
+test('snapshot restores exact causal features and rejects mismatched parameters transactionally', () => {
+  const io=fixture(),contract=buildMotorDecoderContract(io),weights=initial(contract);
+  weights[24]=.1;
+  const live=createMotorDecoder(io,weights),restored=createMotorDecoder(io,weights);
+  for(let t=0;t<19;t++)live.advance(Array.from({length:48},(_,i)=>(i+t)%11/11));
+  const saved=live.snapshot();restored.restore(saved);
+  for(let t=0;t<7;t++){
+    assert.deepEqual(restored.features(t*.7),live.features(t*.7));assert.deepEqual(restored.sample(t*.7),live.sample(t*.7));
+    const excitation=Array.from({length:48},(_,i)=>(i+t)%7/7);live.advance(excitation);restored.advance(excitation);
+  }
+  const before=restored.snapshot(),bad=structuredClone(before);bad.weights[0]+=.01;
+  assert.throws(()=>restored.restore(bad),/weights differ/);assert.deepEqual(restored.snapshot(),before);
+  const badHistory=structuredClone(before);badHistory.history[2][5]=NaN;
+  assert.throws(()=>restored.restore(badHistory));assert.deepEqual(restored.snapshot(),before);
+  saved.history[0][0]=99;assert.notEqual(restored.snapshot().history[0][0],99);
+});
+
 test('contract preserves exact sorted unit identities and the bilateral 672-coordinate mask', () => {
   const io = fixture(), c = buildMotorDecoderContract(io);
   assert.equal(c.version, MOTOR_DECODER_VERSION);

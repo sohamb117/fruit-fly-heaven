@@ -8,7 +8,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const prefixes=[['/body-engine/','packages/flybody-runtime/node_modules/@mujoco/mujoco/'],['/banc-engine/','packages/banc-runtime/'],['/banc-data/','data/prepared/banc888/'],['/body-model/','models/']];
 const resolve=url=>{const match=prefixes.find(([prefix])=>url.startsWith(prefix));return path.join(root,match?match[1]+url.slice(match[0].length):'web'+url);};
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
-export async function buildTrainingAssetManifest(){
+export async function buildTrainingAssetManifest({extraUrls=[],config=null}={}){
  const urls=new Set([
   '/training/worker.js','/training/environment.js','/motor-decoder.js','/banc-engine/src/index.js',
   '/banc-engine/src/neural.wgsl','/banc-engine/src/neural-dlm.wgsl','/banc-engine/dist/core.js','/banc-engine/dist/core.wasm',
@@ -16,7 +16,8 @@ export async function buildTrainingAssetManifest(){
   '/body-model/flybody-mujoco.xml','/body-model/flybody-mujoco.json',
   '/banc-data/manifest.json','/banc-data/io.json','/banc-data/console/groups.json','/banc-data/console/sensory-inputs.json',
   '/body-model/banc-taste-peg-annotations.json',
-  '/habitat.json',
+  '/habitat.json',...extraUrls,
+  ...(config?.vision===true?['/banc-data/console/visual-projections.json']:[]),
  ]);
  const assets={};
  for(const url of urls){
@@ -35,8 +36,8 @@ export async function buildTrainingAssetManifest(){
  return {assets:assetsSorted,modelFingerprint};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
- const {assets,modelFingerprint}=await buildTrainingAssetManifest();
  const configPath=path.join(root,'web/training/config.json'),config=JSON.parse(await fs.readFile(configPath,'utf8'));
+ const {assets,modelFingerprint}=await buildTrainingAssetManifest({config});
  config.assets=assets;config.modelFingerprint=modelFingerprint;
  const encoded=JSON.stringify(config,null,2)+'\n';await fs.writeFile(configPath,encoded);
  console.log(JSON.stringify({assets:Object.keys(assets).length,modelFingerprint,configHash:digest(encoded),configuration:'web/training/config.json'}));

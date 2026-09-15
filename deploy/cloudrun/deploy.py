@@ -35,7 +35,7 @@ def fetch_bytes(url):
         return response.read()
 
 
-def preflight(origin):
+def preflight(origin, lease_timeout_seconds=180):
     """Check the exact tagged site's config and coordinator without creating jobs."""
     raw_config = fetch_bytes(origin + "/training/config.json")
     config = json.loads(raw_config)
@@ -45,6 +45,9 @@ def preflight(origin):
         raise ValueError("Preflight config has an invalid model identity")
     status = json.loads(fetch_bytes(origin + "/api/training/status?compact=1"))
     downloaded = json.loads(fetch_bytes(origin + "/api/training/checkpoint"))
+    expected_lease_seconds = min(config.get("contribution", {}).get("leaseSeconds", 1800), lease_timeout_seconds)
+    if type(status.get("leaseSeconds")) not in (int, float) or status["leaseSeconds"] != expected_lease_seconds:
+        raise ValueError("Preflight coordinator lease timeout differs from deployment policy")
     parameters = config.get("parameters", [])
     if not parameters or not all(isinstance(p, dict) for p in parameters):
         raise ValueError("Preflight config has no parameter schema")
@@ -71,7 +74,7 @@ def preflight(origin):
             and downloaded["parameters"] != status["checkpoint"]["parameters"]):
         raise ValueError("Preflight checkpoint changed without a generation update")
     return {"configHash": config_hash, "modelFingerprint": model,
-            "generation": downloaded["generation"], "parameterCount": len(names)}
+            "generation": downloaded["generation"], "parameterCount": len(names), "leaseSeconds": status["leaseSeconds"]}
 
 
 def tagged_origin(record, tag, revision):
@@ -87,7 +90,9 @@ def tagged_origin(record, tag, revision):
 
 
 def deploy(image, run_id, project="flyheaven", region="us-central1", service="fly-training",
-           origin="https://flytrain.morisoba.moe"):
+           origin="https://flytrain.morisoba.moe", lease_timeout_seconds=180):
+    if type(lease_timeout_seconds) is not int or not 120 <= lease_timeout_seconds <= 86400:
+        raise ValueError("Lease timeout must be an integer between 120 and 86400 seconds")
     if not re.fullmatch(r"[a-zA-Z0-9_.:-]{1,128}", run_id):
         raise ValueError("Invalid run identity")
     if not image.startswith(f"{region}-docker.pkg.dev/{project}/") or not re.search(r"@sha256:[a-f0-9]{64}$", image):
@@ -104,7 +109,7 @@ def deploy(image, run_id, project="flyheaven", region="us-central1", service="fl
     # interval before gcloud returns the new revision's service URLs.
     origins = service_origins(origin, existing[0])
     env = {"GOOGLE_CLOUD_PROJECT": project, "TRAINING_RUN_ID": run_id,
-           "ALLOWED_ORIGINS": ",".join(origins)}
+           "ALLOWED_ORIGINS": ",".join(origins), "TRAINING_LEASE_TIMEOUT_SECONDS": str(lease_timeout_seconds)}
     tag = "verify-" + uuid.uuid4().hex[:12]
     with tempfile.TemporaryDirectory(prefix="fly-cloudrun-") as temporary:
         env_file = Path(temporary) / "environment.json"
@@ -133,7 +138,7 @@ def deploy(image, run_id, project="flyheaven", region="us-central1", service="fl
             if published_origins != origins:
                 env["ALLOWED_ORIGINS"] = ",".join(published_origins)
                 revision, status, preview_url = stage_revision()
-            verified = preflight(preview_url)
+            verified = preflight(preview_url, lease_timeout_seconds)
         except Exception as error:
             # Removing our unique tag never changes the existing traffic split.
             try:
@@ -165,5 +170,7 @@ if __name__ == "__main__":
     parser.add_argument("--region", default="us-central1")
     parser.add_argument("--service", default="fly-training")
     parser.add_argument("--origin", default="https://flytrain.morisoba.moe")
+    parser.add_argument("--lease-timeout-seconds", type=int, default=180)
     args = parser.parse_args()
-    print(json.dumps(deploy(args.image, args.run_id, args.project, args.region, args.service, args.origin), indent=2))
+    print(json.dumps(deploy(args.image, args.run_id, args.project, args.region, args.service, args.origin,
+                            args.lease_timeout_seconds), indent=2))

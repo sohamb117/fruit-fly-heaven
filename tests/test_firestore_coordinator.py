@@ -204,6 +204,103 @@ class FirestoreTests(unittest.TestCase):
         self.assertEqual(third["jobId"], job["jobId"])
         self.assertNotEqual(third["leaseToken"], next_job["leaseToken"])
 
+    def long_lease_run(self):
+        self.config = fixture()
+        self.config["contribution"]["leaseSeconds"] = 1800
+        self.run_id = "test-lease-" + uuid.uuid4().hex
+        self.coordinator = self.new_coordinator(initialize=True)
+        return self.coordinator
+
+    def legacy_job(self, contributor="alice"):
+        job = self.coordinator.lease(self.identity(contributor))["job"]
+        # The deployed predecessor has no explicit renewal timestamp.
+        self.coordinator.jobs.document(job["jobId"]).update({"lease_renewed_at": firestore.DELETE_FIELD})
+        return job
+
+    def test_operational_timeout_keeps_recent_legacy_owner_and_scientific_identity(self):
+        original = self.long_lease_run()
+        job = self.legacy_job()
+        metadata = original.run.get().to_dict()
+        checkpoint = original.checkpoint()
+        self.now += 120
+        capped = self.new_coordinator(lease_timeout_seconds=180)
+        identity = {**self.identity(), "jobId": job["jobId"], "leaseToken": job["leaseToken"]}
+        retry = capped.lease(self.identity())
+        self.assertTrue(retry["retry"])
+        self.assertEqual(retry["job"], {**job, "leaseExpiresAt": 1180})
+        status = capped.status()
+        self.assertEqual(status["leaseSeconds"], 180)
+        self.assertEqual(status["config"]["contribution"]["leaseSeconds"], 1800)
+        self.assertEqual(status["jobs"], {"pending": 7, "leased": 1, "completed": 0})
+        self.assertEqual(capped.checkpoint(), checkpoint)
+        self.assertEqual(capped.run.get().to_dict(), metadata)
+        self.assertEqual(capped.heartbeat(identity)["leaseExpiresAt"], 1300)
+        saved = original.jobs.document(job["jobId"]).get().to_dict()
+        self.assertEqual((saved["expires"], saved["lease_renewed_at"]), (1300, 1120))
+        self.assertNotIn("lease_renewed_at", json.dumps(capped.status()))
+        self.assertNotIn("lease_renewed_at", capped.lease(self.identity())["job"])
+        self.now = 1299
+        self.assertTrue(capped.result(self.result_body(job))["accepted"])
+        self.now = 5000
+        self.assertTrue(capped.result(self.result_body(job))["duplicate"])
+        self.assertEqual(capped.status()["acceptedResults"], 1)
+
+    def test_abandoned_legacy_last_job_is_reassigned_once_at_exact_timeout(self):
+        original = self.long_lease_run()
+        job = self.legacy_job()
+        for index in range(7):
+            owner = f"finisher-{index}"
+            finished = original.lease(self.identity(owner))["job"]
+            original.result(self.result_body(finished, owner))
+        capped = self.new_coordinator(lease_timeout_seconds=180)
+        identity = {**self.identity(), "jobId": job["jobId"], "leaseToken": job["leaseToken"]}
+        checkpoint = capped.checkpoint()
+        self.now = 1179.999
+        self.assertIsNone(capped.lease(self.identity("waiting"))["job"])
+        self.now = 1180
+        self.assertEqual(capped.status()["jobs"], {"pending": 1, "leased": 0, "completed": 7})
+        for action in (lambda: capped.result(self.result_body(job)), lambda: capped.heartbeat(identity),
+                       lambda: capped.release(identity)):
+            self.assert_api_error("lease_expired", action)
+        peers = [self.new_coordinator(client=self.new_client(), lease_timeout_seconds=180) for _ in range(2)]
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            replies = list(pool.map(lambda pair: (pair[0], pair[1].lease(self.identity(f"recovery-{pair[0]}"))), enumerate(peers)))
+        assigned = [(index, value["job"]) for index, value in replies if value["job"]]
+        self.assertEqual(len(assigned), 1)
+        index, replacement = assigned[0]
+        self.assertEqual(replacement["jobId"], job["jobId"])
+        for field in ("parameters", "parametersHash", "seed", "generation", "pairId", "sign"):
+            self.assertEqual(replacement[field], job[field])
+        self.assertNotEqual(replacement["leaseToken"], job["leaseToken"])
+        for action in (lambda: capped.result(self.result_body(job)), lambda: capped.heartbeat(identity),
+                       lambda: capped.release(identity)):
+            self.assert_api_error("stale_lease", action)
+        self.assertEqual(capped.checkpoint(), checkpoint)
+        self.assertEqual(capped.status()["acceptedResults"], 7)
+        accepted = capped.result(self.result_body(replacement, f"recovery-{index}"))
+        self.assertTrue(accepted["nextGenerationCreated"])
+        self.assertEqual(capped.status()["acceptedResults"], 8)
+        self.assertTrue(capped.result(self.result_body(replacement, f"recovery-{index}"))["duplicate"])
+
+    def test_short_lease_renews_without_trial_lifetime_limit_or_resurrection(self):
+        self.long_lease_run()
+        capped = self.new_coordinator(lease_timeout_seconds=180)
+        job = capped.lease(self.identity())["job"]
+        identity = {**self.identity(), "jobId": job["jobId"], "leaseToken": job["leaseToken"]}
+        self.assertEqual(job["leaseExpiresAt"], 1180)
+        for _ in range(31):
+            self.now += 60
+            renewed = capped.heartbeat(identity)
+            self.assertEqual(renewed["leaseExpiresAt"], self.now + 180)
+            self.assertEqual(capped.lease(self.identity())["job"]["leaseToken"], job["leaseToken"])
+        # A more permissive later policy cannot extend an already issued lease.
+        relaxed = self.new_coordinator(lease_timeout_seconds=3600)
+        self.assertEqual(relaxed.status()["leaseSeconds"], 1800)
+        self.assertEqual(relaxed.lease(self.identity())["job"]["leaseExpiresAt"], renewed["leaseExpiresAt"])
+        self.now = renewed["leaseExpiresAt"]
+        self.assert_api_error("lease_expired", lambda: relaxed.heartbeat(identity))
+        self.assert_api_error("lease_expired", lambda: relaxed.result(self.result_body(job)))
+
     def test_observer_status_and_preview_persist_across_instances_without_history_changes(self):
         from test_training_coordinator import preview_frame
         sqlite = sqlite_module.TrainingCoordinator(Path(self.temp.name)/"observer.sqlite3", self.config, clock=lambda: self.now)

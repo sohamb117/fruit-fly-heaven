@@ -288,8 +288,9 @@ def main():
     config, config_hash = training_coordinator.read_config(config_path)
     project = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("PROJECT_ID")
     run_id = os.environ["TRAINING_RUN_ID"]
+    lease_timeout_seconds = int(os.environ.get("TRAINING_LEASE_TIMEOUT_SECONDS", "180"))
     coordinator = FirestoreCoordinator(config, config_hash, project=project, database="(default)",
-                                       run_id=run_id, initialize=False)
+                                       run_id=run_id, initialize=False, lease_timeout_seconds=lease_timeout_seconds)
     server = None
     try:
         server = make_server(coordinator,

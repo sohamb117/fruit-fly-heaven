@@ -6,6 +6,7 @@ const detailEvent=(type,detail)=>new CustomEvent(type,{detail});
 const abortError=()=>new DOMException('Training stopped','AbortError');
 const codedError=(message,code)=>Object.assign(new Error(message),{code});
 export const browserTrainingAvailable=config=>!!config&&(config.schemaVersion!==2||config.optimizer?.acceptance?.nativeExecution?.backend==='wasm');
+export const EVALUATION_STALL_MS=180000;
 
 // The explicit development server marks its own HTML. Ordinary downloaded
 // clients keep using the hosted pool; this never enables an unshared mode.
@@ -61,6 +62,7 @@ export class TrainingClient extends EventTarget {
     worker.addEventListener('message',event=>{
       if(this.worker!==worker)return;
       const message=event.data;
+      if(message.id!==undefined&&!this.pending.has(message.id)&&['progress','frame','error'].includes(message.type))return;
       if(message.type==='brain'){
         const snapshot=message.snapshot;
         if(this.brainObservation.enabled&&snapshot?.jobId===this.state.activeJob?.jobId)this.dispatchEvent(detailEvent('brain',snapshot));
@@ -69,16 +71,18 @@ export class TrainingClient extends EventTarget {
       if(message.type==='brain-error'){this.dispatchEvent(detailEvent('brain-error',{message:message.message||'Brain view unavailable'}));return;}
       if(message.type==='frame'){this.dispatchEvent(detailEvent('frame',message.frame));return;}
       if(message.type==='progress'){
+        this.recordEvaluationProgress(message);
         this.emit({message:message.message||message.phase||this.state.message,...(Number.isFinite(message.simSeconds)?{episodeSimSeconds:message.simSeconds}:{})});return;
       }
       if(message.type==='error') {
         const error=new Error(message.message||message.error||'Training worker failed');
-        if(this.pending.has(message.id)){this.pending.get(message.id).reject(error);this.pending.delete(message.id);}
+        if(this.pending.has(message.id)){this.clearEvaluationWatch(message.id);this.pending.get(message.id).reject(error);this.pending.delete(message.id);}
         else {for(const p of this.pending.values())p.reject(error);this.pending.clear();this.fail(error);}
         return;
       }
       const pending=this.pending.get(message.id);
       if(pending&&['ready','evaluation','cancelled','stopped'].includes(message.type)){
+        this.clearEvaluationWatch(message.id);
         this.pending.delete(message.id);message.type==='cancelled'||message.type==='stopped'?pending.reject(abortError()):pending.resolve(message);
       }
     });
@@ -97,7 +101,47 @@ export class TrainingClient extends EventTarget {
   }
   rpc(type,payload={}) {
     const id=++this.nextId;
-    return new Promise((resolve,reject)=>{this.pending.set(id,{resolve,reject});this.worker.postMessage({type,id,...payload});});
+    return new Promise((resolve,reject)=>{
+      this.pending.set(id,{resolve,reject});if(type==='evaluate')this.watchEvaluation(id,payload.job);
+      try{this.worker.postMessage({type,id,...payload});}
+      catch(error){this.clearEvaluationWatch(id);this.pending.delete(id);reject(error);}
+    });
+  }
+  watchEvaluation(id,job) {
+    this.clearEvaluationWatch();
+    const watch=this.evaluationWatch={id,job,worker:this.worker,token:this.runToken,lastAdvance:performance.now(),clocks:{}};
+    watch.timer=setInterval(()=>this.checkEvaluationProgress(watch),1000);watch.timer.unref?.();
+  }
+  clearEvaluationWatch(id) {
+    const watch=this.evaluationWatch;if(!watch||(id!==undefined&&watch.id!==id))return;
+    clearInterval(watch.timer);this.evaluationWatch=null;
+  }
+  recordEvaluationProgress(message) {
+    const watch=this.evaluationWatch;
+    if(!watch||message.id!==watch.id||watch.worker!==this.worker||watch.token!==this.runToken||this.paused)return;
+    // Only actual simulation clocks establish liveness. Preview/brain messages,
+    // status text and repetitions of a frozen clock do not renew this deadline.
+    let advanced=false;
+    for(const key of ['neuralMs','nativeTimeSeconds','simSeconds','steps','warmupSteps','warmupSeconds']){
+      const value=message[key];
+      if(Number.isFinite(value)&&value>(watch.clocks[key]??0)){watch.clocks[key]=value;advanced=true;}
+    }
+    if(advanced)watch.lastAdvance=performance.now();
+  }
+  checkEvaluationProgress(watch=this.evaluationWatch) {
+    if(!watch||watch!==this.evaluationWatch||!this.running||this.paused||watch.token!==this.runToken||watch.worker!==this.worker)return false;
+    if(performance.now()-watch.lastAdvance<EVALUATION_STALL_MS)return true;
+    this.abortEvaluation(codedError('Simulation made no progress for 3 minutes. Press Start to retry.','evaluation_stalled'),watch);
+    return false;
+  }
+  abortEvaluation(error,watch=this.evaluationWatch) {
+    if(!watch||watch!==this.evaluationWatch||watch.token!==this.runToken||watch.worker!==this.worker)return;
+    const pending=this.pending.get(watch.id);if(!pending)return;
+    this.clearEvaluationWatch();this.pending.delete(watch.id);
+    if(this.heartbeat)clearInterval(this.heartbeat);this.heartbeat=null;
+    // A stuck WASM call cannot process cooperative cancel. Termination also
+    // prevents a late frame/result from being attributed to a replacement job.
+    this.worker.terminate();this.worker=null;this.workerReady=null;pending.reject(error);
   }
   setBudget({dutyCycle=this.options.dutyCycle,previewHz=this.options.previewHz}={}) {
     if(!Number.isFinite(dutyCycle)||dutyCycle<.1||dutyCycle>1||!Number.isFinite(previewHz)||previewHz<0||previewHz>15)throw new Error('Invalid compute or preview budget');
@@ -147,9 +191,15 @@ export class TrainingClient extends EventTarget {
   }
   async runnable(token=this.runToken) {while(this.paused&&this.running&&token===this.runToken)await delay(50);if(!this.running||token!==this.runToken)throw abortError();}
   pause(message='Paused') {if(!this.running||this.paused)return;this.paused=true;this.worker?.postMessage({type:'pause'});this.emit({phase:'paused',message});}
-  resume() {if(!this.running||!this.paused)return;this.paused=false;this.worker?.postMessage({type:'resume'});this.emit({phase:'training',message:'Running'});}
+  resume() {
+    if(!this.running||!this.paused)return;
+    this.paused=false;if(this.evaluationWatch)this.evaluationWatch.lastAdvance=performance.now();
+    this.worker?.postMessage({type:'resume'});this.emit({phase:'training',message:'Running'});
+    if(this.activeLease)void this.renewLease(this.activeLease,this.runToken);
+  }
   async stop() {
     this.runToken++;this.starting=false;this.running=false;this.paused=false;this.worker?.postMessage({type:'cancel'});
+    this.clearEvaluationWatch();
     // Cancellation is cooperative at the next neural/body boundary. Resolve all
     // waiting callers too, so a stop during initialization cannot leave a loop.
     for(const p of this.pending.values())p.reject(abortError());this.pending.clear();
@@ -309,6 +359,20 @@ export class TrainingClient extends EventTarget {
   leaseIdentity(job) {return {jobId:job.jobId,leaseToken:job.leaseToken,contributorId:this.contributorId,modelFingerprint:this.config.modelFingerprint,configHash:this.configHash};}
   hasPendingResult(job) {return !!this.outbox&&this.outbox.jobId===job.jobId&&this.outbox.leaseToken===job.leaseToken&&this.outboxUrl===job.coordinatorUrl;}
   async releaseLease(job) {try{await this.api('/release',this.leaseIdentity(job),job.coordinatorUrl);}catch{/* The server also expires disconnected leases. */}}
+  async renewLease(job,token) {
+    if(!this.running||this.paused||token!==this.runToken||this.activeLease!==job)return;
+    const watch=this.evaluationWatch;
+    if(watch&&!this.checkEvaluationProgress(watch))return;
+    if(this.heartbeatRequest?.job===job&&this.heartbeatRequest.token===token)return;
+    const request=this.heartbeatRequest={job,token};
+    try{await this.api('/heartbeat',this.leaseIdentity(job),job.coordinatorUrl);}
+    catch(error){
+      if(!this.running||token!==this.runToken||this.activeLease!==job)return;
+      if([409,410].includes(error.status)&&watch&&watch===this.evaluationWatch)
+        this.abortEvaluation(codedError('This trial assignment expired. Press Start to get a new trial.','lease_expired'),watch);
+      else this.emit({message:`Lease renewal: ${error.message}`});
+    }finally{if(this.heartbeatRequest===request)this.heartbeatRequest=null;}
+  }
   async runShared(token) {
     if(!browserTrainingAvailable(this.config))throw codedError('This run is using the connected trainer.','native_trainer_required');
     const url=this.state.coordinator.url;
@@ -328,7 +392,7 @@ export class TrainingClient extends EventTarget {
       if(!job){await delay(Math.min(response.waitMs||2000,10000));continue;}
       if(job.modelFingerprint!==this.config.modelFingerprint||job.configHash!==this.configHash)throw new Error('Incompatible shared job');
       validateParameters(job.parameters,this.config);if(!this.config.stages.some(s=>s.id===job.stage))throw new Error('Unknown shared task');
-      const heartbeat=this.heartbeat=setInterval(()=>{if(this.running&&!this.paused)this.api('/heartbeat',this.leaseIdentity(job),url).catch(error=>this.emit({message:`Lease renewal: ${error.message}`}));},60000);
+      const heartbeat=this.heartbeat=setInterval(()=>{void this.renewLease(job,token);},60000);
       try{
         const result=await this.evaluate(job,'contribution',token);
         const evidence={};
@@ -384,7 +448,7 @@ export class TrainingClient extends EventTarget {
     catch{this.emit({storageWarning:'Local storage is unavailable. Export a checkpoint before closing this page.'});}
   }
   localViewSnapshot() {return structuredClone(Object.fromEntries(['stage','generation','parameters','checkpointStatus','bestReturn','validation','curriculum'].map(key=>[key,this.state[key]])));}
-  fail(error) {this.running=false;this.paused=false;this.worker?.postMessage({type:'cancel'});if(this.heartbeat)clearInterval(this.heartbeat);this.heartbeat=null;
+  fail(error) {this.running=false;this.paused=false;this.clearEvaluationWatch();this.worker?.postMessage({type:'cancel'});if(this.heartbeat)clearInterval(this.heartbeat);this.heartbeat=null;
     if(this.activeLease){const lease=this.activeLease;this.activeLease=null;if(!this.hasPendingResult(lease))this.releaseLease(lease);}
     this.persist();this.emit({phase:'error',activity:null,message:error.message,error:error.message});}
   async dispose() {await this.stop();}

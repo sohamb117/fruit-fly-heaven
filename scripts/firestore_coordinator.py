@@ -39,8 +39,13 @@ class FirestoreCoordinator(CoordinatorRules):
     """Same public methods as TrainingCoordinator, safe across service instances."""
 
     def __init__(self, config, config_hash=None, *, project=None, database="(default)",
-                 run_id, client=None, initialize=False, clock=time.time):
+                 run_id, client=None, initialize=False, clock=time.time, lease_timeout_seconds=None):
         self._configure(config, config_hash, clock)
+        # Availability policy is separate from the pinned scientific config.
+        # Short renewals bound abandoned work; an active trial can renew for as
+        # long as it takes without changing its assignment or result contract.
+        self.lease_timeout_seconds = self.lease_seconds if lease_timeout_seconds is None else min(
+            self.lease_seconds, finite_number(lease_timeout_seconds, 1, 86400, "lease timeout"))
         self.run_id = identifier(run_id, "run_id")
         self.client = client or firestore.Client(project=project, database=database)
         self._owns_client = client is None
@@ -140,6 +145,18 @@ class FirestoreCoordinator(CoordinatorRules):
         snapshot = self.jobs.document(job_id).get(transaction=tx)
         return self._verify_assignment(snapshot.to_dict() if snapshot.exists else None, contributor, token)
 
+    def _lease_expiry(self, row):
+        if row["expires"] is None:
+            return None
+        # Older revisions wrote exactly renewed_at + config.leaseSeconds.
+        # Recover that timestamp without rewriting history or revoking a lease
+        # whose owner has checked in recently. New revisions record it directly.
+        renewed_at = row.get("lease_renewed_at", row["expires"] - self.lease_seconds)
+        return min(row["expires"], renewed_at + self.lease_timeout_seconds)
+
+    def _job_json(self, row):
+        return {**super()._job_json(row), "leaseExpiresAt": self._lease_expiry(row)}
+
     def lease(self, payload):
         contributor = self._lease_contributor(payload)
 
@@ -150,16 +167,17 @@ class FirestoreCoordinator(CoordinatorRules):
             # Completed generations cannot contain an active lease. Reading the
             # complete bounded current batch enforces one lease per contributor.
             active = sorted((row for row in rows if row["state"] == "leased"
-                             and row["contributor"] == contributor and row["expires"] > now),
+                             and row["contributor"] == contributor and self._lease_expiry(row) > now),
                             key=lambda row: row["job_id"])
             if active:
                 return {"job": self._job_json(active[0]), "retry": True}
             row = next((row for row in rows if row["state"] == "pending"
-                        or (row["state"] == "leased" and row["expires"] <= now)), None)
+                        or (row["state"] == "leased" and self._lease_expiry(row) <= now)), None)
             if row is None:
                 return {"job": None, "waitMs": 10000, "retryAfterSeconds": 10, "status": "waiting_for_results"}
             row = {**row, "state": "leased", "contributor": contributor,
-                   "token": secrets.token_urlsafe(32), "expires": now+self.lease_seconds}
+                   "token": secrets.token_urlsafe(32), "expires": now+self.lease_timeout_seconds,
+                   "lease_renewed_at": now}
             tx.set(self.jobs.document(row["job_id"]), checked_document(row))
             return {"job": self._job_json(row), "retry": False}
 
@@ -177,7 +195,7 @@ class FirestoreCoordinator(CoordinatorRules):
                     raise APIError(409, "result_conflict", "A different result was already accepted for this job")
                 return {"accepted": True, "duplicate": True, "status": "unverified", "generation": row["generation"]}
             now = self.clock()
-            if row["state"] != "leased" or row["expires"] <= now:
+            if row["state"] != "leased" or self._lease_expiry(row) <= now:
                 raise APIError(410, "lease_expired", "Lease expired or was released; request a new assignment")
             if row["generation"] != metadata["currentGeneration"]:
                 raise APIError(503, "invalid_history", "Lease is outside the current training generation")
@@ -238,7 +256,7 @@ class FirestoreCoordinator(CoordinatorRules):
                 raise APIError(409, "already_completed", "Completed results cannot be released")
             if row["state"] == "pending":
                 return {"released": True, "duplicate": True}
-            if row["expires"] <= self.clock():
+            if self._lease_expiry(row) <= self.clock():
                 raise APIError(410, "lease_expired", "Lease already expired")
             tx.update(self.jobs.document(row["job_id"]), {"state": "pending", "expires": None})
             return {"released": True, "duplicate": False}
@@ -254,10 +272,11 @@ class FirestoreCoordinator(CoordinatorRules):
             row = self._read_job(tx, payload, contributor)
             if row["state"] != "leased":
                 raise APIError(409, "not_leased", "Only an active lease can be renewed")
-            if row["expires"] <= self.clock():
+            now = self.clock()
+            if self._lease_expiry(row) <= now:
                 raise APIError(410, "lease_expired", "Expired leases cannot be renewed")
-            expires = self.clock()+self.lease_seconds
-            tx.update(self.jobs.document(row["job_id"]), {"expires": expires})
+            expires = now+self.lease_timeout_seconds
+            tx.update(self.jobs.document(row["job_id"]), {"expires": expires, "lease_renewed_at": now})
             if preview is not None:
                 # Geometry is JSON to avoid Firestore's nested-array limitation.
                 tx.set(self.telemetry.document("latest"), {"job_id": row["job_id"],
@@ -272,7 +291,7 @@ class FirestoreCoordinator(CoordinatorRules):
     def status(self):
         def status(tx):
             metadata, current = self._read_current(tx)
-            rows = self._batch(tx, current)
+            rows = [{**row, "expires": self._lease_expiry(row)} for row in self._batch(tx, current)]
             recent = [snapshot.to_dict() for snapshot in self.jobs.order_by(
                 "completed", direction=firestore.Query.DESCENDING).limit(RECENT_TRIAL_LIMIT).stream(transaction=tx)]
             previous = None
@@ -280,7 +299,8 @@ class FirestoreCoordinator(CoordinatorRules):
                 previous = self.generations.document(str(current["generation"]-1)).get(transaction=tx).to_dict()
             telemetry = self.telemetry.document("latest").get(transaction=tx).to_dict()
             return {**self._status_from_rows(current, rows, metadata["acceptedResults"], metadata["contributorsCount"]),
-                    **self._observer_status(current, recent, metadata["acceptedResults"], previous, telemetry, rows)}
+                    **self._observer_status(current, recent, metadata["acceptedResults"], previous, telemetry, rows),
+                    "leaseSeconds": self.lease_timeout_seconds}
         return self._transaction(status, read_only=True)
 
 

@@ -1,0 +1,15 @@
+{
+  "graph": "data/graphs/fixture",
+  "substrate": "real",
+  "adapter_budget": 1024,
+  "train_seed": 0,
+  "substrate_seed": 0,
+  "body": {"backend": "fixture", "task": "balance", "horizon": 16},
+  "dynamics": {"channels": 8},
+  "ppo": {
+    "interactions": 128, "num_envs": 2, "rollout_steps": 16,
+    "sequence_length": 8, "burn_in": 4, "epochs": 2,
+    "eval_every": 64, "eval_episodes": 2, "test_episodes": 3,
+    "threshold_confirmations": 2
+  }
+}

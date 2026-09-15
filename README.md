@@ -1,5 +1,7 @@
 # Fruit Fly Heaven — BANC v888
 
+The isolated [connectome–FlyBody benchmark](experiments/connectome_body/README.md) compares generic learned adapters across frozen BANC/MaleCNS graphs, topology nulls, random RNNs, and brain-free policies. It includes pinned data preparation, native tasks, capacity/experience sweeps, resumable PPO, and analysis; its validation report states the current evidence.
+
 A browser neuromechanics experiment using the **BANC v888 brain-and-ventral-nerve-cord graph**. Chemical connectivity is preserved across brain, VNC, ascending, descending and motor populations. Annotated **motor neurons**, rather than descending-neuron behavior scores, activate modeled muscle groups. A small actuator adapter connects their forces to the actual FlyBody model in MuJoCo WASM.
 
 The default application runs BANC **inside the original 3D console**. The habitat, movable/popout panels, eye cameras, graded vision, color processing, population controls, anatomy, microscopy and circuit instruments are retained. The original FlyWire backend is available at `/?dataset=flywire` or `/flywire.html`, with its [original documentation](README-flywire.md). The standalone research prototype is isolated at `/banc-lab.html`.

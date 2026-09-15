@@ -1,0 +1,11 @@
+{
+  "dataset": "REPLACE_WITH_DATASET_NAME",
+  "species": "REPLACE_WITH_SPECIES",
+  "release": "REPLACE_WITH_IMMUTABLE_RELEASE_OR_MATERIALIZATION",
+  "coverage": "REPLACE_WITH_NEURON_MEMBERSHIP_AND_PROOFREADING_COVERAGE",
+  "resolution": "neuron_synapse",
+  "citation": "REPLACE_WITH_SOURCE_URL_OR_DOI",
+  "license": "REPLACE_WITH_DATA_LICENSE",
+  "edge_semantics": "Directed presynaptic neuron to postsynaptic neuron; weight is synapse count",
+  "filter": "REPLACE_WITH_EXACT_NODE_AND_SYNAPSE_FILTERS"
+}

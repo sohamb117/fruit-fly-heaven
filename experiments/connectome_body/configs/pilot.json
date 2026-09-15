@@ -1,0 +1,20 @@
+{
+  "name": "native-flybody-feasibility-pilot",
+  "datasets": ["banc", "malecns"],
+  "tasks": ["balance", "walk", "reach"],
+  "substrates": ["real", "degree_shuffled", "matched_random", "no_edges"],
+  "baselines": ["adapter_only", "adapter_gru", "trainable_gru"],
+  "adapter_budgets": [5000, 50000],
+  "train_seeds": [0, 1],
+  "substrate_seeds": [0],
+  "base": {
+    "body": {"backend": "flybody", "horizon": 200, "action_repeat": 5},
+    "dynamics": {"channels": 16, "gain": 0.9, "tau_seconds": 0.02},
+    "ppo": {
+      "interactions": 4096, "num_envs": 2, "rollout_steps": 64,
+      "sequence_length": 16, "burn_in": 16, "epochs": 2,
+      "eval_every": 1024, "eval_episodes": 4, "test_episodes": 8,
+      "threshold_confirmations": 2
+    }
+  }
+}

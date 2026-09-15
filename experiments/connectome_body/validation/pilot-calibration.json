@@ -1,0 +1,65 @@
+{
+  "completed_pilot_runs": 3,
+  "planned_pilot_runs": 132,
+  "runs": [
+    {
+      "actor_parameters": 48924,
+      "artifact": "runs/launch/pilot/runs/baseline-balance-trainable_gru-p50000-s0",
+      "evaluation_episodes": 8,
+      "experience": {
+        "censor_step": 4096,
+        "certification_step": 1024,
+        "event": true,
+        "first_crossing_step": 0
+      },
+      "initial_validation_success": 1.0,
+      "ood_success": 1.0,
+      "result_sha256": "daf4c0588d9ef702c37d5eea047f4544f3709680f0f6b05469855fd26143a1f2",
+      "selected_checkpoint_step": 3072,
+      "task": "balance",
+      "test_score": 0.8869136421822086,
+      "test_success": 1.0,
+      "training_interactions": 4096
+    },
+    {
+      "actor_parameters": 48924,
+      "artifact": "runs/launch/pilot/runs/baseline-walk-trainable_gru-p50000-s0",
+      "evaluation_episodes": 8,
+      "experience": {
+        "censor_step": 4096,
+        "certification_step": null,
+        "event": false,
+        "first_crossing_step": null
+      },
+      "initial_validation_success": 0.0,
+      "ood_success": 0.0,
+      "result_sha256": "fef319d26f9ff199ea11b35a51247313a50c9d8440e95433d2377f9af3db1e3f",
+      "selected_checkpoint_step": 4096,
+      "task": "walk",
+      "test_score": 0.1182726740235385,
+      "test_success": 0.0,
+      "training_interactions": 4096
+    },
+    {
+      "actor_parameters": 48924,
+      "artifact": "runs/launch/pilot/runs/baseline-reach-trainable_gru-p50000-s0",
+      "evaluation_episodes": 8,
+      "experience": {
+        "censor_step": 4096,
+        "certification_step": null,
+        "event": false,
+        "first_crossing_step": null
+      },
+      "initial_validation_success": 0.0,
+      "ood_success": 0.0,
+      "result_sha256": "4f75cdd112203cac9745e4678e4ef896e0e91e75e3f7ffb442a1906d7a2efdc3",
+      "selected_checkpoint_step": 0,
+      "task": "reach",
+      "test_score": 0.05811177247621535,
+      "test_success": 0.0,
+      "training_interactions": 4096
+    }
+  ],
+  "scope": "One conventional GRU seed at 50k actor ceiling, 4096 interactions per task; feasibility/calibration only, no biological comparison",
+  "training_interactions": 12288
+}

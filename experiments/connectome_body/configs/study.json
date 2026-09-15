@@ -1,0 +1,24 @@
+{
+  "name": "connectome-interface-capacity-and-experience",
+  "datasets": ["banc", "malecns", "fish1", "cockroach"],
+  "tasks": ["walk", "reach"],
+  "substrates": ["real", "degree_shuffled", "matched_random", "no_edges"],
+  "baselines": ["adapter_only", "adapter_gru", "trainable_gru"],
+  "adapter_budgets": [5000, 20000, 100000, 500000],
+  "train_seeds": [100, 101, 102, 103, 104],
+  "substrate_seeds": [0, 1, 2],
+  "base": {
+    "body": {"backend": "flybody", "horizon": 200, "action_repeat": 5},
+    "dynamics": {
+      "channels": 16, "gain": 0.9, "tau_seconds": 0.02,
+      "substeps": 2, "input_gain": 1.0, "inhibitory_fraction": 0.2,
+      "sign_mode": "random_dale", "weight_transform": "log1p"
+    },
+    "ppo": {
+      "interactions": 1000000, "num_envs": 4, "rollout_steps": 128,
+      "sequence_length": 16, "burn_in": 16, "epochs": 4,
+      "eval_every": 20000, "eval_episodes": 20, "test_episodes": 100,
+      "success_threshold": 0.8, "threshold_confirmations": 3
+    }
+  }
+}

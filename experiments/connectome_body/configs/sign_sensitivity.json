@@ -1,0 +1,24 @@
+{
+  "name": "banc-transmitter-sign-sensitivity",
+  "datasets": ["banc"],
+  "tasks": ["walk"],
+  "substrates": ["real", "degree_shuffled", "matched_random"],
+  "baselines": [],
+  "adapter_budgets": [20000],
+  "train_seeds": [10, 11, 12],
+  "substrate_seeds": [0, 1],
+  "dynamics_cases": [
+    {"name": "random_dale", "settings": {"sign_mode": "random_dale"}},
+    {"name": "annotated", "settings": {"sign_mode": "annotated"}}
+  ],
+  "base": {
+    "body": {"backend": "flybody", "horizon": 200, "action_repeat": 5},
+    "dynamics": {"channels": 16, "gain": 0.9, "tau_seconds": 0.02},
+    "ppo": {
+      "interactions": 200000, "num_envs": 4, "rollout_steps": 128,
+      "sequence_length": 16, "burn_in": 16, "epochs": 4,
+      "eval_every": 10000, "eval_episodes": 20, "test_episodes": 100,
+      "threshold_confirmations": 3
+    }
+  }
+}

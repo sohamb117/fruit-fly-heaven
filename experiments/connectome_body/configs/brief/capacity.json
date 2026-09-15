@@ -1,0 +1,85 @@
+{
+  "name": "banc-hover-capacity",
+  "datasets": [
+    "banc"
+  ],
+  "conditions": [
+    "real",
+    "degree_shuffled",
+    "matched_random",
+    "adapter_only"
+  ],
+  "budgets": [
+    5000,
+    20000,
+    80000
+  ],
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "require_gpu_benchmark": true,
+  "body": {
+    "horizon": 5000,
+    "action_repeat": 1,
+    "initial_angle": 0.04,
+    "initial_velocity": 0.5,
+    "linear_kick": 2,
+    "angular_kick": 3,
+    "perturbations": true,
+    "position_tolerance": 0.25,
+    "angle_tolerance": 0.3490658503988659,
+    "velocity_tolerance": 5,
+    "final_dwell_seconds": 0.1
+  },
+  "adapter": {
+    "channels": 16,
+    "support": 256,
+    "device": "cuda",
+    "threads": 1,
+    "rate": {
+      "gain": 0.9,
+      "tau_seconds": 0.002,
+      "control_dt": 0.0002,
+      "substeps": 2,
+      "input_gain": 1,
+      "sign_mode": "random_dale",
+      "inhibitory_fraction": 0.2,
+      "weight_transform": "log1p"
+    }
+  },
+  "offline": {
+    "updates": 1000,
+    "batch_size": 4,
+    "sequence_length": 32,
+    "burn_in": 64,
+    "learning_rate": 0.001,
+    "eval_every": 100,
+    "checkpoint_every": 25,
+    "max_grad_norm": 1
+  },
+  "dagger_optimization": {
+    "updates": 500,
+    "batch_size": 4,
+    "sequence_length": 32,
+    "burn_in": 64,
+    "learning_rate": 0.001,
+    "eval_every": 100,
+    "checkpoint_every": 25,
+    "max_grad_norm": 1
+  },
+  "online_budgets": [
+    0,
+    5000,
+    20000
+  ],
+  "dagger_beta": 0,
+  "validation_episodes": 8,
+  "test_episodes": 50,
+  "success_threshold": 0.8,
+  "interventions": true,
+  "requires_mvp_go": true,
+  "mvp_decision": "runs/brief-mvp-analysis/decision.json",
+  "reuse_plan": "runs/brief-mvp/plan.json"
+}

@@ -1,0 +1,103 @@
+{
+  "adapter": {
+    "budget": 5000,
+    "channels": 16,
+    "device": "cpu",
+    "graph": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/data/graphs/banc",
+    "port_seed": 0,
+    "rate": {
+      "control_dt": 0.0002,
+      "gain": 0.9,
+      "inhibitory_fraction": 0.2,
+      "input_gain": 1.0,
+      "sign_mode": "random_dale",
+      "substeps": 2,
+      "tau_seconds": 0.002,
+      "weight_transform": "log1p"
+    },
+    "seed": 0,
+    "support": 256,
+    "threads": 6,
+    "variant": "real"
+  },
+  "benchmark_source_sha256": "e17d4eb278e10b9bf1e7f6b720d676d9f59fdcf30764ed1bd05d2a32e208265d",
+  "cpu_rate_parity": {
+    "status": "reference_cpu"
+  },
+  "device": "cpu",
+  "device_name": "arm",
+  "edges": 13542180,
+  "evidence": "engineering_benchmark",
+  "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+  "memory_definition": "CUDA instrumented peak; MPS allocated/driver memory sampled after each decision and backward, not an instrumented peak; process RSS high-water is cumulative",
+  "neurons": 175401,
+  "parameters": {
+    "actual": 4912,
+    "budget": 5000,
+    "decoder": 882,
+    "encoder": 3646,
+    "hidden_width": 30,
+    "learned_connectome_weights": 0,
+    "port_queries": 384,
+    "state_dimension": 175401,
+    "trainable_recurrence": 0
+  },
+  "platform": "macOS-26.3-arm64-arm-64bit",
+  "python": "3.12.1",
+  "repeats": 3,
+  "rows": [
+    {
+      "allocated_bytes": null,
+      "backward_seconds": 3.43444849998923,
+      "backward_transitions_per_second": 74.53889612868056,
+      "batch": 4,
+      "bptt_length": 32,
+      "driver_or_reserved_bytes": null,
+      "forward_seconds": 3.4832267919991864,
+      "forward_transitions_per_second": 73.49507088887246,
+      "inference_seconds": 3.476049917007913,
+      "inference_transitions_per_second": 73.64681351306879,
+      "process_highwater_rss_bytes": 1492615168,
+      "samples": [
+        {
+          "allocated_bytes": null,
+          "backward_seconds": 3.43444849998923,
+          "driver_or_reserved_bytes": null,
+          "forward_seconds": 3.4832267919991864,
+          "inference_seconds": 3.467247042004601,
+          "input_gradient_norm": 2.15429690797464e-06,
+          "process_highwater_rss_bytes": 1465548800
+        },
+        {
+          "allocated_bytes": null,
+          "backward_seconds": 3.481262625005911,
+          "driver_or_reserved_bytes": null,
+          "forward_seconds": 3.497613667001133,
+          "inference_seconds": 3.49835358299606,
+          "input_gradient_norm": 1.0718171097323648e-06,
+          "process_highwater_rss_bytes": 1475493888
+        },
+        {
+          "allocated_bytes": null,
+          "backward_seconds": 3.3386611659952905,
+          "driver_or_reserved_bytes": null,
+          "forward_seconds": 3.402978041995084,
+          "inference_seconds": 3.476049917007913,
+          "input_gradient_norm": 1.1706194982252782e-06,
+          "process_highwater_rss_bytes": 1492615168
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 37.006651684921074
+    }
+  ],
+  "schema": "connectome-structural-benchmark-v1",
+  "scope": "Full stateless E/D, learned structural ports, frozen recurrence; no MuJoCo or optimizer step",
+  "setup_seconds": 3.0496232500008773,
+  "source_identity": "31e83c9dc2d2f2cd356368e5cc69230d29e71395409dbd9a573daa2f24dee6d8",
+  "status": "complete",
+  "threads": 6,
+  "torch": "2.8.0",
+  "transition_definition": "One whole-graph recurrent substep for one batch member",
+  "warmup": 1
+}

@@ -1,0 +1,25 @@
+{
+  "action_dim": 12,
+  "observation_dim": 104,
+  "ports": 16,
+  "rows": [
+    {
+      "adapter_only": 4978,
+      "ceiling": 5000,
+      "real": 4912,
+      "trainable_gru": 4809
+    },
+    {
+      "adapter_only": 19978,
+      "ceiling": 20000,
+      "real": 19912,
+      "trainable_gru": 19749
+    },
+    {
+      "adapter_only": 79978,
+      "ceiling": 80000,
+      "real": 79912,
+      "trainable_gru": 79689
+    }
+  ]
+}

@@ -1,0 +1,320 @@
+{
+  "device": "cpu",
+  "edges": 13542180,
+  "evidence": "engineering_only",
+  "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+  "neurons": 175401,
+  "rows": [
+    {
+      "batch": 1,
+      "bptt_length": 8,
+      "construction_seconds": 2.8488035409973236,
+      "forward_backward_seconds": 4.570093457994517,
+      "gradients": {
+        "decoder.0.bias": 0.0007974864565767348,
+        "decoder.0.weight": 3.849238964903634e-06,
+        "decoder.2.bias": 0.0006011407822370529,
+        "decoder.2.weight": 3.1928693715599366e-06,
+        "encoder.0.bias": 2.6609293399815215e-06,
+        "encoder.0.weight": 1.2852821782871615e-05,
+        "encoder.2.bias": 4.973438990418799e-06,
+        "encoder.2.weight": 7.82393090048572e-06,
+        "ports.input_queries": 1.9374520832116104e-07,
+        "ports.output_queries": 3.434554116665822e-07
+      },
+      "parameters": {
+        "actual": 4912,
+        "budget": 5000,
+        "decoder": 882,
+        "encoder": 3646,
+        "hidden_width": 30,
+        "learned_connectome_weights": 0,
+        "port_queries": 384,
+        "state_dimension": 175401,
+        "trainable_recurrence": 0
+      },
+      "status": "passed",
+      "substrate": {
+        "actual_inhibitory_fraction": 0.19999885975564563,
+        "edges": 13542180,
+        "features": {
+          "mean": [
+            3.5900923967982483,
+            3.6589649160261173,
+            4.369801639511301,
+            4.447896287215202,
+            0.22632295828703555,
+            -12.511050011479755,
+            4.181332300647451,
+            4.38369401159995,
+            4.3779340532559194,
+            4.264983427039666,
+            0.003665563501328316,
+            0.072223077405488
+          ],
+          "names": [
+            "log_in_degree",
+            "log_out_degree",
+            "log_in_strength",
+            "log_out_strength",
+            "reciprocal_out_fraction",
+            "log_pagerank",
+            "in_neighbor_log_in_degree",
+            "in_neighbor_log_out_degree",
+            "out_neighbor_log_in_degree",
+            "out_neighbor_log_out_degree",
+            "two_step_return_probability",
+            "isolated"
+          ],
+          "normalization": "within-graph z-score, clipped [-5,5]",
+          "pagerank_l1_residual": 4.877703543807282e-11,
+          "pagerank_steps": 100,
+          "std": [
+            1.4779848189602454,
+            1.4617267860647807,
+            1.7656941141188547,
+            1.8027383857333648,
+            0.13764089686337586,
+            0.8766784400621181,
+            1.374654563114566,
+            1.3911132349721365,
+            1.493204968514116,
+            1.4355591777058787,
+            0.017057624537564774,
+            0.2588569189635536
+          ],
+          "topology_source": "actual condition graph, after rewiring/randomization"
+        },
+        "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+        "neurons": 175401,
+        "normalization": "D_in^-1/2 T(A)^T D_out^-1/2 S; operator norm at most 1",
+        "null": {
+          "parent": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+          "seed": 0,
+          "variant": "real"
+        },
+        "resolved_sign_mode": "random_dale",
+        "variant": "real"
+      },
+      "variant": "real"
+    },
+    {
+      "batch": 1,
+      "bptt_length": 8,
+      "construction_seconds": 42.28066200000467,
+      "forward_backward_seconds": 4.5516267089988105,
+      "gradients": {
+        "decoder.0.bias": 0.0005584160680882633,
+        "decoder.0.weight": 1.5994546629372053e-06,
+        "decoder.2.bias": 0.0004523762909229845,
+        "decoder.2.weight": 1.7203300330947968e-06,
+        "encoder.0.bias": 2.697664740480832e-06,
+        "encoder.0.weight": 1.2816121852665674e-05,
+        "encoder.2.bias": 4.485840236156946e-06,
+        "encoder.2.weight": 6.98844405633281e-06,
+        "ports.input_queries": 6.404953865057905e-07,
+        "ports.output_queries": 1.677729244420334e-07
+      },
+      "parameters": {
+        "actual": 4912,
+        "budget": 5000,
+        "decoder": 882,
+        "encoder": 3646,
+        "hidden_width": 30,
+        "learned_connectome_weights": 0,
+        "port_queries": 384,
+        "state_dimension": 175401,
+        "trainable_recurrence": 0
+      },
+      "status": "passed",
+      "substrate": {
+        "actual_inhibitory_fraction": 0.19999885975564563,
+        "edges": 13542180,
+        "features": {
+          "mean": [
+            3.5900923967982483,
+            3.6589649160261173,
+            4.369801639511301,
+            4.447896287215202,
+            0.001343769143678524,
+            -12.470379292979896,
+            4.413875152660737,
+            4.531097041386012,
+            4.537791658724487,
+            4.411743983279688,
+            5.962269451705818e-06,
+            0.072223077405488
+          ],
+          "names": [
+            "log_in_degree",
+            "log_out_degree",
+            "log_in_strength",
+            "log_out_strength",
+            "reciprocal_out_fraction",
+            "log_pagerank",
+            "in_neighbor_log_in_degree",
+            "in_neighbor_log_out_degree",
+            "out_neighbor_log_in_degree",
+            "out_neighbor_log_out_degree",
+            "two_step_return_probability",
+            "isolated"
+          ],
+          "normalization": "within-graph z-score, clipped [-5,5]",
+          "pagerank_l1_residual": 0.0,
+          "pagerank_steps": 100,
+          "std": [
+            1.4779848189602454,
+            1.4617267860647807,
+            1.7656941141188547,
+            1.8027383857333648,
+            0.004828429260472518,
+            0.8509620780770426,
+            1.3157701704934857,
+            1.3465550728120896,
+            1.4283159253348816,
+            1.3890433500946888,
+            3.422246718951464e-05,
+            0.2588569189635536
+          ],
+          "topology_source": "actual condition graph, after rewiring/randomization"
+        },
+        "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+        "neurons": 175401,
+        "normalization": "D_in^-1/2 T(A)^T D_out^-1/2 S; operator norm at most 1",
+        "null": {
+          "accepted_swaps": 134058411,
+          "algorithm": "equal-weight/equal-source-sign directed swaps",
+          "attempts": 135421800,
+          "changed_target_fraction": 0.9999206922371435,
+          "limitation": "Finite restricted swap chain; no claim of uniform sampling or full mixing",
+          "parent": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+          "preserves": [
+            "N",
+            "M",
+            "in_degree",
+            "out_degree",
+            "signed_in_degree",
+            "in_strength",
+            "out_strength",
+            "signed_in_strength",
+            "per_source_weight_multiset",
+            "global_weights"
+          ],
+          "seed": 0,
+          "variant": "degree_shuffled"
+        },
+        "resolved_sign_mode": "random_dale",
+        "variant": "degree_shuffled"
+      },
+      "variant": "degree_shuffled"
+    },
+    {
+      "batch": 1,
+      "bptt_length": 8,
+      "construction_seconds": 5.684593832993414,
+      "forward_backward_seconds": 4.565046040996094,
+      "gradients": {
+        "decoder.0.bias": 0.0002275092847412452,
+        "decoder.0.weight": 2.8921638772771985e-07,
+        "decoder.2.bias": 0.00019247231830377132,
+        "decoder.2.weight": 3.13045575239812e-07,
+        "encoder.0.bias": 2.05770732009114e-07,
+        "encoder.0.weight": 9.53136463976989e-07,
+        "encoder.2.bias": 3.921677205198648e-07,
+        "encoder.2.weight": 6.08221625952865e-07,
+        "ports.input_queries": 3.682056437526171e-09,
+        "ports.output_queries": 1.41011584631201e-08
+      },
+      "parameters": {
+        "actual": 4912,
+        "budget": 5000,
+        "decoder": 882,
+        "encoder": 3646,
+        "hidden_width": 30,
+        "learned_connectome_weights": 0,
+        "port_queries": 384,
+        "state_dimension": 175401,
+        "trainable_recurrence": 0
+      },
+      "status": "passed",
+      "substrate": {
+        "actual_inhibitory_fraction": 0.19999885975564563,
+        "edges": 13542180,
+        "features": {
+          "mean": [
+            4.107723797925374,
+            4.107719188339932,
+            5.129807607657288,
+            5.129829076123254,
+            0.0004711101564958999,
+            -12.152619192306313,
+            4.107694566326067,
+            4.118780250991183,
+            4.118776546199541,
+            4.107686238182488,
+            5.657308878912773e-06,
+            0.072223077405488
+          ],
+          "names": [
+            "log_in_degree",
+            "log_out_degree",
+            "log_in_strength",
+            "log_out_strength",
+            "reciprocal_out_fraction",
+            "log_pagerank",
+            "in_neighbor_log_in_degree",
+            "in_neighbor_log_out_degree",
+            "out_neighbor_log_in_degree",
+            "out_neighbor_log_out_degree",
+            "two_step_return_probability",
+            "isolated"
+          ],
+          "normalization": "within-graph z-score, clipped [-5,5]",
+          "pagerank_l1_residual": 0.0,
+          "pagerank_steps": 100,
+          "std": [
+            1.1508974900985358,
+            1.1509013918952062,
+            1.4516175193001388,
+            1.4516202077309615,
+            0.0023938061790130085,
+            0.49833083406418394,
+            1.1461370971238314,
+            1.1492284206540373,
+            1.1492272912818005,
+            1.1461349107719072,
+            2.89213260227021e-05,
+            0.2588569189635536
+          ],
+          "topology_source": "actual condition graph, after rewiring/randomization"
+        },
+        "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+        "neurons": 175401,
+        "normalization": "D_in^-1/2 T(A)^T D_out^-1/2 S; operator norm at most 1",
+        "null": {
+          "does_not_preserve": [
+            "degree_sequence",
+            "weighted_strengths",
+            "motifs"
+          ],
+          "parent": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+          "preserves": [
+            "N",
+            "M",
+            "global_weight_multiset",
+            "node_signs",
+            "original_isolates"
+          ],
+          "seed": 0,
+          "variant": "matched_random"
+        },
+        "resolved_sign_mode": "random_dale",
+        "variant": "matched_random"
+      },
+      "variant": "matched_random"
+    }
+  ],
+  "schema": "connectome-structural-interface-check-v1",
+  "source_identity": "d0c108ed7a98d5eb56576f704128cafd285f68387ef091a1c8e473c26a2eb735",
+  "status": "complete"
+}

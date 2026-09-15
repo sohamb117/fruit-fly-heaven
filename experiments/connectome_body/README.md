@@ -1,5 +1,9 @@
 # Connectome–FlyBody benchmark
 
+The current experimental target is the **native hover adaptation frontier**, with learned structural ports, offline imitation, budgeted DAgger, and a 24-run BANC MVP. Start with [the expanded experimental brief and launch instructions](BRIEF.md) and [its validation record](BRIEF_VALIDATION.md). Its command is `python -m connectome_body.adaptation.cli`.
+
+The remainder of this page documents the earlier ground-task/PPO protocol, whose code and results remain available under `cbbench`.
+
 A runnable suite for a **common learned interface to frozen connectomes**, with stock FlyBody as the body. Encoder/decoder weights are learned separately for each substrate; architecture, parameter ceilings, observations/actions, tasks, PPO procedure, and experience budgets are shared.
 
 ```text

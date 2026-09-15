@@ -1,0 +1,459 @@
+{
+  "adapter": {
+    "budget": 5000,
+    "channels": 16,
+    "device": "mps",
+    "graph": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/data/graphs/banc",
+    "port_seed": 0,
+    "rate": {
+      "control_dt": 0.0002,
+      "gain": 0.9,
+      "inhibitory_fraction": 0.2,
+      "input_gain": 1.0,
+      "sign_mode": "random_dale",
+      "substeps": 2,
+      "tau_seconds": 0.002,
+      "weight_transform": "log1p"
+    },
+    "seed": 0,
+    "support": 256,
+    "threads": 1,
+    "variant": "real"
+  },
+  "benchmark_source_sha256": "e17d4eb278e10b9bf1e7f6b720d676d9f59fdcf30764ed1bd05d2a32e208265d",
+  "cpu_rate_parity": {
+    "batch": 2,
+    "decisions": 4,
+    "max_state_error": 8.940696716308594e-08,
+    "relative_input_gradient_error": 3.8699003113151775e-08,
+    "status": "passed"
+  },
+  "device": "mps",
+  "device_name": "arm",
+  "edges": 13542180,
+  "evidence": "engineering_benchmark",
+  "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+  "memory_definition": "CUDA instrumented peak; MPS allocated/driver memory sampled after each decision and backward, not an instrumented peak; process RSS high-water is cumulative",
+  "neurons": 175401,
+  "parameters": {
+    "actual": 4912,
+    "budget": 5000,
+    "decoder": 882,
+    "encoder": 3646,
+    "hidden_width": 30,
+    "learned_connectome_weights": 0,
+    "port_queries": 384,
+    "state_dimension": 175401,
+    "trainable_recurrence": 0
+  },
+  "platform": "macOS-26.3-arm64-arm-64bit",
+  "python": "3.12.1",
+  "repeats": 3,
+  "rows": [
+    {
+      "allocated_bytes": 290464256,
+      "backward_seconds": 0.02446804200008046,
+      "backward_transitions_per_second": 653.9141955023367,
+      "batch": 1,
+      "bptt_length": 8,
+      "driver_or_reserved_bytes": 1223360512,
+      "forward_seconds": 0.025481250006123446,
+      "forward_transitions_per_second": 627.9126807419185,
+      "inference_seconds": 0.02240687499579508,
+      "inference_transitions_per_second": 714.0665533682227,
+      "process_highwater_rss_bytes": 1435402240,
+      "samples": [
+        {
+          "allocated_bytes": 290464256,
+          "backward_seconds": 0.02413141699798871,
+          "driver_or_reserved_bytes": 1223360512,
+          "forward_seconds": 0.027044125003158115,
+          "inference_seconds": 0.025243500000215136,
+          "input_gradient_norm": 6.900738185322552e-07,
+          "process_highwater_rss_bytes": 1434796032
+        },
+        {
+          "allocated_bytes": 290447872,
+          "backward_seconds": 0.02446804200008046,
+          "driver_or_reserved_bytes": 1223360512,
+          "forward_seconds": 0.02539174999401439,
+          "inference_seconds": 0.02240687499579508,
+          "input_gradient_norm": 1.7361904269819206e-07,
+          "process_highwater_rss_bytes": 1435172864
+        },
+        {
+          "allocated_bytes": 290447872,
+          "backward_seconds": 0.0250365419924492,
+          "driver_or_reserved_bytes": 1223360512,
+          "forward_seconds": 0.025481250006123446,
+          "inference_seconds": 0.0219977920060046,
+          "input_gradient_norm": 4.4283305555836705e-07,
+          "process_highwater_rss_bytes": 1435402240
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 320.324860620902
+    },
+    {
+      "allocated_bytes": 425190656,
+      "backward_seconds": 0.09191491600358859,
+      "backward_transitions_per_second": 696.2961267081099,
+      "batch": 1,
+      "bptt_length": 32,
+      "driver_or_reserved_bytes": 1365983232,
+      "forward_seconds": 0.09122741699684411,
+      "forward_transitions_per_second": 701.543484479167,
+      "inference_seconds": 0.08582604199182242,
+      "inference_transitions_per_second": 745.6944129626527,
+      "process_highwater_rss_bytes": 1450721280,
+      "samples": [
+        {
+          "allocated_bytes": 425190144,
+          "backward_seconds": 0.09191491600358859,
+          "driver_or_reserved_bytes": 1365983232,
+          "forward_seconds": 0.09043299999029841,
+          "inference_seconds": 0.08666741699562408,
+          "input_gradient_norm": 5.350657829694683e-06,
+          "process_highwater_rss_bytes": 1448706048
+        },
+        {
+          "allocated_bytes": 425190656,
+          "backward_seconds": 0.09205066598951817,
+          "driver_or_reserved_bytes": 1365983232,
+          "forward_seconds": 0.09192245799931698,
+          "inference_seconds": 0.08480166700610425,
+          "input_gradient_norm": 2.7895771381736267e-06,
+          "process_highwater_rss_bytes": 1450164224
+        },
+        {
+          "allocated_bytes": 425190656,
+          "backward_seconds": 0.09109529199486133,
+          "driver_or_reserved_bytes": 1365983232,
+          "forward_seconds": 0.09122741699684411,
+          "inference_seconds": 0.08582604199182242,
+          "input_gradient_norm": 4.5839724407414906e-06,
+          "process_highwater_rss_bytes": 1450721280
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 349.45497827555135
+    },
+    {
+      "allocated_bytes": 605532928,
+      "backward_seconds": 0.18194599999696948,
+      "backward_transitions_per_second": 703.5054356904355,
+      "batch": 1,
+      "bptt_length": 64,
+      "driver_or_reserved_bytes": 1567326208,
+      "forward_seconds": 0.17684070899849758,
+      "forward_transitions_per_second": 723.8152387247411,
+      "inference_seconds": 0.17113645799690858,
+      "inference_transitions_per_second": 747.941154668003,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 605532928,
+          "backward_seconds": 0.1817564590019174,
+          "driver_or_reserved_bytes": 1567326208,
+          "forward_seconds": 0.1764250840060413,
+          "inference_seconds": 0.17095174999849405,
+          "input_gradient_norm": 3.318368044347153e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 605532928,
+          "backward_seconds": 0.18194599999696948,
+          "driver_or_reserved_bytes": 1567326208,
+          "forward_seconds": 0.17684070899849758,
+          "inference_seconds": 0.1713779169949703,
+          "input_gradient_norm": 2.0447466795303626e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 605531648,
+          "backward_seconds": 0.182597374994657,
+          "driver_or_reserved_bytes": 1567326208,
+          "forward_seconds": 0.1769193749933038,
+          "inference_seconds": 0.17113645799690858,
+          "input_gradient_norm": 4.889139290753519e-06,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 356.75791993068833
+    },
+    {
+      "allocated_bytes": 291636992,
+      "backward_seconds": 0.08010300000023562,
+      "backward_transitions_per_second": 798.9713244174593,
+      "batch": 4,
+      "bptt_length": 8,
+      "driver_or_reserved_bytes": 1165754368,
+      "forward_seconds": 0.08601216599345207,
+      "forward_transitions_per_second": 744.080785093497,
+      "inference_seconds": 0.08109183299529832,
+      "inference_transitions_per_second": 789.2286761320428,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 291539456,
+          "backward_seconds": 0.07911308300390374,
+          "driver_or_reserved_bytes": 1165754368,
+          "forward_seconds": 0.08635995899385307,
+          "inference_seconds": 0.08174904200132005,
+          "input_gradient_norm": 2.3782101266078826e-07,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 291540480,
+          "backward_seconds": 0.08029274998989422,
+          "driver_or_reserved_bytes": 1165754368,
+          "forward_seconds": 0.08581591698748525,
+          "inference_seconds": 0.08109183299529832,
+          "input_gradient_norm": 1.8131382262254192e-07,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 291636992,
+          "backward_seconds": 0.08010300000023562,
+          "driver_or_reserved_bytes": 1165754368,
+          "forward_seconds": 0.08601216599345207,
+          "inference_seconds": 0.08089533400197979,
+          "input_gradient_norm": 1.8566026938060531e-07,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 385.274876120775
+    },
+    {
+      "allocated_bytes": 431117568,
+      "backward_seconds": 0.32546558300964534,
+      "backward_transitions_per_second": 786.5655029718251,
+      "batch": 4,
+      "bptt_length": 32,
+      "driver_or_reserved_bytes": 1174159360,
+      "forward_seconds": 0.3277962080028374,
+      "forward_transitions_per_second": 780.9730367527134,
+      "inference_seconds": 0.3228600840084255,
+      "inference_transitions_per_second": 792.9131307334954,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 431117568,
+          "backward_seconds": 0.32574554199527483,
+          "driver_or_reserved_bytes": 1174159360,
+          "forward_seconds": 0.3277962080028374,
+          "inference_seconds": 0.32290549999743234,
+          "input_gradient_norm": 1.998407469727681e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 431117568,
+          "backward_seconds": 0.32542495799134485,
+          "driver_or_reserved_bytes": 1174159360,
+          "forward_seconds": 0.32802787500259,
+          "inference_seconds": 0.32279833299980965,
+          "input_gradient_norm": 1.6550242207813426e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 431117568,
+          "backward_seconds": 0.32546558300964534,
+          "driver_or_reserved_bytes": 1174159360,
+          "forward_seconds": 0.3274615830014227,
+          "inference_seconds": 0.3228600840084255,
+          "input_gradient_norm": 9.569270105203032e-07,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 391.8796469072967
+    },
+    {
+      "allocated_bytes": 617263616,
+      "backward_seconds": 0.6531395420024637,
+      "backward_transitions_per_second": 783.9059910999366,
+      "batch": 4,
+      "bptt_length": 64,
+      "driver_or_reserved_bytes": 1174175744,
+      "forward_seconds": 0.6513322499959031,
+      "forward_transitions_per_second": 786.0811436915959,
+      "inference_seconds": 0.6433996249979828,
+      "inference_transitions_per_second": 795.7729226242636,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 617263616,
+          "backward_seconds": 0.6515624579915311,
+          "driver_or_reserved_bytes": 1174175744,
+          "forward_seconds": 0.6516098330030218,
+          "inference_seconds": 0.6414807089895476,
+          "input_gradient_norm": 2.733942892518826e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 617263616,
+          "backward_seconds": 0.6538458330032881,
+          "driver_or_reserved_bytes": 1174175744,
+          "forward_seconds": 0.6496663340076338,
+          "inference_seconds": 0.6435728340002242,
+          "input_gradient_norm": 3.1954773476172704e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 617263616,
+          "backward_seconds": 0.6531395420024637,
+          "driver_or_reserved_bytes": 1174175744,
+          "forward_seconds": 0.6513322499959031,
+          "inference_seconds": 0.6433996249979828,
+          "input_gradient_norm": 3.5058942557952832e-06,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 392.49603030177366
+    },
+    {
+      "allocated_bytes": 437292544,
+      "backward_seconds": 0.30809670900634956,
+      "backward_transitions_per_second": 830.9079341536365,
+      "batch": 16,
+      "bptt_length": 8,
+      "driver_or_reserved_bytes": 1174208512,
+      "forward_seconds": 0.32706483401125297,
+      "forward_transitions_per_second": 782.7194286231093,
+      "inference_seconds": 0.3224199999967823,
+      "inference_transitions_per_second": 793.9954097219616,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 437096704,
+          "backward_seconds": 0.307893042001524,
+          "driver_or_reserved_bytes": 1174208512,
+          "forward_seconds": 0.3270292090019211,
+          "inference_seconds": 0.3200223750027362,
+          "input_gradient_norm": 1.1459477633479764e-07,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 437292544,
+          "backward_seconds": 0.3081586670014076,
+          "driver_or_reserved_bytes": 1174208512,
+          "forward_seconds": 0.32706483401125297,
+          "inference_seconds": 0.3233900839986745,
+          "input_gradient_norm": 1.2493339340835519e-07,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 437292544,
+          "backward_seconds": 0.30809670900634956,
+          "driver_or_reserved_bytes": 1174208512,
+          "forward_seconds": 0.32763962500030175,
+          "inference_seconds": 0.3224199999967823,
+          "input_gradient_norm": 1.3663678544162394e-07,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 403.0470717477071
+    },
+    {
+      "allocated_bytes": 995191808,
+      "backward_seconds": 1.279465750005329,
+      "backward_transitions_per_second": 800.3340456715899,
+      "batch": 16,
+      "bptt_length": 32,
+      "driver_or_reserved_bytes": 1191002112,
+      "forward_seconds": 1.2900546669989126,
+      "forward_transitions_per_second": 793.7648118293758,
+      "inference_seconds": 1.2854032089962857,
+      "inference_transitions_per_second": 796.6371896640869,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 995191808,
+          "backward_seconds": 1.2763110829982907,
+          "driver_or_reserved_bytes": 1191002112,
+          "forward_seconds": 1.2932715420029126,
+          "inference_seconds": 1.2854032089962857,
+          "input_gradient_norm": 9.373584362037946e-07,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 995191808,
+          "backward_seconds": 1.280001833991264,
+          "driver_or_reserved_bytes": 1191002112,
+          "forward_seconds": 1.2900546669989126,
+          "inference_seconds": 1.2846425419993466,
+          "input_gradient_norm": 7.17493890078913e-07,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 995191808,
+          "backward_seconds": 1.279465750005329,
+          "driver_or_reserved_bytes": 1191002112,
+          "forward_seconds": 1.2893486250104615,
+          "inference_seconds": 1.287030166000477,
+          "input_gradient_norm": 8.277210667984036e-07,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 398.51794647106306
+    },
+    {
+      "allocated_bytes": 1739795456,
+      "backward_seconds": 2.5707676250021905,
+      "backward_transitions_per_second": 796.6492109524115,
+      "batch": 16,
+      "bptt_length": 64,
+      "driver_or_reserved_bytes": 2289926144,
+      "forward_seconds": 2.5791942910000216,
+      "forward_transitions_per_second": 794.0464226159311,
+      "inference_seconds": 2.5702396249980666,
+      "inference_transitions_per_second": 796.8128652601956,
+      "process_highwater_rss_bytes": 1452556288,
+      "samples": [
+        {
+          "allocated_bytes": 1739795456,
+          "backward_seconds": 2.5711917910084594,
+          "driver_or_reserved_bytes": 2289926144,
+          "forward_seconds": 2.5796695409953827,
+          "inference_seconds": 2.5703277499997057,
+          "input_gradient_norm": 1.3419937658909475e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 1739795456,
+          "backward_seconds": 2.5707676250021905,
+          "driver_or_reserved_bytes": 2289926144,
+          "forward_seconds": 2.5791942910000216,
+          "inference_seconds": 2.5702396249980666,
+          "input_gradient_norm": 1.4816903330938658e-06,
+          "process_highwater_rss_bytes": 1452556288
+        },
+        {
+          "allocated_bytes": 1739795456,
+          "backward_seconds": 2.569048458011821,
+          "driver_or_reserved_bytes": 2289926144,
+          "forward_seconds": 2.578584332994069,
+          "inference_seconds": 2.56931654199434,
+          "input_gradient_norm": 1.0695656555981259e-06,
+          "process_highwater_rss_bytes": 1452556288
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 397.6728436838251
+    }
+  ],
+  "schema": "connectome-structural-benchmark-v1",
+  "scope": "Full stateless E/D, learned structural ports, frozen recurrence; no MuJoCo or optimizer step",
+  "setup_seconds": 3.0463226249994477,
+  "source_identity": "31e83c9dc2d2f2cd356368e5cc69230d29e71395409dbd9a573daa2f24dee6d8",
+  "status": "complete",
+  "threads": 1,
+  "torch": "2.8.0",
+  "transition_definition": "One whole-graph recurrent substep for one batch member",
+  "warmup": 1
+}

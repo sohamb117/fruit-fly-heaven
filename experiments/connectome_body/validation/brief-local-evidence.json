@@ -1,0 +1,275 @@
+{
+  "artifacts": [
+    {
+      "path": "validation/brief-banc-mps-benchmark.json",
+      "sha256": "ca8e2c3c20cae052e5dd432f6424c611c6aabb81413c9b7c60800f0e472f3b41"
+    },
+    {
+      "path": "validation/brief-banc-cpu-matched-benchmark.json",
+      "sha256": "2b3eb6c7b63589a54988515ebe257caada51a2aa9c959c65abea7fd42557039b"
+    },
+    {
+      "path": "validation/brief-local-checks.json",
+      "sha256": "b9fc132f17928b0bf9ced097332e01f9c42547a46576e727ab7864904ae87662"
+    },
+    {
+      "path": "validation/brief-local-readiness.json",
+      "sha256": "f10c367e05cf4e94868f546116093c3e371e36ba20bb8230fbc8c502e8da0134"
+    },
+    {
+      "path": "validation/hover-teacher-qualification.json",
+      "sha256": "596eadac0295d6d68e04a9d812f395b7fc6cb05446c27c41e60fd03984a4b39b"
+    },
+    {
+      "path": "validation/brief-data-manifests.json",
+      "sha256": "c5914b61a67957d9d3f3330d5e4b9a8a9c95143ed2e3322bdcfc65c5e845ad33"
+    },
+    {
+      "path": "validation/brief-parameter-accounting.json",
+      "sha256": "986be042cb2fafc8c5a53fe710a644307a8156e4d2dad84295dbfd6d367b0a6b"
+    },
+    {
+      "path": "runs/brief-native-validation-mps/validation-summary.json",
+      "sha256": "6a94f6bdd0ece05745df7a2268984b6c35f22b9a6ce32c60f82be65fafecdc4e"
+    },
+    {
+      "path": "runs/brief-native-validation-mps/analysis/decision.json",
+      "sha256": "1f1ef4ae4b7307ed07e235497f4592e3a47d1e4539de0d51d99915a513293016"
+    },
+    {
+      "path": "runs/brief-native-validation-mps/full-banc/result.json",
+      "sha256": "1ab7234ecc87bf5f852120ac05a1d7018e96068f258742a3ce3e132ccf835460"
+    },
+    {
+      "path": "runs/brief-native-validation-mps/full-banc/stage-00/result.json",
+      "sha256": "9c36494b1e14919c5959af9c2cb41875d87e6f89c36bb312fa53497036dcd0d2"
+    }
+  ],
+  "benchmark_summary": {
+    "cpu_rate_parity": {
+      "batch": 2,
+      "decisions": 4,
+      "max_state_error": 8.940696716308594e-08,
+      "relative_input_gradient_error": 3.8699003113151775e-08,
+      "status": "passed"
+    },
+    "device": "mps",
+    "edges": 13542180,
+    "forward_backward_transitions_per_second": {
+      "maximum": 403.0470717477071,
+      "minimum": 320.324860620902
+    },
+    "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+    "matched_cpu": {
+      "batch": 4,
+      "bptt_length": 32,
+      "cpu_threads": 6,
+      "cpu_transitions_per_second": 37.006651684921074,
+      "gpu_speedup": 10.589438089233402,
+      "gpu_transitions_per_second": 391.8796469072967
+    },
+    "max_sampled_allocated_bytes": 1739795456,
+    "max_sampled_driver_bytes": 2289926144,
+    "memory_definition": "CUDA instrumented peak; MPS allocated/driver memory sampled after each decision and backward, not an instrumented peak; process RSS high-water is cumulative",
+    "neurons": 175401,
+    "parameters": {
+      "actual": 4912,
+      "budget": 5000,
+      "decoder": 882,
+      "encoder": 3646,
+      "hidden_width": 30,
+      "learned_connectome_weights": 0,
+      "port_queries": 384,
+      "state_dimension": 175401,
+      "trainable_recurrence": 0
+    },
+    "passed_cells": 9,
+    "scope": "Full stateless E/D, learned structural ports, frozen recurrence; no MuJoCo or optimizer step",
+    "transition_definition": "One whole-graph recurrent substep for one batch member"
+  },
+  "cloud_resources_provisioned": 0,
+  "evidence": "local_engineering_validation",
+  "hardware": {
+    "cpu": "Apple M2 Pro",
+    "cpu_cores": 10,
+    "cuda_available": false,
+    "mps_available": true,
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "python": "3.12.1",
+    "torch": "2.8.0",
+    "unified_memory_bytes": 17179869184
+  },
+  "native_validation": {
+    "evidence": "native_hover_engineering_only",
+    "runs": [
+      {
+        "actual_parameters": 4912,
+        "evidence": "native_hover_smoke",
+        "online_interactions": 32,
+        "result": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-native-validation-mps/runs/real/result.json",
+        "status": "complete",
+        "variant": "real"
+      },
+      {
+        "actual_parameters": 4912,
+        "evidence": "native_hover_smoke",
+        "online_interactions": 32,
+        "result": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-native-validation-mps/runs/degree_shuffled/result.json",
+        "status": "complete",
+        "variant": "degree_shuffled"
+      },
+      {
+        "actual_parameters": 4912,
+        "evidence": "native_hover_smoke",
+        "online_interactions": 32,
+        "result": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-native-validation-mps/runs/matched_random/result.json",
+        "status": "complete",
+        "variant": "matched_random"
+      },
+      {
+        "actual_parameters": 4978,
+        "evidence": "native_hover_smoke",
+        "online_interactions": 32,
+        "result": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-native-validation-mps/runs/adapter_only/result.json",
+        "status": "complete",
+        "variant": "adapter_only"
+      },
+      {
+        "actual_parameters": 4809,
+        "evidence": "native_hover_smoke",
+        "online_interactions": 32,
+        "result": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-native-validation-mps/runs/trainable_gru/result.json",
+        "status": "complete",
+        "variant": "trainable_gru"
+      },
+      {
+        "actual_parameters": 4912,
+        "evidence": "native_hover_smoke",
+        "graph": {
+          "actual_inhibitory_fraction": 0.19999885975564563,
+          "edges": 13542180,
+          "features": {
+            "mean": [
+              3.5900923967982483,
+              3.6589649160261173,
+              4.369801639511301,
+              4.447896287215202,
+              0.22632295828703555,
+              -12.511050011479755,
+              4.181332300647451,
+              4.38369401159995,
+              4.3779340532559194,
+              4.264983427039666,
+              0.003665563501328316,
+              0.072223077405488
+            ],
+            "names": [
+              "log_in_degree",
+              "log_out_degree",
+              "log_in_strength",
+              "log_out_strength",
+              "reciprocal_out_fraction",
+              "log_pagerank",
+              "in_neighbor_log_in_degree",
+              "in_neighbor_log_out_degree",
+              "out_neighbor_log_in_degree",
+              "out_neighbor_log_out_degree",
+              "two_step_return_probability",
+              "isolated"
+            ],
+            "normalization": "within-graph z-score, clipped [-5,5]",
+            "pagerank_l1_residual": 4.877703543807282e-11,
+            "pagerank_steps": 100,
+            "std": [
+              1.4779848189602454,
+              1.4617267860647807,
+              1.7656941141188547,
+              1.8027383857333648,
+              0.13764089686337586,
+              0.8766784400621181,
+              1.374654563114566,
+              1.3911132349721365,
+              1.493204968514116,
+              1.4355591777058787,
+              0.017057624537564774,
+              0.2588569189635536
+            ],
+            "topology_source": "actual condition graph, after rewiring/randomization"
+          },
+          "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+          "neurons": 175401,
+          "normalization": "D_in^-1/2 T(A)^T D_out^-1/2 S; operator norm at most 1",
+          "null": {
+            "parent": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+            "seed": 0,
+            "variant": "real"
+          },
+          "resolved_sign_mode": "random_dale",
+          "sparse_backend": "metal_csr",
+          "variant": "real"
+        },
+        "result": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-native-validation-mps/full-banc/result.json",
+        "status": "complete",
+        "variant": "full-banc"
+      }
+    ]
+  },
+  "pipeline_identity": "9091ee717ab507c0be830eb13c085b717dfd78971bd62fc3fe1b8a479d93f798",
+  "readiness": [
+    {
+      "missing": [],
+      "online_training_interactions": 480000,
+      "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local/plan.json",
+      "planned_runs": 24,
+      "readiness": "ready",
+      "reused_runs": 0,
+      "sha256": "25d01c94281c024873b4ac53a3bb05d1d16727e70a77a25813b47b472f9360e1",
+      "study": "mvp_local"
+    },
+    {
+      "missing": [],
+      "online_training_interactions": 180000,
+      "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-learned-rnn-local/plan.json",
+      "planned_runs": 9,
+      "readiness": "ready",
+      "reused_runs": 0,
+      "sha256": "823f58d9440713955b4e16914d8d1f84c444c61fb638b275aff435201844dbec",
+      "study": "learned_rnn_local"
+    },
+    {
+      "missing": [
+        "mvp_go_decision"
+      ],
+      "online_training_interactions": 720000,
+      "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-capacity-local-readiness/plan.json",
+      "planned_runs": 36,
+      "readiness": "gated",
+      "reused_runs": 24,
+      "sha256": "9076f0d9104d1ad48b1a7f7fb2cad2091ccbee8e8c93cfa07dec676fb59473a5",
+      "study": "capacity_local"
+    },
+    {
+      "missing": [
+        "graph:fish1",
+        "mvp_go_decision",
+        "frozen_method_before_heldout_connectomes"
+      ],
+      "online_training_interactions": 3000000,
+      "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-heldout-local-readiness/plan.json",
+      "planned_runs": 150,
+      "readiness": "gated",
+      "reused_runs": 0,
+      "sha256": "de4a789a8a1dd6170fd31dc460ce5bc11b5f00aa245ef2b602bbe7ebc92ed696",
+      "study": "heldout_local"
+    }
+  ],
+  "scientific_campaigns_launched": 0,
+  "source_archive": {
+    "files": 57,
+    "path": "validation/brief-local-sources.zip",
+    "scope": "Implementation, scripts, tests, brief configurations, runtime lock and protocol; excludes connectome data, teacher weights and trajectory caches",
+    "sha256": "12f9a1ba1bd70143c4e35c45dba48d982ee950002ea9143842485f6d8e1d89e0"
+  },
+  "source_identity": "31e83c9dc2d2f2cd356368e5cc69230d29e71395409dbd9a573daa2f24dee6d8",
+  "timestamp_utc": "2026-09-15T17:34:07.193910+00:00"
+}

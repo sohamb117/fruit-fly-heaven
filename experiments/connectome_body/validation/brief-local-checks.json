@@ -1,0 +1,55 @@
+{
+  "evidence": "automated_regression_checks",
+  "timestamp_utc": "2026-09-15T17:32:35.616157+00:00",
+  "status": "passed",
+  "checks": [
+    {
+      "command": [
+        "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/.venv/bin/python3",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "returncode": 0,
+      "output": "............................................................             [100%]\n=============================== warnings summary ===============================\ntests/test_adaptation.py::test_queries_are_trainable_disjoint_and_budgeted\n  /Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/connectome_body/adaptation/substrates.py:67: UserWarning: Sparse CSR tensor support is in beta state. If you miss a functionality in the sparse tensor support, please submit a feature request to https://github.com/pytorch/pytorch/issues. (Triggered internally at /Users/runner/work/pytorch/pytorch/pytorch/aten/src/ATen/SparseCsrTensorImpl.cpp:55.)\n    torch.sparse_csr_tensor(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n60 passed, 1 warning in 16.82s\n"
+    },
+    {
+      "command": [
+        "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/.venv/bin/python3",
+        "-m",
+        "ruff",
+        "check",
+        "connectome_body",
+        "tests",
+        "scripts",
+        "benchmarks"
+      ],
+      "returncode": 0,
+      "output": "All checks passed!\n"
+    },
+    {
+      "command": [
+        "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/.venv/bin/python3",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "connectome_body",
+        "tests",
+        "scripts",
+        "benchmarks"
+      ],
+      "returncode": 0,
+      "output": "45 files already formatted\n"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "returncode": 0,
+      "output": ""
+    }
+  ]
+}

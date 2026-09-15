@@ -67,12 +67,12 @@ export class FlyBodyPhysics{
   smell(x,y,z){return this.environment.odor(x,y,z);}
   /** Call after the initial mj_forward and final placement, before copying
    * feedback. No native operation or force write is performed by this observer. */
-  enableWingLoadFeedback(){
+  enableWingLoadFeedback({localFrame=false}={}){
     if(this._disposed||this._wingLoadFeedback)throw new Error('Wing load feedback already enabled or body disposed');
     if(this.time!==0||this.data.time!==0||this.remainder!==0)throw new Error('Wing load feedback requires a fresh zero-time body');
     if(this.metadata.timestep!==.00005||this.model.opt.timestep!==this.metadata.timestep)
       throw new Error('Wing load feedback requires the50us native/1ms observation contract');
-    const sampler=createWingLoadSampler({mj:this.mj,model:this.model});
+    const sampler=createWingLoadSampler({mj:this.mj,model:this.model,localFrame});
     sampler.capture(this.data,this.data.time); // matching just-forwarded cache
     this._wingLoadFeedback=sampler;
     return sampler.read();

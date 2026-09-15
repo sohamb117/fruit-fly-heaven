@@ -5,7 +5,9 @@ import {installFeedbackRuntime,root,sha} from './flight-feedback-runtime.mjs';
 const args=Object.fromEntries(process.argv.slice(2).map(a=>{const m=/^--([a-z-]+)=(.+)$/.exec(a);if(!m)throw new Error('Use --name=value');return [m[1],m[2]];}));
 const variant=args.variant??'vision-airflow',name=args.name??variant;
 assert(['off','vision','airflow','vision-airflow'].includes(variant));assert(/^[a-z0-9-]+$/.test(name));
-const directory=path.join(root,'reports/sensory-feedback-20260915');
+const directory=path.resolve(root,args['output-dir']??'reports/sensory-feedback-20260915');
+assert(directory.startsWith(path.join(root,'reports')+path.sep),'Results must stay inside reports');
+await fs.mkdir(directory,{recursive:true});
 const runtime=await installFeedbackRuntime(args.bundle?path.resolve(root,args.bundle):path.join(directory,variant+'.bundle.json'));
 const {config,identity}=runtime,parameters=config.parameters.map(p=>p.initial),seed=Number(args.seed??2590888);
 const capture=args.capture==='true';
@@ -37,7 +39,9 @@ const captureState=context=>{
     snapshots.push(assayModule.captureWasmFlightState({...context,provenance:context.provenance??provenance}));
 };
 const neuralSensorySummary=context=>{
-  const populations={vision:context.sensoryFeedback.motion?.indices,antenna:context.sensoryFeedback.antenna?.sample()?.indices},out={};
+  const populations={vision:context.sensoryFeedback.motion?.indices,antenna:context.sensoryFeedback.antenna?.sample()?.indices,
+    ...(context.sensoryFeedback.legs?{legs:context.sensoryFeedback.legs.metadata.cells.filter(c=>c.enabled).map(c=>c.index)}:{}),
+    ...(context.encoder.tegula?.config.schema===2?{wingStrain:context.encoder.tegula.config.fields.map(c=>c.index)}:{})},out={};
   for(const [name,indices]of Object.entries(populations))if(indices?.length){
     const state=context.brain.readState(indices,{includeStatistics:false,includeSpikeHistory:false});
     let sum=0,max=0,active=0,current=0;
@@ -59,6 +63,9 @@ try{
       observations.push({time:c.body.time,position:Array.from(c.body.data.qpos.slice(0,3)),quaternion:Array.from(c.body.data.qpos.slice(3,7)),
         velocity:Array.from(c.body.data.qvel.slice(0,6)),contacts:c.body.environmentContactCount,power:[c.body.wingDriveLeft,c.body.wingDriveRight]});
       if(Math.round(c.body.time*1000)%20===0)sensorySamples.push({time:c.body.time,vision:c.fly.sensory.vision,antenna:c.fly.sensory.antennaFeedback,
+        ...(c.fly.sensory.legProprioception?{legs:c.fly.sensory.legProprioception}:{}),
+        ...(c.fly.sensory.wingStrain?{wingStrain:c.fly.sensory.wingStrain}:{}),
+        ...(c.fly.sensory.haltereCurrent?{haltere:c.fly.sensory.haltereCurrent}:{}),
         antennaRates:[c.fly.sensory.body.rates.antenna_left,c.fly.sensory.body.rates.antenna_right],neural:neuralSensorySummary(c)});
     },
     onFrame:recordFrame});

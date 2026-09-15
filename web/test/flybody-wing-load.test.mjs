@@ -47,6 +47,18 @@ test('resolves actual IDs/DOFs; world moments and source times are owned observa
 });
 
 const nativeEvidence=new URL('../../reports/flight-tegula-inputs/load-observability/result.json',import.meta.url);
+test('optional thorax frame uses the matching force cache and is invariant under world rotation',()=>{
+ const f=nativeDataFixture(),r=[0,-1,0,1,0,0,0,0,1];
+ f.data.xmat=new Float64Array(f.model.nbody*9);f.data.xmat.set(r,9);
+ const axes=[[0,1,0],[-1,0,0],[0,0,1]];
+ for(let side=0;side<2;side++)f.setObservation(side,axes,[[0,0,0],[0,0,0],[0,0,0]],[1,2,3]);
+ const sampler=createWingLoadSampler({...f,localFrame:true});sampler.capture(f.data,0);
+ const sample=sampler.read();assert.deepEqual(sample.momentWorld.left,[-2,1,3]);
+ assert.deepEqual(sample.momentThorax.left,[1,2,3]);assert.equal(sample.localFrameTimeSeconds,0);
+ sample.momentThorax.left[0]=99;assert.equal(sampler.read().momentThorax.left[0],1);
+ f.data.xmat.fill(0);assert.throws(()=>sampler.capture(f.data,0),/rotation/);
+ assert.equal(sampler.read().momentThorax.left[0],1);
+});
 test('all112 saved native observations match the independent diagnostic reconstruction',
   {skip:fs.existsSync(nativeEvidence)?false:'Local native assay artifact is not present'},()=>{
   // Existing native evidence only; this test never loads or steps MuJoCo.
@@ -147,6 +159,7 @@ test('fresh placement recaptures its final forward while running placement rejec
 // Import the actual world source with only external/environment dependencies
 // stubbed. Its copyPose implementation is unchanged and executed below.
 const stubs={
+  './flight-scene-profile.js':'export const matchMaintainedScene=()=>null;',
   './body-world.js':'export class BodyWorld{};export const jointPose=()=>({}),senseBody=()=>({legs:[]}),decodeMotorOutput=()=>({antennaLeft:0,antennaRight:0});',
   './flybody-physics.js':'export class FlyBodyPhysics{};export const flybodyScene=()=>{};',
   '/banc-engine/src/index.js':'export class WasmMuscles{};export const createWasmCore=()=>{throw Error("not used")};',

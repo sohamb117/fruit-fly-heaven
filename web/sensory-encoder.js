@@ -97,11 +97,13 @@ export class SensoryEncoder{
       this.ratesHz[offset++]=hz;sums[side]+=hz;counts[side]++;
     }
     const body=bodyInputRates(pose.feedback,bodySense);
-    if(tegula)Object.assign(body,tegula);
+    if(tegula){body.tegula_left=tegula.tegula_left;body.tegula_right=tegula.tegula_right;}
     const nativeLegs=pose.feedback?.legs?.some(leg=>Number.isFinite(leg.loadBodyWeights));
     for(const c of this.manifest.channels){
       if(tegula&&(c.key==='tegula_left'||c.key==='tegula_right')){
-        this.ratesHz.fill(body[c.key],offset,offset+c.indices.length);offset+=c.indices.length;continue;
+        if(tegula.cellRates)for(const index of c.indices)this.ratesHz[offset++]=tegula.cellRates.get(index);
+        else{this.ratesHz.fill(body[c.key],offset,offset+c.indices.length);offset+=c.indices.length;}
+        continue;
       }
       if(this.bodyExclusions.size||(this.bodyTransducers.size&&nativeLegs)){
         let sum=0;
@@ -122,7 +124,7 @@ export class SensoryEncoder{
         this.ratesHz.set(color.ratesHz,offset);
       }else this.ratesHz.fill(0,offset);
     }
-    this.sample={food,taste:contactTaste?{source:'native organ contact',coverage:this.tasteMapper.coverage}:null,vision:{enabled:vision,ready:!!validFrame,leftHz:sums[0]/counts[0],rightHz:sums[1]/counts[1],contrast:this.contrast||0,
+    this.sample={food,...(tegula?.diagnostics?{wingStrain:tegula.diagnostics}:{}),taste:contactTaste?{source:'native organ contact',coverage:this.tasteMapper.coverage}:null,vision:{enabled:vision,ready:!!validFrame,leftHz:sums[0]/counts[0],rightHz:sums[1]/counts[1],contrast:this.contrast||0,
       frameBodyTime:validFrame?frame.bodyTime:null,sequence:validFrame?frame.sequence:null,graded:graded?.summary||null,color:color?.summary||null},
       body:{enabled:bodySense,rates:body,support:mean((pose.feedback?.legs||[]).map(l=>l.support)),jointSpeed:mean((pose.feedback?.legs||[]).map(l=>l.speed)),
         speed:pose.feedback?.speed||0,yaw:pose.feedback?.yaw||0,tilt:pose.feedback?.tilt||0},bodyTime:pose.bodyTime};

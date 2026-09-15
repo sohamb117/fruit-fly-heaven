@@ -1,0 +1,3301 @@
+{
+  "enabled": true,
+  "profile": {
+    "schemaVersion": 2,
+    "kind": "banc-haltere-mechanical-current-profile",
+    "dataset": "BANC",
+    "materialization": 888,
+    "neuronCount": 175401,
+    "orientationAssignment": {
+      "status": "population-tuning-explicit",
+      "anatomicalKnowledge": false,
+      "mode": "unknown-orientation-marginalized",
+      "frame": "fixed-root-attachment"
+    },
+    "tuningPopulations": [
+      {
+        "id": "left/SApp01/unknown-field",
+        "side": "left",
+        "cell_type": "SApp01",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp02/unknown-field",
+        "side": "left",
+        "cell_type": "SApp02",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp03/unknown-field",
+        "side": "left",
+        "cell_type": "SApp03",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp05/unknown-field",
+        "side": "left",
+        "cell_type": "SApp05",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp06/unknown-field",
+        "side": "left",
+        "cell_type": "SApp06",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp07/unknown-field",
+        "side": "left",
+        "cell_type": "SApp07",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp08/unknown-field",
+        "side": "left",
+        "cell_type": "SApp08",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp09/unknown-field",
+        "side": "left",
+        "cell_type": "SApp09",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp11/unknown-field",
+        "side": "left",
+        "cell_type": "SApp11",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp12/unknown-field",
+        "side": "left",
+        "cell_type": "SApp12",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp15/unknown-field",
+        "side": "left",
+        "cell_type": "SApp15",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp16/unknown-field",
+        "side": "left",
+        "cell_type": "SApp16",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp17/unknown-field",
+        "side": "left",
+        "cell_type": "SApp17",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SApp22/unknown-field",
+        "side": "left",
+        "cell_type": "SApp22",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SNpp20/unknown-field",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SNpp24/unknown-field",
+        "side": "left",
+        "cell_type": "SNpp24",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "left/SNpp35/unknown-field",
+        "side": "left",
+        "cell_type": "SNpp35",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SA_DMT_DMetaN/unknown-field",
+        "side": "right",
+        "cell_type": "SA_DMT_DMetaN",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp01/unknown-field",
+        "side": "right",
+        "cell_type": "SApp01",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp02/unknown-field",
+        "side": "right",
+        "cell_type": "SApp02",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp03/unknown-field",
+        "side": "right",
+        "cell_type": "SApp03",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp05/unknown-field",
+        "side": "right",
+        "cell_type": "SApp05",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp06/unknown-field",
+        "side": "right",
+        "cell_type": "SApp06",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp07/unknown-field",
+        "side": "right",
+        "cell_type": "SApp07",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp08/unknown-field",
+        "side": "right",
+        "cell_type": "SApp08",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp09/unknown-field",
+        "side": "right",
+        "cell_type": "SApp09",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp12/unknown-field",
+        "side": "right",
+        "cell_type": "SApp12",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp15/unknown-field",
+        "side": "right",
+        "cell_type": "SApp15",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp16/unknown-field",
+        "side": "right",
+        "cell_type": "SApp16",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp17/unknown-field",
+        "side": "right",
+        "cell_type": "SApp17",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SApp22/unknown-field",
+        "side": "right",
+        "cell_type": "SApp22",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SNpp20/unknown-field",
+        "side": "right",
+        "cell_type": "SNpp20",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SNpp25/unknown-field",
+        "side": "right",
+        "cell_type": "SNpp25",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      },
+      {
+        "id": "right/SNpp35/unknown-field",
+        "side": "right",
+        "cell_type": "SNpp35",
+        "field": null,
+        "fieldStatus": "unknown",
+        "orientationStatus": "unknown",
+        "orientationRadians": null,
+        "evidence": [
+          {
+            "source": "data/prepared/banc888/console/sensory-inputs.json",
+            "note": "Prepared side and cell type only; no individual receptive-field direction is supplied."
+          }
+        ]
+      }
+    ],
+    "cells": [
+      {
+        "index": 1129,
+        "root_id": "720575941352987696",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 4238,
+        "root_id": "720575941405864110",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 4239,
+        "root_id": "720575941405864622",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 6309,
+        "root_id": "720575941411590804",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 7651,
+        "root_id": "720575941414315409",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 8500,
+        "root_id": "720575941415987228",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 8651,
+        "root_id": "720575941416656668",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 9524,
+        "root_id": "720575941428193199",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 10135,
+        "root_id": "720575941429542615",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 10317,
+        "root_id": "720575941430035119",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 10445,
+        "root_id": "720575941430266505",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 11170,
+        "root_id": "720575941431313545",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 11517,
+        "root_id": "720575941431727497",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 12405,
+        "root_id": "720575941432561656",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 12946,
+        "root_id": "720575941433044750",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 12971,
+        "root_id": "720575941433063694",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 12974,
+        "root_id": "720575941433073166",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 13964,
+        "root_id": "720575941434703392",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 14157,
+        "root_id": "720575941435418656",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 14255,
+        "root_id": "720575941435699744",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 14389,
+        "root_id": "720575941436032544",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 15121,
+        "root_id": "720575941437152300",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 15788,
+        "root_id": "720575941438206431",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 15948,
+        "root_id": "720575941438449452",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 15949,
+        "root_id": "720575941438449708",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 16934,
+        "root_id": "720575941439626047",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 17954,
+        "root_id": "720575941440363093",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 19259,
+        "root_id": "720575941441701467",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 19324,
+        "root_id": "720575941441792463",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 19332,
+        "root_id": "720575941441804223",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 20689,
+        "root_id": "720575941444857770",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 21524,
+        "root_id": "720575941447888916",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 21535,
+        "root_id": "720575941447918414",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 22222,
+        "root_id": "720575941449196922",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 22485,
+        "root_id": "720575941449634631",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp16",
+        "populationId": "right/SApp16/unknown-field"
+      },
+      {
+        "index": 22910,
+        "root_id": "720575941450362037",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 23760,
+        "root_id": "720575941451320910",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 23764,
+        "root_id": "720575941451322702",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 25283,
+        "root_id": "720575941453487529",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 25528,
+        "root_id": "720575941453855027",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 26232,
+        "root_id": "720575941455059763",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 26359,
+        "root_id": "720575941455611373",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 26584,
+        "root_id": "720575941456093936",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 26993,
+        "root_id": "720575941457139103",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 27549,
+        "root_id": "720575941458206879",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 27825,
+        "root_id": "720575941458666195",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 28054,
+        "root_id": "720575941459137951",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 28231,
+        "root_id": "720575941459431494",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 28414,
+        "root_id": "720575941459705503",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 28618,
+        "root_id": "720575941459926854",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 29664,
+        "root_id": "720575941461131664",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 29684,
+        "root_id": "720575941461178067",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 29729,
+        "root_id": "720575941461227987",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 30051,
+        "root_id": "720575941461628560",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 30079,
+        "root_id": "720575941461664452",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 31157,
+        "root_id": "720575941463160208",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 31899,
+        "root_id": "720575941464978710",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SA_DMT_DMetaN",
+        "populationId": "right/SA_DMT_DMetaN/unknown-field"
+      },
+      {
+        "index": 32282,
+        "root_id": "720575941466319382",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 32300,
+        "root_id": "720575941466397462",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 32632,
+        "root_id": "720575941467388758",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 33670,
+        "root_id": "720575941469314781",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 34077,
+        "root_id": "720575941470090615",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 34507,
+        "root_id": "720575941470835264",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 34860,
+        "root_id": "720575941471308896",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 34892,
+        "root_id": "720575941471360352",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 35242,
+        "root_id": "720575941471910976",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 35408,
+        "root_id": "720575941472123712",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 35453,
+        "root_id": "720575941472173610",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 36011,
+        "root_id": "720575941472826976",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp17",
+        "populationId": "right/SApp17/unknown-field"
+      },
+      {
+        "index": 36695,
+        "root_id": "720575941473760554",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp16",
+        "populationId": "right/SApp16/unknown-field"
+      },
+      {
+        "index": 37012,
+        "root_id": "720575941474474270",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 37085,
+        "root_id": "720575941474589489",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp11",
+        "populationId": "left/SApp11/unknown-field"
+      },
+      {
+        "index": 37199,
+        "root_id": "720575941474766132",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 37424,
+        "root_id": "720575941475085633",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 38750,
+        "root_id": "720575941476481345",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 39189,
+        "root_id": "720575941476991028",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 39197,
+        "root_id": "720575941477008945",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 39494,
+        "root_id": "720575941477345332",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 40041,
+        "root_id": "720575941477995569",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 40524,
+        "root_id": "720575941478396778",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 40686,
+        "root_id": "720575941478481438",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 41724,
+        "root_id": "720575941479305952",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp20",
+        "populationId": "right/SNpp20/unknown-field"
+      },
+      {
+        "index": 41735,
+        "root_id": "720575941479326432",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 41767,
+        "root_id": "720575941479354498",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 43276,
+        "root_id": "720575941481133309",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp20",
+        "populationId": "right/SNpp20/unknown-field"
+      },
+      {
+        "index": 43951,
+        "root_id": "720575941481742671",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 45410,
+        "root_id": "720575941482975430",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 45562,
+        "root_id": "720575941483184070",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 45834,
+        "root_id": "720575941483566778",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 45895,
+        "root_id": "720575941483643578",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 46100,
+        "root_id": "720575941483870018",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 46111,
+        "root_id": "720575941483888450",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 46417,
+        "root_id": "720575941484265981",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 47551,
+        "root_id": "720575941485651206",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 49395,
+        "root_id": "720575941488529205",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 49504,
+        "root_id": "720575941488756711",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 49779,
+        "root_id": "720575941489182951",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 49806,
+        "root_id": "720575941489223888",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 50219,
+        "root_id": "720575941489792206",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 51778,
+        "root_id": "720575941491875047",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 51856,
+        "root_id": "720575941491951310",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 52199,
+        "root_id": "720575941492249776",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 53249,
+        "root_id": "720575941493567943",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 53448,
+        "root_id": "720575941494185344",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp17",
+        "populationId": "right/SApp17/unknown-field"
+      },
+      {
+        "index": 54104,
+        "root_id": "720575941495650174",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 54267,
+        "root_id": "720575941495967969",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 54503,
+        "root_id": "720575941496305095",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 54588,
+        "root_id": "720575941496386171",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 55072,
+        "root_id": "720575941497064098",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 55717,
+        "root_id": "720575941497832777",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 56059,
+        "root_id": "720575941498290850",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 56193,
+        "root_id": "720575941498466171",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 56215,
+        "root_id": "720575941498486907",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 56558,
+        "root_id": "720575941499067003",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 56752,
+        "root_id": "720575941499397003",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 58110,
+        "root_id": "720575941501088395",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 58416,
+        "root_id": "720575941501675826",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 58602,
+        "root_id": "720575941501969714",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 58682,
+        "root_id": "720575941502169835",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 60128,
+        "root_id": "720575941504157675",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 61749,
+        "root_id": "720575941505530658",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 61887,
+        "root_id": "720575941505620770",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 62444,
+        "root_id": "720575941506032151",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp20",
+        "populationId": "right/SNpp20/unknown-field"
+      },
+      {
+        "index": 62634,
+        "root_id": "720575941506224700",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 62946,
+        "root_id": "720575941506522021",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 63300,
+        "root_id": "720575941506912828",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 63774,
+        "root_id": "720575941507339810",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp35",
+        "populationId": "left/SNpp35/unknown-field"
+      },
+      {
+        "index": 65428,
+        "root_id": "720575941508688257",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp12",
+        "populationId": "right/SApp12/unknown-field"
+      },
+      {
+        "index": 66600,
+        "root_id": "720575941510037714",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 67026,
+        "root_id": "720575941511199564",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 67981,
+        "root_id": "720575941512840953",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 68234,
+        "root_id": "720575941513273593",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 68329,
+        "root_id": "720575941513411930",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 68793,
+        "root_id": "720575941514017356",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 68875,
+        "root_id": "720575941514092179",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 69246,
+        "root_id": "720575941514537731",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 69380,
+        "root_id": "720575941514645850",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 70918,
+        "root_id": "720575941515989082",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 70950,
+        "root_id": "720575941516023699",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 71974,
+        "root_id": "720575941516887918",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp17",
+        "populationId": "right/SApp17/unknown-field"
+      },
+      {
+        "index": 73223,
+        "root_id": "720575941517955288",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 73517,
+        "root_id": "720575941518341815",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 73754,
+        "root_id": "720575941518642030",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 74642,
+        "root_id": "720575941519974104",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 74720,
+        "root_id": "720575941520078071",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 75944,
+        "root_id": "720575941521314227",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 76261,
+        "root_id": "720575941522021811",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 77402,
+        "root_id": "720575941524041986",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 78206,
+        "root_id": "720575941525263014",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 78697,
+        "root_id": "720575941525881188",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 79368,
+        "root_id": "720575941526720589",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 79461,
+        "root_id": "720575941526857316",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 79674,
+        "root_id": "720575941527078566",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 79791,
+        "root_id": "720575941527196185",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 80062,
+        "root_id": "720575941527529497",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 81565,
+        "root_id": "720575941528580811",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 82208,
+        "root_id": "720575941529763972",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 83596,
+        "root_id": "720575941532088920",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 83637,
+        "root_id": "720575941532181682",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp16",
+        "populationId": "left/SApp16/unknown-field"
+      },
+      {
+        "index": 83645,
+        "root_id": "720575941532194282",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 83779,
+        "root_id": "720575941532422322",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 83854,
+        "root_id": "720575941532500146",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 84440,
+        "root_id": "720575941533345034",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 85474,
+        "root_id": "720575941534372530",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 85605,
+        "root_id": "720575941534495720",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 85970,
+        "root_id": "720575941534802408",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 86426,
+        "root_id": "720575941535207651",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 88069,
+        "root_id": "720575941536530458",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 88109,
+        "root_id": "720575941536555546",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 88922,
+        "root_id": "720575941537141786",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 88997,
+        "root_id": "720575941537193699",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 89336,
+        "root_id": "720575941537448061",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp16",
+        "populationId": "left/SApp16/unknown-field"
+      },
+      {
+        "index": 89604,
+        "root_id": "720575941537644003",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 90930,
+        "root_id": "720575941538881778",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp12",
+        "populationId": "right/SApp12/unknown-field"
+      },
+      {
+        "index": 91070,
+        "root_id": "720575941539005426",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 91700,
+        "root_id": "720575941539718037",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 92470,
+        "root_id": "720575941540545884",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp08",
+        "populationId": "left/SApp08/unknown-field"
+      },
+      {
+        "index": 92891,
+        "root_id": "720575941540944333",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 94368,
+        "root_id": "720575941543388421",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 94623,
+        "root_id": "720575941543804189",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 95036,
+        "root_id": "720575941544353460",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 95766,
+        "root_id": "720575941545505672",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 96538,
+        "root_id": "720575941546494313",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp12",
+        "populationId": "right/SApp12/unknown-field"
+      },
+      {
+        "index": 97057,
+        "root_id": "720575941547059388",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 97791,
+        "root_id": "720575941547837501",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 98123,
+        "root_id": "720575941548144673",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 98170,
+        "root_id": "720575941548184200",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 98568,
+        "root_id": "720575941548597108",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp35",
+        "populationId": "right/SNpp35/unknown-field"
+      },
+      {
+        "index": 98739,
+        "root_id": "720575941548843581",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 98814,
+        "root_id": "720575941548927521",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 99297,
+        "root_id": "720575941549579553",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 99786,
+        "root_id": "720575941550391668",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 99922,
+        "root_id": "720575941550597236",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 99982,
+        "root_id": "720575941550675079",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 100391,
+        "root_id": "720575941551055495",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 101172,
+        "root_id": "720575941551911935",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 101619,
+        "root_id": "720575941552559131",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 101853,
+        "root_id": "720575941552880190",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 102027,
+        "root_id": "720575941553055771",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 102091,
+        "root_id": "720575941553134363",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 102243,
+        "root_id": "720575941553301220",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 102557,
+        "root_id": "720575941553583844",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 102598,
+        "root_id": "720575941553617124",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp16",
+        "populationId": "right/SApp16/unknown-field"
+      },
+      {
+        "index": 102656,
+        "root_id": "720575941553669092",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 103016,
+        "root_id": "720575941554032155",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 103215,
+        "root_id": "720575941554231579",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 103358,
+        "root_id": "720575941554350931",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 104170,
+        "root_id": "720575941555155354",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 104236,
+        "root_id": "720575941555209956",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp20",
+        "populationId": "right/SNpp20/unknown-field"
+      },
+      {
+        "index": 104736,
+        "root_id": "720575941555640740",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp24",
+        "populationId": "left/SNpp24/unknown-field"
+      },
+      {
+        "index": 105815,
+        "root_id": "720575941556869860",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 106333,
+        "root_id": "720575941557372708",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 106448,
+        "root_id": "720575941557533092",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 106544,
+        "root_id": "720575941557625971",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 106581,
+        "root_id": "720575941557692531",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 107520,
+        "root_id": "720575941558924270",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 108730,
+        "root_id": "720575941560566543",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 108831,
+        "root_id": "720575941560722344",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 108858,
+        "root_id": "720575941560766223",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 109399,
+        "root_id": "720575941561351213",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 109579,
+        "root_id": "720575941561466258",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 110190,
+        "root_id": "720575941562120960",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 110195,
+        "root_id": "720575941562127405",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 110291,
+        "root_id": "720575941562316039",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 111231,
+        "root_id": "720575941563568999",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 111601,
+        "root_id": "720575941564071680",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 112227,
+        "root_id": "720575941564671744",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp12",
+        "populationId": "right/SApp12/unknown-field"
+      },
+      {
+        "index": 112307,
+        "root_id": "720575941564740150",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 112910,
+        "root_id": "720575941565250823",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 114842,
+        "root_id": "720575941566772526",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 115037,
+        "root_id": "720575941566913786",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 116335,
+        "root_id": "720575941568496174",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 116598,
+        "root_id": "720575941569027316",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 118520,
+        "root_id": "720575941571698184",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SA_DMT_DMetaN",
+        "populationId": "right/SA_DMT_DMetaN/unknown-field"
+      },
+      {
+        "index": 118640,
+        "root_id": "720575941571988637",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 118729,
+        "root_id": "720575941572111261",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 119177,
+        "root_id": "720575941572840591",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 119590,
+        "root_id": "720575941573346230",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 121461,
+        "root_id": "720575941574940061",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 121992,
+        "root_id": "720575941575371771",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 123061,
+        "root_id": "720575941576080822",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 125189,
+        "root_id": "720575941578888949",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 126974,
+        "root_id": "720575941582278777",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp02",
+        "populationId": "left/SApp02/unknown-field"
+      },
+      {
+        "index": 127992,
+        "root_id": "720575941584898182",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 130172,
+        "root_id": "720575941589353540",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 130529,
+        "root_id": "720575941589968780",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 131951,
+        "root_id": "720575941591827752",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 131988,
+        "root_id": "720575941591871528",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 132511,
+        "root_id": "720575941592514341",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 132863,
+        "root_id": "720575941592986481",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp17",
+        "populationId": "left/SApp17/unknown-field"
+      },
+      {
+        "index": 133089,
+        "root_id": "720575941593388145",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp20",
+        "populationId": "right/SNpp20/unknown-field"
+      },
+      {
+        "index": 133220,
+        "root_id": "720575941593533803",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 133365,
+        "root_id": "720575941593759781",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 133862,
+        "root_id": "720575941594303527",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 134806,
+        "root_id": "720575941595335301",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 135082,
+        "root_id": "720575941595697285",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 135572,
+        "root_id": "720575941596161137",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 136061,
+        "root_id": "720575941596590213",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 136653,
+        "root_id": "720575941597150364",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 137012,
+        "root_id": "720575941597645097",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 139142,
+        "root_id": "720575941602373054",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 140026,
+        "root_id": "720575941604710334",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 140590,
+        "root_id": "720575941605417918",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 141121,
+        "root_id": "720575941606717293",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 141889,
+        "root_id": "720575941609482413",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp16",
+        "populationId": "right/SApp16/unknown-field"
+      },
+      {
+        "index": 141921,
+        "root_id": "720575941609599078",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 142165,
+        "root_id": "720575941610223974",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 142228,
+        "root_id": "720575941610332636",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp06",
+        "populationId": "left/SApp06/unknown-field"
+      },
+      {
+        "index": 142667,
+        "root_id": "720575941611059274",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 143197,
+        "root_id": "720575941611709715",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 143574,
+        "root_id": "720575941612114140",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 143743,
+        "root_id": "720575941612281261",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SNpp25",
+        "populationId": "right/SNpp25/unknown-field"
+      },
+      {
+        "index": 144258,
+        "root_id": "720575941612646809",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp17",
+        "populationId": "right/SApp17/unknown-field"
+      },
+      {
+        "index": 146227,
+        "root_id": "720575941614909203",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 147119,
+        "root_id": "720575941616556757",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp03",
+        "populationId": "right/SApp03/unknown-field"
+      },
+      {
+        "index": 147275,
+        "root_id": "720575941616978303",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 148857,
+        "root_id": "720575941623395483",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 149295,
+        "root_id": "720575941624443388",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 149502,
+        "root_id": "720575941624749706",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp06",
+        "populationId": "right/SApp06/unknown-field"
+      },
+      {
+        "index": 149539,
+        "root_id": "720575941624812540",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp12",
+        "populationId": "right/SApp12/unknown-field"
+      },
+      {
+        "index": 150520,
+        "root_id": "720575941626133147",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 150539,
+        "root_id": "720575941626154604",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 152328,
+        "root_id": "720575941628221497",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp12",
+        "populationId": "left/SApp12/unknown-field"
+      },
+      {
+        "index": 152435,
+        "root_id": "720575941628544057",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 152470,
+        "root_id": "720575941628636130",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp17",
+        "populationId": "right/SApp17/unknown-field"
+      },
+      {
+        "index": 152490,
+        "root_id": "720575941628690214",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 152497,
+        "root_id": "720575941628708646",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 153295,
+        "root_id": "720575941630277061",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 153316,
+        "root_id": "720575941630308549",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 154272,
+        "root_id": "720575941631912096",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp12",
+        "populationId": "right/SApp12/unknown-field"
+      },
+      {
+        "index": 154287,
+        "root_id": "720575941631933893",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 154297,
+        "root_id": "720575941631952837",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      },
+      {
+        "index": 154570,
+        "root_id": "720575941632311227",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 155592,
+        "root_id": "720575941633650107",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 155664,
+        "root_id": "720575941633749179",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 156687,
+        "root_id": "720575941637903733",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp08",
+        "populationId": "right/SApp08/unknown-field"
+      },
+      {
+        "index": 157034,
+        "root_id": "720575941639520543",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp15",
+        "populationId": "right/SApp15/unknown-field"
+      },
+      {
+        "index": 157665,
+        "root_id": "720575941641037925",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp01",
+        "populationId": "left/SApp01/unknown-field"
+      },
+      {
+        "index": 159008,
+        "root_id": "720575941644032357",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 159943,
+        "root_id": "720575941645203576",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 159971,
+        "root_id": "720575941645223288",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp07",
+        "populationId": "right/SApp07/unknown-field"
+      },
+      {
+        "index": 160033,
+        "root_id": "720575941645285576",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 161291,
+        "root_id": "720575941649649649",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 161396,
+        "root_id": "720575941650394901",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 161518,
+        "root_id": "720575941650852113",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 161519,
+        "root_id": "720575941650852369",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp01",
+        "populationId": "right/SApp01/unknown-field"
+      },
+      {
+        "index": 161931,
+        "root_id": "720575941652159505",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 163970,
+        "root_id": "720575941655594708",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 164032,
+        "root_id": "720575941655733972",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp17",
+        "populationId": "right/SApp17/unknown-field"
+      },
+      {
+        "index": 164996,
+        "root_id": "720575941658075728",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 165327,
+        "root_id": "720575941659183952",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp22",
+        "populationId": "right/SApp22/unknown-field"
+      },
+      {
+        "index": 166447,
+        "root_id": "720575941662429308",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp05",
+        "populationId": "right/SApp05/unknown-field"
+      },
+      {
+        "index": 166638,
+        "root_id": "720575941663129656",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp09",
+        "populationId": "right/SApp09/unknown-field"
+      },
+      {
+        "index": 166835,
+        "root_id": "720575941663682684",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 167997,
+        "root_id": "720575941668926129",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp22",
+        "populationId": "left/SApp22/unknown-field"
+      },
+      {
+        "index": 168044,
+        "root_id": "720575941669058035",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp03",
+        "populationId": "left/SApp03/unknown-field"
+      },
+      {
+        "index": 169468,
+        "root_id": "720575941678584253",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp16",
+        "populationId": "right/SApp16/unknown-field"
+      },
+      {
+        "index": 170504,
+        "root_id": "720575941687115247",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 170957,
+        "root_id": "720575941688267416",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp05",
+        "populationId": "left/SApp05/unknown-field"
+      },
+      {
+        "index": 171100,
+        "root_id": "720575941688550895",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp09",
+        "populationId": "left/SApp09/unknown-field"
+      },
+      {
+        "index": 171984,
+        "root_id": "720575941689772251",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 172572,
+        "root_id": "720575941690864603",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 173524,
+        "root_id": "720575941702233818",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 173528,
+        "root_id": "720575941702256090",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp11",
+        "populationId": "left/SApp11/unknown-field"
+      },
+      {
+        "index": 173614,
+        "root_id": "720575941703025882",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SNpp20",
+        "populationId": "left/SNpp20/unknown-field"
+      },
+      {
+        "index": 174042,
+        "root_id": "720575941721004602",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp07",
+        "populationId": "left/SApp07/unknown-field"
+      },
+      {
+        "index": 174166,
+        "root_id": "720575941722116666",
+        "organ": "haltere",
+        "side": "left",
+        "cell_type": "SApp15",
+        "populationId": "left/SApp15/unknown-field"
+      },
+      {
+        "index": 175042,
+        "root_id": "720575941733201451",
+        "organ": "haltere",
+        "side": "right",
+        "cell_type": "SApp02",
+        "populationId": "right/SApp02/unknown-field"
+      }
+    ],
+    "provenance": {
+      "kind": "versioned-structural-prior",
+      "sourceFiles": {
+        "web/virtual-haltere.js": "28c5388af2aba1b4c9cb048f3b2c036f7292c7e950930ceb12f7c0f4fdbda5d0",
+        "web/banc-haltere.js": "9598a84858720426d8b8ccc2669bfbc204495df82c932e8bb5d9a333a5e6a5cd",
+        "web/test/haltere-structural.test.mjs": "8e74421d9e0e16521355c6cde2941455608a20e94bdca1f6ac7080a3c91a3691",
+        "reports/haltere-structural-20260915/prepare.mjs": "3afa04927b5b2859f4b5ffa82ba66cfe4cbdf8c62087319f6cfde58728e04c0b",
+        "data/prepared/banc888/console/sensory-inputs.json": "e3e84354b1bf0117e78cb583fb2535007a3c62718fe23dc9d527fe9374318aa4",
+        "data/prepared/banc888/ids.bin": "dd942f6fd3bf27b155b4112c94b31a8348564264070933f7f916bc18e9dd1542",
+        "reports/flight-haltere-prototype/geometry.json": "d717dbc4dcb995faf296cb0789848b19b225fdcdb0e8712c28501750976dbca8",
+        "models/flybody-mujoco.json": "c1348adf19decee75abbbb1d2be8a5ef6ac8cfe4fe4850083a502b62877c4a48"
+      },
+      "mechanismEvidence": [
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4321282/",
+          "species": "Hermetia illucens",
+          "scope": "Passive ipsilateral linkage; not Drosophila coefficient calibration"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8629423/",
+          "species": "Hermetia illucens",
+          "scope": "Weak frequency coupling and haltere loading; no fitted coefficients transferred"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7307274/",
+          "species": "Drosophila melanogaster",
+          "scope": "Active haltere muscle control changes sensory/wing motor output; not a calibration of this observer"
+        }
+      ],
+      "limits": [
+        "Same-side native roll is a kinematic proxy for thoracic transmission, not measured thorax strain.",
+        "Constructed native beam frames and receptor orientations are uncalibrated priors.",
+        "All numerical mechanical coefficients and current sensitivity are explicit assumptions, not optimized or fitted.",
+        "State observer has no reciprocal body-force coupling and no direct access to opposite-side motion.",
+        "Left hDVM neural silence is not repaired or hidden; actual muscle power is reported separately."
+      ]
+    }
+  },
+  "geometries": [
+    {
+      "side": "left",
+      "mass": 8.217042644201275e-7,
+      "units": {
+        "mass": "g",
+        "length": "cm",
+        "time": "s"
+      },
+      "pivotRoot": [
+        -0.0386,
+        0.0247,
+        -0.00866
+      ],
+      "neutralComFromPivotRoot": [
+        -0.010207717623511466,
+        0.010048793090177798,
+        0.009580864855608032
+      ],
+      "oscillationAxisRoot": [
+        -0.7477324342301063,
+        -0.08140466236689725,
+        -0.6589912653026984
+      ],
+      "beamTangentRoot": [
+        -0.5923430527017469,
+        0.5831208301936284,
+        0.5559674498657892
+      ],
+      "beamNormalsRoot": [
+        [
+          -0.7308232168927759,
+          -0.09839620108959383,
+          -0.6754373496199563
+        ],
+        [
+          -0.3391565030579101,
+          -0.8064045417812512,
+          0.4844425470869586
+        ]
+      ]
+    },
+    {
+      "side": "right",
+      "mass": 8.217035482130969e-7,
+      "units": {
+        "mass": "g",
+        "length": "cm",
+        "time": "s"
+      },
+      "pivotRoot": [
+        -0.0386,
+        -0.0247,
+        -0.00866
+      ],
+      "neutralComFromPivotRoot": [
+        -0.01029563439326098,
+        -0.010215905537498633,
+        0.009890008600762137
+      ],
+      "oscillationAxisRoot": [
+        0.7583089064036058,
+        -0.09627560577285599,
+        0.6447469350078656
+      ],
+      "beamTangentRoot": [
+        -0.5864796421481433,
+        -0.5819379743877778,
+        0.5633736089942765
+      ],
+      "beamNormalsRoot": [
+        [
+          0.7436108626357854,
+          -0.11113531403817713,
+          0.6593116311303016
+        ],
+        [
+          -0.32106777215386934,
+          0.8056035848598775,
+          0.49791399834214867
+        ]
+      ]
+    }
+  ],
+  "mechanicalModel": {
+    "schemaVersion": 2,
+    "kind": "ipsilateral-wing-thorax-haltere-v2",
+    "coefficientStatus": "unmeasured-structural-prior",
+    "naturalFrequencyHz": 236,
+    "dampingRatio": 0.1,
+    "ownDriveAmplitudeRadians": 0.7853981633974483,
+    "ownDrivePhaseRadians": 3.141592653589793,
+    "couplingStiffnessRatio": 0.2,
+    "couplingDampingRatio": 0.02,
+    "sides": {
+      "left": {
+        "joint": "wing_roll_left",
+        "nativeSign": -1,
+        "centerRadians": 0.7,
+        "wingToHaltereRatio": 0.5
+      },
+      "right": {
+        "joint": "wing_roll_right",
+        "nativeSign": -1,
+        "centerRadians": 0.7,
+        "wingToHaltereRatio": 0.5
+      }
+    }
+  },
+  "maxCurrentPa": 800
+}

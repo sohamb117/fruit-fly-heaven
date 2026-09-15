@@ -37,6 +37,7 @@ const record=x=>x!==null&&typeof x==='object'&&!Array.isArray(x)&&!ArrayBuffer.i
 const fail=message=>{throw new Error('Tegula input: '+message);};
 function requireThat(condition,message){if(!condition)fail(message);}
 export function validateTegulaConfig(config){
+ if(config?.schema===2)return validateTegulaStrainConfig(config);
  const keys=['schema','profile','maxRateHz','halfLoadNative'];
  requireThat(record(config)&&Reflect.ownKeys(config).length===keys.length&&keys.every(key=>Object.hasOwn(config,key)), 'invalid config schema');
  requireThat(config.schema===1&&config.profile===TEGULA_PROFILE&&config.maxRateHz===100&&
@@ -95,11 +96,14 @@ export function createTegulaSensoryManifest(baseModel,sensory,config){
  for(const side of sides)result.channels.push({key:'tegula_'+side,label:'Tegula '+side,indices:TEGULA_CELLS.filter(cell=>cell.side===side).map(cell=>cell.index)});
  result.body_transducers??=[];
  result.body_transducers.push(...TEGULA_CELLS.map(cell=>({...cell,kind:'wing_strain',organ:'wing_tegula',function:'mechanical_strain',
-  annotation:'wing_tegula_campaniform_sensillum_neuron',tuning_status:'Unsigned aerodynamic hinge-moment proxy; equal within-side rates. Gain and saturation are unmeasured priors; no axis, polarity or preferred phase is assigned.'})));
+  annotation:'wing_tegula_campaniform_sensillum_neuron',tuning_status:checked.schema===2?
+   'Signed local aerodynamic moment through a virtual elastic hinge; receptive projections and compliance are declared priors, not measured sensillum strain.':
+   'Unsigned aerodynamic hinge-moment proxy; equal within-side rates. Gain and saturation are unmeasured priors; no axis, polarity or preferred phase is assigned.'})));
  validateTegulaSensoryManifest(result);return result;
 }
 
 export function createTegulaInputMapper(config){
+ if(config?.schema===2)return createTegulaStrainMapper(config);
  const p=validateTegulaConfig(config);
  const rate=load=>{
   if(load<=p.halfLoadNative){const ratio=load/p.halfLoadNative;return p.maxRateHz*ratio/(1+ratio);}
@@ -117,4 +121,119 @@ export function createTegulaInputMapper(config){
    Math.abs(load.bodyTimeSeconds-load.forceTimeSeconds-.00005)<=1e-8,'stale or mismatched native wing-load force time');
   return {tegula_left:rate(load.left),tegula_right:rate(load.right)};
  }});
+}
+
+export const TEGULA_STRAIN_PROFILE='tegula-local-deformation-v2';
+const deepFreeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(deepFreeze);Object.freeze(value);}return value;};
+const finite=value=>typeof value==='number'&&Number.isFinite(value);
+const vec3=value=>Array.isArray(value)&&value.length===3&&value.every(finite);
+const exactKeys=(value,keys)=>record(value)&&Object.keys(value).length===keys.length&&keys.every(key=>Object.hasOwn(value,key));
+
+/** The shared tegula field is known; its local axes/compliance are not. This
+ * usable, mirrored root-axis prior is explicitly labeled and can be replaced
+ * by registered per-cell projections. A null projection abstains. No ID hash,
+ * arbitrary split into opponents, or cell-type-to-axis claim is made. */
+export function createTegulaStrainPrior({halfLoadNative}={}){
+ requireThat(finite(halfLoadNative)&&halfLoadNative>0,'positive reference moment required');
+ return validateTegulaStrainConfig({schema:2,profile:TEGULA_STRAIN_PROFILE,
+  complianceRadiansPerNativeMoment:[.01/halfLoadNative,.01/halfLoadNative,.01/halfLoadNative],
+  relaxationSeconds:.002,maxDeflectionRadians:.2,maxRateHz:100,baselineRateHz:0,
+  halfStrain:.01,velocityWeightSeconds:0,
+  fields:TEGULA_CELLS.map(cell=>({...cell,projection:cell.side==='left'?[1,0,0]:[-1,0,0],
+   status:'engineering-prior',evidence:'Common tegula field; mirrored thorax-X bending projection is unmeasured.'}))});
+}
+
+export function validateTegulaStrainConfig(config){
+ requireThat(exactKeys(config,['schema','profile','complianceRadiansPerNativeMoment','relaxationSeconds',
+  'maxDeflectionRadians','maxRateHz','baselineRateHz','halfStrain','velocityWeightSeconds','fields'])&&
+  config.schema===2&&config.profile===TEGULA_STRAIN_PROFILE,'invalid local-strain config');
+ requireThat(vec3(config.complianceRadiansPerNativeMoment)&&config.complianceRadiansPerNativeMoment.every(x=>x>0&&x<=1e6),
+  'invalid positive diagonal compliance');
+ for(const key of ['relaxationSeconds','maxDeflectionRadians','maxRateHz','halfStrain'])
+  requireThat(finite(config[key])&&config[key]>0,'invalid '+key);
+ requireThat(config.relaxationSeconds>=.00005&&config.relaxationSeconds<=1&&config.maxDeflectionRadians<=1&&
+  config.maxRateHz<=200&&finite(config.baselineRateHz)&&config.baselineRateHz>=0&&config.baselineRateHz<=config.maxRateHz&&
+  finite(config.velocityWeightSeconds)&&config.velocityWeightSeconds>=0&&config.velocityWeightSeconds<=1,'unsupported strain dynamics');
+ requireThat(Array.isArray(config.fields)&&config.fields.length===TEGULA_CELLS.length,'expected26 explicit receptive fields');
+ const seen=new Set();
+ for(const field of config.fields){
+  const cell=expected.get(field?.index);
+  requireThat(exactKeys(field,['index','root_id','cell_type','side','projection','status','evidence'])&&cell&&!seen.has(field.index)&&
+   field.root_id===cell.root_id&&field.cell_type===cell.cell_type&&field.side===cell.side,'receptive-field identity mismatch');
+  seen.add(field.index);
+  requireThat(typeof field.evidence==='string'&&field.evidence.trim().length>0,'field provenance required');
+  requireThat(field.projection===null?field.status==='unassigned':
+   vec3(field.projection)&&Math.abs(Math.hypot(...field.projection)-1)<1e-8&&
+    ['engineering-prior','measured'].includes(field.status),'invalid field projection or status');
+ }
+ return deepFreeze(structuredClone(config));
+}
+
+/** A causal observer, not a physical hinge actuator. The signed vector is
+ * retained through diagonal elastic compliance and Kelvin-Voigt relaxation.
+ * Projected virtual deformation stands in for local cuticle strain. It omits
+ * inertial/contact/actuator reaction loads and cannot be called measured
+ * sensillum physiology. State evolves under the previous held native sample. */
+function createTegulaStrainMapper(config){
+ const p=validateTegulaStrainConfig(config),canonical=JSON.stringify(p);
+ let time=0,deformation=[[0,0,0],[0,0,0]],held=[[0,0,0],[0,0,0]],lastSource=null;
+ const snapshot=()=>({schema:1,profile:TEGULA_STRAIN_PROFILE,config:structuredClone(p),time,
+  deformation:deformation.map(v=>v.slice()),held:held.map(v=>v.slice()),lastSource:lastSource&&structuredClone(lastSource)});
+ const reset=()=>{time=0;deformation=[[0,0,0],[0,0,0]];held=[[0,0,0],[0,0,0]];lastSource=null;return snapshot();};
+ const restore=state=>{
+  requireThat(record(state)&&state.schema===1&&state.profile===TEGULA_STRAIN_PROFILE&&JSON.stringify(state.config)===canonical&&
+   finite(state.time)&&state.time>=0&&[state.deformation,state.held].every(v=>Array.isArray(v)&&v.length===2&&v.every(vec3))&&
+   state.deformation.flat().every(x=>Math.abs(x)<=p.maxDeflectionRadians),'invalid strain snapshot');
+  if(state.lastSource===null)requireThat(state.time===0&&[state.deformation,state.held].flat(2).every(x=>x===0),'uninitialized strain snapshot has state');
+  else{
+   requireThat(exactKeys(state.lastSource,['bodyTimeSeconds','identity'])&&state.lastSource.bodyTimeSeconds===state.time&&
+    typeof state.lastSource.identity==='string','invalid snapshot source');
+   let source;try{source=JSON.parse(state.lastSource.identity);}catch{requireThat(false,'invalid snapshot source encoding');}
+   requireThat(exactKeys(source,['input','forceTimeSeconds'])&&JSON.stringify(source.input)===JSON.stringify(state.held)&&
+    finite(source.forceTimeSeconds)&&source.forceTimeSeconds>=0&&
+    (state.time===0?source.forceTimeSeconds===0:Math.abs(state.time-source.forceTimeSeconds-.00005)<1e-8),
+   'snapshot held load or force time differs from its source');
+  }
+  time=state.time;deformation=state.deformation.map(v=>v.slice());held=state.held.map(v=>v.slice());lastSource=state.lastSource&&structuredClone(state.lastSource);
+ };
+ function rates(feedback,enabled=true,bodyTimeSeconds){
+  requireThat(typeof enabled==='boolean','invalid bodySense flag');
+  if(!enabled)return {tegula_left:0,tegula_right:0,cellRates:new Map(TEGULA_CELLS.map(c=>[c.index,0]))};
+  const load=feedback?.wingLoad;
+  requireThat(record(load)&&load.kind==='native-wing-aerodynamic-moment-v1'&&load.units==='g cm^2/s^2'&&
+   load.localFrame==='native-thorax'&&sides.every(side=>vec3(load.momentThorax?.[side])),'signed native thorax moments required');
+  requireThat([bodyTimeSeconds,load.bodyTimeSeconds,load.forceTimeSeconds,load.localFrameTimeSeconds].every(finite)&&
+   bodyTimeSeconds>=time&&Math.abs(load.bodyTimeSeconds-bodyTimeSeconds)<=1e-8&&
+   load.localFrameTimeSeconds===load.forceTimeSeconds&&load.forceTimeSeconds>=0&&
+   (bodyTimeSeconds===0?load.forceTimeSeconds===0:Math.abs(bodyTimeSeconds-load.forceTimeSeconds-.00005)<1e-8),
+  'local strain source clock mismatch');
+  const input=sides.map(side=>load.momentThorax[side].slice()),identity=JSON.stringify({input,forceTimeSeconds:load.forceTimeSeconds});
+  requireThat(!lastSource||bodyTimeSeconds!==time||identity===lastSource.identity,'conflicting same-time strain sample');
+  const dt=bodyTimeSeconds-time;
+  requireThat(dt<=.05+1e-10,'strain sampling gap exceeds50ms');
+  if(dt>0){
+   const decay=Math.exp(-dt/p.relaxationSeconds);
+   deformation=deformation.map((v,s)=>v.map((theta,k)=>{
+    const target=p.maxDeflectionRadians*Math.tanh(held[s][k]*p.complianceRadiansPerNativeMoment[k]/p.maxDeflectionRadians);
+    return target+(theta-target)*decay;
+   }));
+  }
+  time=bodyTimeSeconds;held=input;lastSource={bodyTimeSeconds,identity};
+  const velocity=deformation.map((v,s)=>v.map((theta,k)=>
+   (p.maxDeflectionRadians*Math.tanh(held[s][k]*p.complianceRadiansPerNativeMoment[k]/p.maxDeflectionRadians)-theta)/p.relaxationSeconds));
+  const cellRates=new Map(),strains=[],totals=[0,0],counts=[0,0];
+  for(const field of p.fields){
+   const s=field.side==='left'?0:1,d=field.projection;
+   const strain=d?d.reduce((sum,x,k)=>sum+x*(deformation[s][k]+p.velocityWeightSeconds*velocity[s][k]),0):0;
+   const compression=Math.max(0,strain),fraction=compression/(p.halfStrain+compression);
+   const rate=d?p.baselineRateHz+(p.maxRateHz-p.baselineRateHz)*fraction:0;
+   requireThat(finite(rate),'nonfinite strain rate');cellRates.set(field.index,rate);strains.push(strain);totals[s]+=rate;counts[s]++;
+  }
+  return {tegula_left:totals[0]/counts[0],tegula_right:totals[1]/counts[1],cellRates,
+   diagnostics:{profile:TEGULA_STRAIN_PROFILE,bodyTimeSeconds,forceTimeSeconds:load.forceTimeSeconds,
+    momentThorax:structuredClone(load.momentThorax),deformationRadians:deformation.map(v=>v.slice()),
+    strainProxy:strains,unassigned:p.fields.filter(f=>f.projection===null).length,
+    status:'Virtual aerodynamic-load deformation; compliance and receptive fields require calibration.'}};
+ }
+ return Object.freeze({config:p,rates,snapshot,restore,reset});
 }

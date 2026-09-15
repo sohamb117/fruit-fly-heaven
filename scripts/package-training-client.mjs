@@ -134,20 +134,45 @@ async function httpVerify(bundle,manifest){
   }
 }
 
+// An explicit experiment may own the runtime it pins, including sources that
+// differ from the current checkout. Keep this execution-only allowlist separate
+// from presentation/coordinator code and from arbitrary data or native binaries.
+const experimentSourceUrls=new Set([
+  '/banc-antenna.js','/banc-ground-sense.js','/banc-haltere.js','/banc-leg-proprioception.js',
+  '/banc-proboscis.js','/banc-sensory-current.js','/banc-taste.js','/banc-tegula.js','/banc/embodiment.js',
+  '/body-world.js','/color-vision.js','/flight-scene-profile.js','/motor-decoder.js','/sensory-encoder.js','/virtual-haltere.js',
+  ...['contact-environment','habitat-collision','leg-actuation','motor-excitation','mouth-pose','physics','stance',
+    'wing-event-excitation','wing-load','wing-pose','wings','world'].map(name=>'/flybody-'+name+'.js'),
+  ...['airborne-reset-contract','airborne-reset','brain-resources','compact-vision','config-schema','environment',
+    'episode','flight-objective','flight-observation','flight-parameters','flight-telemetry','maintained-flight-objective',
+    'retinal-sensor','sensory-feedback','worker'].map(name=>'/training/'+name+'.js'),
+  ...['cell-models','index','model','motor-events','wasm','webgpu'].map(name=>'/banc-engine/src/'+name+'.js'),
+  '/banc-engine/dist/core.js','/body-engine/mujoco.js','/vendor/three.core.js','/vendor/three.module.js',
+]);
+const experimentModelUrls=['/body-model/flybody-mujoco.json','/body-model/flybody-mujoco.xml'];
+const experimentCatalogUrl='/body-model/banc-leg-proprioception-v1.json';
+const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
+const sha256=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+
 export function readExperimentBundle(bytes){
   const bundle=JSON.parse(bytes);
-  if(bundle.schemaVersion!==1||bundle.kind!=='flight-development-bundle'||typeof bundle.configText!=='string')throw new Error('Invalid experiment bundle');
+  if(!record(bundle)||bundle.schemaVersion!==1||bundle.kind!=='flight-development-bundle'||typeof bundle.configText!=='string')throw new Error('Invalid experiment bundle');
   const configBytes=Buffer.from(bundle.configText),config=JSON.parse(configBytes),configHash=digest(configBytes);
-  const modelUrls=['/body-model/flybody-mujoco.json','/body-model/flybody-mujoco.xml'];
-  if(!bundle.assets||JSON.stringify(Object.keys(bundle.assets).sort())!==JSON.stringify(modelUrls)||
+  if(!record(config)||!record(config.assets)||!Object.keys(config.assets).length||!Object.values(config.assets).every(sha256)||
+    !record(bundle.assets)||!experimentModelUrls.every(url=>Object.hasOwn(bundle.assets,url))||
+    !sha256(config.modelFingerprint)||
     bundle.configHash!==configHash||bundle.modelFingerprint!==config.modelFingerprint||
     manifestFingerprint(config.assets)!==config.modelFingerprint)throw new Error('Experiment configuration identity mismatch');
   const overrides=new Map();
-  for(const url of modelUrls){
-    if(typeof bundle.assets[url]!=='string'||digest(bundle.assets[url])!==config.assets[url])throw new Error('Experiment model checksum mismatch: '+url);
-    overrides.set(url,Buffer.from(bundle.assets[url]));
+  for(const [url,value]of Object.entries(bundle.assets)){
+    safeUrl(url);
+    if(!experimentModelUrls.includes(url)&&!experimentSourceUrls.has(url)&&url!==experimentCatalogUrl)
+      throw new Error('Unsupported experiment asset: '+url);
+    if(!Object.hasOwn(config.assets,url))throw new Error('Unpinned experiment asset: '+url);
+    if(typeof value!=='string'||digest(value)!==config.assets[url])throw new Error('Experiment asset checksum mismatch: '+url);
+    overrides.set(url,Buffer.from(value));
   }
-  if(JSON.parse(bundle.assets[modelUrls[0]]).xml_sha256!==digest(bundle.assets[modelUrls[1]]))throw new Error('Experiment metadata/XML mismatch');
+  if(JSON.parse(bundle.assets[experimentModelUrls[0]]).xml_sha256!==digest(bundle.assets[experimentModelUrls[1]]))throw new Error('Experiment metadata/XML mismatch');
   overrides.set('/training/config.json',configBytes);
   return {configBytes,overrides};
 }

@@ -18,6 +18,7 @@ export async function buildTrainingAssetManifest({extraUrls=[],config=null}={}){
   '/body-model/banc-taste-peg-annotations.json',
   '/habitat.json',...extraUrls,
   ...(config?.vision===true?['/banc-data/console/visual-projections.json']:[]),
+  ...(config?.legProprioception!==undefined?['/body-model/banc-leg-proprioception-v1.json']:[]),
  ]);
  const assets={};
  for(const url of urls){

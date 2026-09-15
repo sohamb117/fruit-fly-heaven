@@ -5,6 +5,7 @@ const fail=message=>{throw new Error('Wing load feedback: '+message);};
 const requireThat=(ok,message)=>{if(!ok)fail(message);};
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
 const clone=sample=>sample?{...sample,momentWorld:{left:sample.momentWorld.left.slice(),right:sample.momentWorld.right.slice()},
+  ...(sample.momentThorax?{momentThorax:{left:sample.momentThorax.left.slice(),right:sample.momentThorax.right.slice()}}:{}),
   diagnostics:{left:{...sample.diagnostics.left},right:{...sample.diagnostics.right}}}:null;
 
 function solveMoment(axes,anchors,tau){
@@ -40,7 +41,8 @@ function solveMoment(axes,anchors,tau){
  * forward cache and commits only after both sides pass. Native arrays are
  * never retained. read() returns owned plain arrays, independent of both the
  * native heap and subsequent observations. */
-export function createWingLoadSampler({mj,model}){
+export function createWingLoadSampler({mj,model,localFrame=false}){
+  requireThat(typeof localFrame==='boolean','localFrame must be boolean');
   requireThat(model?.opt?.integrator===0,'only the Euler force-cache timing is supported');
   const timestep=model.opt.timestep;
   requireThat(finite(timestep)&&timestep>0,'invalid native timestep');
@@ -59,6 +61,9 @@ export function createWingLoadSampler({mj,model}){
     return sideIds.map(id=>({id,dof:dof[id]}));
   });
   requireThat(body[ids[0][0]]!==body[ids[1][0]],'left and right wings must be distinct bodies');
+  const thorax=parent[body[ids[0][0]]];
+  if(localFrame)requireThat(thorax>0&&thorax===parent[body[ids[1][0]]]&&parent[thorax]===0,
+    'local moments require both wings attached directly to the floating thorax');
   const dofs=joints.flat().map(j=>j.dof);
   requireThat(dofs.every(value=>Number.isInteger(value)&&value>=0&&value<model.nv)&&new Set(dofs).size===6,
     'invalid wing velocity coordinates');
@@ -73,9 +78,22 @@ export function createWingLoadSampler({mj,model}){
       'native force/geometry arrays have an invalid shape');
     const sides=joints.map(js=>solveMoment(js.map(j=>Array.from(xaxis.subarray(j.id*3,j.id*3+3))),
       js.map(j=>Array.from(xanchor.subarray(j.id*3,j.id*3+3))),js.map(j=>fluid[j.dof])));
+    let momentThorax;
+    if(localFrame){
+      const matrices=data.xmat;
+      requireThat(matrices?.length===model.nbody*9,'missing native thorax frame');
+      const r=Array.from(matrices.subarray(thorax*9,thorax*9+9));
+      requireThat(r.every(finite)&&[0,1,2].every(i=>[0,1,2].every(j=>
+        Math.abs(r[i]*r[j]+r[3+i]*r[3+j]+r[6+i]*r[6+j]-Number(i===j))<1e-8))&&
+        r[0]*(r[4]*r[8]-r[5]*r[7])-r[1]*(r[3]*r[8]-r[5]*r[6])+r[2]*(r[3]*r[7]-r[4]*r[6])>0,
+      'invalid native thorax rotation');
+      momentThorax=Object.fromEntries(SIDES.map((side,k)=>[side,[0,1,2].map(j=>
+        r[j]*sides[k].moment[0]+r[3+j]*sides[k].moment[1]+r[6+j]*sides[k].moment[2])]));
+    }
     latest={kind:'native-wing-aerodynamic-moment-v1',units:'g cm^2/s^2',forceTimeSeconds,bodyTimeSeconds,
       left:sides[0].magnitude,right:sides[1].magnitude,
       momentWorld:{left:sides[0].moment,right:sides[1].moment},
+      ...(momentThorax?{momentThorax,localFrame:'native-thorax',localFrameTimeSeconds:forceTimeSeconds}:{}),
       diagnostics:{left:sides[0].diagnostics,right:sides[1].diagnostics}};
   }
   return Object.freeze({capture,read:()=>clone(latest)});

@@ -13,6 +13,19 @@ const externalForceApplied=data=>{
  for(const values of [data.xfrc_applied,data.qfrc_applied])for(let i=0;i<values.length;i++)if(values[i]!==0)return true;
  return false;
 };
+function haltereSample(body,fly,structural=false){
+ const sample={halterePower:fly.feedback?.halterePower,omegaRootRadS:Array.from(body.data.qvel.slice(3,6)),
+  wingPhaseRadians:body.wings.phase,wingFrequencyHz:body.wings.frequencyHz};
+ if(!structural)return sample;
+ Object.assign(sample,{bodyTimeSeconds:body.time,wingPower:[body.wingPowerLeft,body.wingPowerRight]});
+ sample.wingMotion=Object.fromEntries(['left','right'].map(side=>{
+  const name='wing_roll_'+side,joint=body.byJoint.get(name);
+  if(!joint)throw new Error('Missing native haltere driver joint '+name);
+  return [side,{joint:name,angleRadians:body.data.qpos[joint.qpos],angularVelocityRadS:body.data.qvel[joint.dof],
+   source:'native-joint',frame:'native-joint-coordinate'}];
+ }));
+ return sample;
+}
 async function fetchText(url){const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error(`Training asset unavailable: ${url}`);return response.text();}
 async function fetchJson(url){return JSON.parse(await fetchText(url));}
 function assetRecords(assets){return Object.entries(assets||{}).map(([key,value])=>typeof value==='string'?{url:key,sha256:value}:{...value,url:value.url||key});}
@@ -57,7 +70,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
  const brainModel=config.intrinsicModels===undefined?base:{...base,manifest:{...base.manifest,intrinsic_models:clone(config.intrinsicModels)}};
  const eventContract=brainModel.manifest.intrinsic_models===undefined?undefined:intrinsicLayout(brainModel).eventContract;
  let sensoryModel=sensory,haltereMapper=null,preparedIds=null;
- if(config.tegulaFeedback!==undefined||config.haltereFeedback!==undefined||config.antennaFeedback!==undefined){
+ if(config.tegulaFeedback!==undefined||config.haltereFeedback!==undefined||config.antennaFeedback!==undefined||config.legProprioception!==undefined){
   const response=await fetch('/banc-data/ids.bin',{cache:'no-store'});
   if(!response.ok)throw new Error('Prepared sensory identities unavailable');
   const bytes=await response.arrayBuffer(),entry=base.manifest.files['ids.bin'];
@@ -70,7 +83,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
  }
  if(config.haltereFeedback!==undefined){
   const settings=config.haltereFeedback;
-  if(!settings||typeof settings!=='object'||Array.isArray(settings)||Object.keys(settings).some(key=>!['profile','geometries','maxCurrentPa'].includes(key)))throw new Error('Invalid haltere feedback declaration');
+  if(!settings||typeof settings!=='object'||Array.isArray(settings)||Object.keys(settings).some(key=>!['profile','geometries','maxCurrentPa','mechanicalModel'].includes(key)))throw new Error('Invalid haltere feedback declaration');
   haltereMapper=createHaltereCurrentMapper({enabled:true,...settings,sensoryManifest:sensory,preparedIds});
  }
  const tasteMapper=createBancTasteMapper([...base.io.sensory,...supplement.annotations],groups.sweet);
@@ -81,7 +94,13 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   if(!assets.some(asset=>asset.url===url))throw new Error('Unpinned retinal projection');
   projection=await fetchJson(url);
  }
- const sensoryResources=await createTrainingSensoryResources({config,base,sensory:sensoryModel,groups,tasteMapper,projection,ids:preparedIds,sceneProfile});
+ let legCatalog=null;
+ if(config.legProprioception!==undefined){
+  const url='/body-model/banc-leg-proprioception-v1.json';
+  if(!assets.some(asset=>asset.url===url))throw new Error('Unpinned leg proprioceptor catalog');
+  legCatalog=await fetchJson(url);
+ }
+ const sensoryResources=await createTrainingSensoryResources({config,base,sensory:sensoryModel,groups,tasteMapper,projection,ids:preparedIds,sceneProfile,legCatalog});
  const externalIndices=sensoryResources.indices,visionEnabled=sensoryResources.visionEnabled;
  const mapper=await createBancSensoryCurrentMapper(core,base,{indices:externalIndices,onProfile:(_,i,n)=>onProgress?.({message:'Calibrating isolated sensory interface',completed:i+1,total:n})});
  // The neural model, sensory transduction, and native muscle physiology are fixed.
@@ -110,6 +129,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
    phase:metrics.phase||'grounded',motion:active.fly.motion,metrics:{...metrics,observation:active.lastObservation,mechanics:makeFlightTelemetry(b,world.rates(active.fly))},neuralMs:active.brain?.timeMs||0,neuralSpikes:active.lastSpikes||0,vision:visionEnabled};
  }
  function createWorld(stage,seed,interpreter,motorDecoder){
+  haltereMapper?.reset?.();
   const random=seededRandom(seed),fly={...clone(habitat.flies[0]),id:1,brain:{time_ms:0,motor:{},motorNeuronRates:Array(motorIndices.length).fill(0)}};
   // All objectives begin in native stance. Landing must follow the fly's own
   // takeoff and flight; an airborne reset would also reward merely falling.
@@ -123,7 +143,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
   body.data.qvel[3]=(random()-.5)*.8;body.data.qvel[4]=(random()-.5)*.8;
   // Initial conditions only. No reset or direct body force occurs thereafter.
   world.mj.mj_forward(world.model,body.data);
-  if(config.tegulaFeedback!==undefined)body.enableWingLoadFeedback();
+  if(config.tegulaFeedback!==undefined)body.enableWingLoadFeedback({localFrame:config.tegulaFeedback.schema===2});
   body.refresh();body.monitor.resetContinuity('training episode initial condition');world.copyPose(fly,body,0);
   return {world,body,fly,initialCondition:{stage,seed,position:[body.x,body.y,body.z],quaternion:[...body.quaternion],velocity:Array.from(body.data.qvel.slice(0,6)),airborne:body.airborne,placement:'Native grounded stance with a seeded small angular disturbance; no airborne offset or launch impulse.'}};
   }catch(error){world.dispose();throw error;}
@@ -195,8 +215,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     const encoded=sensoryFeedback.update();
     if(encoded)for(let k=0;k<encoded.indices.length;k++){const index=encoded.indices[k];input[index]=mapper.current(index,encoded.ratesHz[k]);}
     if(inputSequence){
-     const sample=haltereMapper?{halterePower:fly.feedback?.halterePower,omegaRootRadS:Array.from(body.data.qvel.slice(3,6)),
-      wingPhaseRadians:body.wings.phase,wingFrequencyHz:body.wings.frequencyHz}:null;
+     const sample=haltereMapper?haltereSample(body,fly,config.haltereFeedback.mechanicalModel!==undefined):null;
      for(let k=0;k<inputSequence.length;k++){
       inputSequence[k].set(input);
       if(haltereMapper){
@@ -335,8 +354,7 @@ export async function createTrainingEnvironment(requestedConfig,{configUrl='/tra
     const encoded=sensoryFeedback.update();
     if(encoded)for(let k=0;k<encoded.indices.length;k++){const index=encoded.indices[k];input[index]=mapper.current(index,encoded.ratesHz[k]);}
     if(inputSequence){
-     const sample=haltereMapper?{halterePower:fly.feedback?.halterePower,omegaRootRadS:Array.from(body.data.qvel.slice(3,6)),
-      wingPhaseRadians:body.wings.phase,wingFrequencyHz:body.wings.frequencyHz}:null;
+     const sample=haltereMapper?haltereSample(body,fly,config.haltereFeedback.mechanicalModel!==undefined):null;
      for(let k=0;k<inputSequence.length;k++){
       inputSequence[k].set(input);
       if(haltereMapper){

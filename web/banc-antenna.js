@@ -30,6 +30,7 @@ const fnv=text=>{let h=2166136261;for(let i=0;i<text.length;i++)h=Math.imul(h^te
 const canonical=x=>JSON.stringify(x);
 
 export function validateAntennaConfig(config=ANTENNA_PRIOR){
+ if(config?.schema===2||config?.profile===ANTENNA_FAMILY_PROFILE)return validateAntennaFamilyConfig(config);
  requireThat(record(config)&&Object.keys(config).every(key=>Object.hasOwn(ANTENNA_PRIOR,key)),'unknown config field');
  const p={...ANTENNA_PRIOR,...config};
  requireThat(p.schema===1&&p.profile===ANTENNA_PROFILE,'unsupported profile');
@@ -80,7 +81,8 @@ export async function createAntennaPopulation(baseModel,sensory){
  * integrates the PREVIOUS held airflow up to the new measurement timestamp.
  * sample/snapshot never advance state, so preview/hidden-tab cadence is inert.
  */
-export function createAntennaAirflowModel(population,config=ANTENNA_PRIOR){
+export function createAntennaAirflowModel(population,config=ANTENNA_PRIOR,geometry=null){
+ if(config?.schema===2||config?.profile===ANTENNA_FAMILY_PROFILE)return createAntennaFamilyAirflowModel(population,config,geometry);
  const p=validateAntennaConfig(config);
  requireThat(population?.kind==='banc-antenna-population-v1'&&population.selected?.length===562&&population.replacementIndices?.length===579&&population.source?.preparedIdsSha256===ANTENNA_ANNOTATION_SOURCE.preparedIdsSha256,'validated antenna population required');
  const groups=new Map(),offsets=new Map(population.replacementIndices.map((id,k)=>[id,k]));
@@ -143,4 +145,163 @@ export function createAntennaAirflowModel(population,config=ANTENNA_PRIOR){
     sideMeanRateHz:sideTotals.map((x,i)=>x/sideCounts[i]),directionStatus:'exchangeable prior; not anatomical preferred directions',nativeActuatorsChanged:false}};
  }
  return Object.freeze({metadata,advance,sample,snapshot,restore,reset});
+}
+
+// Version 1 above remains the historical exchangeable-direction baseline.
+// This opt-in version uses anatomical families, not a root-ID tuning lottery.
+export const ANTENNA_FAMILY_PROFILE='banc-native-antenna-family-airflow-v2';
+export const ANTENNA_FAMILY_PRIOR=freeze({schema:2,profile:ANTENNA_FAMILY_PROFILE,
+ timeConstantSeconds:.015,referenceAirSpeedCmPerSecond:100,maxDeflectionRadians:.5,
+ baselineRateHz:5,positionGainHzPerRadian:120,velocityGainHzPerRadPerSecond:.3,maxRateHz:100});
+export const ANTENNA_FAMILY_EVIDENCE=freeze({
+ C:{response:'tonic anterior deflection',sign:1,source:'https://doi.org/10.1038/nature07843'},
+ D:{response:'anterior deflection and vibration',sign:1,source:'https://doi.org/10.3389/fphys.2014.00179',
+   limitation:'Unsigned velocity sensitivity is a mixed-response prior, not a fitted 100-200 Hz transfer function.'},
+ E:{response:'tonic posterior deflection',sign:-1,source:'https://doi.org/10.1038/nature07843'},
+ F:{response:'unresolved; no added airflow drive',sign:null,source:'https://doi.org/10.7554/eLife.59976',
+   limitation:'The tested JO-F lines did not respond to imposed pushes, pulls or tested vibrations in immobilized flies; this is not proof of in-vivo silence.'},
+ scope:'Population-level literature is transferred to annotated BANC families as an explicit prior. Subtype and individual tuning are not identified; no random individual axes are invented.',
+ stateLimitation:'Flight-dependent wingbeat responses are reported in https://doi.org/10.1523/JNEUROSCI.0034-15.2015; no wingbeat-flow or behavioral-state response is invented here.'});
+
+export function validateAntennaFamilyConfig(config=ANTENNA_FAMILY_PRIOR){
+ requireThat(record(config)&&Object.keys(config).every(key=>Object.hasOwn(ANTENNA_FAMILY_PRIOR,key)),'unknown family config field');
+ const p={...ANTENNA_FAMILY_PRIOR,...config};
+ requireThat(p.schema===2&&p.profile===ANTENNA_FAMILY_PROFILE,'unsupported family profile');
+ // Numerical scales deliberately retain v1 priors; none were fitted to reward.
+ const {schema,profile,...values}=p;
+ validateAntennaConfig({...ANTENNA_PRIOR,...values});
+ return freeze(p);
+}
+
+const dot3=(a,b)=>a.reduce((sum,x,i)=>sum+x*b[i],0);
+const cross3=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const add3=(a,b)=>a.map((x,i)=>x+b[i]);
+const subtract3=(a,b)=>a.map((x,i)=>x-b[i]);
+const unit3=(x,label)=>{const a=vector(x,3,label),n=Math.hypot(...a);requireThat(n>1e-10,'zero '+label);return a.map(v=>v/n);};
+const rotate3=(m,v)=>[0,1,2].map(i=>dot3(m.slice(i*3,i*3+3),v));
+const unrotate3=(m,v)=>[0,1,2].map(i=>m[i]*v[0]+m[i+3]*v[1]+m[i+6]*v[2]);
+const multiply3=(a,b)=>[0,1,2].flatMap(i=>[0,1,2].map(j=>a[i*3]*b[j]+a[i*3+1]*b[j+3]+a[i*3+2]*b[j+6]));
+function quaternionMatrix(value){
+ let [w,x,y,z]=vector(value,4,'native quaternion');const norm=Math.hypot(w,x,y,z);requireThat(norm>1e-10,'zero native quaternion');
+ w/=norm;x/=norm;y/=norm;z/=norm;
+ return [1-2*(y*y+z*z),2*(x*y-z*w),2*(x*z+y*w),2*(x*y+z*w),1-2*(x*x+z*z),2*(y*z-x*w),2*(x*z-y*w),2*(y*z+x*w),1-2*(x*x+y*y)];
+}
+function properRotation(value,label){
+ const m=vector(value,9,label),rows=[m.slice(0,3),m.slice(3,6),m.slice(6,9)];
+ requireThat(rows.every(r=>Math.abs(dot3(r,r)-1)<1e-8)&&Math.abs(dot3(rows[0],rows[1]))<1e-8&&Math.abs(dot3(rows[0],rows[2]))<1e-8&&Math.abs(dot3(rows[1],rows[2]))<1e-8&&dot3(cross3(rows[0],rows[1]),rows[2])>1-1e-8,'invalid '+label);
+ return m;
+}
+const geometryKey=g=>canonical({sourceXmlSha256:g.sourceXmlSha256,rootBody:g.rootBody,headBody:g.headBody,headRotationRoot:g.headRotationRoot,sides:g.sides});
+function validateFamilyGeometry(geometry){
+ requireThat(record(geometry)&&geometry.schema===1&&geometry.kind==='native-frozen-antenna-geometry-v1'&&typeof geometry.sourceXmlSha256==='string'&&/^[a-f0-9]{64}$/.test(geometry.sourceXmlSha256),'native antenna geometry required');
+ requireThat(Array.isArray(geometry.sides)&&geometry.sides.length===2&&geometry.key===geometryKey(geometry),'geometry identity mismatch');
+ properRotation(geometry.headRotationRoot,'head rotation');
+ for(const [s,side]of geometry.sides.entries()){
+  requireThat(side.side===SIDES[s]&&Number.isInteger(side.body)&&Number.isInteger(side.geom),'invalid native antenna side');
+  vector(side.attachmentRootCm,3,'attachment');vector(side.receiverRootCm,3,'receiver');properRotation(side.rotationRoot,'antenna rotation');
+  for(const k of ['shaftLocal','anteriorTangentLocal','hingeAxisLocal'])requireThat(Math.abs(Math.hypot(...vector(side[k],3,k))-1)<1e-8,'nonunit '+k);
+  requireThat(Math.abs(dot3(side.shaftLocal,side.anteriorTangentLocal))<1e-8&&dot3(cross3(side.shaftLocal,side.anteriorTangentLocal),side.hingeAxisLocal)>1-1e-8,'inconsistent virtual hinge geometry');
+ }
+ return freeze(structuredClone(geometry));
+}
+
+/** Derive fixed head/receiver geometry from the LOADED native model. Sampling
+ * uses current free-joint qpos/qvel rather than mj_step's lagged xpos cache.
+ * Frozen a2/a3 geometry is a limitation: this is an airflow-driven virtual
+ * deflection, never a claim that these missing native joints are moving. */
+export function createNativeAntennaKinematics({mj,model,metadata}){
+ requireThat(model&&metadata&&typeof mj?.mj_name2id==='function','native topology/name resolver required');
+ const bodyEnum=mj.mjtObj?.mjOBJ_BODY?.value,jointEnum=mj.mjtObj?.mjOBJ_JOINT?.value,geomEnum=mj.mjtObj?.mjOBJ_GEOM?.value;
+ requireThat([bodyEnum,jointEnum,geomEnum].every(Number.isInteger),'native object enums unavailable');
+ const name=(kind,label)=>{const id=mj.mj_name2id(model,kind,label);requireThat(Number.isInteger(id)&&id>=0,'missing native '+label);return id;};
+ const root=name(bodyEnum,'thorax'),head=name(bodyEnum,'head'),free=name(jointEnum,'free');
+ requireThat(root<model.nbody&&head<model.nbody&&free<model.njnt&&model.body_parentid[root]===0&&model.body_parentid[head]===root&&
+   model.body_jntnum[root]===1&&model.body_jntnum[head]===0&&model.jnt_bodyid[free]===root&&model.jnt_type[free]===0&&model.jnt_qposadr[free]===0&&model.jnt_dofadr[free]===0,'unsupported moving head/root topology');
+ requireThat(metadata.joints?.every(j=>!/^head(?:_|$)|^antenna(?:_|$)/.test(j.name)),'head/antenna joints must be frozen in this geometry profile');
+ const headRotation=quaternionMatrix(model.body_quat.slice(head*4,head*4+4)),headPosition=vector(model.body_pos.slice(head*3,head*3+3),3,'head position');
+ // +Y is the native FlyBody head's anterior axis; the loaded head quaternion
+ // maps it into the root. The missing a2/a3 hinge axis remains inferred.
+ const anteriorRoot=rotate3(headRotation,[0,1,0]);
+ const sides=SIDES.map(side=>{
+  const body=name(bodyEnum,'antenna_'+side),geom=name(geomEnum,'antenna_'+side+'_collision');
+  requireThat(body<model.nbody&&geom<model.ngeom&&model.body_parentid[body]===head&&model.body_jntnum[body]===0&&model.geom_bodyid[geom]===body,'unsupported antenna receiver topology');
+  const rotationRoot=multiply3(headRotation,quaternionMatrix(model.body_quat.slice(body*4,body*4+4))),
+    attachmentRootCm=add3(headPosition,rotate3(headRotation,vector(model.body_pos.slice(body*3,body*3+3),3,'antenna attachment'))),
+    receiverLocal=vector(model.geom_pos.slice(geom*3,geom*3+3),3,'antenna receiver center'),shaftLocal=unit3(receiverLocal,'receiver shaft'),
+    anteriorLocal=unrotate3(rotationRoot,anteriorRoot),anteriorTangentLocal=unit3(subtract3(anteriorLocal,shaftLocal.map(x=>x*dot3(anteriorLocal,shaftLocal))),'anterior bending tangent'),
+    hingeAxisLocal=cross3(shaftLocal,anteriorTangentLocal),receiverRootCm=add3(attachmentRootCm,rotate3(rotationRoot,receiverLocal));
+  return {side,body,geom,rotationRoot,attachmentRootCm,receiverRootCm,shaftLocal,anteriorTangentLocal,hingeAxisLocal};
+ });
+ const declaration={schema:1,kind:'native-frozen-antenna-geometry-v1',sourceXmlSha256:metadata.xml_sha256,rootBody:root,headBody:head,headRotationRoot:headRotation,sides};
+ const geometry=validateFamilyGeometry({...declaration,key:geometryKey(declaration)});
+ function sample(data,{bodyTimeSeconds=data?.time,windWorldCmPerSecond}={}){
+  requireThat(data?.qpos?.length>=7&&data?.qvel?.length>=6&&finite(bodyTimeSeconds)&&bodyTimeSeconds>=0,'invalid native kinematic state');
+  if(finite(data.time))requireThat(Math.abs(data.time-bodyTimeSeconds)<1e-8,'antenna observation time differs from native state');
+  const rootPosition=vector(data.qpos.slice(0,3),3,'root position'),rotation=quaternionMatrix(data.qpos.slice(3,7)),
+    velocityWorld=vector(data.qvel.slice(0,3),3,'root velocity'),omegaRoot=vector(data.qvel.slice(3,6),3,'root angular velocity'),
+    wind=vector(windWorldCmPerSecond,3,'physical wind'),nativeWind=vector(model.opt?.wind??[0,0,0],3,'native physical wind');
+  requireThat(wind.every((x,i)=>Math.abs(x-nativeWind[i])<1e-9),'observer wind differs from native physical wind');
+  const windRoot=unrotate3(rotation,wind),velocityRoot=unrotate3(rotation,velocityWorld);
+  requireThat(Math.hypot(...omegaRoot)<=1e5&&Math.hypot(...velocityRoot)<=1e6,'native velocity outside supported range');
+  return {schema:2,profile:ANTENNA_FAMILY_PROFILE,geometryKey:geometry.key,bodyTimeSeconds,
+   sides:geometry.sides.map(side=>{
+    const receiverVelocityRoot=add3(velocityRoot,cross3(omegaRoot,side.receiverRootCm)),attachmentVelocityRoot=add3(velocityRoot,cross3(omegaRoot,side.attachmentRootCm));
+    return {side:side.side,airflowLocalCmPerSecond:unrotate3(side.rotationRoot,subtract3(windRoot,receiverVelocityRoot)),
+      attachmentVelocityRootCmPerSecond:attachmentVelocityRoot,receiverVelocityRootCmPerSecond:receiverVelocityRoot,
+      attachmentPositionWorldCm:add3(rootPosition,rotate3(rotation,side.attachmentRootCm)),receiverPositionWorldCm:add3(rootPosition,rotate3(rotation,side.receiverRootCm))};
+   })};
+ }
+ return Object.freeze({geometry,sample});
+}
+
+function createAntennaFamilyAirflowModel(population,config,sourceGeometry){
+ const p=validateAntennaFamilyConfig(config),geometry=validateFamilyGeometry(sourceGeometry);
+ requireThat(population?.kind==='banc-antenna-population-v1'&&population.selected?.length===562&&population.replacementIndices?.length===579&&population.source?.preparedIdsSha256===ANTENNA_ANNOTATION_SOURCE.preparedIdsSha256,'validated antenna population required');
+ const offsets=new Map(population.replacementIndices.map((id,k)=>[id,k]));
+ const cells=population.selected.filter(c=>/^JO-[CDE]/.test(c.cell_type)).map(c=>({...c,family:c.cell_type[3],sideIndex:SIDES.indexOf(c.side)})),
+   abstained=[...population.abstained,...population.selected.filter(c=>/^JO-F/.test(c.cell_type)).map(c=>({...c,reason:'JO-F airflow transduction unresolved; no added current requested.'}))];
+ requireThat(cells.length===388&&abstained.length===191,'family selection mismatch');
+ const metadata=freeze({kind:ANTENNA_FAMILY_PROFILE,config:p,source:population.source,geometry,evidence:ANTENNA_FAMILY_EVIDENCE,
+  selection:{driven:cells.length,zeroed:abstained.length,left:cells.filter(c=>c.side==='left').length,right:cells.filter(c=>c.side==='right').length},cells,abstained,
+  mechanics:'One critically damped passive virtual anterior/posterior coordinate per native antenna; previous held local airflow includes rigid-body rotation at the receiver center.',
+  limitations:['The capsule center approximates a receiver; the true arista center of pressure and a2/a3 hinge are absent.',
+   'Native head/antenna transforms are used, but a missing movable native joint is not replaced by a measured angle.',
+   'All gains, mechanical constants and D velocity weighting are inherited unfit priors; no individual preferred-axis or threshold data exist here.',
+   'No wing-induced flow, auditory carrier, gravitational/inertial receiver torque, or flight-state tuning is modeled. F abstention means no added drive, not biological inactivity.']});
+ let time=0,angles=[0,0],velocities=[0,0],heldAirflow=[[0,0,0],[0,0,0]];
+ const state=()=>({schema:2,profile:ANTENNA_FAMILY_PROFILE,config:{...p},geometryKey:geometry.key,populationSource:population.source.preparedIoSha256,
+  bodyTimeSeconds:time,anglesRadians:angles.slice(),velocitiesRadiansPerSecond:velocities.slice(),heldAirflowLocalCmPerSecond:heldAirflow.map(x=>x.slice())});
+ function reset(bodyTimeSeconds=0){requireThat(finite(bodyTimeSeconds)&&bodyTimeSeconds>=0,'invalid reset time');time=bodyTimeSeconds;angles=[0,0];velocities=[0,0];heldAirflow=[[0,0,0],[0,0,0]];return state();}
+ function advance(input){
+  requireThat(record(input)&&input.schema===2&&input.profile===ANTENNA_FAMILY_PROFILE&&input.geometryKey===geometry.key&&Array.isArray(input.sides)&&input.sides.length===2,'native family sample/geometry mismatch');
+  const flow=input.sides.map((side,s)=>{requireThat(side.side===SIDES[s],'sample side mismatch');const f=vector(side.airflowLocalCmPerSecond,3,'local airflow');requireThat(Math.hypot(...f)<=1e6,'local airflow outside supported range');return f;});
+  const nextTime=input.bodyTimeSeconds,dt=nextTime-time;requireThat(finite(nextTime)&&dt>=0&&dt<=.05+1e-10,'invalid family simulation cadence');
+  if(dt===0){heldAirflow=flow;return state();}
+  const targets=heldAirflow.map((f,s)=>p.maxDeflectionRadians*Math.tanh(dot3(f,geometry.sides[s].anteriorTangentLocal)*Math.hypot(...f)/(p.referenceAirSpeedCmPerSecond**2))),
+    w=1/p.timeConstantSeconds,decay=Math.exp(-w*dt),nextAngles=[],nextVelocities=[];
+  for(let s=0;s<2;s++){const y=angles[s]-targets[s],c=velocities[s]+w*y;nextAngles.push(targets[s]+(y+c*dt)*decay);nextVelocities.push((velocities[s]-w*c*dt)*decay);}
+  requireThat([...nextAngles,...nextVelocities].every(finite),'nonfinite family mechanics');
+  time=nextTime;angles=nextAngles;velocities=nextVelocities;heldAirflow=flow;return state();
+ }
+ function restore(snapshot){
+  requireThat(record(snapshot)&&snapshot.schema===2&&snapshot.profile===ANTENNA_FAMILY_PROFILE&&snapshot.geometryKey===geometry.key&&canonical(snapshot.config)===canonical(p)&&snapshot.populationSource===population.source.preparedIoSha256,'family snapshot identity mismatch');
+  const a=vector(snapshot.anglesRadians,2,'snapshot angles'),v=vector(snapshot.velocitiesRadiansPerSecond,2,'snapshot velocities');
+  requireThat(Array.isArray(snapshot.heldAirflowLocalCmPerSecond)&&snapshot.heldAirflowLocalCmPerSecond.length===2,'invalid snapshot airflow sides');
+  const f=snapshot.heldAirflowLocalCmPerSecond.map(x=>vector(x,3,'snapshot local airflow'));
+  requireThat(finite(snapshot.bodyTimeSeconds)&&snapshot.bodyTimeSeconds>=0&&a.every(x=>Math.abs(x)<=10)&&v.every(x=>Math.abs(x)<=10000)&&f.every(x=>Math.hypot(...x)<=1e6),'family snapshot outside supported range');
+  time=snapshot.bodyTimeSeconds;angles=a;velocities=v;heldAirflow=f;return state();
+ }
+ function sample({enabled=true}={}){
+  requireThat(typeof enabled==='boolean','enabled must be boolean');if(!enabled)return null;
+  const ratesHz=new Float32Array(population.replacementIndices.length),totals=[0,0],counts=[0,0];
+  for(const cell of cells){const s=cell.sideIndex,sign=ANTENNA_FAMILY_EVIDENCE[cell.family].sign,
+    tonic=p.positionGainHzPerRadian*sign*angles[s],phasic=cell.family==='D'?p.velocityGainHzPerRadPerSecond*Math.abs(velocities[s]):0,
+    rate=Math.max(0,Math.min(p.maxRateHz,p.baselineRateHz+tonic+phasic));
+   ratesHz[offsets.get(cell.index)]=rate;totals[s]+=rate;counts[s]++;
+  }
+  return {indices:Uint32Array.from(population.replacementIndices),ratesHz,state:state(),
+   diagnostics:{kind:ANTENNA_FAMILY_PROFILE,bodyTimeSeconds:time,units:'requested Hz',drivenCells:cells.length,abstainedCells:abstained.length,
+    sideMeanRateHz:totals.map((x,s)=>x/counts[s]),directionStatus:'native-frame family-level prior; individual tuning unmeasured',nativeActuatorsChanged:false}};
+ }
+ return Object.freeze({metadata,advance,sample,snapshot:state,restore,reset});
 }

@@ -1,0 +1,57 @@
+{
+  "body_fingerprint": "6f4b1380420bbd20a56a9cd7662a53e1393c673f279e4163ab06565f1a420471",
+  "checks": {
+    "path": "validation/brief-launch-checks.json",
+    "sha256": "89faca4e42787bc34d93541a8aadcfa3c429170871fab43216bc6e46dcfecee5"
+  },
+  "launch": {
+    "command": [
+      "/Users/soham/.local/bin/uv",
+      "run",
+      "--frozen",
+      "--offline",
+      "--cache-dir",
+      "/private/tmp/connectome-body-uv",
+      "python",
+      "-u",
+      "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/scripts/run_adaptation_campaign.py",
+      "--plan",
+      "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/plan.json"
+    ],
+    "device": "local_mps",
+    "launched_utc": "2026-09-15T18:02:36.979025+00:00",
+    "launcher_process_pid": 92753,
+    "launcher_sha256": "9ff489ec6a0dc468e6cf0027330262b27ee49d6fb6fba5276d173f010d68f6ef",
+    "log": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/campaign.log",
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/plan.json",
+    "plan_sha256": "038cc5370bb92e55e86252e314eb51661e77938bc36f9b5bc990f1d87b196cad",
+    "scope": "24-run BANC hover MVP; one cell at a time; final analysis after completion",
+    "status": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/campaign-status.json",
+    "supersedes": "runs/brief-mvp-local: launch failed before training due to integer/float serialization of numerically identical body settings"
+  },
+  "live_status": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/campaign-status.json",
+  "normalization_fix": "Canonicalize JSON integer/float/bool types at input; numerical settings and physical/learning implementation unchanged",
+  "pipeline_identity": "9091ee717ab507c0be830eb13c085b717dfd78971bd62fc3fe1b8a479d93f798",
+  "plan": {
+    "path": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/plan.json",
+    "sha256": "038cc5370bb92e55e86252e314eb51661e77938bc36f9b5bc990f1d87b196cad"
+  },
+  "prior_attempt": {
+    "optimizer_updates": 0,
+    "outcome": "Failed before training; numeric JSON representation differed from cache body identity",
+    "path": "runs/brief-mvp-local"
+  },
+  "readiness": {
+    "path": "validation/brief-launch-readiness.json",
+    "sha256": "d9fda011ecec5cf68c239466d9397e2e904c04a79d701d6f8b5a75375016ef86"
+  },
+  "scope": "Local 24-run BANC hover MVP launch; scientific results pending",
+  "source_archive": {
+    "files": 60,
+    "path": "validation/brief-campaign-sources.zip",
+    "sha256": "5920abf640dacf9f2630496b81f1ce0eed8d52b97e0023c995625f2256140769"
+  },
+  "source_identity": "31e83c9dc2d2f2cd356368e5cc69230d29e71395409dbd9a573daa2f24dee6d8",
+  "teacher_fingerprint": "c7e2375d070fe82cbffc4115e7d676d30113818918bd0bd6aee2d0f27b8dedba",
+  "timestamp_utc": "2026-09-15T18:04:05.888470+00:00"
+}

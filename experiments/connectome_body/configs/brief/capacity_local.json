@@ -80,7 +80,7 @@
   "success_threshold": 0.8,
   "interventions": true,
   "requires_mvp_go": true,
-  "mvp_decision": "runs/brief-mvp-local-analysis/decision.json",
-  "reuse_plan": "runs/brief-mvp-local/plan.json",
+  "mvp_decision": "runs/brief-mvp-local-v2-analysis/decision.json",
+  "reuse_plan": "runs/brief-mvp-local-v2/plan.json",
   "feasibility_benchmark": "validation/brief-banc-mps-benchmark.json"
 }

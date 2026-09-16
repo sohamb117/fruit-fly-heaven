@@ -1,0 +1,39 @@
+{
+  "status": "prepared_cloud_launch_blocked",
+  "checked_unix": 1789497981.173389,
+  "harness_sha256": "2057ccddd3694115f2c74cc51616cf3870090842182f8a39fa55b766daa4f8a5",
+  "checkpoint_reader_validation": {
+    "path": "runs/brief-mvp-local-v2/runs/banc-real-p5000-s0/stage-00/latest.pt",
+    "sha256": "a2366d9d305eb8d19e18a39bb785aedab05107ac7dd172da1b87aa8569f7baf9",
+    "bytes": 148149,
+    "updates": 925,
+    "identity": "62969f0a2c1eaa61601c91221c15f9078ab29bca36e6fa800b659b27308e8c88",
+    "optimizer_entries": 10,
+    "rng_saved": true,
+    "finite_actor": true,
+    "elapsed_seconds": 2591.702147332995,
+    "last_validation": {
+      "updates": 900,
+      "sample_presentations": 115032,
+      "mse": 0.0015082818984985351,
+      "sign_accuracy": 0.9050220703125,
+      "labeled_steps": 40000
+    }
+  },
+  "cuda_benchmark_completed": false,
+  "gpu_pods_created": 0,
+  "cutoff_seconds": 1800,
+  "checkpoint_interval_updates": 25,
+  "cloud_failures": [
+    {
+      "attempt": 1,
+      "status": 503,
+      "detail": "Upstream temporarily unavailable"
+    },
+    {
+      "attempt": 2,
+      "status": 500,
+      "detail": "failed to create pod"
+    }
+  ]
+}

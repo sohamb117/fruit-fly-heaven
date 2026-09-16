@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import argparse
+import dataclasses
 import json
 from pathlib import Path
 
 from ..body import PROJECT
-from .hover import HoverConfig
+from .configuration import hover_config_from_dict
 
 
 def read_json(path):
@@ -16,7 +17,7 @@ def read_json(path):
 
 def body_config(path):
     value = read_json(path) if path else {}
-    return HoverConfig(**value.get("body", value))
+    return hover_config_from_dict(value.get("body", value))
 
 
 def main(argv=None):
@@ -158,7 +159,9 @@ def main(argv=None):
     elif args.command == "run":
         from .pipeline import run_experiment
 
-        report = run_experiment(read_json(args.config), args.output, args.resume)
+        config = read_json(args.config)
+        config["body"] = dataclasses.asdict(hover_config_from_dict(config.get("body", {})))
+        report = run_experiment(config, args.output, args.resume)
         result = {
             "status": report["status"],
             "evidence": report["evidence"],

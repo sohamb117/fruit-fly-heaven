@@ -2,7 +2,7 @@
 
 This protocol implements the hover-first experimental brief. It lives in `connectome_body/adaptation/` and is separate from the earlier ground-task/PPO protocol. It tests whether frozen biological topology reduces the trainable interface capacity and experience needed to control one fixed FlyBody embodiment. The architecture is generic; weights are fitted separately for every graph and seed.
 
-The implementation, source data, and engineering evidence are available locally. Full BANC has passed all nine forward/backward benchmark cases on this Mac's **Apple M2 Pro GPU**, using a sparse Metal backend. The local MVP can use this GPU; CUDA is not required. The 24 scientific MVP runs have **not** been completed. [BRIEF_VALIDATION.md](BRIEF_VALIDATION.md) distinguishes completed checks from pending scientific results.
+The implementation, source data, and engineering evidence are available locally. Full BANC has passed all nine forward/backward benchmark cases on this Mac's **Apple M2 Pro GPU**, using a sparse Metal backend. The 24-run scientific MVP was launched locally on 2026-09-15; follow [the campaign record](CAMPAIGN.md) and its live status for progress. The scientific matrix is not yet complete. [BRIEF_VALIDATION.md](BRIEF_VALIDATION.md) distinguishes engineering checks from scientific results.
 
 ## Primary experimental object
 
@@ -145,21 +145,28 @@ uv run --frozen python -m connectome_body.adaptation.cli collect --split test --
   --config configs/brief/mvp_local.json --output data/hover-v1/test
 ```
 
-The local matrix is prepared at `runs/brief-mvp-local/plan.json`. Start here with the first `worker` command below. The `plan` command is for a fresh destination; it performs readiness checks without starting training and refuses to overwrite an existing plan.
+The active local matrix is prepared at `runs/brief-mvp-local-v2/plan.json`. A supervisor is already running it sequentially; see [CAMPAIGN.md](CAMPAIGN.md) before starting another worker. The `plan` command below is for a fresh destination and refuses to overwrite an existing plan. Version 2 fixes JSON numeric-type normalization; the first launch failed before training and all numerical task settings are unchanged.
 
 ```sh
 uv run --frozen python -m connectome_body.adaptation.cli plan \
-  --study configs/brief/mvp_local.json --output runs/brief-mvp-local
+  --study configs/brief/mvp_local.json --output runs/brief-mvp-local-v2
 ```
 
-Run the first cell, then resume the remaining cells and analyze:
+After a stopped campaign, resume sequential execution with the supervisor. It writes status and per-cell logs, starts each cell in a fresh process, and generates the final analysis:
+
+```sh
+uv run --frozen python scripts/run_adaptation_campaign.py \
+  --plan runs/brief-mvp-local-v2/plan.json
+```
+
+The underlying single-cell, complete-matrix, and analysis commands remain available:
 
 ```sh
 uv run --frozen python -m connectome_body.adaptation.cli worker \
-  --plan runs/brief-mvp-local/plan.json --max-runs 1
-uv run --frozen python -m connectome_body.adaptation.cli worker --plan runs/brief-mvp-local/plan.json
+  --plan runs/brief-mvp-local-v2/plan.json --max-runs 1
+uv run --frozen python -m connectome_body.adaptation.cli worker --plan runs/brief-mvp-local-v2/plan.json
 uv run --frozen python -m connectome_body.adaptation.cli analyze \
-  --runs runs/brief-mvp-local --output runs/brief-mvp-local-analysis
+  --runs runs/brief-mvp-local-v2 --output runs/brief-mvp-local-v2-analysis
 ```
 
 The matrix is 4 conditions × 2 ceilings (5k/80k) × 3 seeds. It adds at most 480,000 retained DAgger interactions across all runs, plus shared teacher data, optimization, and evaluation. The learned-GRU reference is a separate [9-run local matrix](configs/brief/learned_rnn_local.json). Generate plans inside the intended runtime so paths and Python/dependency identities match. Use one worker on this Mac's single GPU. Re-run the same worker command to resume. Plans with missing data, qualification, or matching GPU evidence refuse to start; once prerequisites arrive, generate a fresh plan directory. CUDA versions of the study files remain available without the `_local` suffix.
@@ -177,7 +184,7 @@ uv run --frozen python -m connectome_body.adaptation.cli plan \
   --study configs/brief/capacity_local.json --output runs/brief-capacity-local
 uv run --frozen python -m connectome_body.adaptation.cli worker --plan runs/brief-capacity-local/plan.json
 uv run --frozen python -m connectome_body.adaptation.cli freeze \
-  --study configs/brief/capacity_local.json --decision runs/brief-mvp-local-analysis/decision.json \
+  --study configs/brief/capacity_local.json --decision runs/brief-mvp-local-v2-analysis/decision.json \
   --output runs/brief-local-method-freeze.json
 uv run --frozen python -m connectome_body.adaptation.cli plan \
   --study configs/brief/heldout_local.json --output runs/brief-heldout-local

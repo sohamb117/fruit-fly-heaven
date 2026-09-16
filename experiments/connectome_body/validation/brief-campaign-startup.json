@@ -1,0 +1,46 @@
+{
+  "burn_presentations": 12672,
+  "campaign_state": "running",
+  "checkpoint_identity": "62969f0a2c1eaa61601c91221c15f9078ab29bca36e6fa800b659b27308e8c88",
+  "checkpointed_optimizer_updates": 50,
+  "completed_runs": 0,
+  "current_run": "banc-real-p5000-s0",
+  "evidence": "Scientific campaign startup and checkpoint verification; complete run results pending",
+  "finite_weights_and_gradients": true,
+  "first_training": {
+    "gradient_norm": 0.0719725638628006,
+    "mse": 0.014338446781039238,
+    "updates": 1
+  },
+  "last_training": {
+    "gradient_norm": 0.009318902157247066,
+    "mse": 0.002982524922117591,
+    "updates": 50
+  },
+  "last_validation": {
+    "labeled_steps": 40000,
+    "mse": 0.012072821807861327,
+    "sample_presentations": 0,
+    "sign_accuracy": 0.443233740234375,
+    "updates": 0
+  },
+  "live_status": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local-v2/campaign-status.json",
+  "optimizer_and_rng_state_present": true,
+  "parameter_report": {
+    "actual": 4912,
+    "budget": 5000,
+    "decoder": 882,
+    "encoder": 3646,
+    "hidden_width": 30,
+    "learned_connectome_weights": 0,
+    "port_queries": 384,
+    "state_dimension": 175401,
+    "trainable_recurrence": 0
+  },
+  "pipeline_identity": "9091ee717ab507c0be830eb13c085b717dfd78971bd62fc3fe1b8a479d93f798",
+  "planned_runs": 24,
+  "sample_presentations": 6400,
+  "source_identity": "31e83c9dc2d2f2cd356368e5cc69230d29e71395409dbd9a573daa2f24dee6d8",
+  "stage_elapsed_seconds": 194.79174629099725,
+  "timestamp_utc": "2026-09-15T18:06:32.270875+00:00"
+}

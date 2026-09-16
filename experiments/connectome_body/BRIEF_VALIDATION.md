@@ -2,7 +2,7 @@
 
 Validated on 2026-09-15 on an **Apple M2 Pro, 10 CPU cores, 16 GiB unified memory**, macOS 26.3, Python 3.12.1, and PyTorch 2.8.0. The full BANC graph runs locally on the Apple GPU with sparse Metal kernels. No cloud GPU was provisioned.
 
-The local 24-run MVP and separate 9-run learned-GRU reference pass launch prerequisites. Those scientific campaigns have **not** been run. The evidence below establishes sparse computation, differentiation, interface learning on simple temporal data, and native FlyBody integration; it does not establish a biological topology advantage or learned BANC hover competence.
+The local 24-run MVP and separate 9-run learned-GRU reference pass launch prerequisites. The 24-run MVP was subsequently launched; [CAMPAIGN.md](CAMPAIGN.md) links its live status. No complete scientific comparison is available yet. The evidence below establishes sparse computation, differentiation, interface learning on simple temporal data, and native FlyBody integration; it does not establish a biological topology advantage or learned BANC hover competence.
 
 The implemented protocol and launch commands are in [BRIEF.md](BRIEF.md). Machine-readable evidence, source/archive identities, and local result links are collected in [brief-local-evidence.json](validation/brief-local-evidence.json).
 
@@ -82,20 +82,20 @@ Use a fresh destination, or `--resume` with the same configuration and source. T
 
 Checks cover structural-query gradients and disjoint supports, budget independence from neuron count, frozen recurrence, null invariants, temporal no-brain controls, 10,000-node sparse differentiation, cached-graph identity, immutable-data integrity, selection/accounting, exact CPU training resumption, native MuJoCo/WPG checkpoint restoration, interrupted DAgger recovery, and frontier statistics. Four MPS tests cover directed sparse output/gradient parity, empty rows, noncontiguous input, learned query gradients, and training continuation.
 
-The current [readiness audit](validation/brief-local-readiness.json) supersedes the earlier CUDA-only audit:
+The [launch readiness audit](validation/brief-launch-readiness.json) supersedes the earlier local and CUDA-only audits. The first local launch stopped before training because JSON integers such as `2` and equivalent floats such as `2.0` produced different task hashes. Input configuration now uses canonical numeric types, and a new native test verifies the actual planned body fingerprint against the qualified teacher. The numerical task, physiology code, teacher data, and recurrent benchmark identities are unchanged. After this correction, **62 tests passed in 18.12 seconds**, with lint and formatting checks also passing; see [brief-launch-checks.json](validation/brief-launch-checks.json).
 
 | Matrix | Cells | Current status |
 |---|---:|---|
-| Local BANC MVP | 24 | Ready; no scientific runs launched |
+| Local BANC MVP | 24 | Launched sequentially on the local Apple GPU |
 | Local learned-GRU reference | 9 | Ready; no scientific runs launched |
 | BANC capacity expansion | 36, including 24 reused MVP cells | Gated on scientific MVP advancement |
 | BANC / MaleCNS / Fish1 | 150 | Gated on Fish1 export, MVP advancement, and frozen method |
 
-The ready local MVP plan is [runs/brief-mvp-local/plan.json](runs/brief-mvp-local/plan.json). To start its first scientific cell:
+The current MVP plan is [runs/brief-mvp-local-v2/plan.json](runs/brief-mvp-local-v2/plan.json). It has an active supervisor. If the campaign has stopped, resume with:
 
 ```sh
-uv run --frozen python -m connectome_body.adaptation.cli worker \
-  --plan runs/brief-mvp-local/plan.json --max-runs 1
+uv run --frozen python scripts/run_adaptation_campaign.py \
+  --plan runs/brief-mvp-local-v2/plan.json
 ```
 
-Subsequent invocation without `--max-runs 1` resumes the complete matrix. Use one worker on this Mac's GPU. The GPU benchmark establishes feasibility; the first scientific cell will establish actual training/evaluation wall time. No full-campaign time or biological effect has been inferred from the microbenchmark.
+Use one worker on this Mac's GPU. The supervisor resumes unfinished work, skips verified completed results, and analyzes the final matrix. The GPU benchmark establishes feasibility; the first scientific cell will establish actual training/evaluation wall time. No full-campaign time or biological effect has been inferred from the microbenchmark.

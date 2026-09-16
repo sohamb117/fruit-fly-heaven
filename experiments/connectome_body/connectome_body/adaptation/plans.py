@@ -10,7 +10,7 @@ from pathlib import Path
 from ..body import PROJECT
 from ..graphs import Graph
 from ..util import atomic_json, digest_file, digest_json
-from .hover import HoverConfig
+from .configuration import hover_config_from_dict
 from .imitation import AdapterSpec, Optimization, source_identity
 from .pipeline import pipeline_identity, run_experiment
 from .trajectories import TrajectoryCache, assert_disjoint_scenarios, assert_paired_schema
@@ -26,8 +26,7 @@ def project_path(value):
 
 def method_spec(study):
     """Scientific method, independent of which held-out datasets/seeds are requested."""
-    body = HoverConfig(**study.get("body", {}))
-    body.validate()
+    body = hover_config_from_dict(study.get("body", {}))
     adapter = dict(study.get("adapter", {}))
     adapter["rate"] = dict(adapter.get("rate", {}), control_dt=body.control_dt)
     adapter = dataclasses.asdict(AdapterSpec.from_dict(adapter))

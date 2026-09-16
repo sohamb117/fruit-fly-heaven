@@ -7,6 +7,7 @@ import pytest
 
 from connectome_body.adaptation.analysis import mvp_decision
 from connectome_body.adaptation.collection import collect_resumable
+from connectome_body.adaptation.configuration import hover_config_from_dict
 from connectome_body.adaptation.evaluation import evaluate_controller
 from connectome_body.adaptation.hover import FlyBodyInterface, HoverConfig
 from connectome_body.adaptation.imitation import evaluate_cache
@@ -206,3 +207,32 @@ def test_body_clock_is_part_of_frozen_method():
     assert method_spec(study)["adapter"]["rate"]["control_dt"] == HoverConfig().control_dt
     study["body"] = dataclasses.asdict(HoverConfig(action_repeat=2))
     assert method_spec(study)["adapter"]["rate"]["control_dt"] == 0.0004
+
+
+def test_hover_json_numeric_types_have_one_identity(tmp_path):
+    from connectome_body.adaptation.cli import body_config
+
+    study = json.loads((PROJECT / "configs/brief/mvp_local.json").read_text())
+    study["body"].update(linear_kick=2, angular_kick=3, velocity_tolerance=5, horizon=5000.0)
+    expected = digest_json(dataclasses.asdict(HoverConfig()))
+    assert digest_json(method_spec(study)["body"]) == expected
+    path = tmp_path / "study.json"
+    atomic_json(path, study)
+    assert digest_json(dataclasses.asdict(body_config(path))) == expected
+    for invalid in ({"horizon": 12.5}, {"perturbations": "false"}, {"linear_kick": True}):
+        with pytest.raises(ValueError):
+            hover_config_from_dict(invalid)
+
+
+def test_planned_native_body_matches_qualified_teacher():
+    native_assets()
+    path = PROJECT / "validation/hover-teacher-qualification.json"
+    if not path.exists():
+        pytest.skip("Qualify the native hover teacher first")
+    study = json.loads((PROJECT / "configs/brief/mvp_local.json").read_text())
+    expected = json.loads(path.read_text())
+    body = FlyBodyInterface(HoverConfig(**method_spec(study)["body"]))
+    try:
+        assert body.fingerprint == expected["body_fingerprint"]
+    finally:
+        body.close()

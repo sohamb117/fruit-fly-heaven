@@ -84,7 +84,7 @@
   "success_threshold": 0.8,
   "interventions": true,
   "requires_mvp_go": true,
-  "mvp_decision": "runs/brief-mvp-local-analysis/decision.json",
+  "mvp_decision": "runs/brief-mvp-local-v2-analysis/decision.json",
   "reuse_plan": "runs/brief-capacity-local/plan.json",
   "requires_method_freeze": true,
   "method_freeze": "runs/brief-local-method-freeze.json",

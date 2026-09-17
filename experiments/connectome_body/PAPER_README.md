@@ -213,8 +213,8 @@ declared population and size/coverage controls.
 ## Compile the current study and select an expanded experiment
 
 ```sh
-uv run --no-sync python -m connectome_body.compatibility plan --study configs/paper/study.json --output runs/paper-plan-v2
-uv run --no-sync python -m connectome_body.compatibility status --plan runs/paper-plan-v2/plan.json
+uv run --no-sync python -m connectome_body.compatibility plan --study configs/paper/study.json --output runs/paper-plan-v4
+uv run --no-sync python -m connectome_body.compatibility status --plan runs/paper-plan-v4/plan.json
 ```
 
 The plan includes all ten experiments, exact parameter counts, input checksums,
@@ -242,8 +242,8 @@ Inspect selected statuses and interaction totals before execution. The old
 `banc_hover_mvp.json` is retained for historical reproduction only.
 
 ```sh
-uv run --no-sync python -m connectome_body.compatibility select --plan runs/paper-plan-v2/plan.json --filters configs/paper/cross_body_core.json --output runs/paper-plan-v2/cross-body-core.json
-uv run --no-sync python -m connectome_body.compatibility select --plan runs/paper-plan-v2/plan.json --filters configs/paper/cross_body_architectures.json --output runs/paper-plan-v2/cross-body-architectures.json
+uv run --no-sync python -m connectome_body.compatibility select --plan runs/paper-plan-v4/plan.json --filters configs/paper/cross_body_core.json --output runs/paper-plan-v4/cross-body-core.json
+uv run --no-sync python -m connectome_body.compatibility select --plan runs/paper-plan-v4/plan.json --filters configs/paper/cross_body_architectures.json --output runs/paper-plan-v4/cross-body-architectures.json
 ```
 
 The selection includes both training interactions and an upper bound on all
@@ -251,14 +251,14 @@ development/test interactions. To execute at most one selected condition for a
 bounded interval on the current machine:
 
 ```sh
-uv run --no-sync python -m connectome_body.compatibility worker --plan runs/paper-plan-v2/plan.json --condition CONDITION_ID_FROM_SELECTION --max-runs 1 --max-seconds 1800
+uv run --no-sync python -m connectome_body.compatibility worker --plan runs/paper-plan-v4/plan.json --condition CONDITION_ID_FROM_SELECTION --max-runs 1 --max-seconds 1800
 ```
 
 For a ready condition ID from the plan:
 
 ```sh
-uv run --no-sync python -m connectome_body.compatibility benchmark --plan runs/paper-plan-v2/plan.json --condition CONDITION_ID --output data/paper-calibration/benchmark.json --batches 1 4 16 --lengths 8 16 --repeats 5 --warmup 2
-uv run --no-sync python -m connectome_body.compatibility worker --plan runs/paper-plan-v2/plan.json --condition CONDITION_ID --max-runs 1 --max-seconds 1800
+uv run --no-sync python -m connectome_body.compatibility benchmark --plan runs/paper-plan-v4/plan.json --condition CONDITION_ID --output data/paper-calibration/benchmark.json --batches 1 4 16 --lengths 8 16 --repeats 5 --warmup 2
+uv run --no-sync python -m connectome_body.compatibility worker --plan runs/paper-plan-v4/plan.json --condition CONDITION_ID --max-runs 1 --max-seconds 1800
 ```
 
 Workers run only on the current machine or an already allocated machine. No
@@ -275,7 +275,7 @@ so end-to-end throughput must also be measured from training logs.
 To prepare the compute-matched RNN control on the target GPU:
 
 ```sh
-uv run --no-sync python -m connectome_body.compatibility compute-match --plan runs/paper-plan-v2/plan.json --condition CONDITION_ID --hidden-sizes 32 64 128 256 512 1024 --output data/paper-calibration/compute-matches.json
+uv run --no-sync python -m connectome_body.compatibility compute-match --plan runs/paper-plan-v4/plan.json --condition CONDITION_ID --hidden-sizes 32 64 128 256 512 1024 --output data/paper-calibration/compute-matches.json
 ```
 
 Only a measured width within the declared tolerance and timing stability is
@@ -298,8 +298,8 @@ that exact policy, common held-out episode seeds and no further learning except
 explicitly labeled fine-tuning. Run bounded jobs, then generate the report:
 
 ```sh
-uv run --no-sync python -m connectome_body.compatibility jobs --plan runs/paper-plan-v2/plan.json --max-jobs 8 --experiment 8
-uv run --no-sync python -m connectome_body.compatibility report --plan runs/paper-plan-v2/plan.json --output reports/paper-v2
+uv run --no-sync python -m connectome_body.compatibility jobs --plan runs/paper-plan-v4/plan.json --max-jobs 8 --experiment 8
+uv run --no-sync python -m connectome_body.compatibility report --plan runs/paper-plan-v4/plan.json --output reports/paper-v4
 ```
 
 Unfinished conditions, missing controls, numerical failures and unidentifiable

@@ -1,0 +1,259 @@
+{
+  "cloud_resources_started": 0,
+  "code_fingerprint": "92fa0f5815332f9d0b54caac27865e4f4b34abf56d247a8c46c49e24aeb6ea02",
+  "datasets": {
+    "change_point": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "cdbecd6f02d372b7f10729a2d2f75cd6a5c984f10da394a9e667d785e52771e2",
+      "path": "data/temporal-battery-v1/change_point-65c8783f7953"
+    },
+    "context_integration": {
+      "dimensions": [
+        3,
+        1
+      ],
+      "fingerprint": "9c7c14d83fd17882eff082da6a31b2fd1e8329be4363f28e88ccaa1a6fe0f958",
+      "path": "data/temporal-battery-v1/context_integration-d1cd583711e2"
+    },
+    "denoising": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "477e7e9a714943d54ba338836511b3cccca3f89be839d1ac55c366eaa1c94358",
+      "path": "data/temporal-battery-v1/denoising-93d66d1ff1ec"
+    },
+    "frequency": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "753ac4405711ab4f62bef6324f6c76b28992a4513e63f11cb5e1e90d46ea92c5",
+      "path": "data/temporal-battery-v1/frequency-0adbaf2f71b6"
+    },
+    "impulse_recall": {
+      "dimensions": [
+        3,
+        1
+      ],
+      "fingerprint": "cc14a4638bbf586ffe41ec2e69b6a767cf888a83aab5f009b8372533d779a691",
+      "path": "data/temporal-battery-v1/impulse_recall-bd2f58f3882a"
+    },
+    "inverse_dynamics": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "a6aa7f5936b15cef0514c7381c062d00a85e684834733b210b928c1eb6332a09",
+      "path": "data/temporal-battery-v1/inverse_dynamics-c1ae56678a9c"
+    },
+    "leaky_integration": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "705c26b64d24b990b050a6633e3a42d2796942d2d0ba78df581532e622949d89",
+      "path": "data/temporal-battery-v1/leaky_integration-25c50cdede82"
+    },
+    "linear_memory": {
+      "dimensions": [
+        1,
+        6
+      ],
+      "fingerprint": "f4f5c2661c0caad1302fe63570be76bdfc9852bd7ddc3948f8990b1ab23c3e73",
+      "path": "data/temporal-battery-v1/linear_memory-57104e10d5a4"
+    },
+    "lorenz": {
+      "dimensions": [
+        3,
+        3
+      ],
+      "fingerprint": "30a57b0bfee93d2aa6223789d86dd5d84e8dc9cbde6e605385ab1ffd3af0dd22",
+      "path": "data/temporal-battery-v1/lorenz-d0539e7828ab"
+    },
+    "mackey_glass": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "e12ec3eb0de1740c9ddd8a2d244a9c18c146eebdfe8d3f4a0df48f322a08566c",
+      "path": "data/temporal-battery-v1/mackey_glass-bca214e5e6e3"
+    },
+    "match_sample": {
+      "dimensions": [
+        3,
+        1
+      ],
+      "fingerprint": "3054b9aa8ba5470153f6c3c15aa7730b81ee33926d901471effcaf429a59ce60",
+      "path": "data/temporal-battery-v1/match_sample-0c08dc2d9164"
+    },
+    "missing_step": {
+      "dimensions": [
+        2,
+        1
+      ],
+      "fingerprint": "51f90e54730d4e3ef9e8681a62723deb227c59a30741148ced2d0447d6b051d2",
+      "path": "data/temporal-battery-v1/missing_step-eacbbe297d21"
+    },
+    "multi_timescale": {
+      "dimensions": [
+        1,
+        3
+      ],
+      "fingerprint": "66e684c5cbb0ea9ac551de44f8368054f301d1974c7e74ab94b6232c1ac41783",
+      "path": "data/temporal-battery-v1/multi_timescale-1153dbad606a"
+    },
+    "narma10": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "acfafb116cd4651307b26c4fbd84c1b51940bfae9796aaa3475c620dee27b06d",
+      "path": "data/temporal-battery-v1/narma10-24b5da064ebe"
+    },
+    "narma20": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "52741ac95e4979ddf1cb4007b0163d73d57e2a2620987a320cbf86b69329ec4f",
+      "path": "data/temporal-battery-v1/narma20-d37f53c22d8e"
+    },
+    "narma30": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "59b94087ec8f21eb5a22ec42dea3d6781e3263dc9b93451bc08e79935d4288ca",
+      "path": "data/temporal-battery-v1/narma30-a55ab34057e4"
+    },
+    "parity": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "10982ec2b7884d32d9e4d848a9fca0bf0fda62228656760ded83e6c72e3243a9",
+      "path": "data/temporal-battery-v1/parity-3761ae53c2db"
+    },
+    "phase": {
+      "dimensions": [
+        2,
+        1
+      ],
+      "fingerprint": "838b9e9b9127ff11eb6d5750c89dbd290e2711ba96956c2f07bc97aa02352730",
+      "path": "data/temporal-battery-v1/phase-099d0e1eecfe"
+    },
+    "rhythm": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "0bbae577040b0e7753ccc86406ae117423a4f8a517d84a16a07e6d7b1e934b56",
+      "path": "data/temporal-battery-v1/rhythm-bec1240493ce"
+    },
+    "running_sum": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "c11b38704893242384226f15695af7dbd839ceffb96c42363887e0248651a157",
+      "path": "data/temporal-battery-v1/running_sum-943bfc1f98fb"
+    },
+    "selective_memory": {
+      "dimensions": [
+        3,
+        1
+      ],
+      "fingerprint": "be612c29867d60a5466604e2c4544f3ceb740d62f7dac3d133cb5b3cd674dc04",
+      "path": "data/temporal-battery-v1/selective_memory-2005c9023955"
+    },
+    "system_identification": {
+      "dimensions": [
+        2,
+        2
+      ],
+      "fingerprint": "a9b759311cb7710e43fddf72e60e287c2d0c0b29eb1ab4e25198902e63296a3c",
+      "path": "data/temporal-battery-v1/system_identification-084f27416544"
+    },
+    "temporal_order": {
+      "dimensions": [
+        3,
+        1
+      ],
+      "fingerprint": "fddfcfd75514051a6070528a752655d0ec6dd66c4256e73e6fe5984bc9599d78",
+      "path": "data/temporal-battery-v1/temporal_order-9fd9f91af352"
+    },
+    "temporal_xor": {
+      "dimensions": [
+        1,
+        1
+      ],
+      "fingerprint": "65fb1e24f5eb3700d5a22f2025281f1d4a8bdbb6ea74295ec18b7ffa062ca35c",
+      "path": "data/temporal-battery-v1/temporal_xor-dd37894517f0"
+    },
+    "variable_delay": {
+      "dimensions": [
+        3,
+        1
+      ],
+      "fingerprint": "17184261bbf10f2aae3ca15d929ecd9dbe78873a1e7d02fd1f2c275214889537",
+      "path": "data/temporal-battery-v1/variable_delay-e309690c33c5"
+    }
+  },
+  "date": "2026-09-17",
+  "goal_sha256": "ef98f630428fb4781b2d7507e8aa9089fff191a6d9b9a0a9a2039c53ded58851",
+  "lint": "ruff: all checks passed",
+  "native_qualifications": {
+    "fish": {
+      "passed": true,
+      "path": "data/paper-bodies/fish/qualification-v2.json",
+      "sha256": "073f1b59bf3292c578cab7fc679ea14f2078df1eb2d413e97543bed92f69f660"
+    },
+    "worm": {
+      "passed": true,
+      "path": "data/paper-bodies/worm/qualification-v2.json",
+      "sha256": "afa031e47bab5709c525c053f032b952e73bd44d2e5e2f5849d665700f7b79c1"
+    }
+  },
+  "plans": {
+    "battery-core-v1": {
+      "fingerprint": "c1da3d6e07bc7c64aa636db0cd3fb453110b33c4b3dac1000cbb7ac90e9da806",
+      "path": "runs/battery-core-v1/plan.json",
+      "summary": {
+        "conditions": 10584,
+        "drone_tasks": 7,
+        "statuses": {
+          "blocked_prerequisite": 1512,
+          "ready": 9072
+        },
+        "temporal_tasks": 8,
+        "unique_training_runs": 8127
+      }
+    },
+    "battery-full-v1": {
+      "fingerprint": "1d0d63304fcd037b6214de4af6eab06c07d6ecf254ba3adcbb469141930a04e7",
+      "path": "runs/battery-full-v1/plan.json",
+      "summary": {
+        "conditions": 27720,
+        "drone_tasks": 20,
+        "statuses": {
+          "blocked_prerequisite": 3960,
+          "ready": 23760
+        },
+        "temporal_tasks": 25,
+        "unique_training_runs": 21285
+      }
+    }
+  },
+  "scientific_training_runs_completed": 0,
+  "tests": {
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "300",
+    "time": "62.915"
+  }
+}

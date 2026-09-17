@@ -96,7 +96,7 @@
         "horizon": 1000,
         "model_manifest": "data/paper-bodies/worm/manifest.json"
       },
-      "qualification": "data/paper-bodies/worm/qualification-v1.json"
+      "qualification": "data/paper-bodies/worm/qualification-v2.json"
     },
     "worm:steering": {
       "control_dt": 0.01,
@@ -106,7 +106,7 @@
         "horizon": 1000,
         "model_manifest": "data/paper-bodies/worm/manifest.json"
       },
-      "qualification": "data/paper-bodies/worm/qualification-v1.json"
+      "qualification": "data/paper-bodies/worm/qualification-v2.json"
     },
     "worm:posture": {
       "control_dt": 0.01,
@@ -116,7 +116,7 @@
         "horizon": 1000,
         "model_manifest": "data/paper-bodies/worm/manifest.json"
       },
-      "qualification": "data/paper-bodies/worm/qualification-v1.json"
+      "qualification": "data/paper-bodies/worm/qualification-v2.json"
     },
     "fish:swimming": {
       "control_dt": 0.005,
@@ -126,7 +126,7 @@
         "horizon": 1000,
         "model_manifest": "data/paper-bodies/fish/manifest.json"
       },
-      "qualification": "data/paper-bodies/fish/qualification-v1.json"
+      "qualification": "data/paper-bodies/fish/qualification-v2.json"
     },
     "fish:heading": {
       "control_dt": 0.005,
@@ -136,7 +136,7 @@
         "horizon": 1000,
         "model_manifest": "data/paper-bodies/fish/manifest.json"
       },
-      "qualification": "data/paper-bodies/fish/qualification-v1.json"
+      "qualification": "data/paper-bodies/fish/qualification-v2.json"
     },
     "fish:depth": {
       "control_dt": 0.005,
@@ -146,7 +146,7 @@
         "horizon": 1000,
         "model_manifest": "data/paper-bodies/fish/manifest.json"
       },
-      "qualification": "data/paper-bodies/fish/qualification-v1.json"
+      "qualification": "data/paper-bodies/fish/qualification-v2.json"
     }
   },
   "adapter": {

@@ -96,7 +96,7 @@ NARMA-10 uses y[t+1] = 0.3y[t] + 0.05y[t]Σy[t−i] +
 explicitly scaled to 0.5/order: these are **declared scaled-feedback variants**,
 not claims to reproduce every published NARMA-20/30 convention. Divergent data
 fail instead of being clipped. The NARMA-10 reference is
-[Jaeger et al., multiple-timescale ESNs](https://eprints.whiterose.ac.uk/id/eprint/170213/7/fams-06-616658.pdf).
+[Exploiting multiple timescales in hierarchical ESNs](https://eprints.whiterose.ac.uk/id/eprint/170213/7/fams-06-616658.pdf).
 
 Mackey–Glass uses beta=0.2, gamma=0.1, exponent=10 and delay=17, Euler integration
 at 0.1 with output interval 1 after burn-in. Lorenz uses sigma=10, rho=28 and

@@ -1,0 +1,448 @@
+{
+  "benchmarks": [
+    {
+      "actor_trainable_parameters": 4912,
+      "batch": 1,
+      "code_fingerprint": "767b0d721ee080f6c84aacfa0215b993efead3624706b02ccc8157812fa2810e",
+      "file": "data/paper-calibration/local-banc-adapters-b1-t2.json",
+      "forward_transitions_per_second": 3.3163874007216636,
+      "optimized_transitions_per_second": 1.5104492879750813,
+      "plasticity": "adapters",
+      "process_lifetime_max_rss_bytes": null,
+      "sequence_length": 2,
+      "timing_coefficient_of_variation": 0.0015437426319877554
+    },
+    {
+      "actor_trainable_parameters": 4912,
+      "batch": 4,
+      "code_fingerprint": "6f32ffa32ff9cd0611558c3ceeaa76fbdb4b32718869e7e7466a4521c672fc45",
+      "file": "data/paper-calibration/local-banc-adapters-b4-t8.json",
+      "forward_transitions_per_second": 11.904954379262596,
+      "optimized_transitions_per_second": 4.930435059600332,
+      "plasticity": "adapters",
+      "process_lifetime_max_rss_bytes": 2131705856,
+      "sequence_length": 8,
+      "timing_coefficient_of_variation": 0.011825004280392272
+    },
+    {
+      "actor_trainable_parameters": 13547092,
+      "batch": 1,
+      "code_fingerprint": "767b0d721ee080f6c84aacfa0215b993efead3624706b02ccc8157812fa2810e",
+      "file": "data/paper-calibration/local-banc-joint-b1-t2.json",
+      "forward_transitions_per_second": 2.4166151956254076,
+      "optimized_transitions_per_second": 0.8684962039196595,
+      "plasticity": "joint",
+      "process_lifetime_max_rss_bytes": null,
+      "sequence_length": 2,
+      "timing_coefficient_of_variation": 0.0024616853142623214
+    },
+    {
+      "actor_trainable_parameters": 13547092,
+      "batch": 4,
+      "code_fingerprint": "6f32ffa32ff9cd0611558c3ceeaa76fbdb4b32718869e7e7466a4521c672fc45",
+      "file": "data/paper-calibration/local-banc-joint-b4-t8.json",
+      "forward_transitions_per_second": 10.996461544838276,
+      "optimized_transitions_per_second": 3.049810742117894,
+      "plasticity": "joint",
+      "process_lifetime_max_rss_bytes": 2212364288,
+      "sequence_length": 8,
+      "timing_coefficient_of_variation": 0.01579800586242125
+    }
+  ],
+  "bodies": {
+    "fish:depth": {
+      "action_dim": 10,
+      "control_dt": 0.005,
+      "evidence": "simzfish_derived_3d_extension",
+      "fingerprint": "dbcd3049b3e70d3f98e44bb7a7256f3dcf3806e876aea041d3b1cae423144427",
+      "issues": [],
+      "observation_dim": 34
+    },
+    "fish:heading": {
+      "action_dim": 10,
+      "control_dt": 0.005,
+      "evidence": "simzfish_derived_3d_extension",
+      "fingerprint": "ab95db7d6add09bd527f2e0b19939cb2df37f2d682c7c9ef35a7cc6b1772a273",
+      "issues": [],
+      "observation_dim": 34
+    },
+    "fish:swimming": {
+      "action_dim": 10,
+      "control_dt": 0.005,
+      "evidence": "simzfish_derived_3d_extension",
+      "fingerprint": "8d9bf9581ba175af5a6b833d6af73b0f99d20b97dd77ea0fb7a5704437a811b5",
+      "issues": [],
+      "observation_dim": 34
+    },
+    "fly:controlled_flight": {
+      "action_dim": 12,
+      "control_dt": 0.0002,
+      "evidence": "native_flybody",
+      "fingerprint": "f914f49207a33fc557e7b60d196052fea35a62ff2a6ccd060da92fdab40b2aab",
+      "issues": [],
+      "observation_dim": 104
+    },
+    "fly:hover": {
+      "action_dim": 12,
+      "control_dt": 0.0002,
+      "evidence": "native_flybody",
+      "fingerprint": "4d412107070691afd291cbeef9be589ba053cdfd339cd01ee19865c30b102071",
+      "issues": [],
+      "observation_dim": 104
+    },
+    "fly:limb_control": {
+      "action_dim": 59,
+      "control_dt": 0.002,
+      "evidence": "native_flybody",
+      "fingerprint": "1513417ffa6e569fab7bd02ef5417555bbb1acd30fd1476e79df58a20359d280",
+      "issues": [],
+      "observation_dim": 418
+    },
+    "fly:walking": {
+      "action_dim": 59,
+      "control_dt": 0.002,
+      "evidence": "native_flybody",
+      "fingerprint": "41c2d9a57f8b5efff6222567b6ecca3522582b01ff0ca9bd5359d3cea6bdda77",
+      "issues": [],
+      "observation_dim": 286
+    },
+    "worm:locomotion": {
+      "action_dim": 48,
+      "control_dt": 0.01,
+      "evidence": "published_worm_mechanics",
+      "fingerprint": "bb9e3f40321a0e8c4ee675335f0d02d6155227af8625f152b1628b31b555a715",
+      "issues": [],
+      "observation_dim": 173
+    },
+    "worm:posture": {
+      "action_dim": 48,
+      "control_dt": 0.01,
+      "evidence": "published_worm_mechanics",
+      "fingerprint": "ecad3cc813a8bd49fed9be8f1f8a5fbe2f68d6b6ddacc67656cf97490fe230da",
+      "issues": [],
+      "observation_dim": 173
+    },
+    "worm:steering": {
+      "action_dim": 48,
+      "control_dt": 0.01,
+      "evidence": "published_worm_mechanics",
+      "fingerprint": "444329c3a9e441cb7f873c68aaa919908472cfc1911e516d2dcfa56cf0be0804",
+      "issues": [],
+      "observation_dim": 173
+    }
+  },
+  "body_qualification": {
+    "fish": {
+      "criteria": {
+        "all_probes_finite_and_complete": true,
+        "bidirectional_steering": true,
+        "failed_actuation_removes_propulsion": true,
+        "forward_actuation": true,
+        "reverse_actuation": true,
+        "vertical_actuation_both_directions": true
+      },
+      "fingerprint": "182d5ea4fe5fea39a33e7647bab0526eb4d69d3518d1d8c9cac5058952a90403",
+      "passed": true,
+      "scope": "Actuation, finite mechanics and measurable task variables only; not biological fidelity or evidence of learned control"
+    },
+    "worm": {
+      "criteria": {
+        "all_probes_finite_and_complete": true,
+        "bidirectional_steering": true,
+        "failed_actuation_removes_propulsion": true,
+        "forward_actuation": true,
+        "nonpassive_posture_tracking": true,
+        "reverse_actuation": true
+      },
+      "fingerprint": "467c72e56e76dc0af557331f9962f4ff6bc0eb7c04c61de1613021fc6894118d",
+      "passed": true,
+      "scope": "Actuation, finite mechanics and measurable task variables only; not biological fidelity or evidence of learned control"
+    }
+  },
+  "checkpoint": {
+    "path": "/Users/soham/Documents/code/fly-heaven-main/checkpoints/banc-4090-update-008475/latest.pt",
+    "update": 8475,
+    "verified_files": {
+      "experiment.json": "286f9ac85b31b93c8d249a7004bd6344b221544442de6c153549327d108f6e70",
+      "fork.json": "357ad92f60bfb1b1b6b74115d917dbd744e24f9e7a23226c830f7092faa39b26",
+      "latest.pt": "1a76a63a1cfec6057f9823ce271c88e41d1d45ece6b4bd89a44a6b255b201837",
+      "manifest.json": "a67ff4fb9c3ee58117ab185d97086abf49468bc840c7e25ef2b3b6ba26b0b640",
+      "user-stop.json": "866508af7b5bf4102b99d1ca2bc565de36ce4fd3664d29bf705d7165449d2707"
+    }
+  },
+  "cloud_actions_performed": false,
+  "code_fingerprint": "6c4890361816a4d361dd453d3b0f51c4ba7be51f762c159b2e0b509a9b21b675",
+  "environment": {
+    "packages": {
+      "dm-control": "1.0.46",
+      "matplotlib": "3.10.6",
+      "mujoco": "3.13.0",
+      "numba": "0.61.2",
+      "numpy": "1.26.4",
+      "pyarrow": "21.0.0",
+      "pytest": "9.1.1",
+      "ruff": "0.16.7",
+      "scipy": "1.15.3",
+      "torch": "2.8.0"
+    },
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "python": "3.12.1"
+  },
+  "fingerprint": "5705b7e2f2c06d111f50431dd6c1eb7712ae2f0ca4bb52b39c163f5cd9d1cfd8",
+  "pilot": {
+    "conditions": 24,
+    "evaluation_interactions_upper_bound": 158400000,
+    "path": "runs/paper-plan-v1/banc-hover-mvp.json",
+    "training_interactions": 24000000
+  },
+  "plan": {
+    "conditions": 24180,
+    "coverage": {
+      "1": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Encoder-decoder architecture and performance-capacity Pareto frontier",
+        "training_statuses": {
+          "blocked_prerequisite": 3420,
+          "infeasible_capacity": 153,
+          "ready": 9363
+        },
+        "unique_training_conditions": 12936
+      },
+      "10": {
+        "job_kinds": {
+          "predict_pairs": 4
+        },
+        "post_training_jobs": 4,
+        "title": "Nested structural prediction with whole pairs held out",
+        "training_statuses": {},
+        "unique_training_conditions": 0
+      },
+      "2": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Architecture x connectome x body/task; minimum width, depth, rank and capacity",
+        "training_statuses": {
+          "blocked_prerequisite": 810,
+          "infeasible_capacity": 45,
+          "ready": 2385
+        },
+        "unique_training_conditions": 3240
+      },
+      "3": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Biology versus parameter- and compute-matched recurrence and no brain",
+        "training_statuses": {
+          "blocked_prerequisite": 630,
+          "ready": 1890
+        },
+        "unique_training_conditions": 2520
+      },
+      "4": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Original, community, degree, direction-shuffled and N/M-random wiring",
+        "training_statuses": {
+          "blocked_prerequisite": 900,
+          "ready": 2700
+        },
+        "unique_training_conditions": 3600
+      },
+      "5": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Initialization x permitted-edge plasticity, with rewired controls",
+        "training_statuses": {
+          "blocked_prerequisite": 1200,
+          "ready": 3600
+        },
+        "unique_training_conditions": 4800
+      },
+      "6": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Crossed connectome-body effects and matched-pair interaction",
+        "training_statuses": {
+          "blocked_prerequisite": 1260,
+          "infeasible_capacity": 72,
+          "ready": 3060
+        },
+        "unique_training_conditions": 4392
+      },
+      "7": {
+        "job_kinds": {},
+        "post_training_jobs": 0,
+        "title": "Connectome x task and task-relevant versus equal-size subgraphs",
+        "training_statuses": {
+          "blocked_prerequisite": 120,
+          "ready": 360
+        },
+        "unique_training_conditions": 480
+      },
+      "8": {
+        "job_kinds": {
+          "calibrate_mean": 720,
+          "intervention": 6480
+        },
+        "post_training_jobs": 7200,
+        "title": "Post-training causal substrate interventions",
+        "training_statuses": {},
+        "unique_training_conditions": 0
+      },
+      "9": {
+        "job_kinds": {
+          "finetune": 648,
+          "robustness": 8424,
+          "task_transfer": 648
+        },
+        "post_training_jobs": 9720,
+        "title": "Distribution shifts, zero-shot task transfer and fine-tuning",
+        "training_statuses": {
+          "blocked_prerequisite": 162,
+          "ready": 486
+        },
+        "unique_training_conditions": 648
+      }
+    },
+    "jobs": 16924,
+    "path": "runs/paper-plan-v1/plan.json",
+    "statuses": {
+      "blocked_prerequisite": 6312,
+      "infeasible_capacity": 198,
+      "ready": 17670
+    }
+  },
+  "plan_fingerprint": "57e274a1ffb49a5defb60da6f7fbe314dcdbccb33ee25f531b8e99ca11fc5c2f",
+  "remaining_execution_inputs": [
+    "Authenticated, version-pinned Fish1 export and optional annotation inputs",
+    "Target-hardware compute calibration",
+    "Substantive embodied training and evaluation under approved compute allocation"
+  ],
+  "ruff": "passed",
+  "schema": "compatibility-implementation-validation-v1",
+  "scientific_training_runs_completed": 0,
+  "scope": "implementation and local feasibility; no scientific training results",
+  "source_archive": {
+    "files": {
+      "PAPER_EXPERIMENTS.md": "10263eebd944b181f29e8ec257e0c211f6b6753637b7f6438102b3f682d56ca2",
+      "PAPER_PLAN.md": "6ae2820425d834e59f78728e636a7a4d48c3df4c44111def89d89e39ee02b777",
+      "PAPER_PROTOCOL.md": "7ad0b1d0d76428693dcd23cfbf72227e24c8370e097b9b4c107099b49fb2c737",
+      "PAPER_README.md": "6d18a8f0c3458f3277557488969c1c1d3385ff8bba829952ed6f39e74fb77f2a",
+      "PAPER_VALIDATION.md": "75d18e3c03e0176d589177e81b25381b33e1b98eb0e29f263e4fd6b00ab17281",
+      "README.md": "8f68bd856af45ff548aa6ea1453ac85ba30441ec9679f31eb270e6924a0151ae",
+      "configs/paper/banc_hover_mvp.json": "1e571d7d703a6b25c51aca21dd99dbedc1560aba4076754152c4edb3243687ad",
+      "configs/paper/study.json": "726e5f4296725ce174c8542851be470044bbef3b3575d7da01a4bb2722e8850f",
+      "configs/sources.json": "6db2499f5513b6739304ee0f4fcd4d9830ba84a504d31ee30e287e7e6f9a2717",
+      "connectome_body/__init__.py": "a9e85cf3c5a5b3b5a3d9863bcc12e3a13185ad099606532fb51b96b19c9e324f",
+      "connectome_body/adaptation/__init__.py": "7bd49202bd3a58d15c6d2456670388766480318498638693b848ec0b2e9f2cf6",
+      "connectome_body/adaptation/analysis.py": "81e2b1618c1af20d837a3ede09266fbed8c908849522c769c6ed4e4c9aade1e2",
+      "connectome_body/adaptation/assets.py": "703593610c4279424a5d0b183e73af2fe0094fe303dca077ffc9d62d8c7632f8",
+      "connectome_body/adaptation/benchmark.py": "e17d4eb278e10b9bf1e7f6b720d676d9f59fdcf30764ed1bd05d2a32e208265d",
+      "connectome_body/adaptation/cli.py": "12c877f4ebebcd1ee71e18a119d3ed870c04043befeec26bdf2836ccd253a01e",
+      "connectome_body/adaptation/collection.py": "c481a65ac2c7785da63d0079fd75d57889e4c5ef3b1cfcae801ec4c6a9d38215",
+      "connectome_body/adaptation/configuration.py": "b58ede374fe5049cda4f4c1fe02cd9c96f01f86b2ea4b926c708b6af53c62661",
+      "connectome_body/adaptation/evaluation.py": "1920419be26886412ff14d9af2fc963addccb3e29636c958930bf79f92d6291e",
+      "connectome_body/adaptation/features.py": "b76044b987e81f7c63b3691d53e3bc439696120a4d544e9dd28051b441be7436",
+      "connectome_body/adaptation/hover.py": "56c2af7a0fa40a6bbffd472c67d0d54fed7051bf85157de8ffe13da84fe65cf6",
+      "connectome_body/adaptation/imitation.py": "ed68fd5f8ff852fb4e0b2f0045776a998a09ee9fb79ba6fa1127551a44947cc6",
+      "connectome_body/adaptation/models.py": "f4343233f54d95b635682d3cc312e1c487465de4988c9136c2b24cd8205b076c",
+      "connectome_body/adaptation/nulls.py": "cafdb6a63a0aa4272cec375972296cd81583d711bad18ac819a637d9c14aa0d0",
+      "connectome_body/adaptation/pipeline.py": "a6651cb184bfaf28e1905a3cab56d9a311e9e24c3e03f928434ad68615e19176",
+      "connectome_body/adaptation/plans.py": "1ffeec2f9a115a41c98e7dfd573532f4ab01694e68f53b02948edffc9e76dbb4",
+      "connectome_body/adaptation/ports.py": "7314186be5cad512b18f61330f757ca84f61be5ccb30cbcb05c7e13dab2fe411",
+      "connectome_body/adaptation/substrates.py": "ea4feebf2a47e68b288f60ed71036418d465641d4bc92c06ffa35fbb54ad7c24",
+      "connectome_body/adaptation/teacher.py": "ae914dfe38546f08fa0fcb04e4bbee209977725c875c69c6b7e869e3d6d775d5",
+      "connectome_body/adaptation/temporal.py": "c7678e1cadb427a14af189ed2296c993d4ed30fe005a4978fcbee837e7733828",
+      "connectome_body/adaptation/trajectories.py": "797dcf0934f8935259417c5df6fe967e020c8554199f5074c1f89e275e88ada5",
+      "connectome_body/analyze.py": "a0c28367a049c6ad30372983ae79d887e63a4a8ccea6e0d593d1b01c25ef24c4",
+      "connectome_body/body.py": "b697e55fda571adcc97b6a90fa5b32e97034e6a342feb96269a4895e8546f300",
+      "connectome_body/cli.py": "dacaea555e2818cbe08b78cea6de8c96042dab32c83d2e1d0e6c08cb6a2131a6",
+      "connectome_body/compatibility/__init__.py": "34c2708d50e4997ddc5b76f61953d485265c9cb5e83ccce88635b66dd0b46cc6",
+      "connectome_body/compatibility/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "connectome_body/compatibility/adapters.py": "43afd67852c848335582ad3c0957a1e42281a33160daac3b5a0b6346f9972806",
+      "connectome_body/compatibility/analysis.py": "cd4ecc227a9b02b8918846524586b0247c33862ef8481efb7e77d87ea00200e0",
+      "connectome_body/compatibility/anatomy.py": "dde00698f3397eb681ef72d4cc76f3939e2ddb9d367b4aa2cd03f4ba737a602e",
+      "connectome_body/compatibility/benchmark.py": "f98e7014103a4651264d93ec7f799762c1f59f741409e3c7e4bc1f3905e793f4",
+      "connectome_body/compatibility/bodies.py": "2609badea2bab3c0e2be5dce5004c0d12d3b47e3fc89eb63d57ce7189dd96c9a",
+      "connectome_body/compatibility/cli.py": "3046568ecf3a3405c48ae4257672b8b5630dddcb6787891ac3b188f8184fb8e3",
+      "connectome_body/compatibility/config.py": "2a9f41921ef370c85e8845cac70234e52a7bcac9b6d540ba42fbd4afa543c840",
+      "connectome_body/compatibility/controller.py": "6f8662c0fb4cbf4d44c7865b69eafa2ce23b4086ba0a9d7bf6cffe1e0743da96",
+      "connectome_body/compatibility/datasets.py": "99446940240788420cf99917f98516564d4a482bc7de8833e3a95c83362f94ea",
+      "connectome_body/compatibility/design.py": "ee9ea35263e8d5bc456badfbe1b64ff21efec814c6bb5883bf86d3361c0a309e",
+      "connectome_body/compatibility/dynamics.py": "93c8089691726208d98b12fb692dd17f21b70a69953f12483def875f94e79b00",
+      "connectome_body/compatibility/evaluation.py": "e0f0cf6892144c15f93c1401c0a26dc47d65cb6e9ca4f3247f26677d0a3df3ae",
+      "connectome_body/compatibility/figures.py": "b88fb8e1efe14b507efbe63767b9fd2a6dcb307312e1e8ad8f20a403ec8ca7f0",
+      "connectome_body/compatibility/fish1.py": "f4f8fea1d9b8cee215a78890a4e52efc4b90c2241c7c39789296c78c6a68ec07",
+      "connectome_body/compatibility/fish_body.py": "a056da0832bcba8b8ac93bfaa744aa160108086aad5c68882f8291c785eb7c3b",
+      "connectome_body/compatibility/fish_model.py": "05ef14c49e48bc097cebd1ebb2d747c491c3cb80284ac56c572fbd71d02cc892",
+      "connectome_body/compatibility/interventions.py": "ef6cb0d44c2d548de6070085e725cc07f0bc8ca37bc62f3c062cc402e285117e",
+      "connectome_body/compatibility/native/worm_bridge.cpp": "c7831d8135dd5c9ec43a3eee55f0172ea07f9a820887ee5924978bab8454255c",
+      "connectome_body/compatibility/paper_analysis.py": "8b70a084dad2261d1d2db766e583537ce13f1cf5535b6f5bd8c7b9ea75aef6fc",
+      "connectome_body/compatibility/predictors.py": "9c4222ad645becf2fb8dfdf7cabe61dec1e556d3045c1a6fadac9af4d45792ab",
+      "connectome_body/compatibility/qualification.py": "d9dddc2bba2f63b293ccf85a4586748f7df9f3d186028991768c7f0d037268e9",
+      "connectome_body/compatibility/robustness.py": "45f78576de8fc6fa3bd8dbe2ef38c61a417bbe0d717fae7bc8ce63628fe6056b",
+      "connectome_body/compatibility/run_config.py": "ea00e4285230c15f44c3a3ee5ef8ae9f74b6710c7cc06805fb14c278fcea2976",
+      "connectome_body/compatibility/runner.py": "9e456eba2eaffdb9e3c8496444a1d7cf2ca2b44306eccaebba60ac99418a69d7",
+      "connectome_body/compatibility/runtime.py": "c0d3cacddf8c92d63d4c9b8a1fa2e7bda69bb888f3b7edaadb2dcc696f75ed83",
+      "connectome_body/compatibility/selection.py": "16c916f2b273f58318da820c3927a8fd1b458576f5661429bf01aeb4ab565f34",
+      "connectome_body/compatibility/study.py": "9cc6d703f393109c29a9d6623fd3450d72896d1ca5adfe32be83e6c42a455275",
+      "connectome_body/compatibility/subgraphs.py": "ae9d50a0b403303cd05c066ada2fe1a6cdb38d78b25f2ac124d9bf2401df70f6",
+      "connectome_body/compatibility/topology.py": "cd9a0a3db460e30cd81b4126b1b6255a89b46a334170fbe12ef290fd8a5d0405",
+      "connectome_body/compatibility/training.py": "9ae851ce49c0e8dc07b51f46a172548f8c8f2f700242c387b356b205f6ee0800",
+      "connectome_body/compatibility/worm_body.py": "5ca6b494944ed0eb2956b1c0fc746cbbf7ab4392196a652b9a4b2fe2c2c84928",
+      "connectome_body/compatibility/worm_native.py": "da13d59489ad39426462d6db4250ecea8dac9bf781e293d06d01869c29a4e5d4",
+      "connectome_body/config.py": "29797a01189e255675971835c933eca469628f01bcbbd58dc2779519eac5577a",
+      "connectome_body/data.py": "0f78b8b7ca9e868ed23c515608af7cf65f2ba164159213abb6d15914a553fe8e",
+      "connectome_body/graphs.py": "122f81859943a6908782e00a05b5077de0c2f4f94af22403db8aa1aa5517781a",
+      "connectome_body/metal_sparse.py": "6249a490ad4153f61ac4d94ad273d26b2f2e85af96a6d29132faa31e6865a13d",
+      "connectome_body/policy.py": "e308dce14942eb772404a2d0a2943ada12f315acd6e3f999604be5ea05168b2e",
+      "connectome_body/preflight.py": "ecd3da9cc5afa921ca3d4ed3676e3458d2800c8bc84ba17bd7ffbef116962898",
+      "connectome_body/sparse_benchmark.py": "8e34f1a3c19101f0398deb23b7b7e21fffc1280c9390ffd7d2c640f39f0d4a89",
+      "connectome_body/suite.py": "0bf88dfabae155f657b00b69b395bed62b0460a677b7453268aafe3f613c43c0",
+      "connectome_body/train.py": "8cd897b75add3b68e06178922e5e7a52e8ddf6c2a25224a5e51501759476063e",
+      "connectome_body/util.py": "5261733bb95c17d0723c5dff30dcdc44e57fb563b5bb202cf942215d0fabcd5a",
+      "pyproject.toml": "b8e25c073b74e0024f13eb96aa587257c0b0e6c86d8ee8a3035d58cbbb91c8f9",
+      "tests/conftest.py": "9f180f671a212267531077cdc0c21adf3f61d1450c625460a0abab55be884803",
+      "tests/test_adaptation.py": "e99bc1c1232441c4626837d0dc2751d442f5cdfa6d2bf5fd754261a397bf97b7",
+      "tests/test_adaptation_analysis.py": "5deae9a86912ee6123e2cb3a02a9446e0c9300e689c531af9781a9698b9617ae",
+      "tests/test_adaptation_protocol.py": "213cdb1fb51050ea04272b08c265275c7c3b688ebf83f8a32b6c8fd966c14527",
+      "tests/test_batched_runner.py": "7c64745d60dde1773077de4df5a6730b8e54d51707380e54609cacf90d8eddc8",
+      "tests/test_compatibility_analysis.py": "eba92306ae1147715676886c1ef4ea3313a06c8afb37a58a452e12df3fd95909",
+      "tests/test_compatibility_anatomy.py": "782f2737f7a2e328d6b635ee199ecfeac48b3f2763f0ef3e9dc8adf88139fe95",
+      "tests/test_compatibility_benchmark.py": "5762c784b8fed8d866a8c32ef6e99861b82f60b0958081b3efbb2a810035931b",
+      "tests/test_compatibility_bodies.py": "77b2fa82aacb94113149eeca0d7d046d209eceb20a07b80f196c03d138561606",
+      "tests/test_compatibility_controller.py": "1373c1737c4011f58405cfe0c25459210c20fbb1fc73b1563ca71cfde5ec982f",
+      "tests/test_compatibility_design.py": "9a891e6dfcf78b35931bcf19a74757708ebb7ec9f6a4656aa01377823d76e3b8",
+      "tests/test_compatibility_figures.py": "85eff1722e3562e8c757a8e6b14c4587a8bfe817ee0dc7f767740ca7f96bc5cd",
+      "tests/test_compatibility_fish1.py": "3aea311593af0478d661cbd11abafbf59823a1184fa1b015501a39e320ca467b",
+      "tests/test_compatibility_fish_body.py": "dd83ce8f420374fd5dcd2e41bf9fe94611202168296a9dd995032233e1e9632d",
+      "tests/test_compatibility_interventions.py": "d754669405b99000684f40e1d92fb79b5a7261a413a456fe8be8d8e614913ccc",
+      "tests/test_compatibility_paper_analysis.py": "2fd714c99d256eb94be494f5e908a6b1fe3748a6bef56117be8a40a39c086dfc",
+      "tests/test_compatibility_predictors.py": "47c789fbe56a3ae09d60d9c6849a0f083edae9e32f2df077701dffaa21514d7c",
+      "tests/test_compatibility_runner.py": "8b84b96a6bafb1dd239fac8eac700f18949fb58ed8866ecb250c27c9d2473c9a",
+      "tests/test_compatibility_selection.py": "4fb7b32ec36519081c32bf46165aeac532e908234800463670c1d7b90227e2dd",
+      "tests/test_compatibility_study.py": "0fb44e3031513948ff052a128f64b96f0bbd91df6e3f0c8dc3ad9bc1922a704a",
+      "tests/test_compatibility_subgraphs.py": "ad966d3fff9d9901a343de6fd248fd9077f10334b8924f83630a3cb5b8b77da7",
+      "tests/test_compatibility_topology.py": "c81dc5bc5ece6270a8db90dd3997981853ee1e85289285171890a0f2aa4c7fdb",
+      "tests/test_compatibility_training.py": "559ef5f08f60aed478dd8b91f11d4a439b3c7bb77bdae7b702965f916202bcf1",
+      "tests/test_compatibility_worm.py": "3b6dc492b86564a4bea8755784801a49e154030c7c04b8002d3f7b5bc6172825",
+      "tests/test_flybody.py": "898ff6af4cf7c314105ebe6e91b6ae10e467b06b4081a5039653f8ff9f17f04e",
+      "tests/test_graphs_and_policy.py": "23f401d462d718ecd2b09ae9c922c9375dbe5eb69e8fa12862f2b5f8c2e9131e",
+      "tests/test_metal_sparse.py": "ebe8887f74baab219111ee2815bfde4300771e516abf5ebbb9cfe38478acc426",
+      "tests/test_runtime_data_cache.py": "a58276dbe350ba937ec665538a9dfb28fa69726047495d0d99b44c29c9368e9b",
+      "tests/test_training_and_analysis.py": "a3576714200f90b2dbaea303a61046894c3fca1fc3f599aa911c663b40dafb01",
+      "uv.lock": "3b720427486426200ebaf7cc48ff36c01280f49e6b637571b4561ad57b876ab7"
+    },
+    "path": "validation/paper-implementation-20260916/sources-6c4890361816a4d361dd453d3b0f51c4ba7be51f762c159b2e0b509a9b21b675.tar.gz",
+    "sha256": "550d6ee3580f1a232f0774be47597342332160f2719429eb3bcb2f2c2298fea2"
+  },
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 223
+  },
+  "tracked_files_changed": [],
+  "validated_at": "2026-09-16T10:26:41.018683+00:00"
+}

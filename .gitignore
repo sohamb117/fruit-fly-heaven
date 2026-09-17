@@ -10,6 +10,9 @@ runtime/
 .DS_Store
 node_modules/
 
+# Local CAVE authentication credentials.
+*cave-secret.json
+
 # Generated distribution archives; package-level runtime dist files are versioned.
 /dist/
 /web/training/brain-sample.json

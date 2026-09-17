@@ -1,0 +1,63 @@
+{
+  "schema": "compatibility-selection-filter-v1",
+  "description": "Five plasticity regimes under the preregistered initialization and available-sign sensitivity study, across all connectomes and three bodies; missing signs remain explicitly imputed",
+  "include_matched_controls": true,
+  "filters": {
+    "connectome": [
+      "banc",
+      "malecns",
+      "celegans",
+      "fish1"
+    ],
+    "body": [
+      "fly",
+      "worm",
+      "fish"
+    ],
+    "task": [
+      "hover",
+      "locomotion",
+      "swimming"
+    ],
+    "family": [
+      "mlp_mlp"
+    ],
+    "budget": [
+      20000
+    ],
+    "channels": [
+      16
+    ],
+    "kind": [
+      "connectome"
+    ],
+    "topology": [
+      "real",
+      "degree_rewired"
+    ],
+    "plasticity": [
+      "adapters",
+      "substrate",
+      "encoder",
+      "decoder",
+      "joint"
+    ],
+    "sign_mode": [
+      "available"
+    ],
+    "train_seed": [
+      0,
+      1,
+      2
+    ],
+    "subgraph_role": [
+      null
+    ],
+    "training_interactions": [
+      1000000
+    ],
+    "width": [
+      null
+    ]
+  }
+}

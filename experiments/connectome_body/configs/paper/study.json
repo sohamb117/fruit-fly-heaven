@@ -1,0 +1,545 @@
+{
+  "schema": "connectome-compatibility-study-v1",
+  "project_root": "../..",
+  "purpose": "experiment",
+  "device": "cuda",
+  "threads": 1,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "capacities": [
+    5000,
+    20000,
+    80000
+  ],
+  "swap_attempts_per_edge": 10,
+  "preserve_null_strengths": true,
+  "graphs": {
+    "banc": {
+      "path": "data/graphs/banc",
+      "fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+      "native_body": "fly",
+      "release": "BANC v888 v3",
+      "communities": "data/paper-annotations/banc/communities.json",
+      "anatomy": "data/paper-annotations/banc/anatomy.json"
+    },
+    "malecns": {
+      "path": "data/graphs/malecns",
+      "fingerprint": "583b52f0b4c9191643d3d13f81d3324d2e6c266213783e5385b8680eb13984c9",
+      "native_body": "fly",
+      "release": "MaleCNS v1.0 confidence 0.5, induced curated Traced population",
+      "communities": "data/paper-annotations/malecns/communities.json",
+      "anatomy": "data/paper-annotations/malecns/anatomy.json"
+    },
+    "celegans": {
+      "path": "data/graphs/celegans-cook2019-chemical",
+      "fingerprint": "819d6a3de11b82e6fd1be070f8396ee8920caacd78eed6ac33c0e073418c1c9b",
+      "native_body": "worm",
+      "release": "Cook 2019 chemical hermaphrodite adjacency, July 2020 correction",
+      "communities": "data/paper-annotations/celegans/communities.json",
+      "anatomy": "data/paper-annotations/celegans/anatomy.json"
+    },
+    "fish1": {
+      "path": "data/graphs/fish1",
+      "fingerprint": "5e280e46befd3e4089f74d91d12b3e1009abceeee51c491b6b9fe048276fa072",
+      "native_body": "fish",
+      "release": "Fish1 materialization v700, fish1_v250915; nonzero single-soma roots including unknown molecular types and isolates; heterogeneous proofreading",
+      "qualification": "data/paper-annotations/fish1/primary-qualification-v700.json",
+      "communities": "data/paper-annotations/fish1/communities.json",
+      "anatomy": "data/paper-annotations/fish1/anatomy.json"
+    }
+  },
+  "bodies": {
+    "fly:hover": {
+      "control_dt": 0.0002,
+      "spec": {
+        "name": "fly",
+        "task": "hover",
+        "horizon": 5000,
+        "action_repeat": 1
+      }
+    },
+    "fly:controlled_flight": {
+      "control_dt": 0.0002,
+      "spec": {
+        "name": "fly",
+        "task": "controlled_flight",
+        "horizon": 5000,
+        "action_repeat": 1
+      }
+    },
+    "fly:walking": {
+      "control_dt": 0.002,
+      "spec": {
+        "name": "fly",
+        "task": "walking",
+        "horizon": 5000,
+        "action_repeat": 1
+      }
+    },
+    "fly:limb_control": {
+      "control_dt": 0.002,
+      "spec": {
+        "name": "fly",
+        "task": "limb_control",
+        "horizon": 5000,
+        "action_repeat": 1
+      }
+    },
+    "worm:locomotion": {
+      "control_dt": 0.01,
+      "spec": {
+        "name": "worm",
+        "task": "locomotion",
+        "horizon": 1000,
+        "model_manifest": "data/paper-bodies/worm/manifest.json"
+      },
+      "qualification": "data/paper-bodies/worm/qualification-v1.json"
+    },
+    "worm:steering": {
+      "control_dt": 0.01,
+      "spec": {
+        "name": "worm",
+        "task": "steering",
+        "horizon": 1000,
+        "model_manifest": "data/paper-bodies/worm/manifest.json"
+      },
+      "qualification": "data/paper-bodies/worm/qualification-v1.json"
+    },
+    "worm:posture": {
+      "control_dt": 0.01,
+      "spec": {
+        "name": "worm",
+        "task": "posture",
+        "horizon": 1000,
+        "model_manifest": "data/paper-bodies/worm/manifest.json"
+      },
+      "qualification": "data/paper-bodies/worm/qualification-v1.json"
+    },
+    "fish:swimming": {
+      "control_dt": 0.005,
+      "spec": {
+        "name": "fish",
+        "task": "swimming",
+        "horizon": 1000,
+        "model_manifest": "data/paper-bodies/fish/manifest.json"
+      },
+      "qualification": "data/paper-bodies/fish/qualification-v1.json"
+    },
+    "fish:heading": {
+      "control_dt": 0.005,
+      "spec": {
+        "name": "fish",
+        "task": "heading",
+        "horizon": 1000,
+        "model_manifest": "data/paper-bodies/fish/manifest.json"
+      },
+      "qualification": "data/paper-bodies/fish/qualification-v1.json"
+    },
+    "fish:depth": {
+      "control_dt": 0.005,
+      "spec": {
+        "name": "fish",
+        "task": "depth",
+        "horizon": 1000,
+        "model_manifest": "data/paper-bodies/fish/manifest.json"
+      },
+      "qualification": "data/paper-bodies/fish/qualification-v1.json"
+    }
+  },
+  "adapter": {
+    "family": "mlp_mlp",
+    "budget": 20000,
+    "channels": 16,
+    "support": 256,
+    "depth": 1
+  },
+  "dynamics": {
+    "gain": 0.9,
+    "tau_seconds": 0.02,
+    "substeps": 2,
+    "input_gain": 1.0,
+    "sign_mode": "random_dale",
+    "inhibitory_fraction": 0.2,
+    "weight_transform": "log1p",
+    "gradient_edge_chunk": 65536
+  },
+  "training": {
+    "interactions": 1000000,
+    "num_envs": 4,
+    "rollout_steps": 128,
+    "sequence_length": 16,
+    "burn_in": 16,
+    "epochs": 4,
+    "learning_rate": 0.0003,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_ratio": 0.2,
+    "value_coefficient": 0.5,
+    "max_grad_norm": 0.5,
+    "critic_width": 64,
+    "exploration_log_std": -1.0,
+    "eval_every": 20000,
+    "eval_episodes": 20,
+    "test_episodes": 100,
+    "success_threshold": 0.8,
+    "threshold_confirmations": 3
+  },
+  "experiments": {
+    "1": {
+      "plasticity": [
+        "adapters",
+        "joint"
+      ]
+    },
+    "2": {
+      "ceiling": 320000,
+      "sweeps": [
+        {
+          "factor": "width",
+          "family": "mlp_linear",
+          "values": [
+            4,
+            16,
+            64,
+            256
+          ]
+        },
+        {
+          "factor": "width",
+          "family": "linear_mlp",
+          "values": [
+            4,
+            16,
+            64,
+            256
+          ]
+        },
+        {
+          "factor": "width",
+          "family": "mlp_mlp",
+          "values": [
+            4,
+            16,
+            64,
+            256
+          ]
+        },
+        {
+          "factor": "width",
+          "family": "sparse_structured",
+          "values": [
+            4,
+            16,
+            64,
+            256
+          ]
+        },
+        {
+          "factor": "depth",
+          "family": "mlp_mlp",
+          "values": [
+            1,
+            2,
+            3
+          ],
+          "fixed": {
+            "width": 64
+          }
+        },
+        {
+          "factor": "rank",
+          "family": "low_rank",
+          "values": [
+            1,
+            2,
+            4,
+            8,
+            16
+          ]
+        },
+        {
+          "factor": "channels",
+          "family": "mlp_mlp",
+          "values": [
+            4,
+            8,
+            16,
+            32,
+            64
+          ],
+          "fixed": {
+            "width": 64
+          }
+        }
+      ]
+    },
+    "3": {
+      "plasticity": [
+        "adapters",
+        "joint"
+      ],
+      "compute_calibration": "data/paper-calibration/compute-matches.json"
+    },
+    "4": {},
+    "5": {
+      "capacities": [
+        20000
+      ],
+      "topologies": [
+        "real",
+        "degree_rewired"
+      ]
+    },
+    "6": {},
+    "7": {
+      "capacities": [
+        20000
+      ]
+    },
+    "8": {
+      "capacities": [
+        5000,
+        20000,
+        80000
+      ]
+    },
+    "9": {
+      "capacities": [
+        20000
+      ],
+      "fine_tune_interactions": 100000,
+      "perturbations": [
+        {
+          "spec": {
+            "name": "sensor_noise",
+            "sensor_noise": 0.05
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight",
+            "fly:walking",
+            "fly:limb_control",
+            "worm:locomotion",
+            "worm:steering",
+            "worm:posture",
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "sensor_delay",
+            "sensor_delay": 3
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight",
+            "fly:walking",
+            "fly:limb_control",
+            "worm:locomotion",
+            "worm:steering",
+            "worm:posture",
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "mass",
+            "mass_scale": 1.25
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight",
+            "fly:walking",
+            "fly:limb_control",
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "inertia",
+            "inertia_scale": 1.25
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight",
+            "fly:walking",
+            "fly:limb_control",
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "actuator_weakness",
+            "actuator_scale": 0.7
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight",
+            "fly:walking",
+            "fly:limb_control",
+            "worm:locomotion",
+            "worm:steering",
+            "worm:posture",
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "actuator_failure",
+            "failed_actuators": [
+              0
+            ]
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight",
+            "fly:walking",
+            "fly:limb_control",
+            "worm:locomotion",
+            "worm:steering",
+            "worm:posture",
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "friction",
+            "friction_scale": 1.5
+          },
+          "tasks": [
+            "fly:walking",
+            "fly:limb_control",
+            "worm:locomotion",
+            "worm:steering",
+            "worm:posture"
+          ]
+        },
+        {
+          "spec": {
+            "name": "aerodynamic_density",
+            "fluid_density_scale": 1.2
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight"
+          ]
+        },
+        {
+          "spec": {
+            "name": "water_viscosity",
+            "viscosity_scale": 1.5
+          },
+          "tasks": [
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "new_speed",
+            "target_speed_scale": 1.5
+          },
+          "tasks": [
+            "fly:controlled_flight",
+            "fly:walking",
+            "worm:locomotion",
+            "worm:steering",
+            "fish:swimming",
+            "fish:heading"
+          ]
+        },
+        {
+          "spec": {
+            "name": "new_trajectory",
+            "trajectory_frequency_scale": 1.5
+          },
+          "tasks": [
+            "fly:controlled_flight"
+          ]
+        },
+        {
+          "spec": {
+            "name": "unseen_slope",
+            "terrain_slope": 0.1
+          },
+          "tasks": [
+            "fly:walking",
+            "fly:limb_control"
+          ]
+        },
+        {
+          "spec": {
+            "name": "water_current",
+            "wind": [
+              0.1,
+              0.0,
+              0.0
+            ]
+          },
+          "tasks": [
+            "fish:swimming",
+            "fish:heading",
+            "fish:depth"
+          ]
+        },
+        {
+          "spec": {
+            "name": "wind",
+            "wind": [
+              5.0,
+              0.0,
+              0.0
+            ]
+          },
+          "tasks": [
+            "fly:hover",
+            "fly:controlled_flight"
+          ]
+        }
+      ],
+      "transfers": [
+        {
+          "source": "fly:hover",
+          "target": "fly:controlled_flight"
+        },
+        {
+          "source": "fly:controlled_flight",
+          "target": "fly:hover"
+        },
+        {
+          "source": "worm:locomotion",
+          "target": "worm:steering"
+        },
+        {
+          "source": "worm:steering",
+          "target": "worm:posture"
+        },
+        {
+          "source": "fish:swimming",
+          "target": "fish:heading"
+        },
+        {
+          "source": "fish:heading",
+          "target": "fish:depth"
+        }
+      ]
+    },
+    "10": {}
+  }
+}

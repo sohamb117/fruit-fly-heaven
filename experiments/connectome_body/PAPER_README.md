@@ -330,3 +330,13 @@ nulls, parameter accounting and checkpoint infrastructure. Compilation and data
 preparation are local; workers require explicit run/time bounds and never create
 cloud resources. The earlier biological plans remain archived snapshots; source
 changes require freshly compiled plans before execution.
+
+## Current first-pass priority
+
+Use [PAPER_LEARNING_CORE.md](PAPER_LEARNING_CORE.md) and
+[configs/paper/learning_core.json](configs/paper/learning_core.json) for the new
+five-seed BC→PPO BANC/MaleCNS/C. elegans cross-body core. The 120-cell
+BC-only/PPO-only/BC→PPO comparison and supervised temporal runs are deferred.
+Prepare graph caches on CPU and use the independent pod-stop watchdog described
+in the runbook before any paid qualification. These are bounded first-pass
+selections within the wider ten-experiment target.

@@ -1,0 +1,10 @@
+{
+  "checkpoint_deadline": 1789833514.1984637,
+  "deadline": 1789834114.1984637,
+  "note": "Scheduling window only; each pipeline retains its fixed scientific budget",
+  "plan": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+  "qualification": "/workspace/qualification-isolated-20260918/experiments/connectome_body/runs/learning-qualification-cuda-v2/qualification.json",
+  "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+  "started_at": 1789747714.1984637,
+  "unique_pipelines": 210
+}

@@ -1,0 +1,14 @@
+{
+  "pod": "hhvas8ssr8wtz1",
+  "gpu": "RTX 4090",
+  "rate_per_hour": 0.74,
+  "launched_at_local_record": "2026-09-18T15:25:37.956297+00:00",
+  "remote_run": "/workspace/experiments/connectome_body/runs/learning-qualification-cuda-v2",
+  "source_fingerprint": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+  "source_archive_sha256": "31e19c71d39ec4dc59fe7431fda5a934b5b9fa49768c75351199fc8317761912",
+  "cache_archive_sha256": "e351896e499e6ec93009689ae4db4ba6cc431cde055537fa889a2ac7848d7912",
+  "qualification_seconds": 1200,
+  "case_seconds": 180,
+  "cases": 18,
+  "mode": "Attended run with bounded worker and MCP stop; user waived separate shutdown verification."
+}

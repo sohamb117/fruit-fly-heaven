@@ -178,16 +178,31 @@ results as native simZFish without these qualifications.
 
 ## Training, held-out data and failures
 
-All conditions use the same recurrent PPO loop, stateless common critic,
+The first compute pass follows [PAPER_LEARNING_CORE.md](PAPER_LEARNING_CORE.md):
+BC-only, PPO-only and BC→PPO in the 120-cell regime interaction, and BC→PPO in the
+five-seed crossed-body core. BC uses one sealed external-expert dataset per task,
+contiguous recurrent sequences and validation action error for checkpoint
+selection. BC-only and BC→PPO share the exact selected policy. Experts receive the
+student observation/action interface; they contain no experimental connectome.
+Teacher qualification precedes the primary dataset and failed qualification
+blocks that body's BC arms. Low action error alone is not control performance.
+
+Every PPO stage uses the same recurrent PPO loop, stateless common critic,
 fixed Gaussian exploration scale, GAE, clipping, gradient clipping and Adam.
 The default four environments collect 128-step rollouts, optimize 16-step
 sequences with 16-step burn-in, and use four epochs. Training stops at the exact
-declared interaction count. This common online protocol avoids an unqualified
-teacher for one body becoming a hidden advantage for another.
+declared interaction count. BC→PPO resets optimizer/critic/episode state and
+retains the entire PPO-only interaction budget. Report unique expert samples,
+repeated exposures, teacher-generation interactions, BC and PPO optimizer steps,
+and measured compute separately. Equal-compute comparisons include pretraining
+cost and use only validation points observed before a shared cutoff. Scientific
+evaluation is always closed-loop without teacher assistance. DAgger remains a
+documented follow-up rather than an unimplemented fourth arm counted as executed.
 
 Scenario seeds pair initial conditions, disturbances and targets across
 conditions. Training, development, test and OOD streams have distinct namespaces.
-The selected checkpoint is chosen only on development success then score.
+PPO checkpoint selection uses development success then score; BC uses development
+expert-action MSE and separately reports closed-loop development/test/OOD scores.
 Held-out evaluation cannot influence adapter design, hyperparameters or model
 selection. Related-task fine-tuning initializes the selected controller,
 resets its optimizer, and counts new target-task experience separately from the
@@ -219,8 +234,8 @@ graph replacement keeps learned interfaces and the learned magnitude multiset,
 then recomputes normalization. Report each intervention's scope separately.
 
 Use training seeds as the replication/cluster unit, not evaluation episodes or
-multiple null draws. The default catalog has three seeds; headline comparisons
-should add two paired seeds before confirmatory claims. Report paired effects,
+multiple null draws. The new learning core has five paired seeds; the archived
+full catalog has three seeds and needs two more for headline comparisons. Report paired effects,
 seed-cluster confidence intervals, curves and censored frontiers. With only
 three seeds, inferential resolution is coarse. The compatibility coefficient
 controls connectome and body/task main effects; architecture and task interactions

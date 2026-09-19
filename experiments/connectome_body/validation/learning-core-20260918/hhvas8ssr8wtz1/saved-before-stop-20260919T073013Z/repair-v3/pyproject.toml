@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "connectome-body-bench"
+version = "0.1.0"
+description = "Controlled experiments on generic interfaces between frozen connectomes and FlyBody"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "certifi==2026.7.22",
+  "numpy==1.26.4",
+  "scipy==1.15.3",
+  "torch==2.8.0",
+  "pyarrow==21.0.0",
+  "dm-control==1.0.46",
+  "mujoco==3.13.0",
+  "matplotlib==3.10.6",
+  "h5py==3.14.0",
+  "numba==0.61.2",
+  "ipython==9.17.1",
+  "mediapy==1.2.7",
+  "pyparsing==3.2.3",
+]
+
+[project.scripts]
+cbbench = "connectome_body.cli:main"
+
+[dependency-groups]
+dev = ["pytest==9.1.1", "ruff==0.16.7"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["connectome_body"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["flybody: uses the pinned upstream FlyBody source and native MuJoCo"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

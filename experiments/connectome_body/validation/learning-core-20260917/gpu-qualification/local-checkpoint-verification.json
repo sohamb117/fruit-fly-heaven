@@ -1,0 +1,26 @@
+[
+  {
+    "file": "validation/learning-core-20260917/gpu-qualification/extracted/runs/learning-qualification-cuda-v1/case-00/bc/best.pt",
+    "sha256": "17ec9b9d1176c71c68d04d585cc4685fcb4f614dece9fe8547f154bc0ba403e9"
+  },
+  {
+    "file": "validation/learning-core-20260917/gpu-qualification/extracted/runs/learning-qualification-cuda-v1/case-00/ppo/latest.pt",
+    "sha256": "ec534903851e2947dee6668247e504ebc9b0fddc27fb3d63f6812e365bcf154b"
+  },
+  {
+    "file": "validation/learning-core-20260917/gpu-qualification/extracted/runs/learning-qualification-cuda-v1/case-01/bc/best.pt",
+    "sha256": "3ac183fbd541ec176070e3353b26d7894e24539ffeea1a5410b88c7c17e24d4c"
+  },
+  {
+    "file": "validation/learning-core-20260917/gpu-qualification/extracted/runs/learning-qualification-cuda-v1/case-01/ppo/latest.pt",
+    "sha256": "819af770d75b79d6eb5d4db8279cc5c9281a13e76fd55460354236297c1e7f0e"
+  },
+  {
+    "file": "validation/learning-core-20260917/gpu-qualification/extracted/runs/learning-qualification-cuda-v1/case-02/bc/best.pt",
+    "sha256": "8cba065a0f90724c4cab590f0be9a3fd92cd0a4170004e8c1f84bd1df77edf4c"
+  },
+  {
+    "file": "validation/learning-core-20260917/gpu-qualification/extracted/runs/learning-qualification-cuda-v1/case-02/ppo/latest.pt",
+    "sha256": "073c92bc1634e6a11a5bdb1d38bff5bed93fc1c93bc5ce57e435b398a91b784a"
+  }
+]

@@ -662,3 +662,172 @@ frontiers, delay/dropout/fault severity curves, and held-out diagnostic-to-contr
 prediction with task-specific contrasts. Missing results stay missing. The
 original biological compatibility analysis remains separate; the drone tests
 transferable functional priors.
+
+---
+
+# First compute pass: imitation, reinforcement learning, and the paired core
+
+**Current launch priority: only the BC→PPO cross-body core.** The 120-cell
+BC-only/PPO-only/BC→PPO comparison is deferred. Keep the linear-memory diagnostic
+planned, but do not include its supervised runs in this first embodied launch.
+
+This section sets the next execution priority. The ten experiment families and
+complete body/diagnostic batteries above remain the wider paper target. Do not
+launch that full grid before this smaller protocol passes GPU qualification.
+
+## Shared training stages
+
+Use one external expert per body/task through **exactly the student's observation
+and normalized action interface**. No clean simulator state, hidden target history
+or expert recurrent state enters student observations. The fly reference is the
+published external FlyBody MLP evaluated from the student's clipped, scaled
+observation; the worm reference is an explicitly separate oscillator with
+observation-based heading feedback. Neither expert contains BANC or another
+experimental connectome. Require measured teacher success before treating its
+trajectories as qualified demonstrations. Keep teacher development scenarios
+separate from dataset and student evaluation scenarios.
+
+Generate immutable, checksummed complete trajectories with disjoint training and
+validation scenarios. Every substrate and seed receives the same trajectories.
+Behavioral cloning (BC) uses contiguous sequences, recurrent reset at episode
+boundaries, truncated backpropagation, and detached state carried between chunks.
+Checkpoints retain the optimizer, neural state, trajectory/batch/chunk cursor and
+random generators. Only the substrate carries student policy memory.
+
+For BC→PPO, initialize from the exact validation-selected BC policy also evaluated
+as BC-only. Reset the PPO optimizer, critic and episode/neural state. PPO-only and
+BC→PPO receive identical PPO interaction budgets; record expert samples, repeated
+expert exposures, teacher generation interactions, gradient steps and compute
+separately. No teacher assists any student closed-loop evaluation.
+
+## Core cross-body comparison
+
+First use BANC, MaleCNS and C. elegans, each controlling FlyBody hover and published
+worm locomotion. This is a 3-substrate × 2-body matched/mismatched core, with one
+embodied task per body and a separately trained linear-memory diagnostic.
+
+* One fixed stateless adapter family: MLP encoder, linear decoder, 16 ports,
+  20,000-parameter interface ceiling; report exact allocated parameters.
+* Real and degree-preserving rewired graphs; match weighted degree and source
+  sign strata, and record accepted swaps and changed-edge fraction.
+* Adapters-only and joint permitted-edge plasticity during both BC and PPO.
+* Conventional trainable GRU and RNN controls matched to each biological arm's
+  **total trainable parameter count**, with exact matching error reported. Their
+  recurrence trains in every case; `anchor_plasticity` identifies the biological
+  budget being matched, not a frozen conventional RNN.
+* Keep the adapter-only MLP as the mandatory brain-free control.
+* Five paired training seeds: 0–4. Share expert data, environment/evaluation seeds,
+  and topology seed rules. Shared identical controls are reused, not counted as
+  independent replicates for each biological anchor.
+* The embodied core uses BC→PPO. Linear memory uses supervised sequence learning
+  through the same controller family and is not an RL task.
+
+## Minimal training-regime interaction experiment
+
+Deferred follow-up: **120 comparison cells** (not in the current launch):
+
+4 substrates × 3 essential learning regimes × 2 tasks × 5 paired seeds.
+
+Substrates: real BANC, degree-preserving rewired BANC, parameter-matched learned
+GRU, and adapter-only MLP. Use frozen BANC weights in this initial regime
+interaction; joint plasticity is tested in the cross-body core above.
+
+Regimes: BC-only, PPO-only, and BC→PPO. DAgger→PPO is a deferred fourth regime,
+not part of the 120-cell initial budget. It would aggregate expert labels on
+student-visited states to address the sequential distribution shift described by
+[Ross, Gordon and Bagnell (2011)](https://proceedings.mlr.press/v15/ross11a.html).
+
+Tasks: nominal FlyBody hover and stronger impulse recovery. Keep physics, action
+abstraction and success tolerances fixed. Nominal hover disables impulses;
+recovery uses linear/angular kick scales 6/9 versus the archived hover's 2/3.
+Both use the same external expert and task-specific shards of one dataset version.
+Higher-severity OOD scenarios use the existing held-out scenario generator.
+
+Test the regime × substrate interaction, rather than only a main effect of BC:
+
+* H0: real-BANC minus GRU gaps do not change with training regime.
+* H1a: BC scaffolding disproportionately improves connectome control.
+* H1b: the connectome advantage is larger when control is learned through PPO.
+* H1c: imitation reduces topology differences visible under PPO.
+* H1d: low expert-action error coexists with poor closed-loop control.
+
+For each regime, estimate real-minus-rewired and BANC-minus-GRU gaps. Compare
+those gaps with PPO-only using seed-paired differences of differences. Report
+expert-action validation MSE, immediate post-BC closed-loop performance, PPO AUC,
+interactions/optimizer steps/compute to threshold, final budget-limited return,
+recovery and OOD metrics, variance and failure counts across seeds. Do not call a
+finite-budget endpoint asymptotic unless a plateau is actually established.
+
+Report both equal-expert-sample comparisons and measured compute frontiers.
+Compute curves include BC cost before PPO. At a shared compute cutoff use only
+the last validation observation available by that cutoff, require observed
+coverage on both sides, and never extrapolate. Report the evaluation spacing and
+teacher generation cost separately. A paused run is censored, not a failed seed.
+
+## GPU qualification gate
+
+Before the main budget, run a bounded qualification on one RTX 4090. Exercise
+full-size BANC/MaleCNS and C. elegans, real/rewired topology, frozen/joint edges,
+GRU/RNN and no-brain controls. Check sparse forward/backward gradients, BC
+checkpoint/resume, the exact BC→PPO handoff, and a short PPO update. Record GPU
+model, software/source identity, throughput, peak VRAM, finite updates and saved
+checkpoint hashes. Small qualification datasets/episodes are labeled smoke tests
+and never enter the scientific comparison. Prepare and checksum deterministic
+topology/features on CPU before paid GPU time; reuse them across BC, PPO, resumes,
+plasticity and body conditions without sharing learned state. Qualify all six
+source/body pairings before the larger topology/plasticity ablations. Bound each
+case as well as the whole qualification, record failures, and continue coverage
+while time remains. Resume only source/plan-matched, checksummed checkpoints.
+
+Persist checkpoints and logs on `/workspace` and sync local copies before the
+deadline when possible. An independently running watchdog must be armed before
+the worker: it stops the pod on completion, loss of its supervisor, or the hard
+deadline, then verifies the provider's stopped state. A process timeout alone is
+insufficient. A slow download must not extend GPU billing; unfinished copies can
+be retrieved later from persistent storage. A local watchdog needs an always-on
+host and its own authenticated API access; do not present mocked shutdown tests
+as live validation. Qualification is an infrastructure gate, not evidence for a
+hypothesis.
+
+## Training repair qualification (September 18–19, 2026)
+
+The low-success first window requires development checks before revised settings
+are promoted to the scientific matrix. Preserve the old source, configurations,
+checkpoints and results. A changed protocol receives a new identity; never pool
+its learning curves with the original run.
+
+The production PPO audit confirmed temporal gradients. The repair candidates
+address optimization, numerical conditioning and physical timescales:
+
+* Fit fixed observation normalization and optional pre-tanh action scaling using
+  only valid training demonstrations. Save those buffers in every checkpoint and
+  transfer them exactly into PPO. They introduce no policy memory or trainable
+  parameters. Use the same rule for every substrate and matched control.
+* Report unscaled held-out action MSE relative to a constant training-action-mean
+  predictor, alongside autonomous return, survival and success. A lower action
+  error alone does not qualify the controller.
+* Declare discount, GAE coefficient decay, gradient sequence and burn-in horizons
+  in seconds. The first fly candidate uses 25.6 ms gradient windows and burn-in,
+  102.4 ms rollouts, 200 ms discount decay and 50 ms GAE coefficient decay.
+* Stop additional PPO updates when the exact conditional Gaussian KL exceeds
+  1.5 times target KL 0.01. This guard prevents further updates on a stale rollout;
+  it does not guarantee that each individual optimizer step stays below the
+  threshold. Test learning rate 0.0001 and fixed exploration log SD -3.
+* Test a common faster neural time constant as a distinct development factor.
+  The current hover teacher has substantial 220–440 Hz actuator content. A
+  small-signal BANC probe showed strong attenuation at the old 20 ms time
+  constant. The 2 ms candidate must pass actual closed-loop checks; frequency
+  response alone is not control-performance evidence.
+
+The initial repair checks use one seed, 20 BC epochs, four evaluation episodes
+and up to 40k PPO interactions. These increased BC exposures, changed optimizer
+settings and small evaluation sets are development choices, not a paired
+comparison with the original five-epoch scientific run. Finish both stages of
+the bounded check. Require credible standalone MLP/GRU control and finite,
+effective recurrent learning before freezing a revised protocol for all five
+seeds, biological substrates, nulls and plasticity conditions.
+
+Use the existing authorized pod and original deadline. For this specific
+24-hour window, the user's later choice of manual provider shutdown supersedes
+the automatic-shutdown requirement above. A temporary worker pause must retain
+checkpoints and must not be described as stopping GPU billing.

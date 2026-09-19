@@ -1,0 +1,112 @@
+{
+  "active": [
+    {
+      "execution_id": "f8c85990a9043cfd7ea11da8-bc_ppo",
+      "pid": 6286,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 3.0,
+        "large_graph": true,
+        "ram_gib": 4.0179420709609985
+      },
+      "seed": 0,
+      "source": "banc",
+      "task": "hover",
+      "variant": "real"
+    },
+    {
+      "execution_id": "812ecea940897a8a63e48f10-bc_ppo",
+      "pid": 6287,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 3.0,
+        "large_graph": true,
+        "ram_gib": 5.8091981410980225
+      },
+      "seed": 0,
+      "source": "malecns",
+      "task": "hover",
+      "variant": "real"
+    },
+    {
+      "execution_id": "968c93219c2d4e2db7745eda-bc_ppo",
+      "pid": 6288,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 0.8,
+        "large_graph": false,
+        "ram_gib": 1.5
+      },
+      "seed": 0,
+      "source": "celegans",
+      "task": "worm_locomotion",
+      "variant": "real"
+    },
+    {
+      "execution_id": "a70b8f464af4c4170b31b908-bc_ppo",
+      "pid": 6289,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 0.8,
+        "large_graph": false,
+        "ram_gib": 1.5
+      },
+      "seed": 0,
+      "source": "celegans",
+      "task": "hover",
+      "variant": "real"
+    },
+    {
+      "execution_id": "545b7ea67ce90350f62722e3-bc_ppo",
+      "pid": 6290,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 0.8,
+        "large_graph": false,
+        "ram_gib": 1.5
+      },
+      "seed": 0,
+      "source": "celegans",
+      "task": "worm_locomotion",
+      "variant": "degree_rewired"
+    },
+    {
+      "execution_id": "02792db01b571676b0bbfb4c-bc_ppo",
+      "pid": 6291,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 0.8,
+        "large_graph": false,
+        "ram_gib": 1.5
+      },
+      "seed": 0,
+      "source": "celegans",
+      "task": "hover",
+      "variant": "degree_rewired"
+    }
+  ],
+  "available_ram_gib": 204.86112213134766,
+  "control": {
+    "gpu_budget_gib": 21.0,
+    "max_large_graphs": 2,
+    "max_workers": 6,
+    "ram_budget_gib": 24.0,
+    "ready_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "deadline": 1789834114.1984637,
+  "failed": {},
+  "finished": {},
+  "gpu": {
+    "total_gib": 23.98828125,
+    "used_gib": 5.044921875,
+    "utilization_percent": 100.0
+  },
+  "time": 1789748371.8330424,
+  "total": 210
+}

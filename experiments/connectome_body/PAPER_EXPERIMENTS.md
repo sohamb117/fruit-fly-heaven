@@ -122,3 +122,12 @@ records exact model assumptions, metrics, paper targets and bounded commands.
 The native-drone match indicator is undefined and never enters the biological
 compatibility diagonal. Diagnostic correlations are mechanistic hypotheses;
 acute lesions provide separate causal evidence. Missing runs are not scored.
+
+## Training regime interaction and staged core
+
+The first execution pass now includes the [120-cell BC/PPO interaction](PAPER_LEARNING_CORE.md)
+and a five-seed, three-connectome × two-body BC→PPO core. Main figures are
+real-minus-rewired and BANC-minus-GRU gaps under each regime, their seed-paired
+changes relative to PPO-only, expert action error versus post-BC closed-loop
+performance, and sample/compute frontiers including pretraining cost. Only a
+short, source-pinned GPU qualification is authorized before the full campaign.

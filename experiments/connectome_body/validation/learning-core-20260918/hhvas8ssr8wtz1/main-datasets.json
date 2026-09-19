@@ -1,0 +1,16 @@
+{
+  "hover": {
+    "fingerprint": "6e16a7037f45c103090ad1445c9e9b739c0c3ef3876b131b96769127fdffa6f0",
+    "qualification_success_rate": 1.0,
+    "qualified": true,
+    "teacher_environment_interactions": 100000,
+    "unique_train_samples": 80000
+  },
+  "worm_locomotion": {
+    "fingerprint": "f45aa9c6f1a0236627302c9c4a437353b483f92e7fa69732b9aaa89fffe3e4b3",
+    "qualification_success_rate": 1.0,
+    "qualified": true,
+    "teacher_environment_interactions": 20000,
+    "unique_train_samples": 16000
+  }
+}

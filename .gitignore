@@ -40,3 +40,8 @@ MUJOCO_LOG.TXT
 /reports/**
 !/reports/**/
 !/reports/**/*.md
+
+# Large validation archives remain local; GitHub rejects files over 100 MiB.
+/experiments/connectome_body/validation/learning-core-20260917/gpu-qualification/cross-body-qualification-20260917.tar.gz
+/experiments/connectome_body/validation/learning-core-20260918/hhvas8ssr8wtz1/learning-qualification-cuda-v2-isolated.tar.gz
+/experiments/connectome_body/validation/learning-core-20260918/hhvas8ssr8wtz1/learning-qualification-cuda-v2.tar.gz

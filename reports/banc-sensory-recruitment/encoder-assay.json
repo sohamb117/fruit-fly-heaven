@@ -1,0 +1,4701 @@
+{
+  "date": "2026-09-13T19:32:46.046Z",
+  "passed": true,
+  "scope": "Production encoder and isolated production WASM profile only; no full-brain, body, flight, feeding, or behavioral validation.",
+  "sourceSha256": {
+    "scripts/prepare-banc-console.py": "37acc7cbaeccdf333f83ed3039111a6c5964ae798bea51af0ef37ed7c6898112",
+    "web/sensory-encoder.js": "7024729f40c3f398adcd68990e276c14041ddd612f8cbc67a41bdef890a00dcb",
+    "web/banc-world-worker.js": "ffd3e529c65f5d46f41e21ba50c9d829db1a8fc7341caf74bc5dfae3e32047e0",
+    "web/banc-taste.js": "c792a196b4ca0682b1aad8c2623d3141bf65047867e1e48947cad5793fafeaed",
+    "web/banc-ground-sense.js": "dc78d621534d1f6babc7b6995fbe55e4e203f5efc09a89b499f09d289cdcc1d3",
+    "models/banc-taste-peg-annotations.json": "2c6b173502ef8e05d584ab9fddfdcca7fe88f9f572aad2ef69e001bf42469c48",
+    "data/prepared/banc888/console/groups.json": "8e3932032920f2f5821f247fbf17ee2f7ce0b400b143105147095128d1e3e3b8",
+    "data/prepared/banc888/console/sensory-inputs.json": "fc685a45a56a7e68d2fb9c7b6a30b02c7c538d2a9242f27856d6224aaf2a3387",
+    "data/prepared/banc888/params.bin": "9f72c736ef2c2aaebe84fd18050dd6fbc777e4d95f8fab07b9aa11c44840549f",
+    "data/prepared/banc888/edges.bin": "c3a0444e2db62227e3f93082e882d357724105331fef836a7b7697bff92e55c7",
+    "data/prepared/banc888/manifest.json": "f567256d88eceecafaf7faa6917967ab5554fe7dbab4446c4fa4016a432cd6b7"
+  },
+  "identitySha256": {
+    "ids": "dd942f6fd3bf27b155b4112c94b31a8348564264070933f7f916bc18e9dd1542",
+    "io": "1b19cd8c91ff64d1fe2af8f3fdd09d98792ecfca229e1c102ecb08a96da1ce72",
+    "raw": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098"
+  },
+  "auditory": {
+    "excludedCells": 360,
+    "retainedOtherAntennaCells": 579,
+    "staticDeflectionBeforeHz": {
+      "left": 21,
+      "right": 17.5
+    },
+    "afterAddedHz": 0,
+    "source": "https://doi.org/10.3389/fphys.2014.00179",
+    "note": "Fig2 experimentally separates A/B vibration responses from static deflection; D/mixed and C/E groups are retained. BANC frequency labels are preserved verbatim, no frequency tuning is assigned.",
+    "cells": [
+      {
+        "index": 1299,
+        "root_id": "720575941353910320",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 1453,
+        "root_id": "720575941354397744",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 1461,
+        "root_id": "720575941354411568",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 1920,
+        "root_id": "720575941391945732",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 2644,
+        "root_id": "720575941394218500",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 2646,
+        "root_id": "720575941394227716",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 3191,
+        "root_id": "720575941401098275",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 3912,
+        "root_id": "720575941404036464",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 4305,
+        "root_id": "720575941406006164",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 4813,
+        "root_id": "720575941408025647",
+        "side": "left",
+        "cell_type": "JO",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 4914,
+        "root_id": "720575941408300079",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 5903,
+        "root_id": "720575941410161711",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 6460,
+        "root_id": "720575941412051115",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 6552,
+        "root_id": "720575941412242091",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 6553,
+        "root_id": "720575941412243371",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 6585,
+        "root_id": "720575941412310699",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 7310,
+        "root_id": "720575941413746287",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 8006,
+        "root_id": "720575941415194260",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 8856,
+        "root_id": "720575941417683996",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 8968,
+        "root_id": "720575941418104860",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 9669,
+        "root_id": "720575941428589140",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 9809,
+        "root_id": "720575941428981588",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 10923,
+        "root_id": "720575941431026351",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 11575,
+        "root_id": "720575941431818671",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 11774,
+        "root_id": "720575941432045231",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 11850,
+        "root_id": "720575941432110729",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 13400,
+        "root_id": "720575941433606871",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 13680,
+        "root_id": "720575941434161678",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 14365,
+        "root_id": "720575941435959840",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 14415,
+        "root_id": "720575941436083488",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 14417,
+        "root_id": "720575941436087328",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 14801,
+        "root_id": "720575941436724512",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 14803,
+        "root_id": "720575941436726560",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 15223,
+        "root_id": "720575941437324064",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 15438,
+        "root_id": "720575941437628704",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 18094,
+        "root_id": "720575941440438495",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 18305,
+        "root_id": "720575941440631615",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 18425,
+        "root_id": "720575941440730687",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 18587,
+        "root_id": "720575941440868831",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 18980,
+        "root_id": "720575941441306453",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 19045,
+        "root_id": "720575941441409109",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 19518,
+        "root_id": "720575941442041039",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 19930,
+        "root_id": "720575941442633935",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 19932,
+        "root_id": "720575941442634703",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 19937,
+        "root_id": "720575941442638683",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 20938,
+        "root_id": "720575941446008490",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 21281,
+        "root_id": "720575941447023636",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 21325,
+        "root_id": "720575941447267380",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 21995,
+        "root_id": "720575941448851220",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 22296,
+        "root_id": "720575941449302292",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 22939,
+        "root_id": "720575941450422709",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 22961,
+        "root_id": "720575941450458293",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 23863,
+        "root_id": "720575941451448413",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 24178,
+        "root_id": "720575941451821390",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 24610,
+        "root_id": "720575941452379817",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 24743,
+        "root_id": "720575941452606074",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 24763,
+        "root_id": "720575941452655687",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 25167,
+        "root_id": "720575941453291945",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 25255,
+        "root_id": "720575941453411450",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 25375,
+        "root_id": "720575941453587015",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 25464,
+        "root_id": "720575941453748551",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 25517,
+        "root_id": "720575941453833287",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 25881,
+        "root_id": "720575941454402985",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 28766,
+        "root_id": "720575941460093168",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 29158,
+        "root_id": "720575941460471024",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 29321,
+        "root_id": "720575941460668575",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 29936,
+        "root_id": "720575941461477446",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 30275,
+        "root_id": "720575941461969619",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 30567,
+        "root_id": "720575941462417875",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 31193,
+        "root_id": "720575941463252932",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 31525,
+        "root_id": "720575941463931280",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 31922,
+        "root_id": "720575941464999181",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 32223,
+        "root_id": "720575941466070614",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 32378,
+        "root_id": "720575941466607126",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 32527,
+        "root_id": "720575941467086870",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 32683,
+        "root_id": "720575941467535287",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 32690,
+        "root_id": "720575941467545110",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 33859,
+        "root_id": "720575941469639645",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 34529,
+        "root_id": "720575941470870647",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 34562,
+        "root_id": "720575941470936896",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 35211,
+        "root_id": "720575941471863415",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 35435,
+        "root_id": "720575941472156023",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 35438,
+        "root_id": "720575941472158583",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 36014,
+        "root_id": "720575941472831095",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 36716,
+        "root_id": "720575941473820458",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 36850,
+        "root_id": "720575941474179370",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 37962,
+        "root_id": "720575941475689258",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 39780,
+        "root_id": "720575941477703985",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 39947,
+        "root_id": "720575941477909534",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 39964,
+        "root_id": "720575941477921076",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 40148,
+        "root_id": "720575941478100532",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 40628,
+        "root_id": "720575941478454558",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 41530,
+        "root_id": "720575941479119425",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 41571,
+        "root_id": "720575941479149121",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 43294,
+        "root_id": "720575941481147266",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 43597,
+        "root_id": "720575941481432450",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 44015,
+        "root_id": "720575941481783938",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 44258,
+        "root_id": "720575941481973634",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 45040,
+        "root_id": "720575941482573391",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 45045,
+        "root_id": "720575941482575695",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 45314,
+        "root_id": "720575941482864893",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 46483,
+        "root_id": "720575941484341702",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 46843,
+        "root_id": "720575941484765626",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 48177,
+        "root_id": "720575941486940557",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 48221,
+        "root_id": "720575941487016912",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 48242,
+        "root_id": "720575941487043725",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 48405,
+        "root_id": "720575941487341709",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 49500,
+        "root_id": "720575941488751312",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 49501,
+        "root_id": "720575941488753360",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 49648,
+        "root_id": "720575941488994000",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 50871,
+        "root_id": "720575941490882761",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 51940,
+        "root_id": "720575941492012236",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 52001,
+        "root_id": "720575941492070860",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 52847,
+        "root_id": "720575941492929255",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 53470,
+        "root_id": "720575941494260167",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 54212,
+        "root_id": "720575941495841918",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 54616,
+        "root_id": "720575941496420990",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 54859,
+        "root_id": "720575941496739783",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 54930,
+        "root_id": "720575941496871879",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 55621,
+        "root_id": "720575941497741184",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 56734,
+        "root_id": "720575941499372411",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 57056,
+        "root_id": "720575941499764705",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 58996,
+        "root_id": "720575941502729707",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 59130,
+        "root_id": "720575941502935275",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 59369,
+        "root_id": "720575941503278987",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 59430,
+        "root_id": "720575941503369451",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 60308,
+        "root_id": "720575941504377175",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 61167,
+        "root_id": "720575941505100523",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 62552,
+        "root_id": "720575941506135090",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 62576,
+        "root_id": "720575941506158786",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 63744,
+        "root_id": "720575941507312037",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 63759,
+        "root_id": "720575941507328316",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 63813,
+        "root_id": "720575941507382076",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 64619,
+        "root_id": "720575941507999767",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 65382,
+        "root_id": "720575941508647237",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 65692,
+        "root_id": "720575941509005346",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 66513,
+        "root_id": "720575941509897655",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 67056,
+        "root_id": "720575941511291152",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 67110,
+        "root_id": "720575941511401682",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 67801,
+        "root_id": "720575941512516306",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 67876,
+        "root_id": "720575941512637650",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 68831,
+        "root_id": "720575941514048844",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 69003,
+        "root_id": "720575941514227523",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 70397,
+        "root_id": "720575941515489027",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 70449,
+        "root_id": "720575941515541507",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 70737,
+        "root_id": "720575941515838611",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 71395,
+        "root_id": "720575941516449603",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 72247,
+        "root_id": "720575941517118554",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 73202,
+        "root_id": "720575941517917612",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 76617,
+        "root_id": "720575941522512823",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 77590,
+        "root_id": "720575941524292343",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 78891,
+        "root_id": "720575941526119524",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 79209,
+        "root_id": "720575941526517762",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 80395,
+        "root_id": "720575941527790617",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 81196,
+        "root_id": "720575941528317540",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 81727,
+        "root_id": "720575941528884868",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 81798,
+        "root_id": "720575941528992696",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 82677,
+        "root_id": "720575941530495160",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 83017,
+        "root_id": "720575941531021496",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 83707,
+        "root_id": "720575941532309451",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 83824,
+        "root_id": "720575941532477925",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 83825,
+        "root_id": "720575941532478181",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 84012,
+        "root_id": "720575941532749003",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 84064,
+        "root_id": "720575941532830923",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 84644,
+        "root_id": "720575941533620965",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 85188,
+        "root_id": "720575941534106200",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 85326,
+        "root_id": "720575941534220517",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 85642,
+        "root_id": "720575941534543491",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 87013,
+        "root_id": "720575941535811306",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 87409,
+        "root_id": "720575941536140376",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 87502,
+        "root_id": "720575941536193202",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 87879,
+        "root_id": "720575941536402154",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 89552,
+        "root_id": "720575941537607706",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 89554,
+        "root_id": "720575941537607962",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 90542,
+        "root_id": "720575941538529251",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 90698,
+        "root_id": "720575941538677731",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 91212,
+        "root_id": "720575941539133923",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": null
+      },
+      {
+        "index": 91562,
+        "root_id": "720575941539477965",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 92052,
+        "root_id": "720575941540151957",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 92089,
+        "root_id": "720575941540195989",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 93105,
+        "root_id": "720575941541322189",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 93675,
+        "root_id": "720575941541982845",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 93927,
+        "root_id": "720575941542424349",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 94277,
+        "root_id": "720575941543200860",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 94626,
+        "root_id": "720575941543808092",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 94841,
+        "root_id": "720575941544127068",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 95764,
+        "root_id": "720575941545502213",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 95828,
+        "root_id": "720575941545588073",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 96131,
+        "root_id": "720575941546039557",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 96233,
+        "root_id": "720575941546152041",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 96463,
+        "root_id": "720575941546401029",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 96498,
+        "root_id": "720575941546446853",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 97087,
+        "root_id": "720575941547133545",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 97210,
+        "root_id": "720575941547289224",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 97500,
+        "root_id": "720575941547560297",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 98982,
+        "root_id": "720575941549113480",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 100160,
+        "root_id": "720575941550849652",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 100871,
+        "root_id": "720575941551555327",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 101670,
+        "root_id": "720575941552611583",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 102037,
+        "root_id": "720575941553060863",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 102424,
+        "root_id": "720575941553491610",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 103918,
+        "root_id": "720575941554898742",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 104119,
+        "root_id": "720575941555097479",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 104643,
+        "root_id": "720575941555555994",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 105363,
+        "root_id": "720575941556363347",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 105627,
+        "root_id": "720575941556653825",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 106642,
+        "root_id": "720575941557785828",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 106647,
+        "root_id": "720575941557793774",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 107495,
+        "root_id": "720575941558898084",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 107680,
+        "root_id": "720575941559093519",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 107782,
+        "root_id": "720575941559220718",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 108541,
+        "root_id": "720575941560272243",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 109194,
+        "root_id": "720575941561160237",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 110886,
+        "root_id": "720575941563177517",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 111492,
+        "root_id": "720575941563916712",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 111839,
+        "root_id": "720575941564299362",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 111845,
+        "root_id": "720575941564304738",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 112118,
+        "root_id": "720575941564558248",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 112504,
+        "root_id": "720575941564865682",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 112859,
+        "root_id": "720575941565211446",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 113218,
+        "root_id": "720575941565476498",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 114091,
+        "root_id": "720575941566198679",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 115130,
+        "root_id": "720575941566989719",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 115254,
+        "root_id": "720575941567100519",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 115654,
+        "root_id": "720575941567628903",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 119843,
+        "root_id": "720575941573585054",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 120053,
+        "root_id": "720575941573786619",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 120493,
+        "root_id": "720575941574173947",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 120625,
+        "root_id": "720575941574265864",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 122026,
+        "root_id": "720575941575404297",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 122298,
+        "root_id": "720575941575596808",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 122587,
+        "root_id": "720575941575775336",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 122645,
+        "root_id": "720575941575804169",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 122656,
+        "root_id": "720575941575811849",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 123026,
+        "root_id": "720575941576051208",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 123357,
+        "root_id": "720575941576298761",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 123375,
+        "root_id": "720575941576315210",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 123914,
+        "root_id": "720575941576867215",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 124260,
+        "root_id": "720575941577250664",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 124597,
+        "root_id": "720575941577672793",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 124769,
+        "root_id": "720575941577917544",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 125476,
+        "root_id": "720575941579503697",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 126173,
+        "root_id": "720575941580628981",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 126175,
+        "root_id": "720575941580632309",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 126331,
+        "root_id": "720575941580878069",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 126336,
+        "root_id": "720575941580881653",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 126602,
+        "root_id": "720575941581262069",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 127818,
+        "root_id": "720575941584455007",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 128746,
+        "root_id": "720575941586424030",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 129389,
+        "root_id": "720575941587620574",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 129674,
+        "root_id": "720575941588170820",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 130036,
+        "root_id": "720575941589054519",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 130500,
+        "root_id": "720575941589917694",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 130536,
+        "root_id": "720575941589974071",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 130646,
+        "root_id": "720575941590099012",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 130986,
+        "root_id": "720575941590574078",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 131191,
+        "root_id": "720575941590844158",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 131407,
+        "root_id": "720575941591082892",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 131546,
+        "root_id": "720575941591283767",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 131917,
+        "root_id": "720575941591777022",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 131973,
+        "root_id": "720575941591857662",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 132271,
+        "root_id": "720575941592241292",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 133354,
+        "root_id": "720575941593745003",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 134049,
+        "root_id": "720575941594496552",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 134122,
+        "root_id": "720575941594575979",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 134630,
+        "root_id": "720575941595143717",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 135484,
+        "root_id": "720575941596090917",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 136101,
+        "root_id": "720575941596635505",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 136554,
+        "root_id": "720575941597042309",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 136555,
+        "root_id": "720575941597042565",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 136945,
+        "root_id": "720575941597562245",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 138768,
+        "root_id": "720575941601642025",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 138782,
+        "root_id": "720575941601683241",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 138803,
+        "root_id": "720575941601762857",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 139012,
+        "root_id": "720575941602143785",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 139072,
+        "root_id": "720575941602230057",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 139868,
+        "root_id": "720575941604385465",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 140080,
+        "root_id": "720575941604804793",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 140131,
+        "root_id": "720575941604869561",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 140404,
+        "root_id": "720575941605183478",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 140431,
+        "root_id": "720575941605217014",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 140609,
+        "root_id": "720575941605473782",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 140634,
+        "root_id": "720575941605536446",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 141011,
+        "root_id": "720575941606415294",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 141242,
+        "root_id": "720575941607468141",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 141522,
+        "root_id": "720575941608778861",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 142168,
+        "root_id": "720575941610231626",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 142760,
+        "root_id": "720575941611219786",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 144113,
+        "root_id": "720575941612559081",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 144669,
+        "root_id": "720575941612962150",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 145311,
+        "root_id": "720575941613483858",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 145426,
+        "root_id": "720575941613588818",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 145428,
+        "root_id": "720575941613589330",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 145473,
+        "root_id": "720575941613633453",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 146298,
+        "root_id": "720575941615015699",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 147175,
+        "root_id": "720575941616671129",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 148336,
+        "root_id": "720575941621083007",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 148558,
+        "root_id": "720575941621741529",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 149029,
+        "root_id": "720575941624059132",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 149949,
+        "root_id": "720575941625412234",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 150051,
+        "root_id": "720575941625553354",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 150326,
+        "root_id": "720575941625872842",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 151205,
+        "root_id": "720575941627015323",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 151531,
+        "root_id": "720575941627302508",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 152063,
+        "root_id": "720575941627733130",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 152064,
+        "root_id": "720575941627733386",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 152481,
+        "root_id": "720575941628661817",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 152567,
+        "root_id": "720575941628872742",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 152672,
+        "root_id": "720575941629119033",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 153037,
+        "root_id": "720575941629714982",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 153801,
+        "root_id": "720575941631150060",
+        "side": "left",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 153834,
+        "root_id": "720575941631193638",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 154134,
+        "root_id": "720575941631697634",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 155347,
+        "root_id": "720575941633330924",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 155795,
+        "root_id": "720575941633921989",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 155830,
+        "root_id": "720575941633996192",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 155835,
+        "root_id": "720575941634002080",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 155901,
+        "root_id": "720575941634118560",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 155959,
+        "root_id": "720575941634183385",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 156037,
+        "root_id": "720575941634286041",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 156048,
+        "root_id": "720575941634309081",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 156295,
+        "root_id": "720575941634721723",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 156509,
+        "root_id": "720575941635390395",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 156770,
+        "root_id": "720575941638467189",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 157162,
+        "root_id": "720575941639884661",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 157359,
+        "root_id": "720575941640333343",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 157377,
+        "root_id": "720575941640358773",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 157818,
+        "root_id": "720575941641635615",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 157915,
+        "root_id": "720575941641889567",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 158236,
+        "root_id": "720575941642596197",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 159189,
+        "root_id": "720575941644313445",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 159470,
+        "root_id": "720575941644648353",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 159776,
+        "root_id": "720575941645016421",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 159871,
+        "root_id": "720575941645111634",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 160919,
+        "root_id": "720575941646487672",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 160969,
+        "root_id": "720575941646541000",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 161546,
+        "root_id": "720575941650932501",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 161549,
+        "root_id": "720575941650946325",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 161825,
+        "root_id": "720575941651874801",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 162699,
+        "root_id": "720575941653437461",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 165577,
+        "root_id": "720575941659887896",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 165753,
+        "root_id": "720575941660261200",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 166823,
+        "root_id": "720575941663659064",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 167609,
+        "root_id": "720575941667501233",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 168002,
+        "root_id": "720575941668941745",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 168442,
+        "root_id": "720575941669928179",
+        "side": "right",
+        "cell_type": "JO-A",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_low_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 168818,
+        "root_id": "720575941670962353",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 169166,
+        "root_id": "720575941672007079",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 169241,
+        "root_id": "720575941672336295",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 171155,
+        "root_id": "720575941688672495",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 171724,
+        "root_id": "720575941689448972",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 172840,
+        "root_id": "720575941691777176",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 173146,
+        "root_id": "720575941692414683",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 173939,
+        "root_id": "720575941704722138",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 174282,
+        "root_id": "720575941723020090",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 174606,
+        "root_id": "720575941724768314",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 174837,
+        "root_id": "720575941731908651",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 174892,
+        "root_id": "720575941732309547",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      },
+      {
+        "index": 175050,
+        "root_id": "720575941733241899",
+        "side": "left",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "left_antennal_nerve"
+      },
+      {
+        "index": 175254,
+        "root_id": "720575941734116395",
+        "side": "right",
+        "cell_type": "JO-B",
+        "cell_class": "chordotonal_organ_neuron",
+        "cell_function": "auditory",
+        "cell_function_detailed": "auditory_high_frequency",
+        "body_part_sensory": "antenna",
+        "nerve": "right_antennal_nerve"
+      }
+    ]
+  },
+  "sugar": {
+    "rawAddedCandidates": [
+      {
+        "index": 7230,
+        "root_id": "720575941413613716",
+        "side": "right",
+        "cell_type": "LgLG4",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, low_salt, Gr64f, Ir56b",
+        "body_part_sensory": "front_leg",
+        "nerve": "right_prothoracic_leg_nerve"
+      },
+      {
+        "index": 19757,
+        "root_id": "720575941442395599",
+        "side": null,
+        "cell_type": "BM_Taste",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, Gr64f",
+        "body_part_sensory": "labellum",
+        "nerve": "left_maxillary-labial_nerve"
+      },
+      {
+        "index": 60605,
+        "root_id": "720575941504614981",
+        "side": "right",
+        "cell_type": "SNch11",
+        "cell_class": "taste_bristle_neuron",
+        "cell_function": "gustatory",
+        "cell_function_detailed": "sugar, low_salt, Gr64f, Ir56b",
+        "body_part_sensory": "middle_leg",
+        "nerve": "right_mesothoracic_leg_nerve"
+      },
+      {
+        "index": 63482,
+        "root_id": "720575941507085697",
+        "side": "right",
+        "cell_type": "LgLG4",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, low_salt, Gr64f, Ir56b",
+        "body_part_sensory": "front_leg",
+        "nerve": "right_prothoracic_leg_nerve"
+      },
+      {
+        "index": 68890,
+        "root_id": "720575941514105297",
+        "side": "left",
+        "cell_type": "BM_Taste",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, Gr64f",
+        "body_part_sensory": "labellum",
+        "nerve": "left_maxillary-labial_nerve"
+      },
+      {
+        "index": 69032,
+        "root_id": "720575941514255427",
+        "side": "left",
+        "cell_type": "BM_Taste",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, Gr64f",
+        "body_part_sensory": "labellum",
+        "nerve": "left_maxillary-labial_nerve"
+      },
+      {
+        "index": 128708,
+        "root_id": "720575941586312260",
+        "side": "right",
+        "cell_type": "LgLG4",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, low_salt, Gr64f, Ir56b",
+        "body_part_sensory": "front_leg",
+        "nerve": "right_prothoracic_leg_nerve"
+      },
+      {
+        "index": 156561,
+        "root_id": "720575941636252277",
+        "side": "right",
+        "cell_type": "LgLG4",
+        "cell_class": "bristle_neuron",
+        "cell_function": "tactile",
+        "cell_function_detailed": "sugar, low_salt, Gr64f, Ir56b",
+        "body_part_sensory": "front_leg",
+        "nerve": "right_prothoracic_leg_nerve"
+      }
+    ],
+    "routedAddedCells": 7,
+    "excludedConflictedCells": [
+      {
+        "index": 19757,
+        "root_id": "720575941442395599",
+        "side": null,
+        "organ": "labellum",
+        "cell_type": "BM_Taste",
+        "function": "sugar, Gr64f",
+        "reason": "Abstain from sugar drive: BANC detailed sugar conflicts with both its tactile BM_Taste label and the exact annotated FAFB match, which is mechanosensory head-bristle BM_Taste. Null BANC side remains null; do not infer it from FlyWire.",
+        "identity_evidence": {
+          "banc_root_id": "720575941442395599",
+          "banc_cell_type": "BM_Taste",
+          "banc_function": "tactile",
+          "banc_detailed_function": "sugar, Gr64f",
+          "banc_side": null,
+          "fafb_match": "720575940628672122",
+          "flywire_classification": {
+            "root_id": "720575940628672122",
+            "flow": "afferent",
+            "super_class": "sensory",
+            "class": "mechanosensory",
+            "sub_class": "head_bristle",
+            "hemilineage": "",
+            "side": "left",
+            "nerve": "MxLbN"
+          },
+          "flywire_cell_type": {
+            "root_id": "720575940628672122",
+            "primary_type": "BM_Taste",
+            "additional_type(s)": ""
+          },
+          "supports_external_sugar": false,
+          "decision": "Abstain from sugar drive: BANC detailed sugar conflicts with both its tactile BM_Taste label and the exact annotated FAFB match, which is mechanosensory head-bristle BM_Taste. Null BANC side remains null; do not infer it from FlyWire."
+        }
+      }
+    ],
+    "identityEvidence": {
+      "schema": 1,
+      "scope": "Exact BANC fafb_match identity evidence for three internally conflicting labellar annotations. No cross-dataset synapses, physiology or laterality are transferred.",
+      "sources": {
+        "data/raw/banc888/meta.feather": {
+          "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+          "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather"
+        },
+        "data/raw/classification.csv.gz": {
+          "sha256": "e946b552f4056dfc977707be0674609832c3f64332a22d69dc0d9615e7aae663",
+          "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/classification.csv.gz"
+        },
+        "data/raw/consolidated_cell_types.csv.gz": {
+          "sha256": "8aba246d71dc40361677493629972ce3883048c3d02010adc42bda22962a1a2d",
+          "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/consolidated_cell_types.csv.gz"
+        }
+      },
+      "rows": [
+        {
+          "banc_root_id": "720575941514255427",
+          "banc_cell_type": "BM_Taste",
+          "banc_function": "tactile",
+          "banc_detailed_function": "sugar, Gr64f",
+          "banc_side": "left",
+          "fafb_match": "720575940621754367",
+          "flywire_classification": {
+            "root_id": "720575940621754367",
+            "flow": "afferent",
+            "super_class": "sensory",
+            "class": "gustatory",
+            "sub_class": "sugar/water",
+            "hemilineage": "",
+            "side": "left",
+            "nerve": "MxLbN"
+          },
+          "flywire_cell_type": {
+            "root_id": "720575940621754367",
+            "primary_type": "LB3",
+            "additional_type(s)": ""
+          },
+          "supports_external_sugar": true,
+          "decision": "Retain BANC sugar function: the exact annotated FAFB match is a gustatory sugar/water LB3 neuron. Preserve conflicting BANC BM_Taste label without transferring generic BM_Taste function."
+        },
+        {
+          "banc_root_id": "720575941514105297",
+          "banc_cell_type": "BM_Taste",
+          "banc_function": "tactile",
+          "banc_detailed_function": "sugar, Gr64f",
+          "banc_side": "left",
+          "fafb_match": "720575940639259967",
+          "flywire_classification": {
+            "root_id": "720575940639259967",
+            "flow": "afferent",
+            "super_class": "sensory",
+            "class": "gustatory",
+            "sub_class": "sugar/water",
+            "hemilineage": "",
+            "side": "left",
+            "nerve": "MxLbN"
+          },
+          "flywire_cell_type": {
+            "root_id": "720575940639259967",
+            "primary_type": "LB3",
+            "additional_type(s)": ""
+          },
+          "supports_external_sugar": true,
+          "decision": "Retain BANC sugar function: the exact annotated FAFB match is a gustatory sugar/water LB3 neuron. Preserve conflicting BANC BM_Taste label without transferring generic BM_Taste function."
+        },
+        {
+          "banc_root_id": "720575941442395599",
+          "banc_cell_type": "BM_Taste",
+          "banc_function": "tactile",
+          "banc_detailed_function": "sugar, Gr64f",
+          "banc_side": null,
+          "fafb_match": "720575940628672122",
+          "flywire_classification": {
+            "root_id": "720575940628672122",
+            "flow": "afferent",
+            "super_class": "sensory",
+            "class": "mechanosensory",
+            "sub_class": "head_bristle",
+            "hemilineage": "",
+            "side": "left",
+            "nerve": "MxLbN"
+          },
+          "flywire_cell_type": {
+            "root_id": "720575940628672122",
+            "primary_type": "BM_Taste",
+            "additional_type(s)": ""
+          },
+          "supports_external_sugar": false,
+          "decision": "Abstain from sugar drive: BANC detailed sugar conflicts with both its tactile BM_Taste label and the exact annotated FAFB match, which is mechanosensory head-bristle BM_Taste. Null BANC side remains null; do not infer it from FlyWire."
+        }
+      ]
+    },
+    "beforeCoverage": {
+      "requested": 532,
+      "mapped": 509,
+      "unmapped": [
+        {
+          "index": 962,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "middle_leg",
+          "cellType": "LgLG4"
+        },
+        {
+          "index": 1936,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 10366,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "middle_leg",
+          "cellType": "LgLG1b"
+        },
+        {
+          "index": 15913,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 15925,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 20496,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 33883,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 37097,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG4"
+        },
+        {
+          "index": 38861,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "middle_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 65106,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "LB3c"
+        },
+        {
+          "index": 74058,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 79039,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 84584,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 87116,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 87667,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "LB3b"
+        },
+        {
+          "index": 89680,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 93584,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 122364,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "LB3c"
+        },
+        {
+          "index": 132493,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 149695,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG4"
+        },
+        {
+          "index": 161523,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 168383,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 172214,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "dorsal_tpGRN"
+        }
+      ],
+      "organs": {
+        "labellum": 83,
+        "wing_margin": 141,
+        "front_leg": 118,
+        "middle_leg": 74,
+        "hind_leg": 93
+      },
+      "evidence": "Only supplied BANC organ and side annotations are used. Unknown laterality is never assigned from another cell or generic body contact."
+    },
+    "afterCoverage": {
+      "requested": 539,
+      "mapped": 516,
+      "unmapped": [
+        {
+          "index": 962,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "middle_leg",
+          "cellType": "LgLG4"
+        },
+        {
+          "index": 1936,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 10366,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "middle_leg",
+          "cellType": "LgLG1b"
+        },
+        {
+          "index": 15913,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 15925,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 20496,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 33883,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 37097,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG4"
+        },
+        {
+          "index": 38861,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "middle_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 65106,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "LB3c"
+        },
+        {
+          "index": 74058,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 79039,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 84584,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 87116,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 87667,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "LB3b"
+        },
+        {
+          "index": 89680,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 93584,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 122364,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "LB3c"
+        },
+        {
+          "index": 132493,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 149695,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG4"
+        },
+        {
+          "index": 161523,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "wing_margin",
+          "cellType": "WG2"
+        },
+        {
+          "index": 168383,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "front_leg",
+          "cellType": "LgLG3"
+        },
+        {
+          "index": 172214,
+          "reason": "missing or unsupported laterality",
+          "side": null,
+          "bodyPart": "labellum",
+          "cellType": "dorsal_tpGRN"
+        }
+      ],
+      "organs": {
+        "labellum": 85,
+        "wing_margin": 141,
+        "front_leg": 122,
+        "middle_leg": 75,
+        "hind_leg": 93
+      },
+      "evidence": "Only supplied BANC organ and side annotations are used. Unknown laterality is never assigned from another cell or generic body contact."
+    },
+    "organContactChecks": [
+      {
+        "field": "legFoodContact",
+        "slot": 0,
+        "previousCells": 73,
+        "currentCells": 73,
+        "addedIndices": []
+      },
+      {
+        "field": "legFoodContact",
+        "slot": 1,
+        "previousCells": 35,
+        "currentCells": 35,
+        "addedIndices": []
+      },
+      {
+        "field": "legFoodContact",
+        "slot": 2,
+        "previousCells": 57,
+        "currentCells": 57,
+        "addedIndices": []
+      },
+      {
+        "field": "legFoodContact",
+        "slot": 3,
+        "previousCells": 45,
+        "currentCells": 49,
+        "addedIndices": [
+          7230,
+          63482,
+          128708,
+          156561
+        ]
+      },
+      {
+        "field": "legFoodContact",
+        "slot": 4,
+        "previousCells": 39,
+        "currentCells": 40,
+        "addedIndices": [
+          60605
+        ]
+      },
+      {
+        "field": "legFoodContact",
+        "slot": 5,
+        "previousCells": 36,
+        "currentCells": 36,
+        "addedIndices": []
+      },
+      {
+        "field": "mouthFoodContact",
+        "slot": 0,
+        "previousCells": 34,
+        "currentCells": 36,
+        "addedIndices": [
+          68890,
+          69032
+        ]
+      },
+      {
+        "field": "mouthFoodContact",
+        "slot": 1,
+        "previousCells": 49,
+        "currentCells": 49,
+        "addedIndices": []
+      },
+      {
+        "field": "wingFoodContact",
+        "slot": 0,
+        "previousCells": 51,
+        "currentCells": 51,
+        "addedIndices": []
+      },
+      {
+        "field": "wingFoodContact",
+        "slot": 1,
+        "previousCells": 90,
+        "currentCells": 90,
+        "addedIndices": []
+      }
+    ]
+  },
+  "isolatedCell": {
+    "index": 1299,
+    "profile": [
+      20,
+      1,
+      -60,
+      -45,
+      -60,
+      2,
+      100,
+      0.20000000298023224,
+      0,
+      -45,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "dtMs": 0.5,
+    "currents": [
+      {
+        "requestedHz": 0,
+        "currentPa": 0
+      },
+      {
+        "requestedHz": 17.5,
+        "currentPa": 16.40370750427246
+      },
+      {
+        "requestedHz": 21,
+        "currentPa": 17.161041259765625
+      },
+      {
+        "requestedHz": 150,
+        "currentPa": 78.23568725585938
+      }
+    ],
+    "measured": [
+      0,
+      17.75,
+      21,
+      150
+    ]
+  },
+  "unchangedOtherInputs": true,
+  "staleAuditoryChannelGuardPassed": true,
+  "connectivityAndPhysiologyUnchanged": true
+}

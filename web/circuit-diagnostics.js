@@ -48,7 +48,7 @@ export class CircuitDiagnostics{
         meanDriveMv:cells.reduce((s,n)=>s+n.synapticDriveMv,0)/cells.length,
         incomingPositive:ranked.filter(n=>n.sign==='excitatory').slice(0,3),incomingNegative:ranked.filter(n=>n.sign==='inhibitory').slice(0,3)};
     });
-    this.sample={timeMs,windowMs,restMv:this.restMv,thresholdMv:this.thresholdMv,groups,channels};
+    this.sample={timeMs,windowMs,restMv:this.restMv,thresholdMv:this.thresholdMv,groups,channels,dataset:this.probe.dataset||'FlyWire',driveUnit:this.probe.driveUnit||'mV',incomingUnit:this.probe.incomingUnit||'signed contacts × Hz'};
     this.previous=counts.slice();this.previousTime=timeMs;return this.sample;
   }
 }

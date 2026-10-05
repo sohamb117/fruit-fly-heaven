@@ -1,0 +1,344 @@
+{
+  "evidence": "native shared hover teacher data",
+  "splits": [
+    {
+      "episodes": 32,
+      "fingerprint": "f1e16f1a652020ab52f3d13e0077c82c0ee54e1becbdccc2e35a7fca74e1fa9f",
+      "interactions": 160000,
+      "manifest_sha256": "d5f928e62e82a6dae3df47db57295cab0acfe0990ff33be1b3540dead6bb19e9",
+      "metadata": {
+        "action_names": [
+          "head_abduct",
+          "head_twist",
+          "head",
+          "wing_yaw_left",
+          "wing_roll_left",
+          "wing_pitch_left",
+          "wing_yaw_right",
+          "wing_roll_right",
+          "wing_pitch_right",
+          "abdomen_abduct",
+          "abdomen",
+          "user_0"
+        ],
+        "beta": 0.0,
+        "body_config": {
+          "action_repeat": 1,
+          "angle_tolerance": 0.3490658503988659,
+          "angular_kick": 3.0,
+          "final_dwell_seconds": 0.1,
+          "horizon": 5000,
+          "initial_angle": 0.04,
+          "initial_velocity": 0.5,
+          "linear_kick": 2.0,
+          "perturbations": true,
+          "position_tolerance": 0.25,
+          "velocity_tolerance": 5.0
+        },
+        "body_fingerprint": "6f4b1380420bbd20a56a9cd7662a53e1393c673f279e4163ab06565f1a420471",
+        "collection": "teacher",
+        "evidence": "native_hover_teacher_data",
+        "observation_schema": [
+          {
+            "name": "walker/accelerometer",
+            "scale": 2000.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/actuator_activation",
+            "scale": 1.0,
+            "shape": [
+              0
+            ]
+          },
+          {
+            "name": "walker/gyro",
+            "scale": 200.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/joints_pos",
+            "scale": 3.141592653589793,
+            "shape": [
+              25
+            ]
+          },
+          {
+            "name": "walker/joints_vel",
+            "scale": 2000.0,
+            "shape": [
+              25
+            ]
+          },
+          {
+            "name": "walker/ref_displacement",
+            "scale": 1.0,
+            "shape": [
+              6,
+              3
+            ]
+          },
+          {
+            "name": "walker/ref_root_quat",
+            "scale": 1.0,
+            "shape": [
+              6,
+              4
+            ]
+          },
+          {
+            "name": "walker/velocimeter",
+            "scale": 50.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/world_zaxis",
+            "scale": 1.0,
+            "shape": [
+              3
+            ]
+          }
+        ],
+        "qualification_sha256": "596eadac0295d6d68e04a9d812f395b7fc6cb05446c27c41e60fd03984a4b39b",
+        "seed": 1000,
+        "split": "train",
+        "task": "hover",
+        "teacher_fingerprint": "c7e2375d070fe82cbffc4115e7d676d30113818918bd0bd6aee2d0f27b8dedba",
+        "teacher_queries_per_interaction": 1
+      },
+      "split": "train"
+    },
+    {
+      "episodes": 8,
+      "fingerprint": "56fea3c637cd3eda9aa2b8a9bf3505f0900f18c7c44e5316c6992cda87ab6f8e",
+      "interactions": 40000,
+      "manifest_sha256": "14deed73e2112ad00087f9f5561aaf358f629893918ccdf8c92b363adb5b9c79",
+      "metadata": {
+        "action_names": [
+          "head_abduct",
+          "head_twist",
+          "head",
+          "wing_yaw_left",
+          "wing_roll_left",
+          "wing_pitch_left",
+          "wing_yaw_right",
+          "wing_roll_right",
+          "wing_pitch_right",
+          "abdomen_abduct",
+          "abdomen",
+          "user_0"
+        ],
+        "beta": 0.0,
+        "body_config": {
+          "action_repeat": 1,
+          "angle_tolerance": 0.3490658503988659,
+          "angular_kick": 3.0,
+          "final_dwell_seconds": 0.1,
+          "horizon": 5000,
+          "initial_angle": 0.04,
+          "initial_velocity": 0.5,
+          "linear_kick": 2.0,
+          "perturbations": true,
+          "position_tolerance": 0.25,
+          "velocity_tolerance": 5.0
+        },
+        "body_fingerprint": "6f4b1380420bbd20a56a9cd7662a53e1393c673f279e4163ab06565f1a420471",
+        "collection": "teacher",
+        "evidence": "native_hover_teacher_data",
+        "observation_schema": [
+          {
+            "name": "walker/accelerometer",
+            "scale": 2000.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/actuator_activation",
+            "scale": 1.0,
+            "shape": [
+              0
+            ]
+          },
+          {
+            "name": "walker/gyro",
+            "scale": 200.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/joints_pos",
+            "scale": 3.141592653589793,
+            "shape": [
+              25
+            ]
+          },
+          {
+            "name": "walker/joints_vel",
+            "scale": 2000.0,
+            "shape": [
+              25
+            ]
+          },
+          {
+            "name": "walker/ref_displacement",
+            "scale": 1.0,
+            "shape": [
+              6,
+              3
+            ]
+          },
+          {
+            "name": "walker/ref_root_quat",
+            "scale": 1.0,
+            "shape": [
+              6,
+              4
+            ]
+          },
+          {
+            "name": "walker/velocimeter",
+            "scale": 50.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/world_zaxis",
+            "scale": 1.0,
+            "shape": [
+              3
+            ]
+          }
+        ],
+        "qualification_sha256": "596eadac0295d6d68e04a9d812f395b7fc6cb05446c27c41e60fd03984a4b39b",
+        "seed": 1000,
+        "split": "validation",
+        "task": "hover",
+        "teacher_fingerprint": "c7e2375d070fe82cbffc4115e7d676d30113818918bd0bd6aee2d0f27b8dedba",
+        "teacher_queries_per_interaction": 1
+      },
+      "split": "validation"
+    },
+    {
+      "episodes": 8,
+      "fingerprint": "b29a3c03b01900f9b873eeaf01fba073d65ac935bbaaf864e216f4e3a7df00b7",
+      "interactions": 40000,
+      "manifest_sha256": "9101f9d9e7a052cd1b62fbbd7fd7aa6809ee45c408f558f09cff77fa05246f4e",
+      "metadata": {
+        "action_names": [
+          "head_abduct",
+          "head_twist",
+          "head",
+          "wing_yaw_left",
+          "wing_roll_left",
+          "wing_pitch_left",
+          "wing_yaw_right",
+          "wing_roll_right",
+          "wing_pitch_right",
+          "abdomen_abduct",
+          "abdomen",
+          "user_0"
+        ],
+        "beta": 0.0,
+        "body_config": {
+          "action_repeat": 1,
+          "angle_tolerance": 0.3490658503988659,
+          "angular_kick": 3.0,
+          "final_dwell_seconds": 0.1,
+          "horizon": 5000,
+          "initial_angle": 0.04,
+          "initial_velocity": 0.5,
+          "linear_kick": 2.0,
+          "perturbations": true,
+          "position_tolerance": 0.25,
+          "velocity_tolerance": 5.0
+        },
+        "body_fingerprint": "6f4b1380420bbd20a56a9cd7662a53e1393c673f279e4163ab06565f1a420471",
+        "collection": "teacher",
+        "evidence": "native_hover_teacher_data",
+        "observation_schema": [
+          {
+            "name": "walker/accelerometer",
+            "scale": 2000.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/actuator_activation",
+            "scale": 1.0,
+            "shape": [
+              0
+            ]
+          },
+          {
+            "name": "walker/gyro",
+            "scale": 200.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/joints_pos",
+            "scale": 3.141592653589793,
+            "shape": [
+              25
+            ]
+          },
+          {
+            "name": "walker/joints_vel",
+            "scale": 2000.0,
+            "shape": [
+              25
+            ]
+          },
+          {
+            "name": "walker/ref_displacement",
+            "scale": 1.0,
+            "shape": [
+              6,
+              3
+            ]
+          },
+          {
+            "name": "walker/ref_root_quat",
+            "scale": 1.0,
+            "shape": [
+              6,
+              4
+            ]
+          },
+          {
+            "name": "walker/velocimeter",
+            "scale": 50.0,
+            "shape": [
+              3
+            ]
+          },
+          {
+            "name": "walker/world_zaxis",
+            "scale": 1.0,
+            "shape": [
+              3
+            ]
+          }
+        ],
+        "qualification_sha256": "596eadac0295d6d68e04a9d812f395b7fc6cb05446c27c41e60fd03984a4b39b",
+        "seed": 1000,
+        "split": "test",
+        "task": "hover",
+        "teacher_fingerprint": "c7e2375d070fe82cbffc4115e7d676d30113818918bd0bd6aee2d0f27b8dedba",
+        "teacher_queries_per_interaction": 1
+      },
+      "split": "test"
+    }
+  ]
+}

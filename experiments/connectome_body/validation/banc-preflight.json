@@ -1,0 +1,143 @@
+{
+  "action_dim": 59,
+  "action_rms": 0.00015516849816776812,
+  "actor_parameters": 4682,
+  "backward_seconds": 2.2355419999948936,
+  "batch_size": 1,
+  "body_backend": "flybody",
+  "body_fingerprint": "309a4a62ac6e0370212eead050c60ac684d00fe1a9c674cbf54dd4c83231ff67",
+  "body_resets": 0,
+  "body_seconds": 0.05973629196523689,
+  "code_fingerprint": "5a82565622e9694e59d351cf0a645e19cde596b322b143fe6a04e9d6af9e52e2",
+  "config": {
+    "adapter_budget": 5000,
+    "body": {
+      "action_repeat": 5,
+      "backend": "flybody",
+      "horizon": 200,
+      "perturbations": true,
+      "source": null,
+      "task": "balance"
+    },
+    "device": "cpu",
+    "dynamics": {
+      "channels": 16,
+      "gain": 0.9,
+      "inhibitory_fraction": 0.2,
+      "input_gain": 1.0,
+      "sign_mode": "random_dale",
+      "substeps": 2,
+      "tau_seconds": 0.02,
+      "weight_transform": "log1p"
+    },
+    "graph": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/data/graphs/banc",
+    "ppo": {
+      "burn_in": 16,
+      "clip_ratio": 0.2,
+      "critic_width": 64,
+      "entropy_coefficient": 0.001,
+      "epochs": 4,
+      "eval_episodes": 20,
+      "eval_every": 20000,
+      "gae_lambda": 0.95,
+      "gamma": 0.99,
+      "interactions": 1000000,
+      "learning_rate": 0.0003,
+      "max_grad_norm": 0.5,
+      "num_envs": 4,
+      "rollout_steps": 128,
+      "sequence_length": 16,
+      "success_threshold": 0.8,
+      "test_episodes": 100,
+      "threshold_confirmations": 3,
+      "value_coefficient": 0.5
+    },
+    "purpose": "experiment",
+    "substrate": "real",
+    "substrate_seed": 0,
+    "threads": 1,
+    "train_seed": 0
+  },
+  "encoder_gradient_norm": 2.1682898321091587e-07,
+  "forward_seconds": 2.4381301660032477,
+  "graph": {
+    "files": {
+      "dst.npy": "acc70718bb661f714245c03db3c4ee4e816c14cccb9a7eb5449856e2d58c07ee",
+      "node_ids.npy": "98d236719b3a3c9d02a1a243ea652a16fbaa0d4723cd363acf91309ea0fd6c0e",
+      "signs.npy": "c0965cea6fa7f7c94ed92fd2bee078183f4b2c46e408c8c3621cc6df5b5d3668",
+      "src.npy": "b9cca774d4200c51027a819b7815a90d811cad97f187b0817241fb1144101817",
+      "weight.npy": "b0b6ba5d00ac2e901fa2a4fc3036bd1a806e3a5617344db383b28ed8ffda0b8d"
+    },
+    "fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+    "provenance": {
+      "citation": "https://doi.org/10.7910/DVN/7WTH1N",
+      "coverage": "brain_and_ventral_nerve_cord",
+      "dataset": "BANC",
+      "documentation": "https://github.com/sjcabs/fly_connectome_data_tutorial/blob/main/data/dataset_documentation/banc_data.md",
+      "excluded_edges": 78685,
+      "excluded_nodes": 13107,
+      "files": {
+        "edges-v3.feather": {
+          "bytes": 359161658,
+          "sha256": "8c296e946f3c69a8c7222f30ad75fa8a98eeb189124fec6df829c9125f4be64b",
+          "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_edgelist_simple_v3.feather"
+        },
+        "meta.feather": {
+          "bytes": 57503026,
+          "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+          "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather"
+        }
+      },
+      "filter": "Exclude explicit glia/trachea/not_a_neuron; retain all other metadata and edge endpoints; no count cutoff",
+      "license": "CC-BY-4.0",
+      "release": "v888-v3",
+      "resolution": "neuron_synapse",
+      "sign_evidence": "Assumed insect transmitter effect; unknown/neuromodulatory labels remain 0",
+      "species": "Drosophila melanogaster",
+      "status": "public_graph",
+      "unknown_annotated_nodes": 0
+    },
+    "schema": "connectome-body-graph-v1",
+    "summary": {
+      "annotated_sign_fraction": 0.7845508292427067,
+      "edges": 13542180,
+      "in_degree_quantiles": [
+        0.0,
+        21.0,
+        45.0,
+        89.0,
+        7316.0
+      ],
+      "isolated_neurons": 12668,
+      "merged_duplicate_edges": 0,
+      "neurons": 175401,
+      "out_degree_quantiles": [
+        0.0,
+        27.0,
+        51.0,
+        89.0,
+        7520.0
+      ],
+      "raw_weight_sum": 42199458.0,
+      "removed_self_edges": 0,
+      "strong_components": 16827,
+      "weak_components": 12806
+    }
+  },
+  "learned_connectome_parameters": 0,
+  "null": {
+    "parent": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+    "seed": 0,
+    "variant": "real"
+  },
+  "observation_dim": 286,
+  "parameter_budget": 5000,
+  "ports_fingerprint": "1133c63d1ae7e7f0a656fb2a4fb9d8119f5abd159bff7b63779e70074b42eda4",
+  "schema": "connectome-body-preflight-v1",
+  "scope": "finite forward/backward and native body integration; not learned task performance",
+  "setup_seconds": 0.5142942079983186,
+  "state_rms": 0.37122684717178345,
+  "state_saturation_fraction": 1.1402443305996712e-05,
+  "status": "passed",
+  "steps": 8
+}

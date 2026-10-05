@@ -1,0 +1,48 @@
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
+const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--enable-unsafe-webgpu']});
+const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];
+page.on('pageerror',e=>errors.push(e.message));
+const report={date:new Date().toISOString(),scope:'One released FlyBody reference controller in the original 3D UI; BANC observes, floor contacts disabled.',browser:browser.version(),errors,checks:[]};
+const read=()=>page.evaluate(()=>({sample:window.heaven.bodyWorld.controller.sample(),diagnostics:window.heaven.bodyWorld.diagnostics,bodyTime:window.heaven.bodyWorld.time,neuralTime:window.heaven.state.time_ms,position:window.heaven.state.flies[0].physicsPosition}));
+try{
+ await page.addInitScript(()=>{localStorage.setItem('fruit-fly-population','7');localStorage.setItem('fruit-fly-movement-mode','behavior');localStorage.setItem('fruit-fly-neural-body-clock','neural');});
+ await page.goto('http://127.0.0.1:7842/?controller=flybody-reference&trajectory=straight&population=7&follow=1');
+ await page.waitForFunction(()=>window.heaven?.ready&&window.heaven.bodyWorld.time>.03,null,{timeout:120000});
+ assert.equal(await page.evaluate(()=>window.heaven.state.flies.length),1);
+ assert.equal(await page.evaluate(()=>window.heaven.bodyWorld.reference),true);
+ assert.equal(await page.locator('#movement-mode').isDisabled(),true);
+ assert.equal(await page.locator('#body-clock').inputValue(),'live');
+ for(const id of ['habitat','subject','controls','optics','cortex','circuits','model'])assert.equal(await page.locator('#window-'+id).count(),1);
+ assert.match(await page.locator('#movement-note').textContent(),/BANC does not control/);
+ assert.match(await page.locator('#internal-state').textContent(),/floor contacts/);
+ report.checks.push('Original 3D instrument windows retained; one fly; published control and disabled contacts explicitly labeled');
+ await page.locator('#pause').click();await page.waitForTimeout(200);
+ const frozen=await read();await page.waitForTimeout(250);assert.equal((await read()).bodyTime,frozen.bodyTime);
+ report.start=frozen;await page.screenshot({path:'reports/flybody-reference-start.png'});
+ report.checks.push('Pause holds reference physics');
+ await page.locator('#pause').click();
+ await page.waitForFunction(()=>window.heaven.bodyWorld.time>=.5,null,{timeout:120000});
+ report.midflight=await read();await page.screenshot({path:'reports/flybody-reference-midflight.png'});
+ await page.waitForFunction(()=>window.heaven.bodyWorld.complete,null,{timeout:120000});
+ report.complete=await read();
+ assert.equal(report.complete.sample.terminationReason,'trajectory complete');
+ assert(Math.abs(report.complete.bodyTime-1.1988)<1e-8);
+ assert(report.complete.sample.referenceError<.08);assert.equal(report.complete.sample.maximumAppliedForce,0);
+ assert.equal(report.complete.sample.maximumRootActuatorForce,0);
+ await page.waitForFunction(()=>document.querySelector('#pause').textContent==='Replay reference');
+ await page.screenshot({path:'reports/flybody-reference-complete.png'});
+ report.checks.push('Observed sustained forward flight through the complete 1.1988-second reference; no injected root forces');
+ const stopped=report.complete.bodyTime;await page.waitForTimeout(200);assert.equal((await read()).bodyTime,stopped);
+ await page.locator('#pause').click();
+ await page.waitForFunction(()=>window.heaven?.ready&&window.heaven.bodyWorld.time>.01&&!window.heaven.bodyWorld.complete,null,{timeout:120000});
+ await page.locator('#motor-coupling').uncheck();
+ await page.waitForFunction(()=>window.heaven.bodyWorld.complete,null,{timeout:120000});
+ report.disconnected=await read();
+ assert.equal(report.disconnected.sample.terminationReason,'below minimum height');
+ assert.equal(await page.evaluate(()=>Math.max(...Array.from(window.heaven.bodyWorld.controller.data.ctrl,Math.abs))),0);
+ report.checks.push('Replay resets the trial; disconnecting controls causes a physical fall and upstream failure termination');
+ assert.equal(await page.locator('#error').textContent(),'');assert.deepEqual(errors,[]);report.passed=true;
+}catch(error){report.passed=false;report.failure=error.stack;process.exitCode=1;}
+finally{await browser.close();await fs.writeFile('reports/flybody-reference-ui.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));}

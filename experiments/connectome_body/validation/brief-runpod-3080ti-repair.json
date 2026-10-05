@@ -1,0 +1,22 @@
+{
+  "pod_id": "3l7nbexxghy1c0",
+  "scope": "Existing RTX 3080 Ti only; no replacement pods authorized by latest user correction",
+  "status": "RUNNING",
+  "cuda_status": "blocked",
+  "driver": "580.95.05",
+  "cuInit_code": 999,
+  "uvm_device_error": "errno 5: Input/output error",
+  "matched_kernel_and_userspace_driver": true,
+  "device_link_repair_fixed": false,
+  "container_uid_map": "0 165536 65536",
+  "has_cap_sys_module": false,
+  "has_cap_sys_admin": false,
+  "targeted_gpu_reset_error": "Unable to disable persistence mode for GPU 00000000:22:00.0: Unknown Error",
+  "jupyter_stopped": true,
+  "extra_pod_id": "m5yycqb2tw345h",
+  "extra_pod_deleted": true,
+  "extra_pod_experiment_started": false,
+  "existing_pod_preserved": true,
+  "required_next_step": "RunPod host administrator must repair/reset the NVIDIA UVM driver for the existing host.",
+  "observed_utc": "2026-09-15T19:13:36.043Z"
+}

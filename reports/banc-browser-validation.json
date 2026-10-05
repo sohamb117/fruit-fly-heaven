@@ -1,0 +1,65 @@
+{
+  "parity": {
+    "cases": [
+      {
+        "name": "mixed receptors, graded and spiking, delays, gap junctions",
+        "maxVoltageError": 0.000030517578125,
+        "maxRateError": 0.00017547607421875,
+        "maxStateError": 0.00017547607421875,
+        "maxSpikeDifference": 0,
+        "batchedTraceParity": true,
+        "alternatingReadoutParity": true,
+        "retainedSpikes": 29
+      },
+      {
+        "name": "workgroup boundary and partial final workgroup",
+        "maxVoltageError": 0.00002288818359375,
+        "maxRateError": 0.00017547607421875,
+        "maxStateError": 0.00017547607421875,
+        "maxSpikeDifference": 0,
+        "batchedTraceParity": true,
+        "alternatingReadoutParity": true,
+        "retainedSpikes": 13
+      },
+      {
+        "name": "simultaneous spikes across complete and partial workgroups",
+        "maxVoltageError": 0.00000762939453125,
+        "maxRateError": 0.00017547607421875,
+        "maxStateError": 0.00017547607421875,
+        "maxSpikeDifference": 0,
+        "batchedTraceParity": true,
+        "alternatingReadoutParity": true,
+        "retainedSpikes": 3341
+      },
+      {
+        "name": "Shared graph, independent inputs/state, exact spike times and retained graph lifetime",
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "fallback": {
+    "autoBackend": "wasm",
+    "reason": "WebGPU unavailable",
+    "requiredFailed": true
+  },
+  "full_graph": {
+    "neurons": 175401,
+    "edges": 13542180,
+    "adapter": {
+      "vendor": "apple",
+      "architecture": "metal-3",
+      "device": "",
+      "description": ""
+    },
+    "time": 0.060000000000000046,
+    "x": -0.9999870187964331,
+    "y": -4.4733823149045656e-7,
+    "events": [],
+    "backend": "webgpu",
+    "status": "Running on neural time. Behavior stages are observations."
+  },
+  "pause_and_single_step": true,
+  "browser": "152.0.7977.83",
+  "errors": []
+}

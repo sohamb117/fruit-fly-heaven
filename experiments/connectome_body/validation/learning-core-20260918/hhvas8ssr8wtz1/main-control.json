@@ -1,0 +1,13 @@
+{
+  "max_workers": 6,
+  "max_large_graphs": 2,
+  "gpu_budget_gib": 21.0,
+  "ram_budget_gib": 24.0,
+  "ready_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ]
+}

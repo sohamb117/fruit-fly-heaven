@@ -1,0 +1,13 @@
+# Tested on macOS arm64 with Python 3.11.16. Do not install into app runtime.
+# uv venv --python 3.11 /tmp/flybody-baseline-venv
+# uv pip install --python /tmp/flybody-baseline-venv/bin/python -r scripts/flybody-baseline-requirements.txt
+# references/flybody must be at d015e9bfe441bd90ae431bac24c55cb74bdbce26.
+-e ./references/flybody
+numpy==1.26.4
+dm-control==1.0.46
+dm-env==1.6
+mujoco==3.13.0
+tensorflow==2.15.1
+tensorflow-probability==0.23.0
+h5py==3.16.0
+mediapy==1.2.7

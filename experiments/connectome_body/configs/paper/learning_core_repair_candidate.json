@@ -1,0 +1,164 @@
+{
+  "schema": "compatibility-learning-study-v1",
+  "project_root": "../..",
+  "device": "cuda",
+  "threads": 1,
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "graphs": {
+    "banc": {
+      "path": "data/graphs/banc",
+      "fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+      "native_body": "fly",
+      "release": "BANC v888 v3",
+      "communities": "data/paper-annotations/banc/communities.json",
+      "anatomy": "data/paper-annotations/banc/anatomy.json"
+    },
+    "malecns": {
+      "path": "data/graphs/malecns",
+      "fingerprint": "583b52f0b4c9191643d3d13f81d3324d2e6c266213783e5385b8680eb13984c9",
+      "native_body": "fly",
+      "release": "MaleCNS v1.0 confidence 0.5, induced curated Traced population",
+      "communities": "data/paper-annotations/malecns/communities.json",
+      "anatomy": "data/paper-annotations/malecns/anatomy.json"
+    },
+    "celegans": {
+      "path": "data/graphs/celegans-cook2019-chemical",
+      "fingerprint": "819d6a3de11b82e6fd1be070f8396ee8920caacd78eed6ac33c0e073418c1c9b",
+      "native_body": "worm",
+      "release": "Cook 2019 chemical hermaphrodite adjacency, July 2020 correction",
+      "communities": "data/paper-annotations/celegans/communities.json",
+      "anatomy": "data/paper-annotations/celegans/anatomy.json"
+    }
+  },
+  "tasks": {
+    "hover": {
+      "name": "fly",
+      "task": "hover",
+      "horizon": 5000,
+      "action_repeat": 1,
+      "parameters": {
+        "perturbations": false
+      }
+    },
+    "worm_locomotion": {
+      "name": "worm",
+      "task": "locomotion",
+      "horizon": 1000,
+      "model_manifest": "data/paper-bodies/worm/manifest.json"
+    }
+  },
+  "worm_qualification": "data/paper-bodies/worm/qualification-v2.json",
+  "regime_tasks": [],
+  "core_tasks": [
+    "hover",
+    "worm_locomotion"
+  ],
+  "adapter": {
+    "family": "mlp_linear",
+    "budget": 20000,
+    "channels": 16,
+    "support": 256,
+    "depth": 1
+  },
+  "dynamics": {
+    "gain": 0.9,
+    "tau_seconds": 0.002,
+    "substeps": 2,
+    "input_gain": 1.0,
+    "sign_mode": "random_dale",
+    "inhibitory_fraction": 0.2,
+    "weight_transform": "log1p",
+    "gradient_edge_chunk": 65536
+  },
+  "swap_attempts_per_edge": 10,
+  "ppo": {
+    "interactions": 1000000,
+    "num_envs": 4,
+    "rollout_steps": 128,
+    "sequence_length": 16,
+    "burn_in": 16,
+    "epochs": 4,
+    "learning_rate": 0.0001,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_ratio": 0.2,
+    "value_coefficient": 0.5,
+    "max_grad_norm": 0.5,
+    "critic_width": 64,
+    "exploration_log_std": -3.0,
+    "eval_every": 20000,
+    "eval_episodes": 20,
+    "test_episodes": 100,
+    "success_threshold": 0.8,
+    "threshold_confirmations": 3,
+    "target_kl": 0.01
+  },
+  "bc": {
+    "epochs": 20,
+    "batch_size": 4,
+    "sequence_length": 128,
+    "learning_rate": 0.001,
+    "max_grad_norm": 0.5,
+    "standardize_actions": true,
+    "initialize_action_mean": true
+  },
+  "dataset_root": "data/learning-core-v2",
+  "demonstrations": {
+    "train_episodes": 16,
+    "validation_episodes": 4,
+    "seed": 0,
+    "min_success": 0.75
+  },
+  "temporal_data": {
+    "task": "linear_memory",
+    "length": 512,
+    "train_sequences": 64,
+    "validation_sequences": 16,
+    "test_sequences": 32,
+    "seed": 0
+  },
+  "temporal_training": {
+    "epochs": 20,
+    "batch_size": 4,
+    "sequence_length": 64,
+    "learning_rate": 0.001
+  },
+  "qualification": {
+    "max_seconds": 1200,
+    "max_bc_updates": 2,
+    "max_ppo_updates": 2,
+    "body_horizon": 64,
+    "dataset_episodes": 2
+  },
+  "compute_comparison": {
+    "unit": "measured cumulative optimization seconds including BC before PPO",
+    "rule": "last measured validation score at or before a common compute cutoff; never extrapolate",
+    "cutoffs_seconds": [
+      60,
+      300,
+      900,
+      3600
+    ]
+  },
+  "launch_regimes": [
+    "bc_ppo"
+  ],
+  "normalize_observations": true,
+  "normalize_actions": true,
+  "ppo_time_horizons": {
+    "hover": {
+      "discount_seconds": 0.2,
+      "advantage_seconds": 0.05,
+      "sequence_seconds": 0.0256,
+      "burn_in_seconds": 0.0256,
+      "rollout_seconds": 0.1024
+    }
+  },
+  "development_status": "UNQUALIFIED candidate: do not launch full matrix until native BC-to-PPO controls pass"
+}

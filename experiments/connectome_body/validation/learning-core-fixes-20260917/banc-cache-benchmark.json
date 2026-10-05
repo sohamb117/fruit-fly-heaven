@@ -1,0 +1,26 @@
+[
+  {
+    "cache": {
+      "enabled": true,
+      "hit": false,
+      "key": "e8c013938d8e43638d2711d388dc34c7facbc6ba76c53e8a8065c2ae2a5c6672",
+      "wall_seconds": 73.0196867909981
+    },
+    "edges": 13542180,
+    "neurons": 175401,
+    "stage": "cold",
+    "wall_seconds": 73.02470837500005
+  },
+  {
+    "cache": {
+      "enabled": true,
+      "hit": true,
+      "key": "e8c013938d8e43638d2711d388dc34c7facbc6ba76c53e8a8065c2ae2a5c6672",
+      "wall_seconds": 0.1826557500025956
+    },
+    "edges": 13542180,
+    "neurons": 175401,
+    "stage": "warm",
+    "wall_seconds": 0.18276166600116994
+  }
+]

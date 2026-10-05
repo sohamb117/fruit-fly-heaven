@@ -1,0 +1,16 @@
+.venv
+data
+runs
+references
+reports
+validation
+.git
+.cache
+.pytest_cache
+.ruff_cache
+**/__pycache__
+**/*cave-secret.json
+**/.env
+**/.env.*
+**/.cloudvolume
+**/.ssh

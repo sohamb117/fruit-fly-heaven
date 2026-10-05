@@ -1,0 +1,9 @@
+{$DOMAIN} {
+	handle /api/training/* {
+		reverse_proxy coordinator:7850
+	}
+
+	handle {
+		respond "Training coordinator API only. Run the matching training site on your own computer." 404
+	}
+}

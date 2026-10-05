@@ -1,0 +1,290 @@
+{
+  "scope": "Rendering-only check of native wing registration in one live published-controller reference fly using the original UI. Own isolated browser; no scripted physics advancement or production edits.",
+  "date": "2026-09-13T09:58:25.652Z",
+  "browser": "152.0.7977.83",
+  "errors": [],
+  "sourceHashes": {
+    "/app.js": "4cb940d1a2cb756548e60e1bf52e84b780fe323e8715d7f9eaa9d309f5ce68ba",
+    "/flybody-reference-world.js": "28e32391502f4ac3182033bb953b07cc535634d4f881bbdaf776b37df747c2b2",
+    "/flybody-wing-pose.js": "2eadef6980b88683aeee6450eed68e2cda697a847d004121b742ebc59ffebc73"
+  },
+  "samples": [
+    {
+      "bodyTime": 0.057600000000001136,
+      "neuralTimeMs": 12,
+      "population": 1,
+      "reference": true,
+      "paused": false,
+      "complete": false,
+      "referenceErrorCm": 0.011863839846618126,
+      "externallyAppliedForce": 0,
+      "renderCalls": 57,
+      "wings": [
+        {
+          "side": "left",
+          "body": 10,
+          "geom": 14,
+          "nativeCenterWorld": [
+            -20.96318595370375,
+            38.90098457879495,
+            -10.586502832563855
+          ],
+          "registeredCenterWorld": [
+            -20.96318595370375,
+            38.900984578794954,
+            -10.586502832563859
+          ],
+          "centerError": 7.944109290391274e-15,
+          "determinant": 0.9999999999999917,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        },
+        {
+          "side": "right",
+          "body": 11,
+          "geom": 18,
+          "nativeCenterWorld": [
+            -20.896965133585056,
+            39.10268249987934,
+            -13.77050242642952
+          ],
+          "registeredCenterWorld": [
+            -20.896965133585056,
+            39.10268249987935,
+            -13.770502426429518
+          ],
+          "centerError": 7.32410687763558e-15,
+          "determinant": 0.9999999999999911,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        }
+      ]
+    },
+    {
+      "bodyTime": 0.5045999999999526,
+      "neuralTimeMs": 302,
+      "population": 1,
+      "reference": true,
+      "paused": false,
+      "complete": false,
+      "referenceErrorCm": 0.02261391336947677,
+      "externallyAppliedForce": 0,
+      "renderCalls": 58,
+      "wings": [
+        {
+          "side": "left",
+          "body": 10,
+          "geom": 14,
+          "nativeCenterWorld": [
+            -3.3834566719733346,
+            38.93750121729353,
+            -10.616889112191753
+          ],
+          "registeredCenterWorld": [
+            -3.383456671973334,
+            38.93750121729353,
+            -10.616889112191757
+          ],
+          "centerError": 3.580361673049448e-15,
+          "determinant": 0.999999999999995,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        },
+        {
+          "side": "right",
+          "body": 11,
+          "geom": 18,
+          "nativeCenterWorld": [
+            -3.337292351031664,
+            38.86390603743194,
+            -14.08960191533314
+          ],
+          "registeredCenterWorld": [
+            -3.337292351031664,
+            38.86390603743194,
+            -14.08960191533314
+          ],
+          "centerError": 0,
+          "determinant": 0.9999999999999938,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        }
+      ]
+    },
+    {
+      "bodyTime": 1.0015999999999015,
+      "neuralTimeMs": 562,
+      "population": 1,
+      "reference": true,
+      "paused": false,
+      "complete": false,
+      "referenceErrorCm": 0.024377333688607387,
+      "externallyAppliedForce": 0,
+      "renderCalls": 58,
+      "wings": [
+        {
+          "side": "left",
+          "body": 10,
+          "geom": 14,
+          "nativeCenterWorld": [
+            -3.5236478827808355,
+            39.39436022922793,
+            -10.618077002791162
+          ],
+          "registeredCenterWorld": [
+            -3.5236478827808337,
+            39.394360229227935,
+            -10.61807700279116
+          ],
+          "centerError": 7.53644380168212e-15,
+          "determinant": 1.0000000000000038,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        },
+        {
+          "side": "right",
+          "body": 11,
+          "geom": 18,
+          "nativeCenterWorld": [
+            -3.3648626615404,
+            39.53284419184061,
+            -14.176334066213705
+          ],
+          "registeredCenterWorld": [
+            -3.3648626615404003,
+            39.53284419184061,
+            -14.176334066213709
+          ],
+          "centerError": 3.580361673049448e-15,
+          "determinant": 1.0000000000000038,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        }
+      ]
+    },
+    {
+      "bodyTime": 1.501800000000957,
+      "neuralTimeMs": 826,
+      "population": 1,
+      "reference": true,
+      "paused": false,
+      "complete": false,
+      "referenceErrorCm": 0.024149961042576454,
+      "externallyAppliedForce": 0,
+      "renderCalls": 58,
+      "wings": [
+        {
+          "side": "left",
+          "body": 10,
+          "geom": 14,
+          "nativeCenterWorld": [
+            -2.2549383128741667,
+            39.245251731999964,
+            -10.487806563011313
+          ],
+          "registeredCenterWorld": [
+            -2.2549383128741645,
+            39.245251731999964,
+            -10.48780656301131
+          ],
+          "centerError": 4.189529226675416e-15,
+          "determinant": 1.0000000000000109,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        },
+        {
+          "side": "right",
+          "body": 11,
+          "geom": 18,
+          "nativeCenterWorld": [
+            -2.225896321993609,
+            39.257283785349294,
+            -14.211028601961893
+          ],
+          "registeredCenterWorld": [
+            -2.225896321993611,
+            39.2572837853493,
+            -14.211028601961896
+          ],
+          "centerError": 8.140289677804162e-15,
+          "determinant": 1.00000000000001,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        }
+      ]
+    },
+    {
+      "bodyTime": 2.0024000000020026,
+      "neuralTimeMs": 1092,
+      "population": 1,
+      "reference": true,
+      "paused": false,
+      "complete": false,
+      "referenceErrorCm": 0.02281939058155581,
+      "externallyAppliedForce": 0,
+      "renderCalls": 58,
+      "wings": [
+        {
+          "side": "left",
+          "body": 10,
+          "geom": 14,
+          "nativeCenterWorld": [
+            -1.7167979683109635,
+            39.0846176232741,
+            -10.896735567139247
+          ],
+          "registeredCenterWorld": [
+            -1.7167979683109655,
+            39.0846176232741,
+            -10.896735567139245
+          ],
+          "centerError": 2.673771110915334e-15,
+          "determinant": 1.0000000000000016,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        },
+        {
+          "side": "right",
+          "body": 11,
+          "geom": 18,
+          "nativeCenterWorld": [
+            -1.755640974385507,
+            39.041329664444724,
+            -13.89140646007666
+          ],
+          "registeredCenterWorld": [
+            -1.7556409743855081,
+            39.041329664444724,
+            -13.89140646007666
+          ],
+          "centerError": 1.1102230246251565e-15,
+          "determinant": 1.0000000000000022,
+          "nativeBodyMatches": true,
+          "aerodynamicGeometry": true,
+          "landmarkMatches": true,
+          "finite": true
+        }
+      ]
+    }
+  ],
+  "observationWallSeconds": 50.464954833,
+  "passed": true
+}

@@ -1,0 +1,19 @@
+# Staged fixed-nonwing body adapters
+
+These three staged modules support the explicit metadata flag `{schemaVersion:1,kind:'fixed-nonwing-flight-v1'}`. They are not installed in the application. The variant supports maintained-flight diagnostics; it does not establish takeoff, landing, probing or feeding behavior.
+
+- `staged/web/flybody-physics.js` validates an unconstrained root plus six wing joints (`nq=13,nv=12,njnt=7,nu=6,neq=0`) before allocating native state. It requires all 44 removed-joint descriptors and all 135 original ordered muscle-input records, checks the 28 wing mapping positions and 48 exact MN identities, and rejects undeclared absent-joint substitutions. Original virtual muscle inputs are explicitly identified as such. The reduced model must set `initializeStance:false`.
+- Nonwing muscles retain excitation, activation/fatigue/force computation and their contribution to internal-state effort. Their declared fixed length and zero shortening velocity replace moving-joint kinematics. No leg, claw or mouth actuator command is written because those actuators are structurally absent. No new root or nonwing `qpos`/`qvel` correction occurs during stepping. The existing 48-event→28-muscle implementation remains verbatim and retains its causal 1 ms handoff.
+- `staged/web/flybody-world.js` exposes fixed native leg angles and zero velocities to sensory feedback. Original body/site positions still drive all six rendered legs. The original antenna joints were already frozen, so their existing zero-deviation feedback is retained. `jointState` describes the six remaining dynamic joints; fixed anatomy comes from the explicit descriptors and body/site transforms, not invented native addresses.
+- `staged/web/flybody-mouth-pose.js` preserves the original mouth geometry and transforms each removed joint's local anchor through its retained body pose. It does not access absent `xanchor` indices. `world.mouthAnchorPositions(data)` returns the two native-world anchor points; the parent environment can use this optional method and retain its old fallback for other worlds. The rendered mouth still includes its third landmark and contact ellipsoids.
+
+`prepare-adapters.mjs` pins the three original live sources, applies exact bounded replacements and writes original/staged copies plus `adapter-source-pins.json`. Every replacement can be reversed to reproduce the exact original file bytes. No live source is edited.
+
+Seven pure/mocked tests pass in `adapters.test.mjs`: source reversibility; strict topology/identity validation before allocation; feature-off muscle/control/clock byte parity; all 135 fixed inputs and no added position writes; identical 48-event/28-kernel inputs and schedules; rotated body-based mouth anchors; and finite fixed-leg sensory/render output. The three staged modules pass syntax checks. The muscle fixture is a declared JavaScript stub, not native WASM, and the native mechanical fixture advances only its clock. These tests establish adapter plumbing and feature-off fixture compatibility, not physical trajectory equivalence, performance or flight success.
+
+The parent separately completed the native compile and zero-time-forward checks in `model/native-validation-v2.json`: reduced dimensions, removal of all 44 joint names, and retained body/geometry/site identities, mass/inertia and reference transforms passed. No native timestep was advanced in that validation. This is separate from these adapter fixtures; it does not validate dynamic flight. The stage/reset/runner integration and its model fingerprint remain the parent's responsibility. The reduced body is an optional model/speed experiment; the full-body common-power result does not establish that freezing nonwing motion is necessary.
+
+```sh
+node reports/flight-reduced-native-staging/prepare-adapters.mjs
+node --test reports/flight-reduced-native-staging/adapters.test.mjs
+```

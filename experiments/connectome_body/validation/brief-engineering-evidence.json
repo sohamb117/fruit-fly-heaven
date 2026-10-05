@@ -1,0 +1,130 @@
+{
+  "banc_graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+  "cpu_benchmark": {
+    "file": "brief-banc-cpu-benchmark.json",
+    "sha256": "ff08b8aa7885f398e0fb61483e0cc6b93707dcb3c8711b5d3dee2cc2b63a2916"
+  },
+  "evidence": "sparse engineering and temporal sanity; no learned BANC hover result",
+  "full_banc_memory": {
+    "burn_presentations": 0,
+    "elapsed_seconds": 381.2049068329943,
+    "identity": "d948e18b553f77420a87c06ea2f8a7822d89f64ec7ef9a53a029b6499e4efae2",
+    "new_environment_interactions": 0,
+    "parameter_report": {
+      "actual": 4999,
+      "budget": 5000,
+      "decoder": 2179,
+      "encoder": 2436,
+      "hidden_width": 121,
+      "learned_connectome_weights": 0,
+      "port_queries": 384,
+      "state_dimension": 175401,
+      "trainable_recurrence": 0
+    },
+    "sample_presentations": 2048,
+    "selected_update": 64,
+    "status": "complete",
+    "test": {
+      "labeled_steps": 64,
+      "mse": 2.864375403532904e-12,
+      "sign_accuracy": 1.0
+    },
+    "unique_training_interactions": 128,
+    "updates": 64,
+    "validation_mse": 2.864375403532904e-12
+  },
+  "full_banc_source_identity": "d57ac4397981a7d45c1d0546266c0497ce995c174a0566173c0927acd826a83c",
+  "source_archive": {
+    "file": "brief-engineering-sources.zip",
+    "sha256": "fe9022a7d099b939ce05ec64e1dffaf908902eebb7b793a224fa52d285ae89bd"
+  },
+  "synthetic_temporal": [
+    {
+      "burn_presentations": 0,
+      "elapsed_seconds": 2.645062791998498,
+      "identity": "e9ea72c8ea97a1f578aa8587f9936de397d1479352d3137749f1e997d81295cd",
+      "new_environment_interactions": 0,
+      "parameter_report": {
+        "actual": 997,
+        "budget": 1000,
+        "decoder": 385,
+        "encoder": 516,
+        "hidden_width": 64,
+        "learned_connectome_weights": 0,
+        "port_queries": 96,
+        "state_dimension": 128,
+        "trainable_recurrence": 0
+      },
+      "sample_presentations": 38400,
+      "selected_update": 300,
+      "status": "complete",
+      "test": {
+        "labeled_steps": 256,
+        "mse": 0.004447588704351801,
+        "sign_accuracy": 1.0
+      },
+      "unique_training_interactions": 1024,
+      "updates": 300,
+      "validation_mse": 0.004447588704351801,
+      "variant": "real"
+    },
+    {
+      "burn_presentations": 0,
+      "elapsed_seconds": 1.3962061670026742,
+      "identity": "019bfd48841cb614a6dd6c9ce288625c596e5e986eb14c279d52b367dec8b349",
+      "new_environment_interactions": 0,
+      "parameter_report": {
+        "actual": 999,
+        "budget": 1000,
+        "decoder": 427,
+        "encoder": 572,
+        "hidden_width": 71,
+        "learned_connectome_weights": 0,
+        "port_queries": 0,
+        "state_dimension": 0,
+        "trainable_recurrence": 0
+      },
+      "sample_presentations": 38400,
+      "selected_update": 0,
+      "status": "complete",
+      "test": {
+        "labeled_steps": 256,
+        "mse": 1.0000841915607452,
+        "sign_accuracy": 0.5
+      },
+      "unique_training_interactions": 1024,
+      "updates": 300,
+      "validation_mse": 1.0000841915607452,
+      "variant": "adapter_only"
+    },
+    {
+      "burn_presentations": 0,
+      "elapsed_seconds": 1.4531548749946523,
+      "identity": "1f323e133e5f8ae77be5a790f436c8b7ad9f3905fbfe67e7ebc90ebadaf67403",
+      "new_environment_interactions": 0,
+      "parameter_report": {
+        "actual": 916,
+        "budget": 1000,
+        "decoder": 16,
+        "encoder": 0,
+        "hidden_width": 15,
+        "learned_connectome_weights": 0,
+        "port_queries": 0,
+        "state_dimension": 15,
+        "trainable_recurrence": 900
+      },
+      "sample_presentations": 38400,
+      "selected_update": 300,
+      "status": "complete",
+      "test": {
+        "labeled_steps": 256,
+        "mse": 3.0592305620302795e-05,
+        "sign_accuracy": 1.0
+      },
+      "unique_training_interactions": 1024,
+      "updates": 300,
+      "validation_mse": 3.0592305620302795e-05,
+      "variant": "trainable_gru"
+    }
+  ]
+}

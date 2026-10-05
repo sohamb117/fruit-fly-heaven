@@ -1,0 +1,179 @@
+{
+  "schema": "substrate-battery-v1",
+  "project_root": "../..",
+  "device": "cuda",
+  "threads": 1,
+  "graphs": {
+    "banc": {
+      "path": "data/graphs/banc",
+      "fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+      "native_body": "fly",
+      "release": "BANC v888 v3",
+      "communities": "data/paper-annotations/banc/communities.json",
+      "anatomy": "data/paper-annotations/banc/anatomy.json"
+    },
+    "malecns": {
+      "path": "data/graphs/malecns",
+      "fingerprint": "583b52f0b4c9191643d3d13f81d3324d2e6c266213783e5385b8680eb13984c9",
+      "native_body": "fly",
+      "release": "MaleCNS v1.0 confidence 0.5, induced curated Traced population",
+      "communities": "data/paper-annotations/malecns/communities.json",
+      "anatomy": "data/paper-annotations/malecns/anatomy.json"
+    },
+    "celegans": {
+      "path": "data/graphs/celegans-cook2019-chemical",
+      "fingerprint": "819d6a3de11b82e6fd1be070f8396ee8920caacd78eed6ac33c0e073418c1c9b",
+      "native_body": "worm",
+      "release": "Cook 2019 chemical hermaphrodite adjacency, July 2020 correction",
+      "communities": "data/paper-annotations/celegans/communities.json",
+      "anatomy": "data/paper-annotations/celegans/anatomy.json"
+    },
+    "fish1": {
+      "path": "data/graphs/fish1",
+      "fingerprint": "5e280e46befd3e4089f74d91d12b3e1009abceeee51c491b6b9fe048276fa072",
+      "native_body": "fish",
+      "release": "Fish1 materialization v700, fish1_v250915; nonzero single-soma roots including unknown molecular types and isolates; heterogeneous proofreading",
+      "qualification": "data/paper-annotations/fish1/primary-qualification-v700.json",
+      "communities": "data/paper-annotations/fish1/communities.json",
+      "anatomy": "data/paper-annotations/fish1/anatomy.json"
+    }
+  },
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "capacities": [
+    5000,
+    20000,
+    80000
+  ],
+  "topologies": [
+    "real",
+    "degree_rewired",
+    "community_rewired",
+    "random"
+  ],
+  "plasticity": [
+    "adapters",
+    "joint"
+  ],
+  "preserve_strengths": true,
+  "swap_attempts_per_edge": 10,
+  "adapter": {
+    "family": "mlp_linear",
+    "channels": 16,
+    "support": 256,
+    "depth": 1
+  },
+  "dynamics": {
+    "gain": 0.9,
+    "tau_seconds": 0.02,
+    "substeps": 2,
+    "input_gain": 1.0,
+    "sign_mode": "random_dale",
+    "inhibitory_fraction": 0.2,
+    "weight_transform": "log1p",
+    "gradient_edge_chunk": 65536
+  },
+  "drone_horizon": 1000,
+  "drone_parameters": {
+    "dt": 0.02,
+    "substeps": 4
+  },
+  "drone_training": {
+    "interactions": 1000000,
+    "num_envs": 4,
+    "rollout_steps": 128,
+    "sequence_length": 64,
+    "burn_in": 64,
+    "epochs": 4,
+    "learning_rate": 0.0003,
+    "gamma": 0.99,
+    "gae_lambda": 0.95,
+    "clip_ratio": 0.2,
+    "value_coefficient": 0.5,
+    "max_grad_norm": 0.5,
+    "critic_width": 64,
+    "exploration_log_std": -1.0,
+    "eval_every": 20000,
+    "eval_episodes": 20,
+    "test_episodes": 100,
+    "success_threshold": 0.8,
+    "threshold_confirmations": 3
+  },
+  "dataset_root": "data/temporal-battery-v1",
+  "temporal_data": {
+    "length": 512,
+    "train_sequences": 64,
+    "validation_sequences": 16,
+    "test_sequences": 32,
+    "seed": 0
+  },
+  "temporal_training": {
+    "epochs": 20,
+    "batch_size": 4,
+    "sequence_length": 64,
+    "learning_rate": 0.001,
+    "success_threshold": 0.8,
+    "threshold_confirmations": 3,
+    "primary_linear_readout": true
+  },
+  "severity": {
+    "sensor_delay": [
+      {
+        "delay": 0
+      },
+      {
+        "delay": 5
+      },
+      {
+        "delay": 15
+      }
+    ],
+    "sensor_dropout": [
+      {
+        "dropout_steps": 0
+      },
+      {
+        "dropout_steps": 15
+      },
+      {
+        "dropout_steps": 40
+      }
+    ],
+    "sensor_noise": [
+      {
+        "noise": 0.0
+      },
+      {
+        "noise": 0.04
+      },
+      {
+        "noise": 0.12
+      }
+    ],
+    "actuator_delay": [
+      {
+        "delay": 0
+      },
+      {
+        "delay": 5
+      },
+      {
+        "delay": 15
+      }
+    ],
+    "motor_degradation": [
+      {
+        "motor_fraction": 0.8
+      },
+      {
+        "motor_fraction": 0.5
+      },
+      {
+        "motor_fraction": 0.2
+      }
+    ]
+  }
+}

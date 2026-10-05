@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-09-18T14:13:43.566503+00:00",
+  "pod_id": "2tmnut86nzr086",
+  "pod_status": "EXITED",
+  "start_attempt": {
+    "status": 400,
+    "detail": "There are not enough free GPUs on the host machine to start this pod."
+  },
+  "rtx4090_availability": {
+    "secure": "NONE",
+    "community": "NONE",
+    "minimum_cuda": "12.8",
+    "gpu_count": 1
+  },
+  "new_pods_created": 0,
+  "training_started": false,
+  "cpu_preparation_complete": true,
+  "preparation_entries": 6,
+  "source_sha256": "97ca13810908022e53fe07e9b1ace832a560317f110da9c50da6a426a654e08f",
+  "cache_sha256": "e351896e499e6ec93009689ae4db4ba6cc431cde055537fa889a2ac7848d7912",
+  "scope": "18-case BC to PPO cross-body qualification; 1200 second global and 180 second case caps",
+  "shutdown_mode": "attended MCP; user waived separate live shutdown verification"
+}

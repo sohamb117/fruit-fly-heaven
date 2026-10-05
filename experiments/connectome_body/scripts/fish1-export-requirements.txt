@@ -1,0 +1,5 @@
+# Optional isolated uv overlay. Keep the live training environment unchanged.
+caveclient==8.2.1
+numpy==1.26.4
+pandas==2.2.3
+pyarrow==21.0.0

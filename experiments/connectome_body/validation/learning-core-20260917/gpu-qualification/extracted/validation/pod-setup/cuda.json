@@ -1,0 +1,47 @@
+{
+  "schema": "connectome-paper-runtime-preflight-v1",
+  "checked_at_utc": "2026-09-17T20:54:03.600980+00:00",
+  "elapsed_seconds": 3.0502591226249933,
+  "requested_device": "cuda",
+  "timeout_seconds": 60.0,
+  "scope": "Tiny native sparse forward/state-gradient/edge-gradient check; no throughput or learning claim",
+  "cloud_resources_created": false,
+  "status": "passed",
+  "hardware": {
+    "device": "cuda",
+    "threads": 1,
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "platform": "Linux",
+    "machine": "x86_64",
+    "float32_matmul_precision": "highest",
+    "device_name": "NVIDIA GeForce RTX 4090",
+    "multiprocessors": 128,
+    "total_memory": 25250627584,
+    "capability": [
+      8,
+      9
+    ],
+    "allow_tf32": false
+  },
+  "code_fingerprint": "2090df96dcef6943276803ca29d9485b50adeaab0ea7027c7b826a1f019ea020",
+  "python": "3.12.3",
+  "packages": {
+    "torch": "2.8.0",
+    "numpy": "1.26.4",
+    "scipy": "1.15.3",
+    "mujoco": "3.13.0",
+    "pyarrow": "21.0.0"
+  },
+  "cpp17_compiler": "/usr/bin/g++",
+  "checks": [
+    {
+      "plastic_edges": false,
+      "finite_nonzero_gradients": true
+    },
+    {
+      "plastic_edges": true,
+      "finite_nonzero_gradients": true
+    }
+  ]
+}

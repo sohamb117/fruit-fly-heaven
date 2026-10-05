@@ -1,0 +1,4 @@
+numpy==2.5.3
+pyarrow==25.0.1
+mujoco==3.13.0
+cloud-volume==12.14.4

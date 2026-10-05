@@ -1,0 +1,19 @@
+{
+  "dataset": "BANC",
+  "materialization": 888,
+  "synapse_table": "v3",
+  "sources": {
+    "meta": {
+      "file": "meta.feather",
+      "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+      "bytes": 57503026,
+      "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather"
+    },
+    "edges": {
+      "file": "edges-v3.feather",
+      "sha256": "8c296e946f3c69a8c7222f30ad75fa8a98eeb189124fec6df829c9125f4be64b",
+      "bytes": 359161658,
+      "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_edgelist_simple_v3.feather"
+    }
+  }
+}

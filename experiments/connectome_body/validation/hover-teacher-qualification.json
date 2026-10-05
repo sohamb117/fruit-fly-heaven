@@ -1,0 +1,425 @@
+{
+  "body_config": {
+    "action_repeat": 1,
+    "angle_tolerance": 0.3490658503988659,
+    "angular_kick": 3.0,
+    "final_dwell_seconds": 0.1,
+    "horizon": 5000,
+    "initial_angle": 0.04,
+    "initial_velocity": 0.5,
+    "linear_kick": 2.0,
+    "perturbations": true,
+    "position_tolerance": 0.25,
+    "velocity_tolerance": 5.0
+  },
+  "body_fingerprint": "6f4b1380420bbd20a56a9cd7662a53e1393c673f279e4163ab06565f1a420471",
+  "evidence": "native_hover_teacher_qualification",
+  "qualified": true,
+  "source_sha256": "1920419be26886412ff14d9af2fc963addccb3e29636c958930bf79f92d6291e",
+  "status": "qualified",
+  "teacher": {
+    "episodes": [
+      {
+        "control_magnitude": 0.013247574679553509,
+        "height": 1.002592643643293,
+        "mean_control_magnitude": 0.011617431159131228,
+        "mean_orientation_error": 0.05699469261360866,
+        "mean_position_error": 0.020435473164663865,
+        "numerical_failure": false,
+        "orientation_error": 0.047377514599804424,
+        "position_error": 0.016982218893821184,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.001
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0002
+          }
+        ],
+        "score": 0.9770681746921822,
+        "seed": 1821416289,
+        "speed": 3.8633632245275207,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.011239108629524708,
+        "height": 1.0028198912618638,
+        "mean_control_magnitude": 0.010240703339036554,
+        "mean_orientation_error": 0.04362673521244947,
+        "mean_position_error": 0.01914037989712635,
+        "numerical_failure": false,
+        "orientation_error": 0.039283746639287215,
+        "position_error": 0.017399935555429312,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.0006000000000000001
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0002
+          }
+        ],
+        "score": 0.9881126842836156,
+        "seed": 2624166408,
+        "speed": 0.28216074831994864,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.007736658211797476,
+        "height": 1.0028820260464446,
+        "mean_control_magnitude": 0.010165642705466599,
+        "mean_orientation_error": 0.04307825666327642,
+        "mean_position_error": 0.01886805999430168,
+        "numerical_failure": false,
+        "orientation_error": 0.033831212525196955,
+        "position_error": 0.017775879260240823,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.0008
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0002
+          }
+        ],
+        "score": 0.988547810668696,
+        "seed": 1448097820,
+        "speed": 1.2141768736913416,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.007099180016666651,
+        "height": 1.0028253025661786,
+        "mean_control_magnitude": 0.010804880234226584,
+        "mean_orientation_error": 0.04784771215403408,
+        "mean_position_error": 0.01944144986125492,
+        "numerical_failure": false,
+        "orientation_error": 0.03632919380157458,
+        "position_error": 0.017545826984591124,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.0002
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0002
+          }
+        ],
+        "score": 0.9840247786085984,
+        "seed": 2711686158,
+        "speed": 2.0291548665704617,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.006822668481618166,
+        "height": 1.0025591199012882,
+        "mean_control_magnitude": 0.010897982658725231,
+        "mean_orientation_error": 0.04920140067368751,
+        "mean_position_error": 0.0196685742767291,
+        "numerical_failure": false,
+        "orientation_error": 0.023614340434298574,
+        "position_error": 0.01864894735990178,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.001
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0016
+          }
+        ],
+        "score": 0.9839624565957039,
+        "seed": 2963520855,
+        "speed": 3.539674119657844,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.007000884041190147,
+        "height": 1.0030871406818598,
+        "mean_control_magnitude": 0.01030946608656086,
+        "mean_orientation_error": 0.042286749934390695,
+        "mean_position_error": 0.018615613054254864,
+        "numerical_failure": false,
+        "orientation_error": 0.03515924731635135,
+        "position_error": 0.017452515632174193,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.0002
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0002
+          }
+        ],
+        "score": 0.9892449290634447,
+        "seed": 2333102275,
+        "speed": 1.932510147222763,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.010645260103046894,
+        "height": 1.0029359480405586,
+        "mean_control_magnitude": 0.010307618964184076,
+        "mean_orientation_error": 0.04678638779823807,
+        "mean_position_error": 0.018949169720497875,
+        "numerical_failure": false,
+        "orientation_error": 0.04187628688296829,
+        "position_error": 0.01699495784489053,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.0002
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0004
+          }
+        ],
+        "score": 0.9862098200542861,
+        "seed": 2963123810,
+        "speed": 3.383029452877145,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      },
+      {
+        "control_magnitude": 0.009005297906696796,
+        "height": 1.002373210370374,
+        "mean_control_magnitude": 0.010433745016250759,
+        "mean_orientation_error": 0.04759559586331635,
+        "mean_position_error": 0.019046557500511874,
+        "numerical_failure": false,
+        "orientation_error": 0.02386301193810565,
+        "position_error": 0.0187334291667608,
+        "recovery": [
+          {
+            "censored": false,
+            "kick_step": 1250,
+            "seconds": 0.0002
+          },
+          {
+            "censored": false,
+            "kick_step": 3000,
+            "seconds": 0.0002
+          }
+        ],
+        "score": 0.9853638250733975,
+        "seed": 2231999777,
+        "speed": 1.951833361669245,
+        "split": "validation",
+        "steps": 5000,
+        "success": true,
+        "survival": 1.0
+      }
+    ],
+    "evaluation_interactions": 40000,
+    "mean_control_magnitude": 0.010597183770447736,
+    "mean_orientation_error": 0.047177191364125154,
+    "mean_position_error": 0.019270659683667566,
+    "numerical_failure": 0.0,
+    "score": 0.9853168098799905,
+    "success": 1.0,
+    "survival": 1.0
+  },
+  "teacher_fingerprint": "c7e2375d070fe82cbffc4115e7d676d30113818918bd0bd6aee2d0f27b8dedba",
+  "thresholds": {
+    "teacher_success": 0.875,
+    "zero_modulation_success_strictly_below": 0.5
+  },
+  "wpg_zero_modulation": {
+    "episodes": [
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9498055887716627,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5571828064838833,
+        "mean_position_error": 0.08051866541646426,
+        "numerical_failure": false,
+        "orientation_error": 1.5876935733508213,
+        "position_error": 0.2178160210013788,
+        "recovery": [],
+        "score": 0.013967424661409183,
+        "seed": 1821416289,
+        "speed": 17.019329014309584,
+        "split": "validation",
+        "steps": 142,
+        "success": false,
+        "survival": 0.0284
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.936076613816937,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5701816025472979,
+        "mean_position_error": 0.07772336523977015,
+        "numerical_failure": false,
+        "orientation_error": 1.5711411370196933,
+        "position_error": 0.21632923915572194,
+        "recovery": [],
+        "score": 0.013210135308277152,
+        "seed": 2624166408,
+        "speed": 16.915239445163152,
+        "split": "validation",
+        "steps": 139,
+        "success": false,
+        "survival": 0.0278
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9567505246249911,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5560352950167756,
+        "mean_position_error": 0.059423227221333634,
+        "numerical_failure": false,
+        "orientation_error": 1.5810908633330094,
+        "position_error": 0.17803303952000168,
+        "recovery": [],
+        "score": 0.013879600333429224,
+        "seed": 1448097820,
+        "speed": 15.950681226527227,
+        "split": "validation",
+        "steps": 141,
+        "success": false,
+        "survival": 0.0282
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9658103475424544,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5593147508643007,
+        "mean_position_error": 0.025271763151201866,
+        "numerical_failure": false,
+        "orientation_error": 1.59070502452186,
+        "position_error": 0.04097115059788308,
+        "recovery": [],
+        "score": 0.013051518013401474,
+        "seed": 2711686158,
+        "speed": 11.895246079310036,
+        "split": "validation",
+        "steps": 134,
+        "success": false,
+        "survival": 0.0268
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9458026443235384,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5414781846484358,
+        "mean_position_error": 0.026639760054808673,
+        "numerical_failure": false,
+        "orientation_error": 1.5783785434291995,
+        "position_error": 0.11362268591278599,
+        "recovery": [],
+        "score": 0.01429047800732127,
+        "seed": 2963520855,
+        "speed": 14.678668198702985,
+        "split": "validation",
+        "steps": 141,
+        "success": false,
+        "survival": 0.0282
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9112568698214439,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5800232798721805,
+        "mean_position_error": 0.037418914839833194,
+        "numerical_failure": false,
+        "orientation_error": 1.5768384761028698,
+        "position_error": 0.11414662531087842,
+        "recovery": [],
+        "score": 0.011992026039029956,
+        "seed": 2333102275,
+        "speed": 14.694077911846977,
+        "split": "validation",
+        "steps": 128,
+        "success": false,
+        "survival": 0.0256
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9401025001148309,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5547720830623988,
+        "mean_position_error": 0.023932261455566158,
+        "numerical_failure": false,
+        "orientation_error": 1.581094625091927,
+        "position_error": 0.08671787581857682,
+        "recovery": [],
+        "score": 0.013305140647992502,
+        "seed": 2963123810,
+        "speed": 13.293338950474128,
+        "split": "validation",
+        "steps": 135,
+        "success": false,
+        "survival": 0.027
+      },
+      {
+        "control_magnitude": 0.0,
+        "height": 0.9292070640177295,
+        "mean_control_magnitude": 0.0,
+        "mean_orientation_error": 0.5712424153630039,
+        "mean_position_error": 0.03136795259338117,
+        "numerical_failure": false,
+        "orientation_error": 1.586168922359186,
+        "position_error": 0.07915523177806844,
+        "recovery": [],
+        "score": 0.012751068026730629,
+        "seed": 2231999777,
+        "speed": 12.957129616081719,
+        "split": "validation",
+        "steps": 133,
+        "success": false,
+        "survival": 0.0266
+      }
+    ],
+    "evaluation_interactions": 1093,
+    "mean_control_magnitude": 0.0,
+    "mean_orientation_error": 0.5612788022322845,
+    "mean_position_error": 0.04528698874654489,
+    "numerical_failure": 0.0,
+    "score": 0.013305923879698924,
+    "success": 0.0,
+    "survival": 0.027325
+  }
+}

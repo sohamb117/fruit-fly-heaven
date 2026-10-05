@@ -1,0 +1,41 @@
+[
+  {
+    "missing": [
+      "full_banc_cuda_benchmark"
+    ],
+    "online_training_interactions": 480000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-readiness-20260915/plan.json",
+    "planned_runs": 24,
+    "readiness": "gated",
+    "reused_runs": 0,
+    "sha256": "76189ba22d84c907c533ee4ab73c723d27b799980c4095330d450c8df40bda68",
+    "study": "mvp"
+  },
+  {
+    "missing": [
+      "full_banc_cuda_benchmark"
+    ],
+    "online_training_interactions": 180000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-learned_rnn-readiness-20260915/plan.json",
+    "planned_runs": 9,
+    "readiness": "gated",
+    "reused_runs": 0,
+    "sha256": "bbed5cc537078a56975bb71523168f46dcfbc42899c866ae24a0df0a65168783",
+    "study": "learned_rnn"
+  },
+  {
+    "missing": [
+      "graph:fish1",
+      "full_banc_cuda_benchmark",
+      "mvp_go_decision",
+      "frozen_method_before_heldout_connectomes"
+    ],
+    "online_training_interactions": 3000000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-heldout-readiness-20260915/plan.json",
+    "planned_runs": 150,
+    "readiness": "gated",
+    "reused_runs": 0,
+    "sha256": "8591a9643283920ac4ca2c24d97fda81ee6cd4d34cb5ddeca8a5574606d0e362",
+    "study": "heldout"
+  }
+]

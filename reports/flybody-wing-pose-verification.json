@@ -1,0 +1,39 @@
+{
+  "scope": "Rendering-only registration against independent native MuJoCo pose fixtures. No integration, forces, or controller changes.",
+  "xmlSha256": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
+  "poses": 16,
+  "models": [
+    {
+      "extraWorldGeometry": false,
+      "wingGeomIds": [
+        13,
+        17
+      ],
+      "maximumSceneUnitError": 3.972054645195637e-15,
+      "physicalStateUnchanged": true
+    },
+    {
+      "extraWorldGeometry": true,
+      "wingGeomIds": [
+        14,
+        18
+      ],
+      "maximumSceneUnitError": 3.972054645195637e-15,
+      "physicalStateUnchanged": true
+    }
+  ],
+  "maximumError": 3.972054645195637e-15,
+  "restingAngles": [
+    {
+      "side": "left",
+      "nativeDegrees": 6.189232444117801,
+      "oldRendererDegrees": 82.21903964947174
+    },
+    {
+      "side": "right",
+      "nativeDegrees": 6.189232444117799,
+      "oldRendererDegrees": 17.24103451333717
+    }
+  ],
+  "passed": true
+}

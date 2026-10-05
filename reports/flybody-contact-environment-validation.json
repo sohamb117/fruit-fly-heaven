@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-13T19:35:04.243Z",
+  "checks": [
+    "Floor support below food does not become taste or feeding contact",
+    "Contact-free space under food is airborne despite a top surface above the body",
+    "A nonzero static food geom supports native legs and stimulates only touching tarsi",
+    "Actual mouth contact with the same food geom activates oral taste without inventing intake",
+    "Leaving the solid clears all support and taste with no applied root force"
+  ],
+  "foodGeomId": 66,
+  "groundGeomId": 0,
+  "floorBelowFood": {
+    "loads": [
+      0.20897199855743231,
+      0.09661963751843884,
+      0.1973318636116154,
+      0.1802467225221274,
+      0.09188366118824216,
+      0.2249997611338186
+    ],
+    "foodContact": false
+  },
+  "foodSupport": {
+    "loads": [
+      0.2051403208025908,
+      0.10212175711008971,
+      0.19668412946211236,
+      0.1800594362288265,
+      0.09924450923523423,
+      0.2168072044433678
+    ],
+    "legs": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "passed": true
+}

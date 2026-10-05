@@ -1,0 +1,209 @@
+{
+  "config": {
+    "adapter_budget": 5000,
+    "body": {
+      "action_repeat": 5,
+      "backend": "flybody",
+      "horizon": 200,
+      "perturbations": true,
+      "source": null,
+      "task": "balance"
+    },
+    "device": "cpu",
+    "dynamics": {
+      "channels": 16,
+      "gain": 0.9,
+      "inhibitory_fraction": 0.2,
+      "input_gain": 1.0,
+      "sign_mode": "random_dale",
+      "substeps": 2,
+      "tau_seconds": 0.02,
+      "weight_transform": "log1p"
+    },
+    "graph": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/data/graphs/banc",
+    "ppo": {
+      "burn_in": 16,
+      "clip_ratio": 0.2,
+      "critic_width": 64,
+      "entropy_coefficient": 0.001,
+      "epochs": 4,
+      "eval_episodes": 20,
+      "eval_every": 20000,
+      "gae_lambda": 0.95,
+      "gamma": 0.99,
+      "interactions": 1000000,
+      "learning_rate": 0.0003,
+      "max_grad_norm": 0.5,
+      "num_envs": 4,
+      "rollout_steps": 128,
+      "sequence_length": 16,
+      "success_threshold": 0.8,
+      "test_episodes": 100,
+      "threshold_confirmations": 3,
+      "value_coefficient": 0.5
+    },
+    "purpose": "experiment",
+    "substrate": "real",
+    "substrate_seed": 0,
+    "threads": 1,
+    "train_seed": 0
+  },
+  "cuda_version": null,
+  "device": "cpu",
+  "device_name": "arm",
+  "dtype": "float32",
+  "edges": 13542180,
+  "graph_fingerprint": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+  "memory_definition": "CUDA process peak allocated/reserved bytes including fixed matrices; null on CPU",
+  "neurons": 175401,
+  "platform": "macOS-26.3-arm64-arm-64bit",
+  "python": "3.12.1",
+  "repeats": 2,
+  "rows": [
+    {
+      "backward_seconds": 2.3666691045000334,
+      "backward_transitions_per_second": 6.76055641643239,
+      "batch": 1,
+      "bptt_length": 8,
+      "forward_seconds": 2.3702097710047383,
+      "forward_transitions_per_second": 6.750457362774923,
+      "inference_seconds": 2.369104604003951,
+      "inference_transitions_per_second": 6.753606393301035,
+      "peak_allocated_bytes": null,
+      "peak_reserved_bytes": null,
+      "samples": [
+        {
+          "backward_seconds": 2.367604917002609,
+          "forward_seconds": 2.3714625830034493,
+          "inference_seconds": 2.367307250009617,
+          "input_gradient_norm": 2.927989226009231e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        },
+        {
+          "backward_seconds": 2.365733291997458,
+          "forward_seconds": 2.3689569590060273,
+          "inference_seconds": 2.370901957998285,
+          "input_gradient_norm": 6.24463427811861e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 3.3777515576213686
+    },
+    {
+      "backward_seconds": 4.7151812505035195,
+      "backward_transitions_per_second": 6.786589592199201,
+      "batch": 1,
+      "bptt_length": 16,
+      "forward_seconds": 4.742056354494707,
+      "forward_transitions_per_second": 6.748127311829423,
+      "inference_seconds": 4.7371336039941525,
+      "inference_transitions_per_second": 6.755139853564388,
+      "peak_allocated_bytes": null,
+      "peak_reserved_bytes": null,
+      "samples": [
+        {
+          "backward_seconds": 4.71382991700375,
+          "forward_seconds": 4.73952108398953,
+          "inference_seconds": 4.742637332994491,
+          "input_gradient_norm": 3.3254378649871796e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        },
+        {
+          "backward_seconds": 4.716532584003289,
+          "forward_seconds": 4.7445916249998845,
+          "inference_seconds": 4.731629874993814,
+          "input_gradient_norm": 3.711949830176309e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 3.383651900961835
+    },
+    {
+      "backward_seconds": 2.632252937502926,
+      "backward_transitions_per_second": 24.313772847647872,
+      "batch": 4,
+      "bptt_length": 8,
+      "forward_seconds": 2.7051968125015264,
+      "forward_transitions_per_second": 23.658167754832768,
+      "inference_seconds": 2.7020497914927546,
+      "inference_transitions_per_second": 23.685721929144403,
+      "peak_allocated_bytes": null,
+      "peak_reserved_bytes": null,
+      "samples": [
+        {
+          "backward_seconds": 2.6623494579980616,
+          "forward_seconds": 2.706690000006347,
+          "inference_seconds": 2.6972776659968076,
+          "input_gradient_norm": 1.995004276977852e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        },
+        {
+          "backward_seconds": 2.602156417007791,
+          "forward_seconds": 2.703703624996706,
+          "inference_seconds": 2.7068219169887016,
+          "input_gradient_norm": 3.114697756245732e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 11.990745205600598
+    },
+    {
+      "backward_seconds": 5.225705750002817,
+      "backward_transitions_per_second": 24.49429916713757,
+      "batch": 4,
+      "bptt_length": 16,
+      "forward_seconds": 5.241825146506017,
+      "forward_transitions_per_second": 24.418975532848417,
+      "inference_seconds": 5.2847763749959995,
+      "inference_transitions_per_second": 24.220513966420555,
+      "peak_allocated_bytes": null,
+      "peak_reserved_bytes": null,
+      "samples": [
+        {
+          "backward_seconds": 5.244658375013387,
+          "forward_seconds": 5.227348084008554,
+          "inference_seconds": 5.2560056670045014,
+          "input_gradient_norm": 1.736678314046003e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        },
+        {
+          "backward_seconds": 5.206753124992247,
+          "forward_seconds": 5.256302209003479,
+          "inference_seconds": 5.313547082987498,
+          "input_gradient_norm": 1.710034121060744e-05,
+          "peak_allocated_bytes": null,
+          "peak_reserved_bytes": null
+        }
+      ],
+      "status": "passed",
+      "train_transitions_per_second": 12.228289676478624
+    }
+  ],
+  "schema": "connectome-sparse-benchmark-v1",
+  "scope": "Sparse frozen recurrence and fixed ports; no MuJoCo or adapter optimization",
+  "seed": 0,
+  "setup_seconds": 0.5722797089983942,
+  "source_sha256": {
+    "config.py": "29797a01189e255675971835c933eca469628f01bcbbd58dc2779519eac5577a",
+    "graphs.py": "122f81859943a6908782e00a05b5077de0c2f4f94af22403db8aa1aa5517781a",
+    "policy.py": "e308dce14942eb772404a2d0a2943ada12f315acd6e3f999604be5ea05168b2e",
+    "sparse_benchmark.py": "8e34f1a3c19101f0398deb23b7b7e21fffc1280c9390ffd7d2c640f39f0d4a89",
+    "util.py": "5261733bb95c17d0723c5dff30dcdc44e57fb563b5bb202cf942215d0fabcd5a"
+  },
+  "status": "complete",
+  "substeps_per_decision": 2,
+  "threads": 1,
+  "torch": "2.8.0",
+  "transition_definition": "one recurrent substep for one batch member",
+  "warmup": 1
+}

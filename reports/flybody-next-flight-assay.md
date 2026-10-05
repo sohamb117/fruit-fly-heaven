@@ -1,0 +1,23 @@
+# Next flight assay and teacher constraints
+
+The current evidence does **not** establish that zero-DLM restoring stiffness causes the rapid launch. The latest corrected build was already commanding substantial wing power during the launch.
+
+In observer version `banc-direct-verified-leg-signs-floor-sensory-reporting`, frame 139 at 34 ms had DLM rates 22.80/18.89 Hz, no effective wing power, and uprightness 0.968. Frame 140 at 270 ms had DLM rates **183.82/194.21 Hz**, DVM **56.54/49.21 Hz**, III1 **zero on both sides**, effective wing power **0.7899**, and uprightness **−0.419**. The 236 ms gap cannot reveal the exact launch sequence, but this is plainly not a zero-power interval. The gate is open and both DLM groups exceed the assumed 80 Hz saturation rate.
+
+The [wing audit](flybody-wing-contract-audit.md) measured a strong tonic servo at zero power—0.18 actuator torque versus 0.0001 passive torque for a 0.01 rad displacement—but also proved zero beat command from a cold neutral state. A historical gain-18 support test stayed supported for one second with zero motor rates; its source hashes predate the latest integration, so it is supporting context rather than a current matched control. The [onset protocol](flybody-onset-causal-protocol.md) has now passed on an actual 400 ms capture. [The result](flybody-onset-causal/README.md) reproduces the baseline exactly and shows that DLM/DVM removal prevents the mechanical loss of support/inversion over that horizon; removing the remaining active wing controls changes little. No such silencing was applied to production.
+
+## Neural and sensory evidence limits
+
+All 805 prepared motor neurons share one numerical motor profile. Rate saturation at 80 Hz and 15/40 ms muscle kinetics are common priors. The conductance calibration only established quiet wing/leg output during **200 ms of zero external input** at 0.1 nS·ms/contact. It did not establish quiet responses under the actual visual, olfactory, contact and proprioceptive input mix, nor a stable long-lived attractor. Its isolated sugar condition already recruited wing output. Earlier separate wing/haltere afferent probes also recruited DLM activity, but those reports predate the current input mapper and lack enough current source provenance to explain this onset causally.
+
+The current rotation-afferent model supplies the same unsigned angular-speed-derived rate to all mapped cells on a side/organ. It cannot encode rotation direction through that channel alone, and native haltere motion is frozen. Those are real missing sensory distinctions. Assigning arbitrary preferred axes/phases to BANC cells would introduce a new prior; the released FlyBody policy does not supply those cell identities. Fixing that interface requires independently grounded sensory correspondence and timing evidence, not a hidden correction torque.
+
+## What the available teacher can identify
+
+The released controller has already passed on a common articulated body with native gain 18, original wing dynamics and ground contacts. The saved landing/walking teacher contains exact 104-dimensional flight inputs, policy residuals/frequency, full controls, states and the 65-actuator body. It is useful for testing a candidate actuator surrogate on the **same physical state and trajectory**, before any BANC integration.
+
+The defensible mechanical comparison preserves gain 18 and first reproduces the exact upstream contract: measured WPG plus learned residual, original 207.1–228.9 Hz frequency range, and target-minus-qpos force conversion. A candidate distilled actuator can then be evaluated against held-out teacher trajectories using joint tracking, torques, wing kinematics and free-body trajectory errors. Compare the original WPG without policy residuals separately from the transformed fixed-235.8-Hz direct table to localize how much failure comes from the mechanical surrogate and how much from absent state-dependent commands.
+
+The teacher provides **no paired BANC MN rates, DLM/DVM forces or steering-muscle activations**. Therefore it cannot identify the 80 Hz saturation, opening competition, relative muscle strengths or a BANC-specific motor-to-torque gain from its action stream alone. Those inverse mappings are underdetermined. Nor can a muscle-only static fit learn the policy's trajectory- and attitude-dependent decisions when its permitted inputs omit that information.
+
+The teacher is sufficient for an honest actuator-distillation/compatibility benchmark. It is not evidence that reducing gain until the fly stops launching constitutes a brain transplant. No further production gain/gate change is supported until the matched onset replay identifies the responsible path.

@@ -1,0 +1,765 @@
+{
+  "cases": [
+    {
+      "bc_checkpoint_sha256": "9f4b46aa4c2bf6585fd099b47c8331b6e63320ba54d6beb4fbadd6316086f7a1",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "61dc603fecb3fdc87f4025f9",
+      "cuda_peak_allocated_bytes": 834010112,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "3a7463e35a6849be4e45b18edae50c750bcff42ee3ca60b33cbf537ec742871c",
+      "ppo_interactions_per_second": 114.99814852909822,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 11.862585209310055,
+        "bc_resume": 9.720514880493283,
+        "ppo_first_update": 11.064397980459034,
+        "ppo_resume": 11.166798941791058
+      },
+      "substrate": "banc",
+      "variant": "real",
+      "wall_seconds": 43.818780452013016
+    },
+    {
+      "bc_checkpoint_sha256": "4260f2433c1dde5109f9509afcf70d612b65437436b795b6763141b997d10b30",
+      "bc_updates": 2,
+      "body": "worm",
+      "condition": "c3bdb646a9d1968a9fa38f79",
+      "cuda_peak_allocated_bytes": 20585472,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "3f1096482096021627f77cde9dd6e5cd66cd5b88386fa660944524ee9427199c",
+      "ppo_interactions_per_second": 116.66333096636708,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 1.9796702666208148,
+        "bc_resume": 0.6303176656365395,
+        "ppo_first_update": 0.3684171913191676,
+        "ppo_resume": 0.7801144486293197
+      },
+      "substrate": "celegans",
+      "variant": "real",
+      "wall_seconds": 3.762659091502428
+    },
+    {
+      "bc_checkpoint_sha256": "0ecf45169c771dde549e48fd41c77d054eb6783c21aca6e37f737cb0340ee060",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "15acd7877f808b7dbcb8d0ba",
+      "cuda_peak_allocated_bytes": 1357467648,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "4b22dbca08a7f49667bcdd0e4574fae1709c03b3263cd64d6380ba71f69a5d3a",
+      "ppo_interactions_per_second": 98.5516598052945,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 16.111745080910623,
+        "bc_resume": 14.699633744545281,
+        "ppo_first_update": 15.835924326442182,
+        "ppo_resume": 16.300142407417297
+      },
+      "substrate": "malecns",
+      "variant": "real",
+      "wall_seconds": 62.951775825582445
+    },
+    {
+      "bc_checkpoint_sha256": "5f5d5e0f8a1ae43a3d2a3c3c00277acc6972acd83d307a60f10e227464a9442c",
+      "bc_updates": 2,
+      "body": "worm",
+      "condition": "03ba439af0e02e27c2d23340",
+      "cuda_peak_allocated_bytes": 834065408,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "d9409345512811eadcfc99f51069cf01dda9b806e2cdb2879163f45572b75fdc",
+      "ppo_interactions_per_second": 119.38686901361588,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 8.811017040163279,
+        "bc_resume": 7.4915317799896,
+        "ppo_first_update": 7.122287415899336,
+        "ppo_resume": 7.53069447632879
+      },
+      "substrate": "banc",
+      "variant": "real",
+      "wall_seconds": 30.959808086045086
+    },
+    {
+      "bc_checkpoint_sha256": "cfc57da4571c972ec370fe4034dac9d0d052e000b87f47784598c01b10f2bba8",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "9d2731f252a42248b5504af3",
+      "cuda_peak_allocated_bytes": 20550656,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "6a5c47f1c1effcd5eded5f53a972d9b8dc135169be64daa73114362ee2194c03",
+      "ppo_interactions_per_second": 117.11296419436772,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 4.072854578495026,
+        "bc_resume": 2.762099632062018,
+        "ppo_first_update": 4.126630252227187,
+        "ppo_resume": 4.573452000506222
+      },
+      "substrate": "celegans",
+      "variant": "real",
+      "wall_seconds": 15.539296115748584
+    },
+    {
+      "bc_checkpoint_sha256": "8497944d8323fd68795fc5735281b1c1fa15a478d10bf4b71fd2a84b6f52364a",
+      "bc_updates": 2,
+      "body": "worm",
+      "condition": "d971bbd33eecb81fa26bc4fe",
+      "cuda_peak_allocated_bytes": 1357522944,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "52d1b42090e91b493f2085e280c33eb85efd2feccbfddcd801ba1462bf853b90",
+      "ppo_interactions_per_second": 106.8811011360602,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 14.082309463992715,
+        "bc_resume": 12.696128106676042,
+        "ppo_first_update": 12.254904703237116,
+        "ppo_resume": 12.729484186507761
+      },
+      "substrate": "malecns",
+      "variant": "real",
+      "wall_seconds": 51.76729748491198
+    },
+    {
+      "bc_checkpoint_sha256": "70a683bd1306ac4070f54af044dbf92fa3d4f5d5010d88f0cd5f199d97d3795b",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "7ef6e0e2e6ebd0a7a54bd888",
+      "cuda_peak_allocated_bytes": 18834432,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "9d860790de753ef82822b9785cc41bd255fbda9fbf8a4ad2a6d07d509baae4a1",
+      "ppo_interactions_per_second": 134.5486377606375,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 3.8831824818626046,
+        "bc_resume": 2.586498785763979,
+        "ppo_first_update": 4.2944482285529375,
+        "ppo_resume": 4.494672111235559
+      },
+      "substrate": "banc",
+      "variant": "gru",
+      "wall_seconds": 15.264007727615535
+    },
+    {
+      "bc_checkpoint_sha256": "fa459f7bbdeccbaf6e2c7964b35c7117e5a940ca3fd45b582fc3237c533aefae",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "2320b2a85c0b24fdcc6563d5",
+      "cuda_peak_allocated_bytes": 18707968,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "e949364f0ef39d2b96af489d864f529d1f9203d822620e55a81d9310cc9e6aea",
+      "ppo_interactions_per_second": 127.33011575537039,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 3.847344882786274,
+        "bc_resume": 2.6107047479599714,
+        "ppo_first_update": 3.9985231701284647,
+        "ppo_resume": 4.545525559224188
+      },
+      "substrate": "banc",
+      "variant": "rnn",
+      "wall_seconds": 15.007079311646521
+    },
+    {
+      "bc_checkpoint_sha256": "656a462abb3d26cf1eaeb6c211eedde2316a7138332028a37fb2e6836057688a",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "237270e26693494d8383e2b7",
+      "cuda_peak_allocated_bytes": 18700288,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "b1179b562b088155480133fc583aa768f77ac0dfac4b9dd1a2b2e2c9ee1d3f43",
+      "ppo_interactions_per_second": 142.7307710278588,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 3.8247678549960256,
+        "bc_resume": 2.558749238960445,
+        "ppo_first_update": 3.9760620556771755,
+        "ppo_resume": 4.393629474565387
+      },
+      "substrate": "banc",
+      "variant": "adapter_only",
+      "wall_seconds": 14.757038130424917
+    },
+    {
+      "bc_checkpoint_sha256": "d499f54347ab79699aef64090e12be010e612d9ff26ebf777ec0cd9934568905",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "6a6b253ecbabab60f41ada02",
+      "cuda_peak_allocated_bytes": 1844989952,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "joint",
+      "ppo_checkpoint_sha256": "efb0fb0cdda9ebf2fd5450643903c094b6bbd59b2120459e6c559c0b68e722f5",
+      "ppo_interactions_per_second": 22.707907026527735,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 12.809317342936993,
+        "bc_resume": 11.374712040647864,
+        "ppo_first_update": 12.125563573092222,
+        "ppo_resume": 12.733748125843704
+      },
+      "substrate": "banc",
+      "variant": "real",
+      "wall_seconds": 49.19080674648285
+    },
+    {
+      "bc_checkpoint_sha256": "90ea0f75ea7f22ea9dcf4c5efb22145877e1b48fdc1db2071f5bc0941b40937a",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "d75303fadc1ba48b3eb3eeda",
+      "cuda_peak_allocated_bytes": 3437879808,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "joint",
+      "ppo_checkpoint_sha256": "5c708c9d4e9138f8043a2777fce79afd840a62ff5fa23aed64341d484a598bc3",
+      "ppo_interactions_per_second": 10.847347243384927,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_resume": 17.787463258951902,
+        "ppo_first_update": 18.886207258328795,
+        "ppo_resume": 18.97035234607756
+      },
+      "substrate": "malecns",
+      "variant": "real",
+      "wall_seconds": 55.99395786691457
+    },
+    {
+      "bc_checkpoint_sha256": "26fa24a93ee0a4bcf55531878befa9bd2bdc50b220e40741f31f130bed22dea4",
+      "bc_updates": 2,
+      "body": "worm",
+      "condition": "200aa4aa7859b18f1c74f996",
+      "cuda_peak_allocated_bytes": 20779008,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "joint",
+      "ppo_checkpoint_sha256": "a5387ddacaabe3983e20af66602197f6c0705cc49e8c5d3962843d598dc682d0",
+      "ppo_interactions_per_second": 115.00787002571109,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 1.94843674544245,
+        "bc_resume": 0.6447362685576081,
+        "ppo_first_update": 0.3712912565097213,
+        "ppo_resume": 0.784802078269422
+      },
+      "substrate": "celegans",
+      "variant": "real",
+      "wall_seconds": 3.7536145970225334
+    },
+    {
+      "bc_checkpoint_sha256": "8f957958143f813317ca87d1e77bb92541046178598e42ccb6480fb9fc3f4ce7",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "fa552ddbfcebdd56993a89d0",
+      "cuda_peak_allocated_bytes": 834010112,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "da4f1ea59441d64b20eedc6898afab60c936c08ca80567d8d5e2733f470f9da3",
+      "ppo_interactions_per_second": 112.54396689321717,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 10.81052026245743,
+        "bc_resume": 9.612961220555007,
+        "ppo_first_update": 11.054907394573092,
+        "ppo_resume": 11.252115824259818
+      },
+      "substrate": "banc",
+      "variant": "degree_rewired",
+      "wall_seconds": 42.734976462088525
+    },
+    {
+      "bc_checkpoint_sha256": "9782a3b16d2b2f6455501197076cbdffdf50cfd32167536425369c6b649a4414",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "6a363cca981c873a779bb984",
+      "cuda_peak_allocated_bytes": 1357467648,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "ff0f748734cb9811d219fa6a97c2bc479cecb957cccb8b18f5ce37b43f953d12",
+      "ppo_interactions_per_second": 98.1576468377302,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 16.732725384645164,
+        "bc_resume": 15.519001731649041,
+        "ppo_first_update": 16.820675427094102,
+        "ppo_resume": 17.13960814010352
+      },
+      "substrate": "malecns",
+      "variant": "degree_rewired",
+      "wall_seconds": 66.21666407957673
+    },
+    {
+      "bc_checkpoint_sha256": "a5b4703a28b5b02d53b82775b51a4dbe9522f7df864c2f5b3135d5d96ef4023f",
+      "bc_updates": 2,
+      "body": "worm",
+      "condition": "439e2cc3b1383d391c8dd6d5",
+      "cuda_peak_allocated_bytes": 20585472,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "adapters",
+      "ppo_checkpoint_sha256": "2a64aee5328cb10a8bee2f5ed7052fc076636a59ef1de2ccfaa51d85ebc7b9fc",
+      "ppo_interactions_per_second": 117.39054776274769,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 1.946911945939064,
+        "bc_resume": 0.6391479941084981,
+        "ppo_first_update": 0.37315893825143576,
+        "ppo_resume": 0.7824645191431046
+      },
+      "substrate": "celegans",
+      "variant": "degree_rewired",
+      "wall_seconds": 3.7458887407556176
+    },
+    {
+      "bc_checkpoint_sha256": "799cafb000a22159cc9ac76199835fe0a154e8a8030d6dcb6e93e016b3b66070",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "6d013dfa3130fbbc4e9dce57",
+      "cuda_peak_allocated_bytes": 1844989952,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "joint",
+      "ppo_checkpoint_sha256": "af9a6aaaee6814756cef426ad7aaea68a173040f1a02a968f31f7f50eb759b3d",
+      "ppo_interactions_per_second": 22.08253514986662,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 12.833647179417312,
+        "bc_resume": 11.383069852367043,
+        "ppo_first_update": 12.042323218658566,
+        "ppo_resume": 12.578452629968524
+      },
+      "substrate": "banc",
+      "variant": "degree_rewired",
+      "wall_seconds": 49.027745412662625
+    },
+    {
+      "bc_checkpoint_sha256": "c43c290b3d1846a470b0d5d332c6cea38b8ec704dc83d90422e6b48ac24555e0",
+      "bc_updates": 2,
+      "body": "fly",
+      "condition": "01c89284f517c69dd8d26885",
+      "cuda_peak_allocated_bytes": 3437879808,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "joint",
+      "ppo_checkpoint_sha256": "2782fdb789600fdf88560f2b184056b7effd16aabdbe00655a494368638cce50",
+      "ppo_interactions_per_second": 12.492106996237581,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 20.436123906634748,
+        "bc_resume": 18.558601101860404,
+        "ppo_first_update": 18.63424558378756,
+        "ppo_resume": 19.445942715741694
+      },
+      "substrate": "malecns",
+      "variant": "degree_rewired",
+      "wall_seconds": 77.4734200220555
+    },
+    {
+      "bc_checkpoint_sha256": "996b14450c7797ec33e7d3c1efa36bf42c8507d061c764e31ead3bb00c1f9630",
+      "bc_updates": 2,
+      "body": "worm",
+      "condition": "eafd4ecb3b63fc15ed77dae7",
+      "cuda_peak_allocated_bytes": 20779008,
+      "finite_actor": true,
+      "hardware": {
+        "allow_tf32": false,
+        "capability": [
+          8,
+          9
+        ],
+        "cuda": "12.8",
+        "device": "cuda",
+        "device_name": "NVIDIA GeForce RTX 4090",
+        "float32_matmul_precision": "highest",
+        "machine": "x86_64",
+        "multiprocessors": 128,
+        "platform": "Linux",
+        "threads": 1,
+        "torch": "2.8.0+cu128",
+        "total_memory": 25250627584
+      },
+      "passed": true,
+      "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+      "plasticity": "joint",
+      "ppo_checkpoint_sha256": "d114da20936f538628f86bc67956d67eb90bf04f750d6f51b4a9635c6853d64b",
+      "ppo_interactions_per_second": 115.5469278185221,
+      "ppo_updates": 2,
+      "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+      "stage_seconds": {
+        "bc_first_update": 1.937259454280138,
+        "bc_resume": 0.6478289887309074,
+        "ppo_first_update": 0.37109669856727123,
+        "ppo_resume": 0.7859695432707667
+      },
+      "substrate": "celegans",
+      "variant": "degree_rewired",
+      "wall_seconds": 3.746506243944168
+    }
+  ],
+  "fingerprint": "abb9229299c28472860dc27286ad7d5f5d58b229143eaff631bea2fe35b2d065",
+  "hardware": {
+    "allow_tf32": false,
+    "capability": [
+      8,
+      9
+    ],
+    "cuda": "12.8",
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 4090",
+    "float32_matmul_precision": "highest",
+    "machine": "x86_64",
+    "multiprocessors": 128,
+    "platform": "Linux",
+    "threads": 1,
+    "torch": "2.8.0+cu128",
+    "total_memory": 25250627584
+  },
+  "passed": true,
+  "plan_fingerprint": "8cb73fec7ede3446f480fddef595e7925df0f6fc028aff11109b66aade8e8b64",
+  "schema": "learning-gpu-qualification-v1",
+  "scope": "Full graph CUDA BC and PPO checkpoint/resume on short smoke episodes; no scientific performance claim",
+  "source": "683ff8b711d4c46519e01b06bfea4b6b882d3dc6d3a902d762a91f362165a309",
+  "wall_seconds": 345.73875980079174
+}

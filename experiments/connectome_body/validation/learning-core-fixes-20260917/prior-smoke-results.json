@@ -1,0 +1,38 @@
+[
+  {
+    "condition": "case-00",
+    "topology": "real",
+    "plasticity": "adapters",
+    "initial_mse": 0.012837344605941325,
+    "final_mse": 0.01278752627937744,
+    "relative_mse_reduction": 0.0038807345360838408,
+    "bc_test_success": 0.0,
+    "ppo_test_success": 0.0,
+    "ppo_selected_step": 0,
+    "evaluation_simulated_seconds": 0.0128
+  },
+  {
+    "condition": "case-01",
+    "topology": "real",
+    "plasticity": "joint",
+    "initial_mse": 0.012837344605941325,
+    "final_mse": 0.01278752030339092,
+    "relative_mse_reduction": 0.003881200051866318,
+    "bc_test_success": 0.0,
+    "ppo_test_success": 0.0,
+    "ppo_selected_step": 0,
+    "evaluation_simulated_seconds": 0.0128
+  },
+  {
+    "condition": "case-02",
+    "topology": "degree_rewired",
+    "plasticity": "adapters",
+    "initial_mse": 0.01281644256475071,
+    "final_mse": 0.01278908874761934,
+    "relative_mse_reduction": 0.002134275325869406,
+    "bc_test_success": 0.0,
+    "ppo_test_success": 0.0,
+    "ppo_selected_step": 0,
+    "evaluation_simulated_seconds": 0.0128
+  }
+]

@@ -1,0 +1,106 @@
+{
+  "pod": "hhvas8ssr8wtz1",
+  "time_utc": "20260919T073013Z",
+  "paused_pids": [
+    6283,
+    15793,
+    16444,
+    17093,
+    19122,
+    19123,
+    20059
+  ],
+  "remote_roots": {
+    "main": "/workspace/qualification-isolated-20260918/experiments/connectome_body",
+    "repair-v1": "/workspace/training-repairs-20260918/connectome_body",
+    "repair-v2": "/workspace/training-repairs-v2-20260918/connectome_body",
+    "repair-v3": "/workspace/training-repairs-v3-20260919/connectome_body"
+  },
+  "saved": "Latest complete atomic checkpoints; any in-progress minibatch is not included.",
+  "active": [
+    {
+      "execution_id": "96d23936c8152fa1fac12f7c-bc_ppo",
+      "pid": 15793,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 3.0,
+        "large_graph": true,
+        "ram_gib": 4.0179420709609985
+      },
+      "seed": 0,
+      "source": "banc",
+      "task": "worm_locomotion",
+      "variant": "real"
+    },
+    {
+      "execution_id": "4d0dbec884577da83120f530-bc_ppo",
+      "pid": 16444,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 1.0005910694599152,
+        "large_graph": false,
+        "ram_gib": 1.5004433020949364
+      },
+      "seed": 0,
+      "source": "banc",
+      "task": "hover",
+      "variant": "gru"
+    },
+    {
+      "execution_id": "1691f6e59c86cbb84032f720-bc_ppo",
+      "pid": 17093,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 1.0005869567394257,
+        "large_graph": false,
+        "ram_gib": 1.5004402175545692
+      },
+      "seed": 0,
+      "source": "banc",
+      "task": "worm_locomotion",
+      "variant": "gru"
+    },
+    {
+      "execution_id": "c056ce0b575445cc68456b1d-bc_ppo",
+      "pid": 19122,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 1.0005909204483032,
+        "large_graph": false,
+        "ram_gib": 1.5004431903362274
+      },
+      "seed": 0,
+      "source": "banc",
+      "task": "hover",
+      "variant": "rnn"
+    },
+    {
+      "execution_id": "66a2e951605ac89ed554475b-bc_ppo",
+      "pid": 19123,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 1.0005868077278137,
+        "large_graph": false,
+        "ram_gib": 1.5004401057958603
+      },
+      "seed": 0,
+      "source": "banc",
+      "task": "worm_locomotion",
+      "variant": "rnn"
+    },
+    {
+      "execution_id": "7ed7f75850af677d376c8a10-bc_ppo",
+      "pid": 20059,
+      "plasticity": "adapters",
+      "reservation": {
+        "gpu_gib": 3.0,
+        "large_graph": true,
+        "ram_gib": 5.8091981410980225
+      },
+      "seed": 0,
+      "source": "malecns",
+      "task": "worm_locomotion",
+      "variant": "real"
+    }
+  ]
+}

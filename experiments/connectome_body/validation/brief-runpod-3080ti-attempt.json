@@ -1,0 +1,46 @@
+{
+  "evidence": "infrastructure_preflight_failure",
+  "pod_id": "3l7nbexxghy1c0",
+  "gpu": "NVIDIA GeForce RTX 3080 Ti",
+  "gpu_count": 1,
+  "vram_mib": 12288,
+  "image": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404",
+  "torch": "2.8.0+cu128",
+  "driver": "580.95.05",
+  "cuda_runtime": "12.8",
+  "cuInit_error": {
+    "code": 999,
+    "name": "CUDA_ERROR_UNKNOWN"
+  },
+  "device_open": {
+    "/dev/nvidia0": "passed",
+    "/dev/nvidiactl": "passed",
+    "/dev/nvidia-uvm": "errno 5: Input/output error",
+    "/dev/nvidia-uvm-tools": "errno 5: Input/output error"
+  },
+  "visibility_override_resolved": false,
+  "pod_restarts": 1,
+  "failure_reproduced_after_restart": true,
+  "jupyter_stopped": true,
+  "cuda_benchmark_started": false,
+  "cuda_training_started": false,
+  "cuda_checkpoint_produced": false,
+  "stop_verified": {
+    "pod_id": "3l7nbexxghy1c0",
+    "status": "EXITED",
+    "actions": [
+      "start",
+      "terminate"
+    ],
+    "runtime": null,
+    "mounts": {
+      "persistent": {
+        "path": "/workspace",
+        "size": 20
+      }
+    },
+    "checked_at_utc": "2026-09-15T19:00:17.601Z"
+  },
+  "input_archive_sha256": "5975f21754a62ccebd0e75bfa2aeee301b7d93170c8f0853402b56873aec1f22",
+  "local_campaign_preserved": true
+}

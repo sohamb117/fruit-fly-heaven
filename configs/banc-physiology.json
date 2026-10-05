@@ -1,0 +1,291 @@
+{
+  "schema": 1,
+  "status": "Mechanistic priors; numerical parameters are uncalibrated, not measurements of BANC cells.",
+  "dt_ms": 0.5,
+  "delay_ms": 2,
+  "synaptic_weight_ns_ms_per_contact": 0.1,
+  "conductance_calibration": {
+    "status": "Provisional rest and sugar-input calibration; not measured cell physiology or validated full behavior.",
+    "previous_ns_ms_per_contact": 0.5,
+    "report": "reports/banc-rest-calibration.json",
+    "criterion": "No wing or limb motor recruitment in the 200 ms zero-external-input test, with retained proboscis and pumping response to isolated sugar-afferent stimulation."
+  },
+  "parameter_order": [
+    "capacitance_pf",
+    "leak_ns",
+    "rest_mv",
+    "threshold_mv",
+    "reset_mv",
+    "refractory_ms",
+    "adaptation_tau_ms",
+    "adaptation_increment_pa",
+    "graded",
+    "graded_mid_mv",
+    "graded_slope_mv",
+    "tonic_pa",
+    "dopamine_gain",
+    "octopamine_gain",
+    "serotonin_gain",
+    "hunger_gain_pa"
+  ],
+  "profiles": {
+    "default": [
+      20,
+      1,
+      -60,
+      -45,
+      -60,
+      2,
+      100,
+      0.2,
+      0,
+      -45,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "motor": [
+      40,
+      2,
+      -60,
+      -42,
+      -58,
+      2,
+      150,
+      0.4,
+      0,
+      -45,
+      10,
+      0,
+      0,
+      0.3,
+      0,
+      0
+    ],
+    "descending": [
+      30,
+      1.5,
+      -60,
+      -43,
+      -58,
+      2,
+      120,
+      0.3,
+      0,
+      -45,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "kenyon": [
+      10,
+      0.5,
+      -65,
+      -40,
+      -65,
+      3,
+      200,
+      0.7,
+      0,
+      -45,
+      10,
+      0,
+      0.2,
+      0,
+      0,
+      0
+    ],
+    "photoreceptor": [
+      10,
+      1,
+      -60,
+      -35,
+      -60,
+      0,
+      100,
+      0,
+      1,
+      -45,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "lamina": [
+      15,
+      1,
+      -45,
+      -30,
+      -45,
+      0,
+      100,
+      0,
+      1,
+      -50,
+      10,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "olfactory": [
+      15,
+      1,
+      -60,
+      -45,
+      -60,
+      2,
+      100,
+      0.2,
+      0,
+      -45,
+      10,
+      0,
+      0,
+      0,
+      0,
+      3
+    ]
+  },
+  "rules": [
+    {
+      "field": "super_class",
+      "equals": "motor",
+      "profile": "motor"
+    },
+    {
+      "field": "super_class",
+      "equals": "descending",
+      "profile": "descending"
+    },
+    {
+      "field": "cell_class",
+      "equals": "kenyon_cell",
+      "profile": "kenyon"
+    },
+    {
+      "field": "cell_class",
+      "equals": "photoreceptor_neuron",
+      "profile": "photoreceptor"
+    },
+    {
+      "field": "cell_type",
+      "equals": "L1",
+      "profile": "lamina"
+    },
+    {
+      "field": "cell_type",
+      "equals": "L2",
+      "profile": "lamina"
+    },
+    {
+      "field": "cell_type",
+      "equals": "L3",
+      "profile": "lamina"
+    },
+    {
+      "field": "cell_class",
+      "equals": "olfactory_receptor_neuron",
+      "profile": "olfactory"
+    }
+  ],
+  "cell_overrides": {},
+  "receptors": [
+    {
+      "name": "nAChR",
+      "rise_ms": 0.3,
+      "decay_ms": 3,
+      "reversal_mv": 0
+    },
+    {
+      "name": "GABA_A",
+      "rise_ms": 0.5,
+      "decay_ms": 8,
+      "reversal_mv": -75
+    },
+    {
+      "name": "GluCl_assumed",
+      "rise_ms": 1,
+      "decay_ms": 6,
+      "reversal_mv": -75
+    },
+    {
+      "name": "HisCl",
+      "rise_ms": 0.2,
+      "decay_ms": 4,
+      "reversal_mv": -75
+    },
+    {
+      "name": "glutamate_cation_override",
+      "rise_ms": 0.5,
+      "decay_ms": 5,
+      "reversal_mv": 0
+    },
+    {
+      "name": "dopamine",
+      "rise_ms": 50,
+      "decay_ms": 500,
+      "reversal_mv": 0
+    },
+    {
+      "name": "octopamine",
+      "rise_ms": 50,
+      "decay_ms": 400,
+      "reversal_mv": 0
+    },
+    {
+      "name": "serotonin",
+      "rise_ms": 50,
+      "decay_ms": 600,
+      "reversal_mv": 0
+    },
+    {
+      "name": "tyramine",
+      "rise_ms": 50,
+      "decay_ms": 400,
+      "reversal_mv": 0
+    }
+  ],
+  "transmitter_receptor": {
+    "acetylcholine": 0,
+    "gaba": 1,
+    "glutamate": 2,
+    "histamine": 3,
+    "dopamine": 5,
+    "octopamine": 6,
+    "serotonin": 7,
+    "tyramine": 8
+  },
+  "unknown_transmitter": "retain edge with zero conductance and report coverage",
+  "receptor_overrides": [],
+  "gap_junctions": [
+    {
+      "a": "720575941509145950",
+      "b": "720575941549397247",
+      "conductance_ns": 0.02,
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4833477/",
+      "status": "GF-PSI type correspondence; conductance and symmetric approximation assumed; not BANC-observed"
+    },
+    {
+      "a": "720575941451068597",
+      "b": "720575941643797624",
+      "conductance_ns": 0.02,
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4833477/",
+      "status": "GF-PSI type correspondence; conductance and symmetric approximation assumed; not BANC-observed"
+    }
+  ],
+  "sources": [
+    "https://doi.org/10.1038/s41586-026-10735-w",
+    "https://doi.org/10.1038/s41586-023-06099-0",
+    "https://doi.org/10.1038/s41586-019-1675-4"
+  ]
+}

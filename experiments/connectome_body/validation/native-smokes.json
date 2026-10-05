@@ -1,0 +1,183 @@
+{
+  "code_fingerprint": "5a82565622e9694e59d351cf0a645e19cde596b322b143fe6a04e9d6af9e52e2",
+  "runs": [
+    {
+      "action_dim": 59,
+      "actor_parameters": 4798,
+      "acute_rewire": null,
+      "artifact": "runs/validation/v2/adapter_gru",
+      "critic_parameters": 22593,
+      "evaluation_interactions": 256,
+      "evidence": "native_flybody_smoke",
+      "identity": "5e2248a20e09c6b41466478c5fb0d126b8429a3c6bfc9f9263eaee24f4b9a94a",
+      "interventions": [
+        "reset",
+        "silence"
+      ],
+      "mean_encoder_gradient_norm": 0.0055881125198921165,
+      "observation_dim": 286,
+      "result_sha256": "d2fa0455039470f92456036741913035de7f24b525a846c7c7a76efc627b89fd",
+      "run": "adapter_gru",
+      "status": "complete",
+      "substrate": "adapter_gru",
+      "task": "balance",
+      "test_numerical_failure_rate": 0.0,
+      "test_success": 0.0,
+      "trainer_wall_seconds": 1.9680970829940634,
+      "training_interactions": 32,
+      "training_wall_seconds": 0.26237379100348335
+    },
+    {
+      "action_dim": 59,
+      "actor_parameters": 4682,
+      "acute_rewire": null,
+      "artifact": "runs/validation/v2/adapter_only",
+      "critic_parameters": 22593,
+      "evaluation_interactions": 224,
+      "evidence": "native_flybody_smoke",
+      "identity": "061bc57894b4f325b26fd9952fab6a09434e4893fad354fd893ac83c131f48d7",
+      "interventions": [
+        "silence"
+      ],
+      "mean_encoder_gradient_norm": 0.009095637942219117,
+      "observation_dim": 286,
+      "result_sha256": "b98f0937bfada9edb74dfd9ab6035a207961ebd78f9088cf5cb41c0e835893ce",
+      "run": "adapter_only",
+      "status": "complete",
+      "substrate": "adapter_only",
+      "task": "balance",
+      "test_numerical_failure_rate": 0.0,
+      "test_success": 0.0,
+      "trainer_wall_seconds": 1.7271723750018282,
+      "training_interactions": 32,
+      "training_wall_seconds": 0.2819604590040399
+    },
+    {
+      "action_dim": 59,
+      "actor_parameters": 4682,
+      "acute_rewire": {
+        "accepted_swaps": 91281528,
+        "attempts": 135421800,
+        "changed_target_fraction": 0.9961470752862538,
+        "does_not_preserve": [
+          "per_target_weighted_strength",
+          "motifs",
+          "communities"
+        ],
+        "parent": "a19030096ae9a19e80bf52e2423b9640a40e1867fcf330e17572a89cb7354415",
+        "preserves": [
+          "N",
+          "M",
+          "in_degree",
+          "out_degree",
+          "signed_in_degree",
+          "per_source_weight_multiset",
+          "global_weight_multiset"
+        ],
+        "seed": 0,
+        "variant": "degree_shuffled"
+      },
+      "artifact": "runs/validation/v2/banc-native-smoke",
+      "critic_parameters": 22593,
+      "evaluation_interactions": 352,
+      "evidence": "native_flybody_smoke",
+      "identity": "ce3d4dcfcdcc5d30ff27b0fab6b633defbe5f4d87a0c7a5888de8f0ad96b53bc",
+      "interventions": [
+        "acute_rewire",
+        "no_recurrence",
+        "permute_readout",
+        "reset",
+        "silence"
+      ],
+      "mean_encoder_gradient_norm": 0.0005518575843035873,
+      "observation_dim": 286,
+      "result_sha256": "f6a76c102ee0927fb83abab0cbc6ad53bec107c66379a47e47367c4d44581f77",
+      "run": "banc-native-smoke",
+      "status": "complete",
+      "substrate": "real",
+      "task": "balance",
+      "test_numerical_failure_rate": 0.0,
+      "test_success": 0.0,
+      "trainer_wall_seconds": 243.5406149999908,
+      "training_interactions": 32,
+      "training_wall_seconds": 32.72144779098744
+    },
+    {
+      "action_dim": 59,
+      "actor_parameters": 4682,
+      "acute_rewire": {
+        "accepted_swaps": 171640508,
+        "attempts": 255630960,
+        "changed_target_fraction": 0.9960870545570849,
+        "does_not_preserve": [
+          "per_target_weighted_strength",
+          "motifs",
+          "communities"
+        ],
+        "parent": "583b52f0b4c9191643d3d13f81d3324d2e6c266213783e5385b8680eb13984c9",
+        "preserves": [
+          "N",
+          "M",
+          "in_degree",
+          "out_degree",
+          "signed_in_degree",
+          "per_source_weight_multiset",
+          "global_weight_multiset"
+        ],
+        "seed": 0,
+        "variant": "degree_shuffled"
+      },
+      "artifact": "runs/validation/v2/malecns-native-smoke",
+      "critic_parameters": 22593,
+      "evaluation_interactions": 352,
+      "evidence": "native_flybody_smoke",
+      "identity": "3af2fd0fe96fa5e46e7f6888a04d7f0c00e5d927f4430a6113a8b123cf6834de",
+      "interventions": [
+        "acute_rewire",
+        "no_recurrence",
+        "permute_readout",
+        "reset",
+        "silence"
+      ],
+      "mean_encoder_gradient_norm": 0.0004584521359612208,
+      "observation_dim": 286,
+      "result_sha256": "5adbaa24a21ca07ec0642f70e74cefc20968897a87975a549a3af0d086d77d49",
+      "run": "malecns-native-smoke",
+      "status": "complete",
+      "substrate": "real",
+      "task": "walk",
+      "test_numerical_failure_rate": 0.0,
+      "test_success": 0.0,
+      "trainer_wall_seconds": 282.5308437499916,
+      "training_interactions": 32,
+      "training_wall_seconds": 60.266183833999094
+    },
+    {
+      "action_dim": 59,
+      "actor_parameters": 4808,
+      "acute_rewire": null,
+      "artifact": "runs/validation/v2/trainable_gru",
+      "critic_parameters": 22593,
+      "evaluation_interactions": 256,
+      "evidence": "native_flybody_smoke",
+      "identity": "f3c5692ef09e56bae4b7c47507c960ead7e57e970b4ed1e4bd1b33f93abe1cbc",
+      "interventions": [
+        "reset",
+        "silence"
+      ],
+      "mean_encoder_gradient_norm": 0.0,
+      "observation_dim": 286,
+      "result_sha256": "1e7f12e232bd422189ca01c37fe34cb029af2c8d84c7f9416e5952fd92ccc914",
+      "run": "trainable_gru",
+      "status": "complete",
+      "substrate": "trainable_gru",
+      "task": "balance",
+      "test_numerical_failure_rate": 0.0,
+      "test_success": 0.0,
+      "trainer_wall_seconds": 1.9690071660006652,
+      "training_interactions": 32,
+      "training_wall_seconds": 0.2652080839907285
+    }
+  ],
+  "scope": "Engineering validation only: 32 training interactions/run, one held-out episode/run. Not a biological efficacy or successful-learning study."
+}

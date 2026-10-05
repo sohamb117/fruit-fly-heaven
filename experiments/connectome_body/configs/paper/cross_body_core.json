@@ -1,0 +1,64 @@
+{
+  "schema": "compatibility-selection-filter-v1",
+  "description": "Current crossed-body study: four connectomes, one task per body, frozen versus joint plasticity, real/rewired/random topology, plus all explicitly matched controls",
+  "include_matched_controls": true,
+  "filters": {
+    "connectome": [
+      "banc",
+      "malecns",
+      "celegans",
+      "fish1"
+    ],
+    "body": [
+      "fly",
+      "worm",
+      "fish"
+    ],
+    "task": [
+      "hover",
+      "locomotion",
+      "swimming"
+    ],
+    "family": [
+      "mlp_mlp"
+    ],
+    "budget": [
+      20000
+    ],
+    "channels": [
+      16
+    ],
+    "kind": [
+      "connectome"
+    ],
+    "topology": [
+      "real",
+      "degree_rewired",
+      "random"
+    ],
+    "initialization": [
+      "biological"
+    ],
+    "plasticity": [
+      "adapters",
+      "joint"
+    ],
+    "sign_mode": [
+      "random_dale"
+    ],
+    "train_seed": [
+      0,
+      1,
+      2
+    ],
+    "subgraph_role": [
+      null
+    ],
+    "training_interactions": [
+      1000000
+    ],
+    "width": [
+      null
+    ]
+  }
+}

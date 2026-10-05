@@ -1,0 +1,11 @@
+{
+  "plan_fingerprint": "955b14bb1e5bf9206e3ddc73903c653820640cae5a95fae6915671c789cd42ab",
+  "source": "2090df96dcef6943276803ca29d9485b50adeaab0ea7027c7b826a1f019ea020",
+  "launch_regimes": [
+    "bc_ppo"
+  ],
+  "comparison_cells": 270,
+  "distinct_pipelines": 210,
+  "regime_comparison_deferred": true,
+  "temporal_training_deferred": true
+}

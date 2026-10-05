@@ -1,0 +1,29 @@
+{
+  "date": "2026-09-13T19:34:16.731Z",
+  "population": 1,
+  "checks": [
+    "Original instrument windows, 3D WebGL habitat and BANC dataset identity",
+    "1 brain with actual binocular RGB, graded/color vision, muscles, joints and internal state",
+    "Viewing link overrides saved assisted/live settings with direct motor coupling and neural time",
+    "Brain/VNC anatomy, microscopy plane, clipping, neuron search and live voltage trace",
+    "Detached anatomical window keeps live controls and returns to the console",
+    "Pause freezes both neural and body clocks",
+    "Rendered thorax, every leg landmark and mouth collision ellipsoids match native physics under upright, tilted and inverted poses",
+    "Paused frame80 camera fixture clears foreground fruit in the actual original UI without changing requested azimuth or distance; this is not a behavior observation",
+    "Sensory disconnect and reconnect through original controls",
+    "Behavior/direct modes, body clocks, motor coupling and flight controls",
+    "Fast mode and population restart preserve the original interface",
+    "A native body exception visibly pauses the run instead of silently waiting for a missing pose acknowledgment"
+  ],
+  "errors": [],
+  "maxRenderRegistrationError": 8.140289677804162e-15,
+  "cameraOcclusionFixture": {
+    "solidCount": 6,
+    "occluders": 0,
+    "elevation": 0.925262976025205,
+    "distance": 25.000022873122713,
+    "azimuth": 0.6299974208431924
+  },
+  "browser": "152.0.7977.83",
+  "passed": true
+}

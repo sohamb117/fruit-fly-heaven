@@ -1,0 +1,78 @@
+{
+  "body": {
+    "action_repeat": 1,
+    "horizon": 8,
+    "model_manifest": null,
+    "name": "fly",
+    "parameters": {},
+    "task": "hover"
+  },
+  "controller": {
+    "adapter": {
+      "anatomical_mapping": null,
+      "budget": 5000,
+      "channels": 16,
+      "density": 0.25,
+      "depth": 1,
+      "family": "mlp_mlp",
+      "rank": null,
+      "support": 256,
+      "width": null
+    },
+    "seed": 0,
+    "substrate": {
+      "community_partition": null,
+      "dynamics": {
+        "control_dt": 0.0002,
+        "gain": 0.9,
+        "gradient_edge_chunk": 65536,
+        "inhibitory_fraction": 0.2,
+        "input_gain": 1.0,
+        "sign_mode": "random_dale",
+        "substeps": 2,
+        "tau_seconds": 0.02,
+        "weight_transform": "log1p"
+      },
+      "graph": "data/graphs/banc",
+      "hidden_size": null,
+      "initialization": "biological",
+      "kind": "connectome",
+      "plasticity": "adapters",
+      "preserve_strengths": false,
+      "seed": 0,
+      "swap_attempts_per_edge": 10,
+      "topology": "real",
+      "total_budget": null
+    }
+  },
+  "device": "cpu",
+  "initial_checkpoint": null,
+  "metadata": {
+    "scope": "Full BANC native FlyBody integration and checkpoint smoke; 16 interactions and 8-step episodes cannot measure task learning."
+  },
+  "perturbation": null,
+  "purpose": "smoke",
+  "threads": 1,
+  "train_seed": 0,
+  "training": {
+    "burn_in": 2,
+    "clip_ratio": 0.2,
+    "critic_width": 8,
+    "epochs": 1,
+    "eval_episodes": 1,
+    "eval_every": 8,
+    "exploration_log_std": -1.0,
+    "gae_lambda": 0.95,
+    "gamma": 0.99,
+    "interactions": 16,
+    "learning_rate": 0.0003,
+    "max_grad_norm": 0.5,
+    "num_envs": 1,
+    "rollout_steps": 4,
+    "sequence_length": 2,
+    "success_threshold": 0.8,
+    "test_episodes": 1,
+    "threshold_confirmations": 2,
+    "value_coefficient": 0.5
+  }
+}

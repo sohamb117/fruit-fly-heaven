@@ -1,0 +1,79 @@
+{
+  "body": {
+    "action_repeat": 1,
+    "horizon": 1000,
+    "model_manifest": "/workspace/experiments/connectome_body/data/paper-bodies/worm/manifest.json",
+    "name": "worm",
+    "parameters": {},
+    "task": "locomotion"
+  },
+  "controller": {
+    "adapter": {
+      "anatomical_mapping": null,
+      "budget": 20000,
+      "channels": 16,
+      "density": 0.25,
+      "depth": 1,
+      "family": "mlp_linear",
+      "rank": null,
+      "support": 256,
+      "width": null
+    },
+    "seed": 0,
+    "substrate": {
+      "community_partition": null,
+      "dynamics": {
+        "control_dt": 0.01,
+        "gain": 0.9,
+        "gradient_edge_chunk": 65536,
+        "inhibitory_fraction": 0.2,
+        "input_gain": 1.0,
+        "sign_mode": "random_dale",
+        "substeps": 2,
+        "tau_seconds": 0.02,
+        "weight_transform": "log1p"
+      },
+      "graph": "/workspace/experiments/connectome_body/data/graphs/celegans-cook2019-chemical",
+      "hidden_size": null,
+      "initialization": "biological",
+      "kind": "connectome",
+      "plasticity": "adapters",
+      "preserve_strengths": true,
+      "seed": 0,
+      "swap_attempts_per_edge": 10,
+      "topology": "real",
+      "total_budget": null
+    }
+  },
+  "device": "cuda",
+  "initial_checkpoint": "/workspace/qualification-isolated-20260918/experiments/connectome_body/runs/learning-core-cuda-v2/runs/968c93219c2d4e2db7745eda-bc/best.pt",
+  "metadata": {
+    "expected_body_fingerprint": "bb9e3f40321a0e8c4ee675335f0d02d6155227af8625f152b1628b31b555a715",
+    "expected_graph_fingerprint": "819d6a3de11b82e6fd1be070f8396ee8920caacd78eed6ac33c0e073418c1c9b"
+  },
+  "perturbation": null,
+  "purpose": "experiment",
+  "threads": 1,
+  "train_seed": 0,
+  "training": {
+    "burn_in": 16,
+    "clip_ratio": 0.2,
+    "critic_width": 64,
+    "epochs": 4,
+    "eval_episodes": 20,
+    "eval_every": 20000,
+    "exploration_log_std": -1.0,
+    "gae_lambda": 0.95,
+    "gamma": 0.99,
+    "interactions": 1000000,
+    "learning_rate": 0.0003,
+    "max_grad_norm": 0.5,
+    "num_envs": 4,
+    "rollout_steps": 128,
+    "sequence_length": 16,
+    "success_threshold": 0.8,
+    "test_episodes": 100,
+    "threshold_confirmations": 3,
+    "value_coefficient": 0.5
+  }
+}

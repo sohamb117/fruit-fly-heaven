@@ -18,7 +18,7 @@ export function mountConsole(){
     </header>
     <main id="console-workspace" aria-label="Live observation workspace"></main>
     <div id="window-layer"></div>
-    <footer class="console-footer"><div id="telemetry-slot"></div><div class="console-status"><span class="status-bracket">[ SYSTEM ]</span><span id="workspace-status" role="status">Drag a title bar to undock · ↗ opens a separate window</span><button class="model-link instrument-link" id="model-details" type="button">Model &amp; sources ↗</button></div></footer>`;
+    <footer class="console-footer"><div id="telemetry-slot"></div><div class="console-status"><span class="status-bracket">[ SYSTEM ]</span><span id="workspace-status" role="status">Drag a title bar to undock · ↗ opens a separate window</span><a class="model-link instrument-link" id="training-console-link" href="/train.html">Train ↗</a><button class="model-link instrument-link" id="model-details" type="button">Model &amp; sources ↗</button></div></footer>`;
   document.body.prepend(shell);
   take('#connection-slot').append(content.connection);
   take('#telemetry-slot').append(content.telemetry,content.pause);

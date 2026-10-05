@@ -1,0 +1,589 @@
+{
+  "date": "2026-09-13T19:35:02.741Z",
+  "checks": [
+    "WASM trajectory matches native MuJoCo, with original mass and coupled inertia",
+    "Quiet body is supported; lifting it clears native per-leg load and touch despite moving joints",
+    "Food taste follows actual tarsal, wing and mouth contacts; standing on food does not activate noncontacting organs",
+    "Only native mouth contact sets feeding contact; an airborne probing and pumping body cannot ingest food",
+    "Documented proboscis motor pulses reach opposite native joint directions; m8 and frozen labellar channels do not invent reach extension; coupling-off removes commands",
+    "Identified motor-unit stimulation changes a real joint; disconnection removes muscle actuation",
+    "Long-tendon motor output reaches the native claw adhesion actuator",
+    "Wing muscles operate native wing joints and fluid forces with zero externally applied root force"
+  ],
+  "maxNativeError": 9.588911886737606e-10,
+  "xmlSha256": "8246f5ff573dcb60d05e8d4500b102a4dbac577ff1c73d716f5d8ecf3d09abd7",
+  "quiet": {
+    "x": -0.0038593754287469372,
+    "y": -0.00013478587052282684,
+    "z": 0.13448646789100138,
+    "airborne": false,
+    "wingPower": 0
+  },
+  "bodySecondsPerWallSecond": 0.09088866161674113,
+  "groundFeedback": {
+    "supportedLoads": [
+      0.2157615093371492,
+      0.0901424126868991,
+      0.3249312392317145,
+      0.17872094395138757,
+      0.0918738958432831,
+      0.2239887771804691
+    ],
+    "supportedContacts": 7,
+    "liftedLoads": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "foodContacts": {
+    "legs": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "wings": [
+      0,
+      0
+    ],
+    "mouth": [
+      0,
+      0
+    ]
+  },
+  "airborneFeedingPulse": {
+    "targets": [
+      "proboscis_m9_muscle",
+      "proboscis_m4a_muscle",
+      "proboscis_m4b_muscle"
+    ],
+    "pumpTargets": [
+      "pharynx_m11v_muscle",
+      "pharynx_m10_muscle",
+      "pharynx_m12d_muscle",
+      "proboscis_m5_muscle",
+      "pharynx_m11d_muscle"
+    ],
+    "proboscis": 0.514430601231762,
+    "pump": 0.9619008898735046,
+    "ingested": 0
+  },
+  "proboscisPulses": {
+    "source": "https://elifesciences.org/articles/54978",
+    "durationSeconds": 0.05,
+    "motorRateHz": 80,
+    "samples": [
+      {
+        "label": "rostrum extension m9",
+        "targets": [
+          "proboscis_m9_muscle"
+        ],
+        "rootIds": [
+          "720575941410682479",
+          "720575941623285450"
+        ],
+        "coupling": true,
+        "controls": {
+          "rostrum": -1.1927571034431457,
+          "haustellum": 0
+        },
+        "positions": {
+          "rostrum": -0.6177319691892493,
+          "haustellum": 0.18506478515075653
+        },
+        "channels": {
+          "rostrumExtend": 0.9619008898735046,
+          "rostrumRetract": 0,
+          "haustellumExtend": 0,
+          "haustellumRetract": 0,
+          "labellarExtend": 0,
+          "labellarAbduct": 0,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0,
+            "proboscis_m9_muscle": 0.9619008898735046,
+            "proboscis_m6_muscle": 0,
+            "proboscis_m1_muscle": 0,
+            "proboscis_m3l_muscle": 0,
+            "proboscis_m4b_muscle": 0,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0,
+            "proboscis_m3m_muscle": 0
+          },
+          "byClass": {
+            "m1": 0,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0,
+            "m4": 0,
+            "m6": 0,
+            "m7": 0,
+            "m9": 0.9619008898735046
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0.24908547144727797
+      },
+      {
+        "label": "rostrum retraction m1",
+        "targets": [
+          "proboscis_m1_muscle"
+        ],
+        "rootIds": [
+          "720575941449780405",
+          "720575941536822514",
+          "720575941588099140",
+          "720575941588254206"
+        ],
+        "coupling": true,
+        "controls": {
+          "rostrum": 0.17602786284685135,
+          "haustellum": 0
+        },
+        "positions": {
+          "rostrum": 0.16980700356938594,
+          "haustellum": 0.09984784863222065
+        },
+        "channels": {
+          "rostrumExtend": 0,
+          "rostrumRetract": 0.9619008898735046,
+          "haustellumExtend": 0,
+          "haustellumRetract": 0,
+          "labellarExtend": 0,
+          "labellarAbduct": 0,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0,
+            "proboscis_m9_muscle": 0,
+            "proboscis_m6_muscle": 0,
+            "proboscis_m1_muscle": 0.9619008898735046,
+            "proboscis_m3l_muscle": 0,
+            "proboscis_m4b_muscle": 0,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0,
+            "proboscis_m3m_muscle": 0
+          },
+          "byClass": {
+            "m1": 0.9619008898735046,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0,
+            "m4": 0,
+            "m6": 0,
+            "m7": 0,
+            "m9": 0
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0
+      },
+      {
+        "label": "haustellum extension m4",
+        "targets": [
+          "proboscis_m4a_muscle",
+          "proboscis_m4b_muscle"
+        ],
+        "rootIds": [
+          "720575941402863216",
+          "720575941494208128",
+          "720575941513444089",
+          "720575941656201177",
+          "720575941454240169",
+          "720575941628933433"
+        ],
+        "coupling": true,
+        "controls": {
+          "rostrum": 0,
+          "haustellum": -1.5294224148988724
+        },
+        "positions": {
+          "rostrum": 0.18303906474031584,
+          "haustellum": -0.8444079018560259
+        },
+        "channels": {
+          "rostrumExtend": 0,
+          "rostrumRetract": 0,
+          "haustellumExtend": 0.9619008898735046,
+          "haustellumRetract": 0,
+          "labellarExtend": 0,
+          "labellarAbduct": 0,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0.9619008898735046,
+            "proboscis_m9_muscle": 0,
+            "proboscis_m6_muscle": 0,
+            "proboscis_m1_muscle": 0,
+            "proboscis_m3l_muscle": 0,
+            "proboscis_m4b_muscle": 0.9619008898735046,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0,
+            "proboscis_m3m_muscle": 0
+          },
+          "byClass": {
+            "m1": 0,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0,
+            "m4": 0.9619008898735046,
+            "m6": 0,
+            "m7": 0,
+            "m9": 0
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0.26553707605535404
+      },
+      {
+        "label": "haustellum retraction m3",
+        "targets": [
+          "proboscis_m3l_muscle",
+          "proboscis_m3m_muscle"
+        ],
+        "rootIds": [
+          "720575941454079539",
+          "720575941519595447",
+          "720575941626721900",
+          "720575941604209142",
+          "720575941652113685"
+        ],
+        "coupling": true,
+        "controls": {
+          "rostrum": 0,
+          "haustellum": 0.6733306229114532
+        },
+        "positions": {
+          "rostrum": -0.03735073968672224,
+          "haustellum": 0.368088021926284
+        },
+        "channels": {
+          "rostrumExtend": 0,
+          "rostrumRetract": 0,
+          "haustellumExtend": 0,
+          "haustellumRetract": 0.9619008898735046,
+          "labellarExtend": 0,
+          "labellarAbduct": 0,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0,
+            "proboscis_m9_muscle": 0,
+            "proboscis_m6_muscle": 0,
+            "proboscis_m1_muscle": 0,
+            "proboscis_m3l_muscle": 0.9619008898735046,
+            "proboscis_m4b_muscle": 0,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0,
+            "proboscis_m3m_muscle": 0.9619008898735046
+          },
+          "byClass": {
+            "m1": 0,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0.9619008898735046,
+            "m4": 0,
+            "m6": 0,
+            "m7": 0,
+            "m9": 0
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0.01506078213174284
+      },
+      {
+        "label": "unsupported m8",
+        "targets": [
+          "proboscis_m8_muscle"
+        ],
+        "rootIds": [
+          "720575941547120161",
+          "720575941553702042"
+        ],
+        "coupling": true,
+        "controls": {
+          "rostrum": 0,
+          "haustellum": 0
+        },
+        "positions": {
+          "rostrum": 0.12185871490438403,
+          "haustellum": 0.13790695238567446
+        },
+        "channels": {
+          "rostrumExtend": 0,
+          "rostrumRetract": 0,
+          "haustellumExtend": 0,
+          "haustellumRetract": 0,
+          "labellarExtend": 0,
+          "labellarAbduct": 0,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0,
+            "proboscis_m9_muscle": 0,
+            "proboscis_m6_muscle": 0,
+            "proboscis_m1_muscle": 0,
+            "proboscis_m3l_muscle": 0,
+            "proboscis_m4b_muscle": 0,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0,
+            "proboscis_m3m_muscle": 0
+          },
+          "byClass": {
+            "m1": 0,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0,
+            "m4": 0,
+            "m6": 0,
+            "m7": 0,
+            "m9": 0
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0
+      },
+      {
+        "label": "unrepresented labellar m6 and m7",
+        "targets": [
+          "proboscis_m6_muscle",
+          "proboscis_m7_muscle"
+        ],
+        "rootIds": [
+          "720575941430258647",
+          "720575941454380013",
+          "720575941558268943",
+          "720575941589105292",
+          "720575941599758121",
+          "720575941627279515"
+        ],
+        "coupling": true,
+        "controls": {
+          "rostrum": 0,
+          "haustellum": 0
+        },
+        "positions": {
+          "rostrum": 0.12185871490438403,
+          "haustellum": 0.13790695238567446
+        },
+        "channels": {
+          "rostrumExtend": 0,
+          "rostrumRetract": 0,
+          "haustellumExtend": 0,
+          "haustellumRetract": 0,
+          "labellarExtend": 0.9619008898735046,
+          "labellarAbduct": 0.9619008898735046,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0,
+            "proboscis_m9_muscle": 0,
+            "proboscis_m6_muscle": 0.9619008898735046,
+            "proboscis_m1_muscle": 0,
+            "proboscis_m3l_muscle": 0,
+            "proboscis_m4b_muscle": 0,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0.9619008898735046,
+            "proboscis_m3m_muscle": 0
+          },
+          "byClass": {
+            "m1": 0,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0,
+            "m4": 0,
+            "m6": 0.9619008898735046,
+            "m7": 0.9619008898735046,
+            "m9": 0
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0
+      },
+      {
+        "label": "disconnected reach extensors",
+        "targets": [
+          "proboscis_m9_muscle",
+          "proboscis_m4a_muscle",
+          "proboscis_m4b_muscle"
+        ],
+        "rootIds": [
+          "720575941402863216",
+          "720575941494208128",
+          "720575941513444089",
+          "720575941656201177",
+          "720575941410682479",
+          "720575941623285450",
+          "720575941454240169",
+          "720575941628933433"
+        ],
+        "coupling": false,
+        "controls": {
+          "rostrum": 0,
+          "haustellum": 0
+        },
+        "positions": {
+          "rostrum": 0.12185871490438403,
+          "haustellum": 0.13790695238567446
+        },
+        "channels": {
+          "rostrumExtend": 0,
+          "rostrumRetract": 0,
+          "haustellumExtend": 0,
+          "haustellumRetract": 0,
+          "labellarExtend": 0,
+          "labellarAbduct": 0,
+          "byTarget": {
+            "proboscis_m4a_muscle": 0,
+            "proboscis_m9_muscle": 0,
+            "proboscis_m6_muscle": 0,
+            "proboscis_m1_muscle": 0,
+            "proboscis_m3l_muscle": 0,
+            "proboscis_m4b_muscle": 0,
+            "proboscis_m2db_muscle": 0,
+            "proboscis_m2da_muscle": 0,
+            "proboscis_m2v_muscle": 0,
+            "proboscis_m7_muscle": 0,
+            "proboscis_m3m_muscle": 0
+          },
+          "byClass": {
+            "m1": 0,
+            "m2D": 0,
+            "m2V": 0,
+            "m3": 0,
+            "m4": 0,
+            "m6": 0,
+            "m7": 0,
+            "m9": 0
+          },
+          "unsupported": [
+            {
+              "target": "proboscis_m8_muscle",
+              "indices": [
+                97080,
+                102699
+              ],
+              "rootIds": [
+                "720575941547120161",
+                "720575941553702042"
+              ],
+              "reason": "No supported positioning action in McKellar 2020 mapping"
+            }
+          ]
+        },
+        "mouthContact": false,
+        "proboscis": 0
+      }
+    ]
+  },
+  "jointPulse": {
+    "driven": -0.07916665312608241,
+    "disconnected": -0.03991123484313072
+  },
+  "gripControl": 0.8637362718582153,
+  "wingPulse": {
+    "power": 0.7621733776849839,
+    "position": [
+      -0.008797914604638444,
+      -0.00014170321042937954,
+      2.445431110666533
+    ],
+    "velocity": [
+      3.1948029229195893,
+      -0.027471600926597037,
+      -27.46296153086507
+    ]
+  },
+  "passed": true
+}

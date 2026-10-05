@@ -1,0 +1,20 @@
+{
+  "schema": "compatibility-selection-filter-v1",
+  "description": "24-run BANC hover pilot: four substrates, two capacities, three paired training seeds",
+  "filters": {
+    "connectome": ["banc", "adapter_only"],
+    "body": ["fly"],
+    "task": ["hover"],
+    "family": ["mlp_mlp"],
+    "budget": [5000, 80000],
+    "channels": [16],
+    "kind": ["connectome", "adapter_only"],
+    "topology": ["real", "degree_rewired", "random"],
+    "initialization": ["biological"],
+    "plasticity": ["adapters"],
+    "sign_mode": ["random_dale"],
+    "train_seed": [0, 1, 2],
+    "subgraph_role": [null],
+    "training_interactions": [1000000]
+  }
+}

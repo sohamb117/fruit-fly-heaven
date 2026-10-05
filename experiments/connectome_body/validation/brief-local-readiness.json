@@ -1,0 +1,48 @@
+[
+  {
+    "missing": [],
+    "online_training_interactions": 480000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-mvp-local/plan.json",
+    "planned_runs": 24,
+    "readiness": "ready",
+    "reused_runs": 0,
+    "sha256": "25d01c94281c024873b4ac53a3bb05d1d16727e70a77a25813b47b472f9360e1",
+    "study": "mvp_local"
+  },
+  {
+    "missing": [],
+    "online_training_interactions": 180000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-learned-rnn-local/plan.json",
+    "planned_runs": 9,
+    "readiness": "ready",
+    "reused_runs": 0,
+    "sha256": "823f58d9440713955b4e16914d8d1f84c444c61fb638b275aff435201844dbec",
+    "study": "learned_rnn_local"
+  },
+  {
+    "missing": [
+      "mvp_go_decision"
+    ],
+    "online_training_interactions": 720000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-capacity-local-readiness/plan.json",
+    "planned_runs": 36,
+    "readiness": "gated",
+    "reused_runs": 24,
+    "sha256": "9076f0d9104d1ad48b1a7f7fb2cad2091ccbee8e8c93cfa07dec676fb59473a5",
+    "study": "capacity_local"
+  },
+  {
+    "missing": [
+      "graph:fish1",
+      "mvp_go_decision",
+      "frozen_method_before_heldout_connectomes"
+    ],
+    "online_training_interactions": 3000000,
+    "plan": "/Users/soham/Documents/code/fly-heaven-main/experiments/connectome_body/runs/brief-heldout-local-readiness/plan.json",
+    "planned_runs": 150,
+    "readiness": "gated",
+    "reused_runs": 0,
+    "sha256": "de4a789a8a1dd6170fd31dc460ce5bc11b5f00aa245ef2b602bbe7ebc92ed696",
+    "study": "heldout_local"
+  }
+]

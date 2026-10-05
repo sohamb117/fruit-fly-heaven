@@ -1,0 +1,375 @@
+{
+  "cases": [
+    {
+      "action_dimension": 12,
+      "body_fingerprint": "4d412107070691afd291cbeef9be589ba053cdfd339cd01ee19865c30b102071",
+      "body_task": "fly:hover",
+      "elapsed_seconds": 0.4329334160138387,
+      "evidence": "native_flybody",
+      "gradients": {
+        "decoder": {
+          "gradient_l1": 3.660596362009528,
+          "trainable_tensors": 4
+        },
+        "encoder": {
+          "gradient_l1": 0.00021196921829869098,
+          "trainable_tensors": 4
+        },
+        "ports": {
+          "gradient_l1": 1.003950956146582e-05,
+          "trainable_tensors": 2
+        },
+        "substrate": {
+          "gradient_l1": 0,
+          "trainable_tensors": 0
+        }
+      },
+      "observation_dimension": 104,
+      "parameters": {
+        "adapter": {
+          "allocated": 19912,
+          "budget": 20000,
+          "channels": 16,
+          "decoder_depth": 1,
+          "decoder_parameters": 3782,
+          "density": null,
+          "encoder_depth": 1,
+          "encoder_parameters": 15746,
+          "family": "mlp_mlp",
+          "oracle": false,
+          "port_parameters": 384,
+          "rank": null,
+          "stateless": true,
+          "unused_budget": 88,
+          "width": 130
+        },
+        "allocated_parameters": 19912,
+        "declared_adapter_ceiling": 20000,
+        "declared_total_ceiling": null,
+        "decoder_trainable": 3782,
+        "encoder_trainable": 15746,
+        "plasticity": "adapters",
+        "port_trainable": 384,
+        "readout_trainable": 0,
+        "state_dimension": 178976,
+        "substrate_trainable": 0,
+        "topology_edges": 157014,
+        "total_trainable_parameters": 19912
+      },
+      "passed": true,
+      "physical_transitions": 2,
+      "plasticity": "adapters"
+    },
+    {
+      "action_dimension": 12,
+      "body_fingerprint": "4d412107070691afd291cbeef9be589ba053cdfd339cd01ee19865c30b102071",
+      "body_task": "fly:hover",
+      "elapsed_seconds": 0.3147863330086693,
+      "evidence": "native_flybody",
+      "gradients": {
+        "decoder": {
+          "gradient_l1": 3.660596362009528,
+          "trainable_tensors": 4
+        },
+        "encoder": {
+          "gradient_l1": 0.00021196921829869098,
+          "trainable_tensors": 4
+        },
+        "ports": {
+          "gradient_l1": 1.003950956146582e-05,
+          "trainable_tensors": 2
+        },
+        "substrate": {
+          "gradient_l1": 1.6935150597419124e-06,
+          "trainable_tensors": 1
+        }
+      },
+      "observation_dimension": 104,
+      "parameters": {
+        "adapter": {
+          "allocated": 19912,
+          "budget": 20000,
+          "channels": 16,
+          "decoder_depth": 1,
+          "decoder_parameters": 3782,
+          "density": null,
+          "encoder_depth": 1,
+          "encoder_parameters": 15746,
+          "family": "mlp_mlp",
+          "oracle": false,
+          "port_parameters": 384,
+          "rank": null,
+          "stateless": true,
+          "unused_budget": 88,
+          "width": 130
+        },
+        "allocated_parameters": 176926,
+        "declared_adapter_ceiling": 20000,
+        "declared_total_ceiling": null,
+        "decoder_trainable": 3782,
+        "encoder_trainable": 15746,
+        "plasticity": "joint",
+        "port_trainable": 384,
+        "readout_trainable": 0,
+        "state_dimension": 178976,
+        "substrate_trainable": 157014,
+        "topology_edges": 157014,
+        "total_trainable_parameters": 176926
+      },
+      "passed": true,
+      "physical_transitions": 2,
+      "plasticity": "joint"
+    },
+    {
+      "action_dimension": 48,
+      "body_fingerprint": "bb9e3f40321a0e8c4ee675335f0d02d6155227af8625f152b1628b31b555a715",
+      "body_task": "worm:locomotion",
+      "elapsed_seconds": 0.3377345420012716,
+      "evidence": "published_worm_mechanics",
+      "gradients": {
+        "decoder": {
+          "gradient_l1": 1.7079579392448068,
+          "trainable_tensors": 4
+        },
+        "encoder": {
+          "gradient_l1": 0.06386009231209755,
+          "trainable_tensors": 4
+        },
+        "ports": {
+          "gradient_l1": 0.001224595820531249,
+          "trainable_tensors": 2
+        },
+        "substrate": {
+          "gradient_l1": 0,
+          "trainable_tensors": 0
+        }
+      },
+      "observation_dimension": 173,
+      "parameters": {
+        "adapter": {
+          "allocated": 19828,
+          "budget": 20000,
+          "channels": 16,
+          "decoder_depth": 1,
+          "decoder_parameters": 4988,
+          "density": null,
+          "encoder_depth": 1,
+          "encoder_parameters": 14456,
+          "family": "mlp_mlp",
+          "oracle": false,
+          "port_parameters": 384,
+          "rank": null,
+          "stateless": true,
+          "unused_budget": 172,
+          "width": 76
+        },
+        "allocated_parameters": 19828,
+        "declared_adapter_ceiling": 20000,
+        "declared_total_ceiling": null,
+        "decoder_trainable": 4988,
+        "encoder_trainable": 14456,
+        "plasticity": "adapters",
+        "port_trainable": 384,
+        "readout_trainable": 0,
+        "state_dimension": 178976,
+        "substrate_trainable": 0,
+        "topology_edges": 157014,
+        "total_trainable_parameters": 19828
+      },
+      "passed": true,
+      "physical_transitions": 2,
+      "plasticity": "adapters"
+    },
+    {
+      "action_dimension": 48,
+      "body_fingerprint": "bb9e3f40321a0e8c4ee675335f0d02d6155227af8625f152b1628b31b555a715",
+      "body_task": "worm:locomotion",
+      "elapsed_seconds": 0.3301208330085501,
+      "evidence": "published_worm_mechanics",
+      "gradients": {
+        "decoder": {
+          "gradient_l1": 1.7079579392448068,
+          "trainable_tensors": 4
+        },
+        "encoder": {
+          "gradient_l1": 0.06386009231209755,
+          "trainable_tensors": 4
+        },
+        "ports": {
+          "gradient_l1": 0.001224595820531249,
+          "trainable_tensors": 2
+        },
+        "substrate": {
+          "gradient_l1": 0.00011831455049104989,
+          "trainable_tensors": 1
+        }
+      },
+      "observation_dimension": 173,
+      "parameters": {
+        "adapter": {
+          "allocated": 19828,
+          "budget": 20000,
+          "channels": 16,
+          "decoder_depth": 1,
+          "decoder_parameters": 4988,
+          "density": null,
+          "encoder_depth": 1,
+          "encoder_parameters": 14456,
+          "family": "mlp_mlp",
+          "oracle": false,
+          "port_parameters": 384,
+          "rank": null,
+          "stateless": true,
+          "unused_budget": 172,
+          "width": 76
+        },
+        "allocated_parameters": 176842,
+        "declared_adapter_ceiling": 20000,
+        "declared_total_ceiling": null,
+        "decoder_trainable": 4988,
+        "encoder_trainable": 14456,
+        "plasticity": "joint",
+        "port_trainable": 384,
+        "readout_trainable": 0,
+        "state_dimension": 178976,
+        "substrate_trainable": 157014,
+        "topology_edges": 157014,
+        "total_trainable_parameters": 176842
+      },
+      "passed": true,
+      "physical_transitions": 2,
+      "plasticity": "joint"
+    },
+    {
+      "action_dimension": 10,
+      "body_fingerprint": "8d9bf9581ba175af5a6b833d6af73b0f99d20b97dd77ea0fb7a5704437a811b5",
+      "body_task": "fish:swimming",
+      "elapsed_seconds": 0.3535000829724595,
+      "evidence": "simzfish_derived_3d_extension",
+      "gradients": {
+        "decoder": {
+          "gradient_l1": 5.469578063115478,
+          "trainable_tensors": 4
+        },
+        "encoder": {
+          "gradient_l1": 0.05172635585768148,
+          "trainable_tensors": 4
+        },
+        "ports": {
+          "gradient_l1": 0.0012941051099915057,
+          "trainable_tensors": 2
+        },
+        "substrate": {
+          "gradient_l1": 0,
+          "trainable_tensors": 0
+        }
+      },
+      "observation_dimension": 34,
+      "parameters": {
+        "adapter": {
+          "allocated": 19988,
+          "budget": 20000,
+          "channels": 16,
+          "decoder_depth": 1,
+          "decoder_parameters": 6787,
+          "density": null,
+          "encoder_depth": 1,
+          "encoder_parameters": 12817,
+          "family": "mlp_mlp",
+          "oracle": false,
+          "port_parameters": 384,
+          "rank": null,
+          "stateless": true,
+          "unused_budget": 12,
+          "width": 251
+        },
+        "allocated_parameters": 19988,
+        "declared_adapter_ceiling": 20000,
+        "declared_total_ceiling": null,
+        "decoder_trainable": 6787,
+        "encoder_trainable": 12817,
+        "plasticity": "adapters",
+        "port_trainable": 384,
+        "readout_trainable": 0,
+        "state_dimension": 178976,
+        "substrate_trainable": 0,
+        "topology_edges": 157014,
+        "total_trainable_parameters": 19988
+      },
+      "passed": true,
+      "physical_transitions": 2,
+      "plasticity": "adapters"
+    },
+    {
+      "action_dimension": 10,
+      "body_fingerprint": "8d9bf9581ba175af5a6b833d6af73b0f99d20b97dd77ea0fb7a5704437a811b5",
+      "body_task": "fish:swimming",
+      "elapsed_seconds": 0.3676917080010753,
+      "evidence": "simzfish_derived_3d_extension",
+      "gradients": {
+        "decoder": {
+          "gradient_l1": 5.469578063115478,
+          "trainable_tensors": 4
+        },
+        "encoder": {
+          "gradient_l1": 0.05172635585768148,
+          "trainable_tensors": 4
+        },
+        "ports": {
+          "gradient_l1": 0.0012941051099915057,
+          "trainable_tensors": 2
+        },
+        "substrate": {
+          "gradient_l1": 0.00013831694377586246,
+          "trainable_tensors": 1
+        }
+      },
+      "observation_dimension": 34,
+      "parameters": {
+        "adapter": {
+          "allocated": 19988,
+          "budget": 20000,
+          "channels": 16,
+          "decoder_depth": 1,
+          "decoder_parameters": 6787,
+          "density": null,
+          "encoder_depth": 1,
+          "encoder_parameters": 12817,
+          "family": "mlp_mlp",
+          "oracle": false,
+          "port_parameters": 384,
+          "rank": null,
+          "stateless": true,
+          "unused_budget": 12,
+          "width": 251
+        },
+        "allocated_parameters": 177002,
+        "declared_adapter_ceiling": 20000,
+        "declared_total_ceiling": null,
+        "decoder_trainable": 6787,
+        "encoder_trainable": 12817,
+        "plasticity": "joint",
+        "port_trainable": 384,
+        "readout_trainable": 0,
+        "state_dimension": 178976,
+        "substrate_trainable": 157014,
+        "topology_edges": 157014,
+        "total_trainable_parameters": 177002
+      },
+      "passed": true,
+      "physical_transitions": 2,
+      "plasticity": "joint"
+    }
+  ],
+  "code_fingerprint": "44ba41b1598b81a337cb7f4aff370be1b11f448d7a7636418c26840275f02fd2",
+  "device": "cpu",
+  "edges": 157014,
+  "fingerprint": "b77da2a828aafe8b9f451d98248f4ecea77c3db8d00b057db6d2e5397f57e142",
+  "goal_sha256": "4c74f22afb206c097d07de48f024c599584e05d932dd8b7586ac2eeaa6d9a6ec",
+  "graph_fingerprint": "5e280e46befd3e4089f74d91d12b3e1009abceeee51c491b6b9fe048276fa072",
+  "neurons": 178976,
+  "optimizer_updates": 0,
+  "passed": true,
+  "schema": "fish1-native-interface-check-v1",
+  "scope": "finite native transitions and sparse gradients; no learning result"
+}

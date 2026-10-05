@@ -1,0 +1,34 @@
+name: fly-training
+
+services:
+  coordinator:
+    build:
+      context: ../..
+      dockerfile: deploy/training/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "7850"
+    volumes:
+      - training_data:/data
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      coordinator:
+        condition: service_healthy
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN to your actual coordinator DNS name}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  training_data:
+  caddy_data:
+  caddy_config:

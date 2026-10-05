@@ -1,0 +1,1458 @@
+<mujoco model="floor">
+  <compiler autolimits="true" boundmass="0" boundinertia="0" coordinate="local" angle="radian" eulerseq="xyz" inertiafromgeom="false" />
+  <option timestep="5.0000000000000002e-05" noslip_tolerance="0" gravity="0 0 -981" density="0.0012800000000000001" viscosity="0.000185" cone="elliptic" noslip_iterations="5" />
+  <size njmax="300" nconmax="100" nkey="1" />
+  <statistic meansize="0.02" extent="4.0099999999999998" />
+  <visual>
+    <global offwidth="3840" offheight="2160" />
+    <quality shadowsize="8192" offsamples="24" />
+    <headlight ambient="0.40000000000000002 0.40000000000000002 0.40000000000000002" diffuse="0.80000000000000004 0.80000000000000004 0.80000000000000004" specular="0.10000000000000001 0.10000000000000001 0.10000000000000001" />
+    <map stiffness="10000" stiffnessrot="50000" force="1.0000000000000001e-05" znear="0.001" zfar="50" />
+    <scale forcewidth="0.059999999999999998" contactwidth="0.29999999999999999" contactheight="0.10000000000000001" jointwidth="0.059999999999999998" framelength="0.29999999999999999" framewidth="0.059999999999999998" />
+  </visual>
+  <default>
+    <default class="/" />
+    <default class="walker/">
+      <mesh scale="0.10000000000000001 0.10000000000000001 0.10000000000000001" />
+      <geom friction="0.5" solref="0.00020000000000000001 1" solimp="0.94999999999999996 0.98999999999999999 0.01" />
+      <general ctrllimited="true" />
+      <default class="walker/body">
+        <joint limited="true" solreflimit="0.001 1" armature="9.9999999999999995e-07" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" material="walker/body" density="0.47799999999999998" />
+        <site group="3" size="0.01" />
+        <default class="walker/collision">
+          <geom type="capsule" contype="1" conaffinity="1" condim="1" group="4" material="walker/blue" density="0" />
+          <default class="walker/adhesion-collision">
+            <geom material="walker/pink" friction="0.59999999999999998" margin="0.00050000000000000001" gap="0.00050000000000000001" />
+            <site type="capsule" />
+          </default>
+          <default class="walker/collision-membrane">
+            <geom group="5" />
+          </default>
+        </default>
+        <default class="walker/adhesion">
+          <general dyntype="none" dynprm="1" />
+          <default class="walker/adhesion_claw">
+            <adhesion group="3" ctrlrange="0 1" gain="0.98499999999999999" />
+          </default>
+          <default class="walker/adhesion_labrum">
+            <adhesion group="3" ctrlrange="0 1" gain="1" />
+          </default>
+        </default>
+        <default class="walker/head">
+          <joint stiffness="0.029999999999999999" damping="0.001" />
+          <geom density="0.71299999999999997" />
+          <general forcerange="-0.10000000000000001 0.10000000000000001" biastype="affine" gainprm="0.10000000000000001" biasprm="0 -0.10000000000000001" />
+          <default class="walker/labrum">
+            <general forcerange="-0.01 0.01" biastype="affine" gainprm="0.01" biasprm="0 -0.01" />
+          </default>
+        </default>
+        <default class="walker/antenna">
+          <joint damping="0.00029999999999999997" />
+          <general forcerange="-0.01 0.01" biastype="affine" gainprm="0.01" biasprm="0 -0.01" />
+          <default class="walker/antenna_extend">
+            <joint axis="1 0 0" range="-0.20000000000000001 0.5" />
+          </default>
+          <default class="walker/antenna_twist">
+            <joint axis="0 1 0" range="-0.10000000000000001 0.089999999999999997" />
+          </default>
+          <default class="walker/antenna_abduct">
+            <joint axis="0 0 1" range="-0.40000000000000002 0.80000000000000004" />
+          </default>
+        </default>
+        <default class="walker/wing">
+          <joint stiffness="0.01" damping="0.0077692300000000002" />
+          <general ctrlrange="-1 1" />
+          <default class="walker/yaw">
+            <joint axis="0 0 1" range="-1.5 1.5" springref="1.5" />
+            <general gainprm="18" />
+          </default>
+          <default class="walker/roll">
+            <joint axis="1 0 0" range="-1 1.5" springref="0.69999999999999996" />
+            <general gainprm="18" />
+          </default>
+          <default class="walker/pitch">
+            <joint axis="0 1 0" range="-1.27 2.9199999999999999" springref="-1" />
+            <general gainprm="18" />
+          </default>
+          <default class="walker/wing-inertial">
+            <geom type="box" mass="7.9999999999999996e-06" rgba="0 0 0 0" />
+          </default>
+          <default class="walker/wing-fluid">
+            <geom type="ellipsoid" group="3" mass="0" />
+          </default>
+        </default>
+        <default class="walker/abdomen">
+          <joint group="3" stiffness="0.050000000000000003" damping="0.01" />
+          <geom density="0.55500000000000005" />
+          <general biastype="affine" gainprm="0.10000000000000001" biasprm="0 -0.10000000000000001" />
+          <default class="walker/abduct_abdomen">
+            <joint axis="0 0 1" range="-0.10000000000000001 0.10000000000000001" />
+          </default>
+          <default class="walker/extend_abdomen">
+            <joint axis="1 0 0" range="-0.14999999999999999 0.10000000000000001" />
+          </default>
+        </default>
+        <default class="walker/haltere">
+          <joint axis="1 0 0" springdamper="0.0050000000000000001 0.10000000000000001" range="-0.20000000000000001 0.20000000000000001" />
+        </default>
+        <default class="walker/leg">
+          <joint stiffness="0.01" damping="0.01" />
+          <geom density="1.1799999999999999" />
+          <default class="walker/coxa">
+            <general biastype="affine" gainprm="0.80000000000000004" biasprm="0 -0.80000000000000004" />
+            <default class="walker/twist_coxa_T1">
+              <joint axis="0 1 0" range="-0.80000000000000004 0.80000000000000004" />
+              <general ctrlrange="-0.80000000000000004 0.80000000000000004" />
+            </default>
+            <default class="walker/abduct_coxa_T1">
+              <joint axis="0 0 1" range="-1 0.69999999999999996" />
+              <general ctrlrange="-1 0.69999999999999996" />
+            </default>
+            <default class="walker/extend_coxa_T1">
+              <joint axis="1 0 0" range="-0.20000000000000001 1.7" springref="0.058400000000000001" />
+              <general ctrlrange="-0.20000000000000001 1.7" />
+            </default>
+            <default class="walker/twist_coxa_T2">
+              <joint axis="0 1 0" range="-0.75 0.80000000000000004" springref="-0.74199999999999999" />
+              <general ctrlrange="-0.75 0.80000000000000004" />
+            </default>
+            <default class="walker/abduct_coxa_T2">
+              <joint axis="0 0 1" range="-0.5 0.29999999999999999" springref="-0.29199999999999998" />
+              <general ctrlrange="-0.5 0.29999999999999999" />
+            </default>
+            <default class="walker/extend_coxa_T2">
+              <joint axis="1 0 0" range="-0.20000000000000001 0.90000000000000002" springref="0.40799999999999997" />
+              <general ctrlrange="-0.20000000000000001 0.90000000000000002" />
+            </default>
+            <default class="walker/twist_coxa_T3">
+              <joint axis="0 1 0" range="-0.14999999999999999 0.80000000000000004" springref="0.0084100000000000008" />
+              <general ctrlrange="-0.14999999999999999 0.80000000000000004" />
+            </default>
+            <default class="walker/abduct_coxa_T3">
+              <joint axis="0 0 1" range="-0.90000000000000002 0.25" />
+              <general ctrlrange="-0.90000000000000002 0.25" />
+            </default>
+            <default class="walker/extend_coxa_T3">
+              <joint axis="1 0 0" range="-0.29999999999999999 1.3" springref="0.158" />
+              <general ctrlrange="-0.29999999999999999 1.3" />
+            </default>
+          </default>
+          <default class="walker/femur">
+            <general biastype="affine" gainprm="0.80000000000000004" biasprm="0 -0.80000000000000004" />
+            <default class="walker/twist_femur">
+              <joint axis="0 1 0" range="-1 1" />
+              <general ctrlrange="-1 1" />
+              <default class="walker/twist_femur_T2">
+                <joint springref="0.60799999999999998" />
+              </default>
+              <default class="walker/twist_femur_T3">
+                <joint springref="0.55800000000000005" />
+              </default>
+            </default>
+            <default class="walker/extend_femur">
+              <joint axis="1 0 0" range="-0.14999999999999999 2" />
+              <general ctrlrange="-0.14999999999999999 2" />
+              <default class="walker/extend_femur_T1">
+                <joint springref="-0.14199999999999999" />
+              </default>
+              <default class="walker/extend_femur_T2">
+                <joint springref="0.20799999999999999" />
+              </default>
+            </default>
+            <default class="walker/extend_femur_T3">
+              <joint axis="1 0 0" range="-0.69999999999999996 1.5" springref="0.25800000000000001" />
+              <general ctrlrange="-0.69999999999999996 1.5" />
+            </default>
+          </default>
+          <default class="walker/tibia">
+            <joint damping="0.0040000000000000001" />
+            <general biastype="affine" gainprm="0.40000000000000002" biasprm="0 -0.40000000000000002" />
+            <default class="walker/extend_tibia">
+              <joint axis="1 0 0" range="-1.3500000000000001 1.3" springref="-1.29" />
+              <general ctrlrange="-1.3500000000000001 1.3" />
+              <default class="walker/extend_tibia_T2">
+                <joint springref="-1.3400000000000001" />
+              </default>
+              <default class="walker/extend_tibia_T3">
+                <joint springref="-0.29199999999999998" />
+              </default>
+            </default>
+          </default>
+          <default class="walker/tarsus">
+            <joint axis="1 0 0" />
+            <general biastype="affine" gainprm="0.40000000000000002" biasprm="0 -0.40000000000000002" />
+            <default class="walker/extend_tarsus_T1">
+              <joint range="-0.69999999999999996 1.2" springref="-0.24199999999999999" />
+              <general ctrlrange="-0.69999999999999996 1.2" />
+            </default>
+            <default class="walker/extend_tarsus_T2">
+              <joint range="-1 1.8" springref="0.60799999999999998" />
+              <general ctrlrange="-1 1.8" />
+            </default>
+            <default class="walker/extend_tarsus_T3">
+              <joint range="-0.80000000000000004 1.2" springref="0.25800000000000001" />
+              <general ctrlrange="-0.80000000000000004 1.2" />
+            </default>
+            <default class="walker/extend_tarsus">
+              <joint group="3" stiffness="0.10000000000000001" range="-0.35999999999999999 0.35999999999999999" damping="0.002" />
+              <general ctrlrange="-0.35999999999999999 0.35999999999999999" />
+            </default>
+          </default>
+        </default>
+      </default>
+    </default>
+    <default class="ghost/">
+      <mesh scale="0.10000000000000001 0.10000000000000001 0.10000000000000001" />
+      <geom friction="0.5" solref="0.00020000000000000001 1" solimp="0.94999999999999996 0.98999999999999999 0.01" />
+      <general ctrllimited="true" />
+      <default class="ghost/body">
+        <joint limited="true" solreflimit="0.001 1" armature="9.9999999999999995e-07" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" material="ghost/body" density="0.47799999999999998" />
+        <site group="3" size="0.01" />
+        <default class="ghost/collision">
+          <geom type="capsule" contype="1" conaffinity="1" condim="1" group="4" material="ghost/blue" density="0" />
+          <default class="ghost/adhesion-collision">
+            <geom material="ghost/pink" friction="0.59999999999999998" margin="0.00050000000000000001" gap="0.00050000000000000001" />
+            <site type="capsule" />
+          </default>
+          <default class="ghost/collision-membrane">
+            <geom group="5" />
+          </default>
+        </default>
+        <default class="ghost/adhesion">
+          <general dyntype="none" dynprm="1" />
+          <default class="ghost/adhesion_claw">
+            <adhesion group="3" ctrlrange="0 1" gain="0.98499999999999999" />
+          </default>
+          <default class="ghost/adhesion_labrum">
+            <adhesion group="3" ctrlrange="0 1" gain="1" />
+          </default>
+        </default>
+        <default class="ghost/head">
+          <joint stiffness="0.029999999999999999" damping="0.001" />
+          <geom density="0.71299999999999997" />
+          <general forcerange="-0.10000000000000001 0.10000000000000001" biastype="affine" gainprm="0.10000000000000001" biasprm="0 -0.10000000000000001" />
+          <default class="ghost/labrum">
+            <general forcerange="-0.01 0.01" biastype="affine" gainprm="0.01" biasprm="0 -0.01" />
+          </default>
+        </default>
+        <default class="ghost/antenna">
+          <joint damping="0.00029999999999999997" />
+          <general forcerange="-0.01 0.01" biastype="affine" gainprm="0.01" biasprm="0 -0.01" />
+          <default class="ghost/antenna_extend">
+            <joint axis="1 0 0" range="-0.20000000000000001 0.5" />
+          </default>
+          <default class="ghost/antenna_twist">
+            <joint axis="0 1 0" range="-0.10000000000000001 0.089999999999999997" />
+          </default>
+          <default class="ghost/antenna_abduct">
+            <joint axis="0 0 1" range="-0.40000000000000002 0.80000000000000004" />
+          </default>
+        </default>
+        <default class="ghost/wing">
+          <joint stiffness="0.01" damping="0.00050000000000000001" />
+          <general ctrlrange="-1 1" />
+          <default class="ghost/yaw">
+            <joint axis="0 0 1" range="-1.5 1.5" springref="1.5" />
+            <general gainprm="3" />
+          </default>
+          <default class="ghost/roll">
+            <joint axis="1 0 0" range="-1 1.5" springref="0.69999999999999996" />
+            <general gainprm="2" />
+          </default>
+          <default class="ghost/pitch">
+            <joint axis="0 1 0" range="-1.27 2.9199999999999999" springref="-1" />
+            <general gainprm="1" />
+          </default>
+          <default class="ghost/wing-inertial">
+            <geom type="box" mass="7.9999999999999996e-06" rgba="0 0 0 0" />
+          </default>
+          <default class="ghost/wing-fluid">
+            <geom type="ellipsoid" group="3" mass="0" />
+          </default>
+        </default>
+        <default class="ghost/abdomen">
+          <joint group="3" stiffness="0.050000000000000003" damping="0.01" />
+          <geom density="0.55500000000000005" />
+          <general biastype="affine" gainprm="0.10000000000000001" biasprm="0 -0.10000000000000001" />
+          <default class="ghost/abduct_abdomen">
+            <joint axis="0 0 1" range="-0.10000000000000001 0.10000000000000001" />
+          </default>
+          <default class="ghost/extend_abdomen">
+            <joint axis="1 0 0" range="-0.14999999999999999 0.10000000000000001" />
+          </default>
+        </default>
+        <default class="ghost/haltere">
+          <joint axis="1 0 0" springdamper="0.0050000000000000001 0.10000000000000001" range="-0.20000000000000001 0.20000000000000001" />
+        </default>
+        <default class="ghost/leg">
+          <joint stiffness="0.01" damping="0.01" />
+          <geom density="1.1799999999999999" />
+          <default class="ghost/coxa">
+            <general biastype="affine" gainprm="0.80000000000000004" biasprm="0 -0.80000000000000004" />
+            <default class="ghost/twist_coxa_T1">
+              <joint axis="0 1 0" range="-0.80000000000000004 0.80000000000000004" />
+              <general ctrlrange="-0.80000000000000004 0.80000000000000004" />
+            </default>
+            <default class="ghost/abduct_coxa_T1">
+              <joint axis="0 0 1" range="-1 0.69999999999999996" />
+              <general ctrlrange="-1 0.69999999999999996" />
+            </default>
+            <default class="ghost/extend_coxa_T1">
+              <joint axis="1 0 0" range="-0.20000000000000001 1.7" springref="0.058400000000000001" />
+              <general ctrlrange="-0.20000000000000001 1.7" />
+            </default>
+            <default class="ghost/twist_coxa_T2">
+              <joint axis="0 1 0" range="-0.75 0.80000000000000004" springref="-0.74199999999999999" />
+              <general ctrlrange="-0.75 0.80000000000000004" />
+            </default>
+            <default class="ghost/abduct_coxa_T2">
+              <joint axis="0 0 1" range="-0.5 0.29999999999999999" springref="-0.29199999999999998" />
+              <general ctrlrange="-0.5 0.29999999999999999" />
+            </default>
+            <default class="ghost/extend_coxa_T2">
+              <joint axis="1 0 0" range="-0.20000000000000001 0.90000000000000002" springref="0.40799999999999997" />
+              <general ctrlrange="-0.20000000000000001 0.90000000000000002" />
+            </default>
+            <default class="ghost/twist_coxa_T3">
+              <joint axis="0 1 0" range="-0.14999999999999999 0.80000000000000004" springref="0.0084100000000000008" />
+              <general ctrlrange="-0.14999999999999999 0.80000000000000004" />
+            </default>
+            <default class="ghost/abduct_coxa_T3">
+              <joint axis="0 0 1" range="-0.90000000000000002 0.25" />
+              <general ctrlrange="-0.90000000000000002 0.25" />
+            </default>
+            <default class="ghost/extend_coxa_T3">
+              <joint axis="1 0 0" range="-0.29999999999999999 1.3" springref="0.158" />
+              <general ctrlrange="-0.29999999999999999 1.3" />
+            </default>
+          </default>
+          <default class="ghost/femur">
+            <general biastype="affine" gainprm="0.80000000000000004" biasprm="0 -0.80000000000000004" />
+            <default class="ghost/twist_femur">
+              <joint axis="0 1 0" range="-1 1" />
+              <general ctrlrange="-1 1" />
+              <default class="ghost/twist_femur_T2">
+                <joint springref="0.60799999999999998" />
+              </default>
+              <default class="ghost/twist_femur_T3">
+                <joint springref="0.55800000000000005" />
+              </default>
+            </default>
+            <default class="ghost/extend_femur">
+              <joint axis="1 0 0" range="-0.14999999999999999 2" />
+              <general ctrlrange="-0.14999999999999999 2" />
+              <default class="ghost/extend_femur_T1">
+                <joint springref="-0.14199999999999999" />
+              </default>
+              <default class="ghost/extend_femur_T2">
+                <joint springref="0.20799999999999999" />
+              </default>
+            </default>
+            <default class="ghost/extend_femur_T3">
+              <joint axis="1 0 0" range="-0.69999999999999996 1.5" springref="0.25800000000000001" />
+              <general ctrlrange="-0.69999999999999996 1.5" />
+            </default>
+          </default>
+          <default class="ghost/tibia">
+            <joint damping="0.0040000000000000001" />
+            <general biastype="affine" gainprm="0.40000000000000002" biasprm="0 -0.40000000000000002" />
+            <default class="ghost/extend_tibia">
+              <joint axis="1 0 0" range="-1.3500000000000001 1.3" springref="-1.29" />
+              <general ctrlrange="-1.3500000000000001 1.3" />
+              <default class="ghost/extend_tibia_T2">
+                <joint springref="-1.3400000000000001" />
+              </default>
+              <default class="ghost/extend_tibia_T3">
+                <joint springref="-0.29199999999999998" />
+              </default>
+            </default>
+          </default>
+          <default class="ghost/tarsus">
+            <joint axis="1 0 0" />
+            <general biastype="affine" gainprm="0.40000000000000002" biasprm="0 -0.40000000000000002" />
+            <default class="ghost/extend_tarsus_T1">
+              <joint range="-0.69999999999999996 1.2" springref="-0.24199999999999999" />
+              <general ctrlrange="-0.69999999999999996 1.2" />
+            </default>
+            <default class="ghost/extend_tarsus_T2">
+              <joint range="-1 1.8" springref="0.60799999999999998" />
+              <general ctrlrange="-1 1.8" />
+            </default>
+            <default class="ghost/extend_tarsus_T3">
+              <joint range="-0.80000000000000004 1.2" springref="0.25800000000000001" />
+              <general ctrlrange="-0.80000000000000004 1.2" />
+            </default>
+            <default class="ghost/extend_tarsus">
+              <joint group="3" stiffness="0.10000000000000001" range="-0.35999999999999999 0.35999999999999999" damping="0.002" />
+              <general ctrlrange="-0.35999999999999999 0.35999999999999999" />
+            </default>
+          </default>
+        </default>
+      </default>
+    </default>
+  </default>
+  <asset>
+    <texture name="groundplane" type="2d" builtin="checker" rgb1="0.20000000000000001 0.29999999999999999 0.40000000000000002" rgb2="0.10000000000000001 0.20000000000000001 0.29999999999999999" mark="edge" markrgb="0.80000000000000004 0.80000000000000004 0.80000000000000004" width="200" height="200" />
+    <material name="groundplane" class="/" texture="groundplane" texrepeat="2 2" texuniform="true" reflectance="0.20000000000000001" />
+    <material name="walker/body" class="walker/" shininess="0.59999999999999998" rgba="0.67400000000000004 0.34999999999999998 0.14299999999999999 1" />
+    <material name="walker/red" class="walker/" shininess="0.69199999999999995" rgba="0.80000000000000004 0.027900000000000001 0.0015399999999999999 1" />
+    <material name="walker/ocelli" class="walker/" shininess="1" rgba="0.128 0.048800000000000003 0.0154 1" />
+    <material name="walker/black" class="walker/" shininess="0.72699999999999998" rgba="0 0 0 1" />
+    <material name="walker/bristle-brown" class="walker/" shininess="0.90700000000000003" rgba="0 0 0 1" />
+    <material name="walker/lower" class="walker/" shininess="0.59999999999999998" rgba="0.79900000000000004 0.60999999999999999 0.38600000000000001 1" />
+    <material name="walker/brown" class="walker/" shininess="0.59999999999999998" rgba="0.20200000000000001 0.078200000000000006 0.026200000000000001 1" />
+    <material name="walker/membrane" class="walker/" specular="0.62" shininess="0.90700000000000003" rgba="0.53900000000000003 0.68600000000000005 0.80000000000000004 0.40000000000000002" />
+    <material name="walker/blue" class="walker/" shininess="0.59999999999999998" rgba="0.20000000000000001 0.29999999999999999 1 1" />
+    <material name="walker/pink" class="walker/" rgba="0.59999999999999998 0.29999999999999999 1 1" />
+    <material name="ghost/body" class="ghost/" shininess="0.59999999999999998" rgba="0.67400000000000004 0.34999999999999998 0.14299999999999999 1" />
+    <material name="ghost/red" class="ghost/" shininess="0.69199999999999995" rgba="0.80000000000000004 0.027900000000000001 0.0015399999999999999 1" />
+    <material name="ghost/ocelli" class="ghost/" shininess="1" rgba="0.128 0.048800000000000003 0.0154 1" />
+    <material name="ghost/black" class="ghost/" shininess="0.72699999999999998" rgba="0 0 0 1" />
+    <material name="ghost/bristle-brown" class="ghost/" shininess="0.90700000000000003" rgba="0 0 0 1" />
+    <material name="ghost/lower" class="ghost/" shininess="0.59999999999999998" rgba="0.79900000000000004 0.60999999999999999 0.38600000000000001 1" />
+    <material name="ghost/brown" class="ghost/" shininess="0.59999999999999998" rgba="0.20200000000000001 0.078200000000000006 0.026200000000000001 1" />
+    <material name="ghost/membrane" class="ghost/" specular="0.62" shininess="0.90700000000000003" rgba="0.53900000000000003 0.68600000000000005 0.80000000000000004 0.40000000000000002" />
+    <material name="ghost/blue" class="ghost/" shininess="0.59999999999999998" rgba="0.20000000000000001 0.29999999999999999 1 1" />
+    <material name="ghost/pink" class="ghost/" rgba="0.59999999999999998 0.29999999999999999 1 1" />
+  </asset>
+  <worldbody>
+    <geom name="groundplane" class="/" type="plane" contype="0" conaffinity="0" size="8 8 0.25" material="groundplane" />
+    <camera name="top_camera" class="/" fovy="10.058147163570894" pos="0 0 100" quat="1 0 0 0" />
+    <body pos="0 0 0.1278" name="walker/">
+      <freejoint name="walker/" />
+      <body name="walker/thorax" childclass="walker/body">
+        <light name="walker/right" pos="0 -1 1" dir="0 1 -1" diffuse="0.29999999999999999 0.29999999999999999 0.29999999999999999" mode="trackcom" />
+        <camera name="walker/track1" pos="0.59999999999999998 0.59999999999999998 0.22" quat="0.312 0.221 0.53300000000000003 0.754" mode="trackcom" />
+        <camera name="walker/track2" pos="0 -1.1000000000000001 0.10000000000000001" quat="0.70699999999999996 0.70699999999999996 0 0" mode="trackcom" />
+        <camera name="walker/track3" pos="-0.90000000000000002 -0.90000000000000002 0.90000000000000002" quat="0.81999999999999995 0.42499999999999999 -0.17599999999999999 -0.34000000000000002" mode="trackcom" />
+        <camera name="walker/back" pos="-0.46200000000000002 0 0.29699999999999999" xyaxes="0 -1 0 0.70699999999999996 0 0.70699999999999996" mode="track" />
+        <camera name="walker/side" pos="-0.044999999999999998 0.42399999999999999 -0.035000000000000003" xyaxes="-1 0 0 0 0 1" mode="track" />
+        <camera name="walker/bottom" pos="0.01 0 -0.51600000000000001" xyaxes="0 1 0 0.99099999999999999 0 0.13600000000000001" mode="track" />
+        <camera name="walker/hero" pos="0.27100000000000002 0.27000000000000002 -0.043999999999999997" xyaxes="-0.64100000000000001 0.76700000000000002 0 -0.044999999999999998 -0.036999999999999998 0.998" mode="track" />
+        <light name="walker/left" pos="0 1 1" dir="0 -1 -1" diffuse="0.29999999999999999 0.29999999999999999 0.29999999999999999" mode="trackcom" />
+        <light name="walker/tracking" pos="0 0 1" mode="trackcom" />
+        <site name="walker/thorax" />
+        <site name="walker/hover_up_dir" pos="0.026200000000000001 0 0.026200000000000001" quat="0.91531112843430784 0 0.40229285124684228 0" />
+        <geom name="walker/thorax_collision" class="walker/collision" type="ellipsoid" size="0.043700000000000003 0.043700000000000003 0.055100000000000003" pos="0.0016800000000000001 0 -0.0026199999999999999" quat="0 -0.47899999999999998 0 -0.878" />
+        <geom name="walker/thorax_collision2" class="walker/collision" type="ellipsoid" size="0.0499 0.028000000000000001 0.0114" pos="-0.00445 0 0.021899999999999999" quat="0 -0.19900000000000001 0 -0.97999999999999998" />
+        <body name="walker/head" childclass="walker/head" pos="0.0567 3.8099999999999998e-07 -0.0030500000000000002" quat="0.70199999999999996 -0.086999999999999994 0.086999999999999994 -0.70199999999999996">
+          <site name="walker/head" pos="0 0.014999999999999999 0" quat="0 0 0 1" />
+          <joint name="walker/head_abduct" axis="0 0 1" range="-0.20000000000000001 0.20000000000000001" />
+          <joint name="walker/head_twist" axis="0 1 0" range="-3 3" />
+          <joint name="walker/head" axis="1 0 0" range="-0.5 0.29999999999999999" />
+          <geom name="walker/head_collision" class="walker/collision" type="ellipsoid" size="0.045499999999999999 0.026200000000000001 0.032399999999999998" pos="0 0.0149 0.00087500000000000002" euler="0.29999999999999999 0 0" />
+          <camera name="walker/eye_right" fovy="150" pos="0.021899999999999999 0.013100000000000001 0" quat="0.47399999999999998 0.68799999999999994 -0.34399999999999997 -0.42899999999999999" />
+          <camera name="walker/eye_left" fovy="150" pos="-0.021899999999999999 0.013100000000000001 0" quat="0.47399999999999998 0.68799999999999994 0.34399999999999997 0.42899999999999999" />
+          <body name="walker/rostrum" pos="0 0.036799999999999999 -0.0235" quat="2.2000000000000001e-07 -1.2100000000000001e-07 0.192 -0.98099999999999998">
+            <joint name="walker/rostrum" axis="1 0 0" range="-1.24 0.183" springref="0.80000000000000004" />
+            <geom name="walker/rostrum_collision_right" class="walker/collision" size="0.0035000000000000001" fromto="0.00613 0.032399999999999998 0 0.0114 0.024500000000000001 -0.023599999999999999" />
+            <geom name="walker/rostrum_collision_left" class="walker/collision" size="0.0035000000000000001" fromto="-0.00613 0.032399999999999998 0 -0.0114 0.024500000000000001 -0.023599999999999999" />
+            <geom name="walker/rostrum_collision" class="walker/collision" type="ellipsoid" size="0.013100000000000001 0.021899999999999999 0.013100000000000001" pos="0 0.017500000000000002 0.00263" euler="0.10000000000000001 0 0" />
+            <body name="walker/haustellum" pos="0 0.037699999999999997 0" quat="2.3300000000000001e-07 -1.5599999999999999e-07 -0.34699999999999998 0.93799999999999994">
+              <joint name="walker/haustellum_abduct" axis="0 0 1" range="-0.087300000000000003 0.087300000000000003" />
+              <joint name="walker/haustellum" axis="1 0 0" range="-1.5900000000000001 0.69999999999999996" springref="0.80000000000000004" />
+              <geom name="walker/haustellum_collision" class="walker/collision" type="capsule" size="0.0078799999999999999 0.0078799999999999999" pos="0 0.0123 -0.00094799999999999995" quat="0.63300000000000001 0.77400000000000002 0 0" />
+              <body name="walker/labrum_left" childclass="walker/labrum" pos="-0.00263 0.018200000000000001 0" quat="0.74099999999999999 -0.014200000000000001 -0.59099999999999997 0.31900000000000001">
+                <joint name="walker/labrum_left" axis="1 0 0" range="-0.0052399999999999999 1.05" />
+                <geom name="walker/labrum_left_lower_collision" class="walker/adhesion-collision" type="ellipsoid" size="0.0035000000000000001 0.0087500000000000008 0.013100000000000001" pos="-0.00060300000000000002 0.0106 -0.0043800000000000002" quat="-0.17399999999999999 -0.71499999999999997 0.087599999999999997 0.67200000000000004" />
+                <inertial pos="-0.00027752775640396687 0.0087314860923328325 -0.0040824939779322278" quat="-0.17502402588195154 -0.71611603857656525 0.087657128227586589 0.6699706243772009" mass="2.0858507093135301e-06" diaginertia="1.1723419087583811e-10 8.8723747183864831e-11 5.2723493389275655e-11" />
+              </body>
+              <body name="walker/labrum_right" childclass="walker/labrum" pos="0.00263 0.018200000000000001 0" quat="0.69899999999999995 0.0027399999999999998 0.64200000000000002 -0.316">
+                <joint name="walker/labrum_right" axis="1 0 0" range="-0.0052399999999999999 1.05" />
+                <geom name="walker/labrum_right_lower_collision" class="walker/adhesion-collision" type="ellipsoid" size="0.0035000000000000001 0.0087500000000000008 0.013100000000000001" pos="0.00116 0.0106 -0.0041399999999999996" quat="-0.17499999999999999 -0.66800000000000004 -0.072400000000000006 -0.71899999999999997" />
+                <inertial pos="0.00067420705191711949 0.0089192074435707151 -0.0039935412426453038" quat="-0.17623525052622957 -0.67006740070436133 -0.071884095841041079 -0.71748414041731745" mass="2.085851221637398e-06" diaginertia="1.1723419541765943e-10 8.872377370769412e-11 5.2723499357564087e-11" />
+              </body>
+              <inertial pos="4.6089892571260662e-08 0.0123668828375727 -0.0012227799122985911" quat="0.63295552271297417 0.77418815947232666 2.1296637460803064e-17 -1.0628411803648643e-17" mass="3.1839274856261909e-06" diaginertia="1.826245533101448e-10 1.8055525897911605e-10 1.0058179605163029e-10" />
+            </body>
+            <inertial pos="-2.0886342261255903e-08 0.019582994357398544 -0.00061772693503180586" quat="0.80779957922267032 0.58945724171281355 0 0" mass="1.4341904203538517e-05" diaginertia="2.436001080200512e-09 1.9574283740103398e-09 1.7073177013555558e-09" />
+          </body>
+          <body name="walker/antenna_left" pos="-0.0079500000000000005 0.0378 0.0129" quat="0.78500000000000003 -0.58999999999999997 -0.012800000000000001 0.192">
+            <joint name="walker/antenna_abduct_left" class="walker/antenna_abduct" />
+            <joint name="walker/antenna_twist_left" class="walker/antenna_twist" />
+            <joint name="walker/antenna_left" class="walker/antenna_extend" />
+            <geom name="walker/antenna_left_collision" class="walker/collision" type="capsule" size="0.00481 0.0087500000000000008" pos="0 0.0114 0.00263" quat="0.63400000000000001 -0.77300000000000002 0 0" />
+            <inertial pos="-0.0033311751622732873 0.011952353721236833 0.0024279448400325587" quat="-0.19116664744481407 0.61815370586352436 -0.38260498015177158 -0.65951098398356123" mass="1.4407579138438792e-06" diaginertia="1.3237827330401782e-10 9.3470233250572705e-11 5.085371071530828e-11" />
+          </body>
+          <body name="walker/antenna_right" pos="0.0086099999999999996 0.037999999999999999 0.0129" quat="0.58999999999999997 0.78500000000000003 -0.192 -0.012800000000000001">
+            <joint name="walker/antenna_abduct_right" class="walker/antenna_abduct" />
+            <joint name="walker/antenna_twist_right" class="walker/antenna_twist" />
+            <joint name="walker/antenna_right" class="walker/antenna_extend" />
+            <geom name="walker/antenna_right_collision" class="walker/collision" type="capsule" size="0.00481 0.0087500000000000008" pos="-0.00061600000000000001 -0.0114 -0.00231" quat="0.78200000000000003 0.623 -0.0258 -0.016400000000000001" />
+            <inertial pos="0.0028304997999250552 -0.011952136890566192 -0.0024277987119602634" quat="-0.6595100635507648 0.38260555937332086 0.6181539992894074 0.19116771478052066" mass="1.4407618832232005e-06" diaginertia="1.323791263179763e-10 9.347106099663901e-11 5.0853795013444481e-11" />
+          </body>
+          <inertial pos="3.1200498124275974e-08 0.016750815325854353 0.0012510150064862248" quat="0.46514513432736526 0.53257863645810899 0.46514513432736526 0.53257863645810899" mass="0.00012532986996108747" diaginertia="8.2222921890830611e-08 7.1000792781487766e-08 3.8270386306177266e-08" />
+        </body>
+        <body name="walker/wing_left" childclass="walker/wing" pos="-0.00694 0.043200000000000002 0.0091000000000000004" quat="0 0.40229285124684228 -0 0.91531112843430784">
+          <joint name="walker/wing_yaw_left" class="walker/yaw" pos="0 0 0" />
+          <joint name="walker/wing_roll_left" class="walker/roll" pos="0 0 0" />
+          <joint name="walker/wing_pitch_left" class="walker/pitch" pos="0 0 0" />
+          <geom name="walker/wing_left_brown_collision" class="walker/collision" type="ellipsoid" size="0.0021900000000000001 0.017500000000000002 0.114" pos="0.0018593852178156027 -0.10983901894064003 -0.0016557282497273059" quat="-0.67255265043079904 -0.64657144330040039 0.2604246050174413 -0.24840891752603053" />
+          <geom name="walker/wing_left_membrane_collision" class="walker/collision-membrane" type="ellipsoid" size="0.0030599999999999998 0.055100000000000003 0.114" pos="0.026296761260053508 -0.14778340730195202 -0.028838303567497774" quat="-0.68454439272029655 -0.63358006730933292 0.26543204263570863 -0.24340070748189505" />
+          <geom name="walker/wing_left_fluid" class="walker/wing-fluid" size="0.00050000000000000001 0.055100000000000003 0.114" pos="0.026296761260053508 -0.14778340730195202 -0.028838303567497774" quat="-0.68454439272029655 -0.63358006730933292 0.26543204263570863 -0.24340070748189505" fluidshape="ellipsoid" fluidcoef="1 0.5 1.5 1.7 1" />
+          <geom name="walker/wing_left_inertial" class="walker/wing-inertial" size="0.00050000000000000001 0.055100000000000003 0.114" pos="0.026296761260053508 -0.14778340730195202 -0.028838303567497774" quat="-0.68454439272029655 -0.63358006730933292 0.26543204263570863 -0.24340070748189505" />
+          <inertial pos="0.026296761260053508 -0.14778340730195202 -0.028838303567497774" quat="-0.68463928997511725 -0.63366789946417357 0.26546883903993812 -0.24343444971863976" mass="7.9999999999999996e-06" diaginertia="4.2752026666666658e-08 3.4656666666666668e-08 8.0966933333333334e-09" />
+        </body>
+        <body name="walker/wing_right" childclass="walker/wing" pos="-0.00694 -0.043200000000000002 0.0091000000000000004" quat="-0 -0.91531112843430784 0 0.40229285124684228">
+          <joint name="walker/wing_yaw_right" class="walker/yaw" pos="0 0 0" />
+          <joint name="walker/wing_roll_right" class="walker/roll" pos="0 0 0" />
+          <joint name="walker/wing_pitch_right" class="walker/pitch" pos="0 0 0" />
+          <geom name="walker/wing_right_brown_collision" class="walker/collision" type="ellipsoid" size="0.0021900000000000001 0.017500000000000002 0.114" pos="-0.0018630153288563837 0.10983901894063998 0.0016560936946419197" quat="0.24840891752603053 0.26042460501744125 0.64657144330040028 -0.67255265043079893" />
+          <geom name="walker/wing_right_membrane_collision" class="walker/collision-membrane" type="ellipsoid" size="0.0030599999999999998 0.055100000000000003 0.114" pos="-0.026353946588091426 0.14778340730195202 0.028838103909819661" quat="0.24340070748189502 0.26543204263570858 0.63358006730933281 -0.68454439272029655" />
+          <geom name="walker/wing_right_fluid" class="walker/wing-fluid" size="0.00050000000000000001 0.055100000000000003 0.114" pos="-0.026353946588091426 0.14778340730195202 0.028838103909819661" quat="0.24340070748189502 0.26543204263570858 0.63358006730933281 -0.68454439272029655" fluidshape="ellipsoid" fluidcoef="1 0.5 1.5 1.7 1" />
+          <geom name="walker/wing_right_inertial" class="walker/wing-inertial" size="0.00050000000000000001 0.055100000000000003 0.114" pos="-0.026353946588091426 0.14778340730195202 0.028838103909819661" quat="0.24340070748189502 0.26543204263570858 0.63358006730933281 -0.68454439272029655" />
+          <inertial pos="-0.026353946588091426 0.14778340730195202 0.028838103909819661" quat="0.24343444971863973 0.26546883903993806 0.63366789946417346 -0.68463928997511725" mass="7.9999999999999996e-06" diaginertia="4.2752026666666658e-08 3.4656666666666668e-08 8.0966933333333334e-09" />
+        </body>
+        <body name="walker/abdomen" childclass="walker/abdomen" pos="-0.044699999999999997 -0.00055500000000000005 0.00428" quat="-0.70399999999999996 -0.085900000000000004 -0.085300000000000001 -0.69999999999999996">
+          <joint name="walker/abdomen_abduct" class="walker/abduct_abdomen" />
+          <joint name="walker/abdomen" class="walker/extend_abdomen" />
+          <geom name="walker/abdomen_collision" class="walker/collision" type="cylinder" size="0.0281 0.010200000000000001 0" pos="-0.00018699999999999999 0.0064599999999999996 -0.0146" quat="0.0104 -0.020500000000000001 0.82399999999999995 0.56599999999999995" />
+          <body name="walker/abdomen_2" pos="0 0.011900000000000001 0" quat="0.98099999999999998 -0.192 -0.00026899999999999998 0.0014400000000000001">
+            <joint name="walker/abdomen_abduct_2" class="walker/abduct_abdomen" />
+            <joint name="walker/abdomen_2" class="walker/extend_abdomen" />
+            <geom name="walker/abdomen_2_collision" class="walker/collision" type="cylinder" size="0.036700000000000003 0.014200000000000001 0" pos="-0.00018200000000000001 0.0166 -0.0177" quat="-0.0111 0.0103 0.69499999999999995 0.71899999999999997" />
+            <body name="walker/abdomen_3" pos="0 0.0212 0" quat="0.996 -0.090899999999999995 6.69e-05 0.00052499999999999997">
+              <joint name="walker/abdomen_abduct_3" class="walker/abduct_abdomen" />
+              <joint name="walker/abdomen_3" class="walker/extend_abdomen" />
+              <geom name="walker/abdomen_3_collision" class="walker/collision" type="cylinder" size="0.038899999999999997 0.019400000000000001 0" pos="3.29e-05 0.019800000000000002 -0.017399999999999999" quat="0.70999999999999996 -0.59099999999999997 0.23899999999999999 0.29999999999999999" />
+              <body name="walker/abdomen_4" pos="0 0.031300000000000001 0" quat="0.999 -0.0332 0.000147 -0.00022900000000000001">
+                <joint name="walker/abdomen_abduct_4" class="walker/abduct_abdomen" />
+                <joint name="walker/abdomen_4" class="walker/extend_abdomen" />
+                <geom name="walker/abdomen_4_collision" class="walker/collision" type="cylinder" size="0.039600000000000003 0.017600000000000001 0" pos="9.6700000000000006e-05 0.014999999999999999 -0.019199999999999998" quat="0.018599999999999998 -0.0235 0.63700000000000001 0.77000000000000002" />
+                <body name="walker/abdomen_5" pos="0 0.026200000000000001 0" quat="0.999 -0.036799999999999999 -4.7200000000000002e-05 -0.00032699999999999998">
+                  <joint name="walker/abdomen_abduct_5" class="walker/abduct_abdomen" />
+                  <joint name="walker/abdomen_5" class="walker/extend_abdomen" />
+                  <geom name="walker/abdomen_5_collision" class="walker/collision" type="cylinder" size="0.037100000000000001 0.016 0" pos="0.00028200000000000002 0.010500000000000001 -0.018700000000000001" quat="0.026200000000000001 -0.0206 0.624 0.78100000000000003" />
+                  <body name="walker/abdomen_6" pos="0 0.021299999999999999 0" quat="0.998 -0.066199999999999995 0.000156 -0.00035100000000000002">
+                    <joint name="walker/abdomen_abduct_6" class="walker/abduct_abdomen" />
+                    <joint name="walker/abdomen_6" class="walker/extend_abdomen" />
+                    <geom name="walker/abdomen_6_collision" class="walker/collision" type="cylinder" size="0.033399999999999999 0.0141 0" pos="-0.00015699999999999999 0.0094199999999999996 -0.017000000000000001" quat="-0.0029199999999999999 0.0020100000000000001 0.59199999999999997 0.80600000000000005" />
+                    <body name="walker/abdomen_7" pos="0 0.018200000000000001 0" quat="0.995 -0.10199999999999999 -1.79e-06 -0.00018699999999999999">
+                      <joint name="walker/abdomen_abduct_7" class="walker/abduct_abdomen" />
+                      <joint name="walker/abdomen_7" class="walker/extend_abdomen" />
+                      <geom name="walker/abdomen_7_collision" class="walker/collision" type="sphere" size="0.026200000000000001" pos="-3.8300000000000003e-05 0.0134 -0.010800000000000001" />
+                      <inertial pos="-9.3432320426340879e-05 0.013495588013666064 -0.01099499069749935" quat="0.6781174324296031 0.16111002366564808 -0.13731740666293735 0.70380696070506743" mass="3.12857153785067e-05" diaginertia="9.1978915892149686e-09 7.3222089754826063e-09 7.0940177246580973e-09" />
+                    </body>
+                    <inertial pos="-0.00012016725414263633 0.0093934554567716814 -0.013264881373023179" quat="0.41646829454738271 0.57128974745679983 0.4209148384525227 0.56834222336373186" mass="4.2752834966058655e-05" diaginertia="2.380154911197741e-08 1.5901413707668939e-08 1.3570328332975693e-08" />
+                  </body>
+                  <inertial pos="0.00034562761200531122 0.01047296132882858 -0.014066789640106795" quat="0.45948039240559641 0.53801263306015723 0.42235004644173413 0.56660445985991237" mass="6.4413991326163093e-05" diaginertia="4.7070867574213745e-08 2.9803529792483065e-08 2.8252208294518617e-08" />
+                </body>
+                <inertial pos="-5.2758134177469833e-05 0.014915607924619063 -0.014138635935857669" quat="0.46378507849146139 0.52784072264706827 0.43687030027060736 0.56163325509229023" mass="8.2115197903846857e-05" diaginertia="7.0119683307801738e-08 4.3751469698182735e-08 4.3355783272857908e-08" />
+              </body>
+              <inertial pos="-1.6207016759275245e-05 0.01989731072405114 -0.014479012686215625" quat="0.67039485029379176 -0.20569168863200449 -0.33259926536565831 0.63058655441224309" mass="8.8294891157716555e-05" diaginertia="7.242435763155413e-08 4.7752995469405039e-08 4.6776636030765956e-08" />
+            </body>
+            <inertial pos="-0.00016311616039237737 0.016574785941691105 -0.013897979248207896" quat="0.48364874115833456 0.51573330692953467 0.49923473034748383 0.50086698365370685" mass="5.5575764557409146e-05" diaginertia="3.9945503835633806e-08 2.431519538425315e-08 2.3127054958974585e-08" />
+          </body>
+          <inertial pos="-0.00017167625118794349 0.0064354375792720015 -0.0095513719049073204" quat="0.58985642877586408 0.38623025975794162 0.57495866755309932 0.41511216614869767" mass="1.5766698128040611e-05" diaginertia="6.8940532699779264e-09 4.389102925096291e-09 2.9903878920230087e-09" />
+        </body>
+        <body name="walker/haltere_left" childclass="walker/haltere" pos="-0.038600000000000002 0.0247 -0.0086599999999999993" quat="0.29099999999999998 -0.20399999999999999 0.82599999999999996 0.439">
+          <joint name="walker/haltere_left" />
+          <inertial pos="0.00050091668396975986 0.017188874245579272 0.00112267434163206" quat="-0.67085677169185742 0.70062148659608825 -0.16098218092275668 -0.18211387047784094" mass="8.2170426442012751e-07" diaginertia="5.4918707401762767e-11 5.1373895933751518e-11 9.2782990198409719e-12" />
+        </body>
+        <body name="walker/haltere_right" childclass="walker/haltere" pos="-0.038600000000000002 -0.0247 -0.0086599999999999993" quat="-0.438 -0.82899999999999996 0.20599999999999999 -0.28000000000000003">
+          <joint name="walker/haltere_right" />
+          <inertial pos="-0.00044717603080131341 0.017512736241926424 0.0011318951153424864" quat="0.16107081594405884 -0.14451599320857153 0.70752792708206547 0.67273735763447129" mass="8.2170354821309693e-07" diaginertia="5.4918628802888366e-11 5.1369188515064122e-11 9.2829113824452447e-12" />
+        </body>
+        <body name="walker/coxa_T1_left" childclass="walker/leg" pos="0.031699999999999999 0.020899999999999998 -0.027199999999999998" quat="-0.55475034834577364 0.77113231744639188 -0.3115360088805405 -0.013810328409700545">
+          <geom name="walker/coxa_T1_left_collision" class="walker/collision" type="ellipsoid" size="0.00679 0.0075199999999999998 0.020799999999999999" pos="-2.0400000000000001e-05 0.026100000000000002 -0.00045399999999999998" quat="-0.41699999999999998 -0.38300000000000001 -0.53200000000000003 0.63" />
+          <body name="walker/femur_T1_left" pos="0 0.043700000000000003 0" quat="0 0 0.18269482920011607 0.98343815229201892">
+            <geom name="walker/femur_T1_left_collision" class="walker/collision" size="0.0050000000000000001" fromto="0.00263 0.00263 0.0043800000000000002 0 0.066199999999999995 0" />
+            <body name="walker/tibia_T1_left" pos="0 0.069699999999999998 0" quat="0.24602670369066357 0.017631252681146445 0.95822225854912246 -0.14756389538440218">
+              <geom name="walker/tibia_T1_left_collision" class="walker/collision" size="0.00362" fromto="0 0 0 0 -0.050999999999999997 0.00175" />
+              <body name="walker/tarsus_T1_left" pos="0 -0.050999999999999997 0.00175" quat="0.15917839465462791 0.98599555712750331 0.0009693050899355982 0.047866982855018392">
+                <geom name="walker/tarsus_T1_left_collision" class="walker/collision" size="0.0020400000000000001" fromto="0 0 0 -0.000165 0.0235 0.00174" />
+                <site name="walker/tarsus_T1_left" />
+                <body name="walker/tarsus2_T1_left" pos="-0.000165 0.0235 0.00174" quat="1 0 0 0">
+                  <geom name="walker/tarsus2_T1_left_collision" class="walker/collision" size="0.0015900000000000001" fromto="0 0 0 0.000113 0.013599999999999999 0.00055599999999999996" />
+                  <body name="walker/tarsus3_T1_left" pos="0.000113 0.013599999999999999 0.00055599999999999996" quat="1 0 0 0">
+                    <geom name="walker/tarsus3_T1_left_collision" class="walker/collision" size="0.00149" fromto="0 0 0 -0.00025500000000000002 0.0090900000000000009 0.00020000000000000001" />
+                    <body name="walker/tarsus4_T1_left" pos="-0.00025500000000000002 0.0090900000000000009 0.00020000000000000001" quat="1 0 0 0">
+                      <geom name="walker/tarsus4_T1_left_collision" class="walker/collision" size="0.00148" fromto="0 0 0 -7.1199999999999996e-05 0.0090600000000000003 -0.00080999999999999996" />
+                      <body name="walker/claw_T1_left" pos="-7.1199999999999996e-05 0.0090600000000000003 -0.00080999999999999996" quat="1 0 0 0">
+                        <geom name="walker/tarsal_claw_T1_left_collision" class="walker/adhesion-collision" type="capsule" size="0.00199" fromto="0 0 0 -7.1199999999999996e-05 0.0090600000000000003 -0.00080999999999999996" />
+                        <site name="walker/claw_T1_left" class="walker/adhesion-collision" size="0.0021900000000000001" fromto="0 0 0 -7.8399999999999995e-05 0.0099699999999999997 -0.00089099999999999997" />
+                        <inertial pos="-0.00054573295228139453 0.0049731077075629779 1.0991275453398064e-06" quat="-0.37303674592930014 -0.23102275686238161 -0.4680461048120978 0.76707556066427141" mass="9.3294243462686807e-08" diaginertia="8.3320240749963221e-13 8.0188883483084585e-13 3.0483854778535171e-13" />
+                      </body>
+                      <inertial pos="-0.00020806992776341467 0.0047920966526682485 -0.00071455062184229423" quat="0.37303674592930014 0.23102275686238161 0.4680461048120978 -0.76707556066427141" mass="4.9773574201933187e-08" diaginertia="2.3786770206879579e-13 2.3524267118192553e-13 7.0857371131883761e-14" />
+                    </body>
+                    <inertial pos="-0.00023223239177918437 0.0055558805712508721 -0.00067665386661892868" quat="-0.37303674592930014 -0.23102275686238161 -0.4680461048120978 0.76707556066427141" mass="6.3719774265550168e-08" diaginertia="4.4338109028728498e-13 4.5196942165028567e-13 1.4004260221069571e-13" />
+                  </body>
+                  <inertial pos="-6.6997390159806436e-05 0.0079863470531263241 -0.00020914342294321708" quat="0.37303674592930014 0.23102275686238161 0.4680461048120978 -0.76707556066427141" mass="1.0449381858099854e-07" diaginertia="1.5196309954126858e-12 1.5957245359855373e-12 4.7630856793885005e-13" />
+                </body>
+                <inertial pos="-0.0004833566248915299 0.013096278013732501 0.0011179996662386282" quat="-0.32110646039986623 -0.33942121208752896 -0.62502986366530289 0.62531716064812637" mass="2.6682787838755923e-07" diaginertia="1.1285669214562374e-11 1.1285146216782075e-11 4.9439943411638153e-13" />
+              </body>
+              <inertial pos="-0.00053401885336597276 -0.028791343331796612 -0.00058505426079182021" quat="-0.29799652883309952 0.30312532410173038 0.66050580761837696 0.61890644268260819" mass="1.9768359268232948e-06" diaginertia="4.2875085961445148e-10 4.2885521140528419e-10 1.1565671799184283e-11" />
+            </body>
+            <inertial pos="0.0021492072176334705 0.033346185373163605 0.0027763612000164736" quat="0.66666574890503227 -0.67601312186425666 0.22602255991089359 0.21789180965691057" mass="7.8696578649998621e-06" diaginertia="2.8666627941799905e-09 2.8528997358698409e-09 1.1917956281912298e-10" />
+          </body>
+          <inertial pos="4.9156914136445212e-06 0.02569612879310311 -0.00040364310571690439" quat="-0.4176097470935029 -0.38335841473630961 -0.531380088391462 0.62950268199940684" mass="5.7563382424720674e-06" diaginertia="6.2692990513329293e-10 6.1358307960047376e-10 1.3124499290638845e-10" />
+        </body>
+        <body name="walker/coxa_T1_right" childclass="walker/leg" pos="0.031699999999999999 -0.020899999999999998 -0.027199999999999998" quat="0.31854285922541564 0.020308787174448516 -0.5654537006523479 -0.76081542598620133">
+          <geom name="walker/coxa_T1_right_collision" class="walker/collision" type="ellipsoid" size="0.00679 0.0075199999999999998 0.020799999999999999" pos="0.00060999999999999997 -0.025999999999999999 0.0015299999999999999" quat="-0.50800000000000001 0.628 0.44700000000000001 0.38500000000000001" />
+          <body name="walker/femur_T1_right" pos="0 -0.0436 0" quat="0 0 0.19188497531749565 0.98108417388489355">
+            <geom name="walker/femur_T1_right_collision" class="walker/collision" size="0.0050000000000000001" fromto="-0.00263 -0.00263 -0.0043800000000000002 0 -0.066299999999999998 0" />
+            <body name="walker/tibia_T1_right" pos="0 -0.069800000000000001 0" quat="0.21923063091177913 0.020271420029768075 0.96580995910846679 -0.13935251302686197">
+              <geom name="walker/tibia_T1_right_collision" class="walker/collision" size="0.00362" fromto="0 0 0 0 0.051499999999999997 -0.00175" />
+              <body name="walker/tarsus_T1_right" pos="0 0.051499999999999997 -0.00175" quat="-0.19405671895472826 -0.9787324659111527 0.0047051271870022261 0.071490641192775248">
+                <geom name="walker/tarsus_T1_right_collision" class="walker/collision" size="0.0020400000000000001" fromto="0 0 0 -0.00096500000000000004 -0.022700000000000001 -0.0016100000000000001" />
+                <site name="walker/tarsus_T1_right" />
+                <body name="walker/tarsus2_T1_right" pos="-0.00096500000000000004 -0.022700000000000001 -0.0016100000000000001" quat="1 0 0 0">
+                  <geom name="walker/tarsus2_T1_right_collision" class="walker/collision" size="0.0015900000000000001" fromto="0 0 0 0.00014300000000000001 -0.013599999999999999 -0.0016800000000000001" />
+                  <body name="walker/tarsus3_T1_right" pos="0.00014300000000000001 -0.013599999999999999 -0.0016800000000000001" quat="1 0 0 0">
+                    <geom name="walker/tarsus3_T1_right_collision" class="walker/collision" size="0.00149" fromto="0 0 0 0.000437 -0.0089899999999999997 -0.00063000000000000003" />
+                    <body name="walker/tarsus4_T1_right" pos="0.000437 -0.0089899999999999997 -0.00063000000000000003" quat="1 0 0 0">
+                      <geom name="walker/tarsus4_T1_right_collision" class="walker/collision" size="0.00148" fromto="0 0 0 0.00076499999999999995 -0.0089899999999999997 0.000134" />
+                      <body name="walker/claw_T1_right" pos="0.00076499999999999995 -0.0089899999999999997 0.000134" quat="1 0 0 0">
+                        <geom name="walker/tarsal_claw_T1_right_collision" class="walker/adhesion-collision" type="capsule" size="0.00199" fromto="0 0 0 0.00076499999999999995 -0.0089899999999999997 0.000134" />
+                        <site name="walker/claw_T1_right" class="walker/adhesion-collision" size="0.0021900000000000001" fromto="0 0 0 0.00084099999999999995 -0.0098799999999999999 0.00014799999999999999" />
+                        <inertial pos="0.00056204003006173758 -0.0050302852542937135 -0.00048006061054456373" quat="-0.52896667614907089 0.77795099063133677 0.2989811647799096 0.15998992095245998" mass="9.3294634194782345e-08" diaginertia="8.5710671081539174e-13 7.7919358502248197e-13 3.0363665736396515e-13" />
+                      </body>
+                      <inertial pos="0.00050370768410299208 -0.0048845720420964481 -7.2124864000600031e-05" quat="0.52896667614907089 -0.77795099063133677 -0.2989811647799096 -0.15998992095245998" mass="4.9773326130081652e-08" diaginertia="2.4258238834095261e-13 2.2969746815200741e-13 7.1686256294877961e-14" />
+                    </body>
+                    <inertial pos="0.00035547792547341306 -0.0054825830481538898 0.00047159572840332897" quat="-0.52896667614907089 0.77795099063133677 0.2989811647799096 0.15998992095245998" mass="6.3719814787988376e-08" diaginertia="4.5632915131290148e-13 4.4031666491565994e-13 1.3874757111552307e-13" />
+                  </body>
+                  <inertial pos="0.00034993968477390475 -0.008065596213288076 -0.0003164142574472173" quat="0.52896667614907089 -0.77795099063133677 -0.2989811647799096 -0.15998992095245998" mass="1.0449368601016074e-07" diaginertia="1.5645222255806852e-12 1.5632863713585872e-12 4.6385255829133196e-13" />
+                </body>
+                <inertial pos="-0.00027570131629123598 -0.012473717533745793 -0.0006912814940119999" quat="-0.67454853709115259 0.64425571356033917 0.23511920372003742 0.27319920698109568" mass="2.6682830538712472e-07" diaginertia="1.128592006037852e-11 1.128499837310251e-11 4.9440003585361343e-13" />
+              </body>
+              <inertial pos="-7.3089226116452091e-05 0.028558173050548898 0.00026539177325043961" quat="-0.66610471745728439 -0.61116413631038169 -0.2997411238863823 0.30485761023872315" mass="1.9754592649204038e-06" diaginertia="4.2811397309411265e-10 4.2829032830330682e-10 1.1553385071939404e-11" />
+            </body>
+            <inertial pos="-0.0021911887191155797 -0.033235149559641984 -0.0026461592347805721" quat="0.23172073036758906 -0.23911007440246787 -0.67151995439738676 -0.66196134802818496" mass="7.8745948016401884e-06" diaginertia="2.8692088990998198e-09 2.855286706765668e-09 1.1933192338129259e-10" />
+          </body>
+          <inertial pos="0.00071263690047236941 -0.025952692346030343 0.0014655471013240882" quat="-0.50745907577267024 0.62800897250287357 0.44686919180568085 0.38522453489720776" mass="5.756348975866323e-06" diaginertia="6.2693153522838812e-10 6.1358458730069464e-10 1.3124545496071795e-10" />
+        </body>
+        <body name="walker/coxa_T2_left" childclass="walker/leg" pos="-0.0144 0.0241 -0.042500000000000003" quat="-0.51493863485407065 0.76787630998222567 0.070749517145500276 -0.37392181097976268">
+          <geom name="walker/coxa_T2_left_collision" class="walker/collision" type="ellipsoid" size="0.0078799999999999999 0.0070000000000000001 0.0149" pos="0.00034900000000000003 0.0143 -0.00216" quat="0.70699999999999996 -0.70699999999999996 0 0" />
+          <body name="walker/femur_T2_left" pos="0 0.0281 0" quat="-0.0072818076668247217 -0.29931765983762648 0.21973095814653357 0.92872074372140334">
+            <geom name="walker/femur_T2_left_collision" class="walker/collision" size="0.0046899999999999997" fromto="0 0.00263 0.0043800000000000002 0 0.078899999999999998 0" />
+            <body name="walker/tibia_T2_left" pos="0 0.083000000000000004 0" quat="0.13565914956809993 -0.0010747736784490619 0.97495861519896443 -0.17422886858760689">
+              <geom name="walker/tibia_T2_left_collision" class="walker/collision" size="0.0035200000000000001" fromto="0 0 0 0 -0.066799999999999998 0.00175" />
+              <body name="walker/tarsus_T2_left" pos="0 -0.066799999999999998 0.00175" quat="-0.43396743812505184 0.88885334147269723 -0.063415072697900463 -0.12997726168341905">
+                <geom name="walker/tarsus_T2_left_collision" class="walker/collision" size="0.0020799999999999998" fromto="0 0 0 0.00047100000000000001 0.034200000000000001 0.0013600000000000001" />
+                <site name="walker/tarsus_T2_left" />
+                <body name="walker/tarsus2_T2_left" pos="0.00047100000000000001 0.034200000000000001 0.0013600000000000001" quat="1 0 0 0">
+                  <geom name="walker/tarsus2_T2_left_collision" class="walker/collision" size="0.0016199999999999999" fromto="0 0 0 2.4199999999999999e-05 0.0178 0.000203" />
+                  <body name="walker/tarsus3_T2_left" pos="2.4199999999999999e-05 0.0178 0.000203" quat="1 0 0 0">
+                    <geom name="walker/tarsus3_T2_left_collision" class="walker/collision" size="0.00149" fromto="0 0 0 -3.1099999999999997e-05 0.0099100000000000004 0.000292" />
+                    <body name="walker/tarsus4_T2_left" pos="-3.1099999999999997e-05 0.0099100000000000004 0.000292" quat="1 0 0 0">
+                      <geom name="walker/tarsus4_T2_left_collision" class="walker/collision" size="0.0014599999999999999" fromto="0 0 0 3.6000000000000001e-05 0.0099100000000000004 -0.00025399999999999999" />
+                      <body name="walker/claw_T2_left" pos="3.6000000000000001e-05 0.0099100000000000004 -0.00025399999999999999" quat="1 0 0 0">
+                        <geom name="walker/tarsal_claw_T2_left_collision" class="walker/adhesion-collision" type="capsule" size="0.002" fromto="0 0 0 3.6000000000000001e-05 0.0099100000000000004 -0.00025399999999999999" />
+                        <site name="walker/claw_T2_left" class="walker/adhesion-collision" size="0.0022000000000000001" fromto="0 0 0 3.96e-05 0.0109 -0.00027999999999999998" />
+                        <inertial pos="1.6065335951670132e-05 0.0051041668523883199 0.00059070569439402532" quat="-0.077411620356388697 0.050207536716934273 -0.34205134576078733 0.93514037510624604" mass="9.9460969995167098e-08" diaginertia="9.6179975181846394e-13 4.6351139510525072e-13 7.9018570675463928e-13" />
+                      </body>
+                      <inertial pos="2.6320159582770425e-06 0.0052132915603659846 -0.00042653848131492256" quat="0.077411620356388697 -0.050207536716934273 0.34205134576078733 -0.93514037510624604" mass="5.5094793970062102e-08" diaginertia="3.0840217384352196e-13 1.8691789843980302e-13 1.9186575720337477e-13" />
+                    </body>
+                    <inertial pos="-0.00013197207934463433 0.0058330569962635331 -0.0005454365732769223" quat="-0.077411620356388697 0.050207536716934273 -0.34205134576078733 0.93514037510624604" mass="6.8068188450772913e-08" diaginertia="5.8392385521099845e-13 3.0541381514565074e-13 3.8260656132915392e-13" />
+                  </body>
+                  <inertial pos="-0.0001554285335281947 0.010042487873546155 -3.0726249306306519e-05" quat="0.078802020559599784 0.04799580466153662 -0.69443500886858478 -0.7136152063600566" mass="1.3623078338452123e-07" diaginertia="3.2627648382906385e-12 3.3770735288739735e-12 2.6849456246969048e-13" />
+                </body>
+                <inertial pos="-6.4553794834276701e-05 0.016665601560337293 2.3372803439600243e-05" quat="-0.014606482151938827 0.019570508833519778 0.69401739840703558 0.7195439504098925" mass="4.870658311894134e-07" diaginertia="5.0683883955931552e-11 5.0691685282148662e-11 9.3749235032307645e-13" />
+              </body>
+              <inertial pos="3.4135870074912533e-05 -0.033643479283454458 -0.00086301577651617944" quat="-0.11311665219884094 0.10697570528716439 0.71519123200174972 0.68136797924576664" mass="2.6215351392104033e-06" diaginertia="1.0963207744064545e-09 1.094974160429732e-09 1.4509364903469146e-11" />
+            </body>
+            <inertial pos="-0.0013424348192292261 0.040544583035264106 0.0022867287547588475" quat="0.66821268463365813 -0.69070026354995318 -0.20186475481579821 -0.18887978925725088" mass="8.0023307224002195e-06" diaginertia="4.1689427891151749e-09 4.1543417262405274e-09 1.0685300647344874e-10" />
+          </body>
+          <inertial pos="0.00045196652068692916 0.018079895773854944 -0.0027485210881670608" quat="-0.63889707610574542 -0.46465893153068205 -0.46115441515471944 0.40402872283490671" mass="2.3600891489255979e-06" diaginertia="1.2741855073379574e-10 1.1361445463109366e-10 5.1920387926186885e-11" />
+        </body>
+        <body name="walker/coxa_T2_right" childclass="walker/leg" pos="-0.0144 -0.0241 -0.042500000000000003" quat="-0.07200126153035516 -0.37217507154009805 -0.51746619819261119 -0.76704959304483389">
+          <geom name="walker/coxa_T2_right_collision" class="walker/collision" type="ellipsoid" size="0.0078799999999999999 0.0070000000000000001 0.0149" pos="-0.00033500000000000001 -0.0143 0.0020600000000000002" quat="0.70699999999999996 0.70699999999999996 0 0" />
+          <body name="walker/femur_T2_right" pos="0 -0.028199999999999999 0" quat="-0.0090992137158101769 -0.29920638914048092 0.22532585402038341 0.9271774374504882">
+            <geom name="walker/femur_T2_right_collision" class="walker/collision" size="0.0046899999999999997" fromto="0 -0.00263 -0.0043800000000000002 0 -0.079799999999999996 0" />
+            <body name="walker/tibia_T2_right" pos="0 -0.084000000000000005 0" quat="0.13466227092721825 0.02472069555502978 0.97544712223549723 -0.1700144456288547">
+              <geom name="walker/tibia_T2_right_collision" class="walker/collision" size="0.0035300000000000002" fromto="0 0 0 0 0.066500000000000004 -0.00175" />
+              <body name="walker/tarsus_T2_right" pos="0 0.066500000000000004 -0.00175" quat="0.43707308837566711 -0.89207125019123679 0.050236651567242087 0.10266995100471955">
+                <geom name="walker/tarsus_T2_right_collision" class="walker/collision" size="0.0020799999999999998" fromto="0 0 0 -0.00036699999999999998 -0.0339 -0.0010300000000000001" />
+                <site name="walker/tarsus_T2_right" />
+                <body name="walker/tarsus2_T2_right" pos="-0.00036699999999999998 -0.0339 -0.0010300000000000001" quat="1 0 0 0">
+                  <geom name="walker/tarsus2_T2_right_collision" class="walker/collision" size="0.0016199999999999999" fromto="0 0 0 1.7200000000000001e-05 -0.0177 -0.000553" />
+                  <body name="walker/tarsus3_T2_right" pos="1.7200000000000001e-05 -0.0177 -0.000553" quat="1 0 0 0">
+                    <geom name="walker/tarsus3_T2_right_collision" class="walker/collision" size="0.00149" fromto="0 0 0 5.0699999999999999e-05 -0.0098799999999999999 -0.00029300000000000002" />
+                    <body name="walker/tarsus4_T2_right" pos="5.0699999999999999e-05 -0.0098799999999999999 -0.00029300000000000002" quat="1 0 0 0">
+                      <geom name="walker/tarsus4_T2_right_collision" class="walker/collision" size="0.0014599999999999999" fromto="0 0 0 -9.6600000000000003e-05 -0.0098799999999999999 0.000252" />
+                      <body name="walker/claw_T2_right" pos="-9.6600000000000003e-05 -0.0098799999999999999 0.000252" quat="1 0 0 0">
+                        <geom name="walker/tarsal_claw_T2_right_collision" class="walker/adhesion-collision" type="capsule" size="0.002" fromto="0 0 0 -9.6600000000000003e-05 -0.0098799999999999999 0.000252" />
+                        <site name="walker/claw_T2_right" class="walker/adhesion-collision" size="0.0022000000000000001" fromto="0 0 0 -0.000106 -0.0109 0.00027700000000000001" />
+                        <inertial pos="3.1575438379382106e-05 -0.0055961721694742228 -0.0013192872814332679" quat="-0.34413839727472206 0.93437576469357686 0.078831702631535161 -0.047919271015869729" mass="9.9461790037227561e-08" diaginertia="9.6180244828803138e-13 4.6346191367307127e-13 7.9025761291213652e-13" />
+                      </body>
+                      <inertial pos="3.0317733960236529e-05 -0.0057103617671479812 0.00074801744579244822" quat="0.34413839727472206 -0.93437576469357686 -0.078831702631535161 0.047919271015869729" mass="5.5095179502932654e-08" diaginertia="3.0840303402872941e-13 1.8690013194881302e-13 1.9188891515144491e-13" />
+                    </body>
+                    <inertial pos="5.5429151676314806e-05 -0.0063309528528139453 -8.6300766030708576e-05" quat="-0.34413839727472206 0.93437576469357686 0.078831702631535161 -0.047919271015869729" mass="6.8068691533312567e-08" diaginertia="5.839250130956213e-13 3.0538532984174112e-13 3.8264408110868339e-13" />
+                  </body>
+                  <inertial pos="0.00016292171896437925 -0.010142547907742064 0.00046647257818713261" quat="0.71517504076425009 -0.69283040290779352 -0.050266287022519542 0.07735628134449625" mass="1.3623218859411975e-07" diaginertia="3.2627901172389009e-12 3.377106185409762e-12 2.6850474793604577e-13" />
+                </body>
+                <inertial pos="6.035209894124198e-05 -0.016471627097396017 0.00054757200807863116" quat="-0.72128069480463719 0.6922964279519439 -0.017344784424063567 -0.013378101524634537" mass="4.8706988378535315e-07" diaginertia="5.0684469802149314e-11 5.0692278223025559e-11 9.3750779881128719e-13" />
+              </body>
+              <inertial pos="-0.00031825237630851363 0.033081339267839453 -0.00025817857799884103" quat="-0.71503493905111981 -0.68735621023227689 -0.09278056232164672 0.087511390381837043" mass="2.6223281396998385e-06" diaginertia="1.0968493279634072e-09 1.0955004965745667e-09 1.4518615391476848e-11" />
+            </body>
+            <inertial pos="0.001371136891915755 -0.040524500419326148 -0.0019678685511506158" quat="-0.18677388517636534 0.2025967160889473 -0.69342284002694277 -0.66575885377144672" mass="8.0058415898995308e-06" diaginertia="4.1737796719973554e-09 4.1591900774099775e-09 1.068742997767609e-10" />
+          </body>
+          <inertial pos="-0.00037357354008352509 -0.0180654098774111 0.0025603715159337112" quat="-0.40483189643775225 -0.45961431353881882 0.46259257270916776 -0.64099448522679892" mass="2.3600899335951104e-06" diaginertia="1.2741864090061608e-10 1.1361467712406202e-10 5.1920336757546203e-11" />
+        </body>
+        <body name="walker/coxa_T3_left" childclass="walker/leg" pos="-0.037699999999999997 0.019199999999999998 -0.0402" quat="0.72115220118010082 -0.47566115274534793 -0.045944277148374658 0.50095941342525518">
+          <geom name="walker/coxa_T3_left_collision" class="walker/collision" type="ellipsoid" size="0.0070000000000000001 0.0087500000000000008 0.0166" pos="-0.00348 0.011599999999999999 -0.0068700000000000002" quat="0.60299999999999998 -0.78600000000000003 -0.13500000000000001 0" />
+          <body name="walker/femur_T3_left" pos="-0.00398 0.023199999999999998 -0.0066800000000000002" quat="0.15607693712103485 0.22685654828067722 -0.72884260379596 -0.62667739315617466">
+            <geom name="walker/femur_T3_left_collision" class="walker/collision" size="0.0054400000000000004" fromto="-0.00263 0.00263 0.0043800000000000002 -0.00263 0.076600000000000001 1.5200000000000001e-07" />
+            <body name="walker/tibia_T3_left" pos="0 0.077899999999999997 1.6e-07" quat="-0.13088534126286933 -0.085872157551224002 -0.80309068950116214 0.57427462458004186">
+              <geom name="walker/tibia_T3_left_collision" class="walker/collision" size="0.00365" fromto="0 -0.0030000000000000001 -0.0050000000000000001 0 -0.071499999999999994 0.00175" />
+              <body name="walker/tarsus_T3_left" pos="0 -0.071499999999999994 0.00175" quat="-0.35197168035205623 0.92541068517180525 -0.050478471276047668 -0.13260815939312798">
+                <geom name="walker/tarsus_T3_left_collision" class="walker/collision" size="0.0023400000000000001" fromto="0 0 0 0.00027 0.033700000000000001 0.0010200000000000001" />
+                <site name="walker/tarsus_T3_left" />
+                <body name="walker/tarsus2_T3_left" pos="0.00027 0.033700000000000001 0.0010200000000000001" quat="1 0 0 0">
+                  <geom name="walker/tarsus2_T3_left_collision" class="walker/collision" size="0.0016800000000000001" fromto="0 0 0 -7.9699999999999999e-05 0.019699999999999999 0.00158" />
+                  <body name="walker/tarsus3_T3_left" pos="-7.9699999999999999e-05 0.019699999999999999 0.00158" quat="1 0 0 0">
+                    <geom name="walker/tarsus3_T3_left_collision" class="walker/collision" size="0.0014499999999999999" fromto="0 0 0 8.0000000000000007e-05 0.0111 -2.7800000000000001e-05" />
+                    <body name="walker/tarsus4_T3_left" pos="8.0000000000000007e-05 0.0111 -2.7800000000000001e-05" quat="1 0 0 0">
+                      <geom name="walker/tarsus4_T3_left_collision" class="walker/collision" size="0.0014499999999999999" fromto="0 0 0 0.000222 0.0111 -0.00108" />
+                      <body name="walker/claw_T3_left" pos="0.000222 0.0111 -0.00108" quat="1 0 0 0">
+                        <geom name="walker/tarsal_claw_T3_left_collision" class="walker/adhesion-collision" type="capsule" size="0.0019" fromto="0 0 0 0.000222 0.0111 -0.00108" />
+                        <site name="walker/claw_T3_left" class="walker/adhesion-collision" size="0.0020899999999999998" fromto="0 0 0 0.00024399999999999999 0.012200000000000001 -0.0011800000000000001" />
+                        <inertial pos="-0.00041666887217823093 0.0054870306684488834 2.2788464923567675e-05" quat="-0.49012892086150983 -0.13803630832426195 0.25106603905354891 -0.82321653442657661" mass="9.6984180279941141e-08" diaginertia="6.8599194159115887e-13 1.0837533058021661e-12 9.1025887979754351e-13" />
+                      </body>
+                      <inertial pos="-0.0001427782254897602 0.005092615929957689 -0.00066703916421358145" quat="0.49012892086150983 0.13803630832426195 -0.25106603905354891 0.82321653442657661" mass="5.942883197889836e-08" diaginertia="2.496248769609478e-13 3.5818503754256731e-13 2.5781901356260654e-13" />
+                    </body>
+                    <inertial pos="-8.1235452446070874e-05 0.0057390872490161449 -0.00017257870907268213" quat="-0.49012892086150983 -0.13803630832426195 0.25106603905354891 -0.82321653442657661" mass="7.2539239565268118e-08" diaginertia="4.151403817547015e-13 6.6720851131491462e-13 5.3091084783112859e-13" />
+                  </body>
+                  <inertial pos="-0.00018023736423494752 0.010134315915769659 0.001386962571042108" quat="0.10363681353746737 -0.097800931565421398 0.68178061693208081 0.71754413037836895" mass="1.7409397431184665e-07" diaginertia="5.6807706918850624e-12 5.6849835461519779e-12 2.1833748242830156e-13" />
+                </body>
+                <inertial pos="3.1341145463954084e-05 0.015347038476086747 0.00046067698046314831" quat="-0.10414212022807261 0.10023359892025847 -0.68512368160244319 -0.71394200419180509" mass="6.3407695687695094e-07" diaginertia="6.7521155514092484e-11 6.7253134258895874e-11 1.5590367457772439e-12" />
+              </body>
+              <inertial pos="0.00016220359096084241 -0.036761317144250689 -0.0018299915735418559" quat="0.12775498596329185 -0.11138018583554936 -0.7128067186315622 -0.6805730670827812" mass="3.6400078487797721e-06" diaginertia="1.5684316983314856e-09 1.5623598495242431e-09 2.9629049130276874e-11" />
+            </body>
+            <inertial pos="-0.0024758545308787086 0.033188360252862911 0.001156056509308185" quat="0.67049903931531007 -0.70452455413001014 -0.17807202486151696 -0.1495544879529781" mass="1.0745586048610761e-05" diaginertia="5.3475658930291975e-09 5.3251922966472225e-09 1.9263272956057619e-10" />
+          </body>
+          <inertial pos="-0.0034683722518361326 0.013337380265120422 -0.006870516590692835" quat="0.3837385995869283 0.059095616919111769 0.5102369122145668 -0.76740516590765695" mass="2.9934674433911526e-06" diaginertia="1.4648695888678546e-10 1.2956429944743491e-10 7.147440262765327e-11" />
+        </body>
+        <body name="walker/coxa_T3_right" childclass="walker/leg" pos="-0.037699999999999997 -0.019199999999999998 -0.0402" quat="-0.042635808824516494 -0.50769824698092758 -0.71356239417703415 -0.48130712381463009">
+          <geom name="walker/coxa_T3_right_collision" class="walker/collision" type="ellipsoid" size="0.0070000000000000001 0.0087500000000000008 0.0166" pos="0.0033800000000000002 -0.0117 0.0067799999999999996" quat="0.79700000000000004 0.59599999999999997 0.098299999999999998 0" />
+          <body name="walker/femur_T3_right" pos="0.0038300000000000001 -0.023199999999999998 0.0066" quat="-0.15391720159185002 -0.22852029971121016 0.72303487485227724 0.63421647520494462">
+            <geom name="walker/femur_T3_right_collision" class="walker/collision" size="0.0054400000000000004" fromto="0.00263 -0.00263 -0.0043800000000000002 0.00263 -0.075800000000000006 1.8699999999999999e-07" />
+            <body name="walker/tibia_T3_right" pos="0 -0.076999999999999999 1.9600000000000001e-07" quat="-0.13586115798016163 -0.092215756529399909 -0.80026808860822585 0.57570043108837143">
+              <geom name="walker/tibia_T3_right_collision" class="walker/collision" size="0.00365" fromto="0 0.0030000000000000001 0.0050000000000000001 0 0.072099999999999997 -0.00175" />
+              <body name="walker/tarsus_T3_right" pos="0 0.072099999999999997 -0.00175" quat="0.34528712815982032 -0.9282945648484342 0.048535311489405999 0.13084346960634427">
+                <geom name="walker/tarsus_T3_right_collision" class="walker/collision" size="0.0023400000000000001" fromto="0 0 0 -0.00072999999999999996 -0.033799999999999997 -0.0012199999999999999" />
+                <site name="walker/tarsus_T3_right" />
+                <body name="walker/tarsus2_T3_right" pos="-0.00072999999999999996 -0.033799999999999997 -0.0012199999999999999" quat="1 0 0 0">
+                  <geom name="walker/tarsus2_T3_right_collision" class="walker/collision" size="0.0016800000000000001" fromto="0 0 0 0.000185 -0.019699999999999999 -0.00157" />
+                  <body name="walker/tarsus3_T3_right" pos="0.000185 -0.019699999999999999 -0.00157" quat="1 0 0 0">
+                    <geom name="walker/tarsus3_T3_right_collision" class="walker/collision" size="0.0014499999999999999" fromto="0 0 0 1.98e-05 -0.010999999999999999 1.95e-05" />
+                    <body name="walker/tarsus4_T3_right" pos="1.98e-05 -0.010999999999999999 1.95e-05" quat="1 0 0 0">
+                      <geom name="walker/tarsus4_T3_right_collision" class="walker/collision" size="0.0014499999999999999" fromto="0 0 0 4.3000000000000002e-05 -0.010999999999999999 0.00125" />
+                      <body name="walker/claw_T3_right" pos="4.3000000000000002e-05 -0.010999999999999999 0.00125" quat="1 0 0 0">
+                        <geom name="walker/tarsal_claw_T3_right_collision" class="walker/adhesion-collision" type="capsule" size="0.0019" fromto="0 0 0 4.3000000000000002e-05 -0.010999999999999999 0.00125" />
+                        <site name="walker/claw_T3_right" class="walker/adhesion-collision" size="0.0020899999999999998" fromto="0 0 0 4.7299999999999998e-05 -0.0121 0.0013799999999999999" />
+                        <inertial pos="-0.0002556682218435892 -0.0055101509136047944 -1.1706215926027275e-05" quat="-0.25207197682554267 0.82323506717230799 -0.49013995493855522 -0.13603884463600718" mass="9.6984347320926402e-08" diaginertia="6.8568603134783956e-13 1.0833191560983715e-12 9.1101623316621774e-13" />
+                      </body>
+                      <inertial pos="-0.00024957400904338824 -0.0051154357784294613 0.00068270033781543671" quat="0.25207197682554267 -0.82323506717230799 0.49013995493855522 0.13603884463600718" mass="5.9429005914632576e-08" diaginertia="2.4951677835325403e-13 3.5804891301439012e-13 2.5806683758481461e-13" />
+                    </body>
+                    <inertial pos="-0.00019228344346419908 -0.0057618496223736104 0.00019138071883417762" quat="-0.25207197682554267 0.82323506717230799 -0.49013995493855522 -0.13603884463600718" mass="7.2538992173929212e-08" diaginertia="4.150214364768826e-13 6.6697994959421633e-13 5.3125291848657968e-13" />
+                  </body>
+                  <inertial pos="3.8329834509185853e-05 -0.01015679239690051 -0.00036788909728496799" quat="0.098831868916041163 0.10557678380284739 0.71721603313356075 -0.68167951870697363" mass="1.7409444278899029e-07" diaginertia="5.680814520449522e-12 5.6850266831089309e-12 2.1833846884361591e-13" />
+                </body>
+                <inertial pos="-0.00059350424327577617 -0.015369035826276703 -0.00043225803178750799" quat="-0.10139229812383367 -0.10604320361067547 -0.71348686516243498 0.68513570487155062" mass="6.3407954492546323e-07" diaginertia="6.752151867983011e-11 6.7253537108057221e-11 1.5590443023299429e-12" />
+              </body>
+              <inertial pos="-0.00016882822742546669 0.03745900979646976 0.002819612585944542" quat="-0.11025198203463048 -0.12893168620571888 0.67525783627159974 -0.71780775650823414" mass="3.6384557741057773e-06" diaginertia="1.5669575641206387e-09 1.5609171030554893e-09 2.9596440380185057e-11" />
+            </body>
+            <inertial pos="0.002677742574187035 -0.03330442329853732 -0.0012428474430339308" quat="0.15753814279484574 -0.18354641511740766 0.70068705983481705 0.6712153836454734" mass="1.0749289577834701e-05" diaginertia="5.3533439891779312e-09 5.3310300049893445e-09 1.9265480836236693e-10" />
+          </body>
+          <inertial pos="0.0033639114933165098 -0.013465432490172492 0.0067897575417415063" quat="0.066687435820525623 -0.37518052372353711 0.76857571776481759 0.5138907730097052" mass="2.9934712085109349e-06" diaginertia="1.4648729304567142e-10 1.2956458044362893e-10 7.1474574354842263e-11" />
+        </body>
+        <inertial pos="1.7749687005463866e-06 3.780967347267487e-07 9.6020040122421491e-05" quat="0.39257642831074691 0.58811882127234993 -0.58811882127234993 -0.39257642831074691" mass="0.00034000000000000002" diaginertia="3.7198918313821914e-07 3.5362563357454018e-07 2.7739046201359303e-07" />
+      </body>
+    </body>
+    <body pos="0 0 0.1278" name="ghost/">
+      <joint class="/" type="free" armature="1" name="ghost/" />
+      <body name="ghost/thorax" childclass="ghost/body">
+        <site name="ghost/thorax" rgba="0 0 0 0" />
+        <site name="ghost/hover_up_dir" pos="0.026200000000000001 0 0.026200000000000001" quat="0.91500000000000004 0 0.40300000000000002 0" rgba="0 0 0 0" />
+        <body name="ghost/head" childclass="ghost/head" pos="0.0567 3.8099999999999998e-07 -0.0030500000000000002" quat="0.70199999999999996 -0.086999999999999994 0.086999999999999994 -0.70199999999999996">
+          <site name="ghost/head" pos="0 0.014999999999999999 0" quat="0 0 0 1" rgba="0 0 0 0" />
+          <body name="ghost/rostrum" pos="0 0.036799999999999999 -0.0235" quat="2.2000000000000001e-07 -1.2100000000000001e-07 0.192 -0.98099999999999998">
+            <body name="ghost/haustellum" pos="0 0.037699999999999997 0" quat="2.3300000000000001e-07 -1.5599999999999999e-07 -0.34699999999999998 0.93799999999999994">
+              <body name="ghost/labrum_left" childclass="ghost/labrum" pos="-0.00263 0.018200000000000001 0" quat="0.74099999999999999 -0.014200000000000001 -0.59099999999999997 0.31900000000000001">
+                <inertial pos="-0.00027752775640396687 0.0087314860923328325 -0.0040824939779322278" quat="-0.17502402588195154 -0.71611603857656525 0.087657128227586589 0.6699706243772009" mass="2.0858507093135301e-06" diaginertia="1.1723419087583811e-10 8.8723747183864831e-11 5.2723493389275655e-11" />
+              </body>
+              <body name="ghost/labrum_right" childclass="ghost/labrum" pos="0.00263 0.018200000000000001 0" quat="0.69899999999999995 0.0027399999999999998 0.64200000000000002 -0.316">
+                <inertial pos="0.00067420705191711949 0.0089192074435707151 -0.0039935412426453038" quat="-0.17623525052622957 -0.67006740070436133 -0.071884095841041079 -0.71748414041731745" mass="2.085851221637398e-06" diaginertia="1.1723419541765943e-10 8.872377370769412e-11 5.2723499357564087e-11" />
+              </body>
+              <inertial pos="4.6089892571260662e-08 0.0123668828375727 -0.0012227799122985911" quat="0.63295552271297417 0.77418815947232666 2.1296637460803064e-17 -1.0628411803648643e-17" mass="3.1839274856261909e-06" diaginertia="1.826245533101448e-10 1.8055525897911605e-10 1.0058179605163029e-10" />
+            </body>
+            <inertial pos="-2.0886342261255903e-08 0.019582994357398544 -0.00061772693503180586" quat="0.80779957922267032 0.58945724171281355 0 0" mass="1.4341904203538517e-05" diaginertia="2.436001080200512e-09 1.9574283740103398e-09 1.7073177013555558e-09" />
+          </body>
+          <body name="ghost/antenna_left" pos="-0.0079500000000000005 0.0378 0.0129" quat="0.78500000000000003 -0.58999999999999997 -0.012800000000000001 0.192">
+            <inertial pos="-0.0033311751622732873 0.011952353721236833 0.0024279448400325587" quat="-0.19116664744481407 0.61815370586352436 -0.38260498015177158 -0.65951098398356123" mass="1.4407579138438792e-06" diaginertia="1.3237827330401782e-10 9.3470233250572705e-11 5.085371071530828e-11" />
+          </body>
+          <body name="ghost/antenna_right" pos="0.0086099999999999996 0.037999999999999999 0.0129" quat="0.58999999999999997 0.78500000000000003 -0.192 -0.012800000000000001">
+            <inertial pos="0.0028304997999250552 -0.011952136890566192 -0.0024277987119602634" quat="-0.6595100635507648 0.38260555937332086 0.6181539992894074 0.19116771478052066" mass="1.4407618832232005e-06" diaginertia="1.323791263179763e-10 9.347106099663901e-11 5.0853795013444481e-11" />
+          </body>
+          <inertial pos="3.1200498124275974e-08 0.016750815325854353 0.0012510150064862248" quat="0.46514513432736526 0.53257863645810899 0.46514513432736526 0.53257863645810899" mass="0.00012532986996108747" diaginertia="8.2222921890830611e-08 7.1000792781487766e-08 3.8270386306177266e-08" />
+        </body>
+        <body name="ghost/abdomen" childclass="ghost/abdomen" pos="-0.044699999999999997 -0.00055500000000000005 0.00428" quat="-0.70399999999999996 -0.085900000000000004 -0.085300000000000001 -0.69999999999999996">
+          <body name="ghost/abdomen_2" pos="0 0.011900000000000001 0" quat="0.98099999999999998 -0.192 -0.00026899999999999998 0.0014400000000000001">
+            <body name="ghost/abdomen_3" pos="0 0.0212 0" quat="0.996 -0.090899999999999995 6.69e-05 0.00052499999999999997">
+              <body name="ghost/abdomen_4" pos="0 0.031300000000000001 0" quat="0.999 -0.0332 0.000147 -0.00022900000000000001">
+                <body name="ghost/abdomen_5" pos="0 0.026200000000000001 0" quat="0.999 -0.036799999999999999 -4.7200000000000002e-05 -0.00032699999999999998">
+                  <body name="ghost/abdomen_6" pos="0 0.021299999999999999 0" quat="0.998 -0.066199999999999995 0.000156 -0.00035100000000000002">
+                    <body name="ghost/abdomen_7" pos="0 0.018200000000000001 0" quat="0.995 -0.10199999999999999 -1.79e-06 -0.00018699999999999999">
+                      <inertial pos="-9.3432320426340879e-05 0.013495588013666064 -0.01099499069749935" quat="0.6781174324296031 0.16111002366564808 -0.13731740666293735 0.70380696070506743" mass="3.12857153785067e-05" diaginertia="9.1978915892149686e-09 7.3222089754826063e-09 7.0940177246580973e-09" />
+                    </body>
+                    <inertial pos="-0.00012016725414263633 0.0093934554567716814 -0.013264881373023179" quat="0.41646829454738271 0.57128974745679983 0.4209148384525227 0.56834222336373186" mass="4.2752834966058655e-05" diaginertia="2.380154911197741e-08 1.5901413707668939e-08 1.3570328332975693e-08" />
+                  </body>
+                  <inertial pos="0.00034562761200531122 0.01047296132882858 -0.014066789640106795" quat="0.45948039240559641 0.53801263306015723 0.42235004644173413 0.56660445985991237" mass="6.4413991326163093e-05" diaginertia="4.7070867574213745e-08 2.9803529792483065e-08 2.8252208294518617e-08" />
+                </body>
+                <inertial pos="-5.2758134177469833e-05 0.014915607924619063 -0.014138635935857669" quat="0.46378507849146139 0.52784072264706827 0.43687030027060736 0.56163325509229023" mass="8.2115197903846857e-05" diaginertia="7.0119683307801738e-08 4.3751469698182735e-08 4.3355783272857908e-08" />
+              </body>
+              <inertial pos="-1.6207016759275245e-05 0.01989731072405114 -0.014479012686215625" quat="0.67039485029379176 -0.20569168863200449 -0.33259926536565831 0.63058655441224309" mass="8.8294891157716555e-05" diaginertia="7.242435763155413e-08 4.7752995469405039e-08 4.6776636030765956e-08" />
+            </body>
+            <inertial pos="-0.00016311616039237737 0.016574785941691105 -0.013897979248207896" quat="0.48364874115833456 0.51573330692953467 0.49923473034748383 0.50086698365370685" mass="5.5575764557409146e-05" diaginertia="3.9945503835633806e-08 2.431519538425315e-08 2.3127054958974585e-08" />
+          </body>
+          <inertial pos="-0.00017167625118794349 0.0064354375792720015 -0.0095513719049073204" quat="0.58985642877586408 0.38623025975794162 0.57495866755309932 0.41511216614869767" mass="1.5766698128040611e-05" diaginertia="6.8940532699779264e-09 4.389102925096291e-09 2.9903878920230087e-09" />
+        </body>
+        <body name="ghost/haltere_left" childclass="ghost/haltere" pos="-0.038600000000000002 0.0247 -0.0086599999999999993" quat="0.29099999999999998 -0.20399999999999999 0.82599999999999996 0.439">
+          <inertial pos="0.00050091668396975986 0.017188874245579272 0.00112267434163206" quat="-0.67085677169185742 0.70062148659608825 -0.16098218092275668 -0.18211387047784094" mass="8.2170426442012751e-07" diaginertia="5.4918707401762767e-11 5.1373895933751518e-11 9.2782990198409719e-12" />
+        </body>
+        <body name="ghost/haltere_right" childclass="ghost/haltere" pos="-0.038600000000000002 -0.0247 -0.0086599999999999993" quat="-0.438 -0.82899999999999996 0.20599999999999999 -0.28000000000000003">
+          <inertial pos="-0.00044717603080131341 0.017512736241926424 0.0011318951153424864" quat="0.16107081594405884 -0.14451599320857153 0.70752792708206547 0.67273735763447129" mass="8.2170354821309693e-07" diaginertia="5.4918628802888366e-11 5.1369188515064122e-11 9.2829113824452447e-12" />
+        </body>
+        <body name="ghost/coxa_T1_left" childclass="ghost/leg" pos="0.031699999999999999 0.020899999999999998 -0.027199999999999998" quat="-0.55475034834577364 0.77113231744639188 -0.3115360088805405 -0.013810328409700545">
+          <body name="ghost/femur_T1_left" pos="0 0.043700000000000003 0" quat="0 0 0.18269482920011607 0.98343815229201892">
+            <body name="ghost/tibia_T1_left" pos="0 0.069699999999999998 0" quat="0.24602670369066357 0.017631252681146445 0.95822225854912246 -0.14756389538440218">
+              <body name="ghost/tarsus_T1_left" pos="0 -0.050999999999999997 0.00175" quat="0.15917839465462791 0.98599555712750331 0.0009693050899355982 0.047866982855018392">
+                <site name="ghost/tarsus_T1_left" rgba="0 0 0 0" />
+                <body name="ghost/tarsus2_T1_left" pos="-0.000165 0.0235 0.00174" quat="1 0 0 0">
+                  <body name="ghost/tarsus3_T1_left" pos="0.000113 0.013599999999999999 0.00055599999999999996" quat="1 0 0 0">
+                    <body name="ghost/tarsus4_T1_left" pos="-0.00025500000000000002 0.0090900000000000009 0.00020000000000000001" quat="1 0 0 0">
+                      <body name="ghost/claw_T1_left" pos="-7.1199999999999996e-05 0.0090600000000000003 -0.00080999999999999996" quat="1 0 0 0">
+                        <site name="ghost/claw_T1_left" class="ghost/adhesion-collision" size="0.0021900000000000001" fromto="0 0 0 -7.8399999999999995e-05 0.0099699999999999997 -0.00089099999999999997" rgba="0 0 0 0" />
+                        <inertial pos="-0.00054573295228139453 0.0049731077075629779 1.0991275453398064e-06" quat="-0.37303674592930014 -0.23102275686238161 -0.4680461048120978 0.76707556066427141" mass="9.3294243462686807e-08" diaginertia="8.3320240749963221e-13 8.0188883483084585e-13 3.0483854778535171e-13" />
+                      </body>
+                      <inertial pos="-0.00020806992776341467 0.0047920966526682485 -0.00071455062184229423" quat="0.37303674592930014 0.23102275686238161 0.4680461048120978 -0.76707556066427141" mass="4.9773574201933187e-08" diaginertia="2.3786770206879579e-13 2.3524267118192553e-13 7.0857371131883761e-14" />
+                    </body>
+                    <inertial pos="-0.00023223239177918437 0.0055558805712508721 -0.00067665386661892868" quat="-0.37303674592930014 -0.23102275686238161 -0.4680461048120978 0.76707556066427141" mass="6.3719774265550168e-08" diaginertia="4.4338109028728498e-13 4.5196942165028567e-13 1.4004260221069571e-13" />
+                  </body>
+                  <inertial pos="-6.6997390159806436e-05 0.0079863470531263241 -0.00020914342294321708" quat="0.37303674592930014 0.23102275686238161 0.4680461048120978 -0.76707556066427141" mass="1.0449381858099854e-07" diaginertia="1.5196309954126858e-12 1.5957245359855373e-12 4.7630856793885005e-13" />
+                </body>
+                <inertial pos="-0.0004833566248915299 0.013096278013732501 0.0011179996662386282" quat="-0.32110646039986623 -0.33942121208752896 -0.62502986366530289 0.62531716064812637" mass="2.6682787838755923e-07" diaginertia="1.1285669214562374e-11 1.1285146216782075e-11 4.9439943411638153e-13" />
+              </body>
+              <inertial pos="-0.00053401885336597276 -0.028791343331796612 -0.00058505426079182021" quat="-0.29799652883309952 0.30312532410173038 0.66050580761837696 0.61890644268260819" mass="1.9768359268232948e-06" diaginertia="4.2875085961445148e-10 4.2885521140528419e-10 1.1565671799184283e-11" />
+            </body>
+            <inertial pos="0.0021492072176334705 0.033346185373163605 0.0027763612000164736" quat="0.66666574890503227 -0.67601312186425666 0.22602255991089359 0.21789180965691057" mass="7.8696578649998621e-06" diaginertia="2.8666627941799905e-09 2.8528997358698409e-09 1.1917956281912298e-10" />
+          </body>
+          <inertial pos="4.9156914136445212e-06 0.02569612879310311 -0.00040364310571690439" quat="-0.4176097470935029 -0.38335841473630961 -0.531380088391462 0.62950268199940684" mass="5.7563382424720674e-06" diaginertia="6.2692990513329293e-10 6.1358307960047376e-10 1.3124499290638845e-10" />
+        </body>
+        <body name="ghost/coxa_T1_right" childclass="ghost/leg" pos="0.031699999999999999 -0.020899999999999998 -0.027199999999999998" quat="0.31854285922541564 0.020308787174448516 -0.5654537006523479 -0.76081542598620133">
+          <body name="ghost/femur_T1_right" pos="0 -0.0436 0" quat="0 0 0.19188497531749565 0.98108417388489355">
+            <body name="ghost/tibia_T1_right" pos="0 -0.069800000000000001 0" quat="0.21923063091177913 0.020271420029768075 0.96580995910846679 -0.13935251302686197">
+              <body name="ghost/tarsus_T1_right" pos="0 0.051499999999999997 -0.00175" quat="-0.19405671895472826 -0.9787324659111527 0.0047051271870022261 0.071490641192775248">
+                <site name="ghost/tarsus_T1_right" rgba="0 0 0 0" />
+                <body name="ghost/tarsus2_T1_right" pos="-0.00096500000000000004 -0.022700000000000001 -0.0016100000000000001" quat="1 0 0 0">
+                  <body name="ghost/tarsus3_T1_right" pos="0.00014300000000000001 -0.013599999999999999 -0.0016800000000000001" quat="1 0 0 0">
+                    <body name="ghost/tarsus4_T1_right" pos="0.000437 -0.0089899999999999997 -0.00063000000000000003" quat="1 0 0 0">
+                      <body name="ghost/claw_T1_right" pos="0.00076499999999999995 -0.0089899999999999997 0.000134" quat="1 0 0 0">
+                        <site name="ghost/claw_T1_right" class="ghost/adhesion-collision" size="0.0021900000000000001" fromto="0 0 0 0.00084099999999999995 -0.0098799999999999999 0.00014799999999999999" rgba="0 0 0 0" />
+                        <inertial pos="0.00056204003006173758 -0.0050302852542937135 -0.00048006061054456373" quat="-0.52896667614907089 0.77795099063133677 0.2989811647799096 0.15998992095245998" mass="9.3294634194782345e-08" diaginertia="8.5710671081539174e-13 7.7919358502248197e-13 3.0363665736396515e-13" />
+                      </body>
+                      <inertial pos="0.00050370768410299208 -0.0048845720420964481 -7.2124864000600031e-05" quat="0.52896667614907089 -0.77795099063133677 -0.2989811647799096 -0.15998992095245998" mass="4.9773326130081652e-08" diaginertia="2.4258238834095261e-13 2.2969746815200741e-13 7.1686256294877961e-14" />
+                    </body>
+                    <inertial pos="0.00035547792547341306 -0.0054825830481538898 0.00047159572840332897" quat="-0.52896667614907089 0.77795099063133677 0.2989811647799096 0.15998992095245998" mass="6.3719814787988376e-08" diaginertia="4.5632915131290148e-13 4.4031666491565994e-13 1.3874757111552307e-13" />
+                  </body>
+                  <inertial pos="0.00034993968477390475 -0.008065596213288076 -0.0003164142574472173" quat="0.52896667614907089 -0.77795099063133677 -0.2989811647799096 -0.15998992095245998" mass="1.0449368601016074e-07" diaginertia="1.5645222255806852e-12 1.5632863713585872e-12 4.6385255829133196e-13" />
+                </body>
+                <inertial pos="-0.00027570131629123598 -0.012473717533745793 -0.0006912814940119999" quat="-0.67454853709115259 0.64425571356033917 0.23511920372003742 0.27319920698109568" mass="2.6682830538712472e-07" diaginertia="1.128592006037852e-11 1.128499837310251e-11 4.9440003585361343e-13" />
+              </body>
+              <inertial pos="-7.3089226116452091e-05 0.028558173050548898 0.00026539177325043961" quat="-0.66610471745728439 -0.61116413631038169 -0.2997411238863823 0.30485761023872315" mass="1.9754592649204038e-06" diaginertia="4.2811397309411265e-10 4.2829032830330682e-10 1.1553385071939404e-11" />
+            </body>
+            <inertial pos="-0.0021911887191155797 -0.033235149559641984 -0.0026461592347805721" quat="0.23172073036758906 -0.23911007440246787 -0.67151995439738676 -0.66196134802818496" mass="7.8745948016401884e-06" diaginertia="2.8692088990998198e-09 2.855286706765668e-09 1.1933192338129259e-10" />
+          </body>
+          <inertial pos="0.00071263690047236941 -0.025952692346030343 0.0014655471013240882" quat="-0.50745907577267024 0.62800897250287357 0.44686919180568085 0.38522453489720776" mass="5.756348975866323e-06" diaginertia="6.2693153522838812e-10 6.1358458730069464e-10 1.3124545496071795e-10" />
+        </body>
+        <body name="ghost/coxa_T2_left" childclass="ghost/leg" pos="-0.0144 0.0241 -0.042500000000000003" quat="-0.51493863485407065 0.76787630998222567 0.070749517145500276 -0.37392181097976268">
+          <body name="ghost/femur_T2_left" pos="0 0.0281 0" quat="-0.0072818076668247217 -0.29931765983762648 0.21973095814653357 0.92872074372140334">
+            <body name="ghost/tibia_T2_left" pos="0 0.083000000000000004 0" quat="0.13565914956809993 -0.0010747736784490619 0.97495861519896443 -0.17422886858760689">
+              <body name="ghost/tarsus_T2_left" pos="0 -0.066799999999999998 0.00175" quat="-0.43396743812505184 0.88885334147269723 -0.063415072697900463 -0.12997726168341905">
+                <site name="ghost/tarsus_T2_left" rgba="0 0 0 0" />
+                <body name="ghost/tarsus2_T2_left" pos="0.00047100000000000001 0.034200000000000001 0.0013600000000000001" quat="1 0 0 0">
+                  <body name="ghost/tarsus3_T2_left" pos="2.4199999999999999e-05 0.0178 0.000203" quat="1 0 0 0">
+                    <body name="ghost/tarsus4_T2_left" pos="-3.1099999999999997e-05 0.0099100000000000004 0.000292" quat="1 0 0 0">
+                      <body name="ghost/claw_T2_left" pos="3.6000000000000001e-05 0.0099100000000000004 -0.00025399999999999999" quat="1 0 0 0">
+                        <site name="ghost/claw_T2_left" class="ghost/adhesion-collision" size="0.0022000000000000001" fromto="0 0 0 3.96e-05 0.0109 -0.00027999999999999998" rgba="0 0 0 0" />
+                        <inertial pos="1.6065335951670132e-05 0.0051041668523883199 0.00059070569439402532" quat="-0.077411620356388697 0.050207536716934273 -0.34205134576078733 0.93514037510624604" mass="9.9460969995167098e-08" diaginertia="9.6179975181846394e-13 4.6351139510525072e-13 7.9018570675463928e-13" />
+                      </body>
+                      <inertial pos="2.6320159582770425e-06 0.0052132915603659846 -0.00042653848131492256" quat="0.077411620356388697 -0.050207536716934273 0.34205134576078733 -0.93514037510624604" mass="5.5094793970062102e-08" diaginertia="3.0840217384352196e-13 1.8691789843980302e-13 1.9186575720337477e-13" />
+                    </body>
+                    <inertial pos="-0.00013197207934463433 0.0058330569962635331 -0.0005454365732769223" quat="-0.077411620356388697 0.050207536716934273 -0.34205134576078733 0.93514037510624604" mass="6.8068188450772913e-08" diaginertia="5.8392385521099845e-13 3.0541381514565074e-13 3.8260656132915392e-13" />
+                  </body>
+                  <inertial pos="-0.0001554285335281947 0.010042487873546155 -3.0726249306306519e-05" quat="0.078802020559599784 0.04799580466153662 -0.69443500886858478 -0.7136152063600566" mass="1.3623078338452123e-07" diaginertia="3.2627648382906385e-12 3.3770735288739735e-12 2.6849456246969048e-13" />
+                </body>
+                <inertial pos="-6.4553794834276701e-05 0.016665601560337293 2.3372803439600243e-05" quat="-0.014606482151938827 0.019570508833519778 0.69401739840703558 0.7195439504098925" mass="4.870658311894134e-07" diaginertia="5.0683883955931552e-11 5.0691685282148662e-11 9.3749235032307645e-13" />
+              </body>
+              <inertial pos="3.4135870074912533e-05 -0.033643479283454458 -0.00086301577651617944" quat="-0.11311665219884094 0.10697570528716439 0.71519123200174972 0.68136797924576664" mass="2.6215351392104033e-06" diaginertia="1.0963207744064545e-09 1.094974160429732e-09 1.4509364903469146e-11" />
+            </body>
+            <inertial pos="-0.0013424348192292261 0.040544583035264106 0.0022867287547588475" quat="0.66821268463365813 -0.69070026354995318 -0.20186475481579821 -0.18887978925725088" mass="8.0023307224002195e-06" diaginertia="4.1689427891151749e-09 4.1543417262405274e-09 1.0685300647344874e-10" />
+          </body>
+          <inertial pos="0.00045196652068692916 0.018079895773854944 -0.0027485210881670608" quat="-0.63889707610574542 -0.46465893153068205 -0.46115441515471944 0.40402872283490671" mass="2.3600891489255979e-06" diaginertia="1.2741855073379574e-10 1.1361445463109366e-10 5.1920387926186885e-11" />
+        </body>
+        <body name="ghost/coxa_T2_right" childclass="ghost/leg" pos="-0.0144 -0.0241 -0.042500000000000003" quat="-0.07200126153035516 -0.37217507154009805 -0.51746619819261119 -0.76704959304483389">
+          <body name="ghost/femur_T2_right" pos="0 -0.028199999999999999 0" quat="-0.0090992137158101769 -0.29920638914048092 0.22532585402038341 0.9271774374504882">
+            <body name="ghost/tibia_T2_right" pos="0 -0.084000000000000005 0" quat="0.13466227092721825 0.02472069555502978 0.97544712223549723 -0.1700144456288547">
+              <body name="ghost/tarsus_T2_right" pos="0 0.066500000000000004 -0.00175" quat="0.43707308837566711 -0.89207125019123679 0.050236651567242087 0.10266995100471955">
+                <site name="ghost/tarsus_T2_right" rgba="0 0 0 0" />
+                <body name="ghost/tarsus2_T2_right" pos="-0.00036699999999999998 -0.0339 -0.0010300000000000001" quat="1 0 0 0">
+                  <body name="ghost/tarsus3_T2_right" pos="1.7200000000000001e-05 -0.0177 -0.000553" quat="1 0 0 0">
+                    <body name="ghost/tarsus4_T2_right" pos="5.0699999999999999e-05 -0.0098799999999999999 -0.00029300000000000002" quat="1 0 0 0">
+                      <body name="ghost/claw_T2_right" pos="-9.6600000000000003e-05 -0.0098799999999999999 0.000252" quat="1 0 0 0">
+                        <site name="ghost/claw_T2_right" class="ghost/adhesion-collision" size="0.0022000000000000001" fromto="0 0 0 -0.000106 -0.0109 0.00027700000000000001" rgba="0 0 0 0" />
+                        <inertial pos="3.1575438379382106e-05 -0.0055961721694742228 -0.0013192872814332679" quat="-0.34413839727472206 0.93437576469357686 0.078831702631535161 -0.047919271015869729" mass="9.9461790037227561e-08" diaginertia="9.6180244828803138e-13 4.6346191367307127e-13 7.9025761291213652e-13" />
+                      </body>
+                      <inertial pos="3.0317733960236529e-05 -0.0057103617671479812 0.00074801744579244822" quat="0.34413839727472206 -0.93437576469357686 -0.078831702631535161 0.047919271015869729" mass="5.5095179502932654e-08" diaginertia="3.0840303402872941e-13 1.8690013194881302e-13 1.9188891515144491e-13" />
+                    </body>
+                    <inertial pos="5.5429151676314806e-05 -0.0063309528528139453 -8.6300766030708576e-05" quat="-0.34413839727472206 0.93437576469357686 0.078831702631535161 -0.047919271015869729" mass="6.8068691533312567e-08" diaginertia="5.839250130956213e-13 3.0538532984174112e-13 3.8264408110868339e-13" />
+                  </body>
+                  <inertial pos="0.00016292171896437925 -0.010142547907742064 0.00046647257818713261" quat="0.71517504076425009 -0.69283040290779352 -0.050266287022519542 0.07735628134449625" mass="1.3623218859411975e-07" diaginertia="3.2627901172389009e-12 3.377106185409762e-12 2.6850474793604577e-13" />
+                </body>
+                <inertial pos="6.035209894124198e-05 -0.016471627097396017 0.00054757200807863116" quat="-0.72128069480463719 0.6922964279519439 -0.017344784424063567 -0.013378101524634537" mass="4.8706988378535315e-07" diaginertia="5.0684469802149314e-11 5.0692278223025559e-11 9.3750779881128719e-13" />
+              </body>
+              <inertial pos="-0.00031825237630851363 0.033081339267839453 -0.00025817857799884103" quat="-0.71503493905111981 -0.68735621023227689 -0.09278056232164672 0.087511390381837043" mass="2.6223281396998385e-06" diaginertia="1.0968493279634072e-09 1.0955004965745667e-09 1.4518615391476848e-11" />
+            </body>
+            <inertial pos="0.001371136891915755 -0.040524500419326148 -0.0019678685511506158" quat="-0.18677388517636534 0.2025967160889473 -0.69342284002694277 -0.66575885377144672" mass="8.0058415898995308e-06" diaginertia="4.1737796719973554e-09 4.1591900774099775e-09 1.068742997767609e-10" />
+          </body>
+          <inertial pos="-0.00037357354008352509 -0.0180654098774111 0.0025603715159337112" quat="-0.40483189643775225 -0.45961431353881882 0.46259257270916776 -0.64099448522679892" mass="2.3600899335951104e-06" diaginertia="1.2741864090061608e-10 1.1361467712406202e-10 5.1920336757546203e-11" />
+        </body>
+        <body name="ghost/coxa_T3_left" childclass="ghost/leg" pos="-0.037699999999999997 0.019199999999999998 -0.0402" quat="0.72115220118010082 -0.47566115274534793 -0.045944277148374658 0.50095941342525518">
+          <body name="ghost/femur_T3_left" pos="-0.00398 0.023199999999999998 -0.0066800000000000002" quat="0.15607693712103485 0.22685654828067722 -0.72884260379596 -0.62667739315617466">
+            <body name="ghost/tibia_T3_left" pos="0 0.077899999999999997 1.6e-07" quat="-0.13088534126286933 -0.085872157551224002 -0.80309068950116214 0.57427462458004186">
+              <body name="ghost/tarsus_T3_left" pos="0 -0.071499999999999994 0.00175" quat="-0.35197168035205623 0.92541068517180525 -0.050478471276047668 -0.13260815939312798">
+                <site name="ghost/tarsus_T3_left" rgba="0 0 0 0" />
+                <body name="ghost/tarsus2_T3_left" pos="0.00027 0.033700000000000001 0.0010200000000000001" quat="1 0 0 0">
+                  <body name="ghost/tarsus3_T3_left" pos="-7.9699999999999999e-05 0.019699999999999999 0.00158" quat="1 0 0 0">
+                    <body name="ghost/tarsus4_T3_left" pos="8.0000000000000007e-05 0.0111 -2.7800000000000001e-05" quat="1 0 0 0">
+                      <body name="ghost/claw_T3_left" pos="0.000222 0.0111 -0.00108" quat="1 0 0 0">
+                        <site name="ghost/claw_T3_left" class="ghost/adhesion-collision" size="0.0020899999999999998" fromto="0 0 0 0.00024399999999999999 0.012200000000000001 -0.0011800000000000001" rgba="0 0 0 0" />
+                        <inertial pos="-0.00041666887217823093 0.0054870306684488834 2.2788464923567675e-05" quat="-0.49012892086150983 -0.13803630832426195 0.25106603905354891 -0.82321653442657661" mass="9.6984180279941141e-08" diaginertia="6.8599194159115887e-13 1.0837533058021661e-12 9.1025887979754351e-13" />
+                      </body>
+                      <inertial pos="-0.0001427782254897602 0.005092615929957689 -0.00066703916421358145" quat="0.49012892086150983 0.13803630832426195 -0.25106603905354891 0.82321653442657661" mass="5.942883197889836e-08" diaginertia="2.496248769609478e-13 3.5818503754256731e-13 2.5781901356260654e-13" />
+                    </body>
+                    <inertial pos="-8.1235452446070874e-05 0.0057390872490161449 -0.00017257870907268213" quat="-0.49012892086150983 -0.13803630832426195 0.25106603905354891 -0.82321653442657661" mass="7.2539239565268118e-08" diaginertia="4.151403817547015e-13 6.6720851131491462e-13 5.3091084783112859e-13" />
+                  </body>
+                  <inertial pos="-0.00018023736423494752 0.010134315915769659 0.001386962571042108" quat="0.10363681353746737 -0.097800931565421398 0.68178061693208081 0.71754413037836895" mass="1.7409397431184665e-07" diaginertia="5.6807706918850624e-12 5.6849835461519779e-12 2.1833748242830156e-13" />
+                </body>
+                <inertial pos="3.1341145463954084e-05 0.015347038476086747 0.00046067698046314831" quat="-0.10414212022807261 0.10023359892025847 -0.68512368160244319 -0.71394200419180509" mass="6.3407695687695094e-07" diaginertia="6.7521155514092484e-11 6.7253134258895874e-11 1.5590367457772439e-12" />
+              </body>
+              <inertial pos="0.00016220359096084241 -0.036761317144250689 -0.0018299915735418559" quat="0.12775498596329185 -0.11138018583554936 -0.7128067186315622 -0.6805730670827812" mass="3.6400078487797721e-06" diaginertia="1.5684316983314856e-09 1.5623598495242431e-09 2.9629049130276874e-11" />
+            </body>
+            <inertial pos="-0.0024758545308787086 0.033188360252862911 0.001156056509308185" quat="0.67049903931531007 -0.70452455413001014 -0.17807202486151696 -0.1495544879529781" mass="1.0745586048610761e-05" diaginertia="5.3475658930291975e-09 5.3251922966472225e-09 1.9263272956057619e-10" />
+          </body>
+          <inertial pos="-0.0034683722518361326 0.013337380265120422 -0.006870516590692835" quat="0.3837385995869283 0.059095616919111769 0.5102369122145668 -0.76740516590765695" mass="2.9934674433911526e-06" diaginertia="1.4648695888678546e-10 1.2956429944743491e-10 7.147440262765327e-11" />
+        </body>
+        <body name="ghost/coxa_T3_right" childclass="ghost/leg" pos="-0.037699999999999997 -0.019199999999999998 -0.0402" quat="-0.042635808824516494 -0.50769824698092758 -0.71356239417703415 -0.48130712381463009">
+          <body name="ghost/femur_T3_right" pos="0.0038300000000000001 -0.023199999999999998 0.0066" quat="-0.15391720159185002 -0.22852029971121016 0.72303487485227724 0.63421647520494462">
+            <body name="ghost/tibia_T3_right" pos="0 -0.076999999999999999 1.9600000000000001e-07" quat="-0.13586115798016163 -0.092215756529399909 -0.80026808860822585 0.57570043108837143">
+              <body name="ghost/tarsus_T3_right" pos="0 0.072099999999999997 -0.00175" quat="0.34528712815982032 -0.9282945648484342 0.048535311489405999 0.13084346960634427">
+                <site name="ghost/tarsus_T3_right" rgba="0 0 0 0" />
+                <body name="ghost/tarsus2_T3_right" pos="-0.00072999999999999996 -0.033799999999999997 -0.0012199999999999999" quat="1 0 0 0">
+                  <body name="ghost/tarsus3_T3_right" pos="0.000185 -0.019699999999999999 -0.00157" quat="1 0 0 0">
+                    <body name="ghost/tarsus4_T3_right" pos="1.98e-05 -0.010999999999999999 1.95e-05" quat="1 0 0 0">
+                      <body name="ghost/claw_T3_right" pos="4.3000000000000002e-05 -0.010999999999999999 0.00125" quat="1 0 0 0">
+                        <site name="ghost/claw_T3_right" class="ghost/adhesion-collision" size="0.0020899999999999998" fromto="0 0 0 4.7299999999999998e-05 -0.0121 0.0013799999999999999" rgba="0 0 0 0" />
+                        <inertial pos="-0.0002556682218435892 -0.0055101509136047944 -1.1706215926027275e-05" quat="-0.25207197682554267 0.82323506717230799 -0.49013995493855522 -0.13603884463600718" mass="9.6984347320926402e-08" diaginertia="6.8568603134783956e-13 1.0833191560983715e-12 9.1101623316621774e-13" />
+                      </body>
+                      <inertial pos="-0.00024957400904338824 -0.0051154357784294613 0.00068270033781543671" quat="0.25207197682554267 -0.82323506717230799 0.49013995493855522 0.13603884463600718" mass="5.9429005914632576e-08" diaginertia="2.4951677835325403e-13 3.5804891301439012e-13 2.5806683758481461e-13" />
+                    </body>
+                    <inertial pos="-0.00019228344346419908 -0.0057618496223736104 0.00019138071883417762" quat="-0.25207197682554267 0.82323506717230799 -0.49013995493855522 -0.13603884463600718" mass="7.2538992173929212e-08" diaginertia="4.150214364768826e-13 6.6697994959421633e-13 5.3125291848657968e-13" />
+                  </body>
+                  <inertial pos="3.8329834509185853e-05 -0.01015679239690051 -0.00036788909728496799" quat="0.098831868916041163 0.10557678380284739 0.71721603313356075 -0.68167951870697363" mass="1.7409444278899029e-07" diaginertia="5.680814520449522e-12 5.6850266831089309e-12 2.1833846884361591e-13" />
+                </body>
+                <inertial pos="-0.00059350424327577617 -0.015369035826276703 -0.00043225803178750799" quat="-0.10139229812383367 -0.10604320361067547 -0.71348686516243498 0.68513570487155062" mass="6.3407954492546323e-07" diaginertia="6.752151867983011e-11 6.7253537108057221e-11 1.5590443023299429e-12" />
+              </body>
+              <inertial pos="-0.00016882822742546669 0.03745900979646976 0.002819612585944542" quat="-0.11025198203463048 -0.12893168620571888 0.67525783627159974 -0.71780775650823414" mass="3.6384557741057773e-06" diaginertia="1.5669575641206387e-09 1.5609171030554893e-09 2.9596440380185057e-11" />
+            </body>
+            <inertial pos="0.002677742574187035 -0.03330442329853732 -0.0012428474430339308" quat="0.15753814279484574 -0.18354641511740766 0.70068705983481705 0.6712153836454734" mass="1.0749289577834701e-05" diaginertia="5.3533439891779312e-09 5.3310300049893445e-09 1.9265480836236693e-10" />
+          </body>
+          <inertial pos="0.0033639114933165098 -0.013465432490172492 0.0067897575417415063" quat="0.066687435820525623 -0.37518052372353711 0.76857571776481759 0.5138907730097052" mass="2.9934712085109349e-06" diaginertia="1.4648729304567142e-10 1.2956458044362893e-10 7.1474574354842263e-11" />
+        </body>
+        <inertial pos="1.7749687005463866e-06 3.780967347267487e-07 9.6020040122421491e-05" quat="0.39257642831074691 0.58811882127234993 -0.58811882127234993 -0.39257642831074691" mass="0.00034000000000000002" diaginertia="3.7198918313821914e-07 3.5362563357454018e-07 2.7739046201359303e-07" />
+      </body>
+    </body>
+    <site name="crosshair_0" class="/" type="capsule" size="0.002" fromto="0 0 0 0 0 1.5368861198423984" rgba="0 0.80000000000000004 0.5 0.5" />
+    <site name="crosshair_1" class="/" type="capsule" size="0.002" fromto="-0.5 0 1.0368861198423984 0.5 0 1.0368861198423984" rgba="0 0.80000000000000004 0.5 0.5" />
+    <site name="crosshair_2" class="/" type="capsule" size="0.002" fromto="0 -0.5 1.0368861198423984 0 0.5 1.0368861198423984" rgba="0 0.80000000000000004 0.5 0.5" />
+    <site name="traj_0" class="/" group="1" pos="0.014479220816211532 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_1" class="/" group="1" pos="0.054479220816211538 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_2" class="/" group="1" pos="0.094479220816211573 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_3" class="/" group="1" pos="0.13447922081621161 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_4" class="/" group="1" pos="0.17447922081621164 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_5" class="/" group="1" pos="0.21447922081621168 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_6" class="/" group="1" pos="0.25447922081621172 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_7" class="/" group="1" pos="0.29447922081621175 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_8" class="/" group="1" pos="0.33447922081621179 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_9" class="/" group="1" pos="0.37447922081621182 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_10" class="/" group="1" pos="0.41447922081621186 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_11" class="/" group="1" pos="0.45447922081621189 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_12" class="/" group="1" pos="0.49447922081621193 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_13" class="/" group="1" pos="0.53447922081621191 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_14" class="/" group="1" pos="0.57447922081621194 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_15" class="/" group="1" pos="0.61447922081621198 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_16" class="/" group="1" pos="0.65447922081621202 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_17" class="/" group="1" pos="0.69447922081621205 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_18" class="/" group="1" pos="0.73447922081621209 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_19" class="/" group="1" pos="0.77447922081621212 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_20" class="/" group="1" pos="0.81447922081621216 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_21" class="/" group="1" pos="0.85447922081621219 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_22" class="/" group="1" pos="0.89447922081621223 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_23" class="/" group="1" pos="0.93447922081621226 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_24" class="/" group="1" pos="0.9744792208162123 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_25" class="/" group="1" pos="1.0144792208162121 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_26" class="/" group="1" pos="1.0544792208162121 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_27" class="/" group="1" pos="1.0944792208162122 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_28" class="/" group="1" pos="1.1344792208162122 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_29" class="/" group="1" pos="1.1744792208162123 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_30" class="/" group="1" pos="1.2144792208162123 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_31" class="/" group="1" pos="1.2544792208162123 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_32" class="/" group="1" pos="1.2944792208162124 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_33" class="/" group="1" pos="1.3344792208162124 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_34" class="/" group="1" pos="1.3744792208162124 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_35" class="/" group="1" pos="1.4144792208162125 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_36" class="/" group="1" pos="1.4544792208162125 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_37" class="/" group="1" pos="1.4944792208162125 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_38" class="/" group="1" pos="1.5344792208162126 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_39" class="/" group="1" pos="1.5744792208162126 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_40" class="/" group="1" pos="1.6144792208162126 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_41" class="/" group="1" pos="1.6544792208162127 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_42" class="/" group="1" pos="1.6944792208162127 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_43" class="/" group="1" pos="1.7344792208162128 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_44" class="/" group="1" pos="1.7744792208162128 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_45" class="/" group="1" pos="1.8144792208162128 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_46" class="/" group="1" pos="1.8544792208162129 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_47" class="/" group="1" pos="1.8944792208162129 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_48" class="/" group="1" pos="1.9344792208162129 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_49" class="/" group="1" pos="1.974479220816213 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_50" class="/" group="1" pos="2.014479220816213 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_51" class="/" group="1" pos="2.054479220816213 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_52" class="/" group="1" pos="2.0944792208162131 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_53" class="/" group="1" pos="2.1344792208162131 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_54" class="/" group="1" pos="2.1744792208162131 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_55" class="/" group="1" pos="2.2144792208162132 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_56" class="/" group="1" pos="2.2544792208162132 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_57" class="/" group="1" pos="2.2944792208162132 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_58" class="/" group="1" pos="2.3344792208162133 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_59" class="/" group="1" pos="2.3744792208162133 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_60" class="/" group="1" pos="2.4144792208162134 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_61" class="/" group="1" pos="2.4544792208162134 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_62" class="/" group="1" pos="2.4944792208162134 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_63" class="/" group="1" pos="2.5344792208162135 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_64" class="/" group="1" pos="2.5744792208162135 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_65" class="/" group="1" pos="2.6144792208162135 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_66" class="/" group="1" pos="2.6544792208162136 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_67" class="/" group="1" pos="2.6944792208162136 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_68" class="/" group="1" pos="2.7344792208162136 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_69" class="/" group="1" pos="2.7744792208162137 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_70" class="/" group="1" pos="2.8144792208162137 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_71" class="/" group="1" pos="2.8544792208162137 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_72" class="/" group="1" pos="2.8944792208162138 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_73" class="/" group="1" pos="2.9344792208162138 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_74" class="/" group="1" pos="2.9744792208162139 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_75" class="/" group="1" pos="3.0144792208162139 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_76" class="/" group="1" pos="3.0544792208162139 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_77" class="/" group="1" pos="3.094479220816214 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_78" class="/" group="1" pos="3.134479220816214 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_79" class="/" group="1" pos="3.174479220816214 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_80" class="/" group="1" pos="3.2144792208162141 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_81" class="/" group="1" pos="3.2544792208162141 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_82" class="/" group="1" pos="3.2944792208162141 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_83" class="/" group="1" pos="3.3344792208162142 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_84" class="/" group="1" pos="3.3744792208162142 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_85" class="/" group="1" pos="3.4144792208162142 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_86" class="/" group="1" pos="3.4544792208162143 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_87" class="/" group="1" pos="3.4944792208162143 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_88" class="/" group="1" pos="3.5344792208162144 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_89" class="/" group="1" pos="3.5744792208162144 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_90" class="/" group="1" pos="3.6144792208162144 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_91" class="/" group="1" pos="3.6544792208162145 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_92" class="/" group="1" pos="3.6944792208162145 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_93" class="/" group="1" pos="3.7344792208162145 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_94" class="/" group="1" pos="3.7744792208162146 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_95" class="/" group="1" pos="3.8144792208162146 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_96" class="/" group="1" pos="3.8544792208162146 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_97" class="/" group="1" pos="3.8944792208162147 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_98" class="/" group="1" pos="3.9344792208162147 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_99" class="/" group="1" pos="3.9744792208162147 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_100" class="/" group="1" pos="4.0144792208162139 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_101" class="/" group="1" pos="4.0544792208162095 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_102" class="/" group="1" pos="4.0944792208162051 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_103" class="/" group="1" pos="4.1344792208162007 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_104" class="/" group="1" pos="4.1744792208161963 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_105" class="/" group="1" pos="4.2144792208161919 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_106" class="/" group="1" pos="4.2544792208161875 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_107" class="/" group="1" pos="4.2944792208161831 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_108" class="/" group="1" pos="4.3344792208161786 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_109" class="/" group="1" pos="4.3744792208161742 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_110" class="/" group="1" pos="4.4144792208161698 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_111" class="/" group="1" pos="4.4544792208161654 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_112" class="/" group="1" pos="4.494479220816161 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_113" class="/" group="1" pos="4.5344792208161566 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_114" class="/" group="1" pos="4.5744792208161522 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_115" class="/" group="1" pos="4.6144792208161478 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_116" class="/" group="1" pos="4.6544792208161434 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_117" class="/" group="1" pos="4.694479220816139 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_118" class="/" group="1" pos="4.7344792208161346 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_119" class="/" group="1" pos="4.7744792208161302 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_120" class="/" group="1" pos="4.8144792208161258 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_121" class="/" group="1" pos="4.8544792208161214 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_122" class="/" group="1" pos="4.894479220816117 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_123" class="/" group="1" pos="4.9344792208161126 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_124" class="/" group="1" pos="4.9744792208161082 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_125" class="/" group="1" pos="5.0144792208161038 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_126" class="/" group="1" pos="5.0544792208160993 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_127" class="/" group="1" pos="5.0944792208160949 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_128" class="/" group="1" pos="5.1344792208160905 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_129" class="/" group="1" pos="5.1744792208160861 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_130" class="/" group="1" pos="5.2144792208160817 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_131" class="/" group="1" pos="5.2544792208160773 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_132" class="/" group="1" pos="5.2944792208160729 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_133" class="/" group="1" pos="5.3344792208160685 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_134" class="/" group="1" pos="5.3744792208160641 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_135" class="/" group="1" pos="5.4144792208160597 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_136" class="/" group="1" pos="5.4544792208160553 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_137" class="/" group="1" pos="5.4944792208160509 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_138" class="/" group="1" pos="5.5344792208160465 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_139" class="/" group="1" pos="5.5744792208160421 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_140" class="/" group="1" pos="5.6144792208160377 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_141" class="/" group="1" pos="5.6544792208160333 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_142" class="/" group="1" pos="5.6944792208160289 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_143" class="/" group="1" pos="5.7344792208160245 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_144" class="/" group="1" pos="5.7744792208160201 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_145" class="/" group="1" pos="5.8144792208160156 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_146" class="/" group="1" pos="5.8544792208160112 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_147" class="/" group="1" pos="5.8944792208160068 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_148" class="/" group="1" pos="5.9344792208160024 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_149" class="/" group="1" pos="5.974479220815998 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_150" class="/" group="1" pos="6.0144792208159936 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_151" class="/" group="1" pos="6.0544792208159892 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_152" class="/" group="1" pos="6.0944792208159848 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_153" class="/" group="1" pos="6.1344792208159804 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_154" class="/" group="1" pos="6.174479220815976 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_155" class="/" group="1" pos="6.2144792208159716 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_156" class="/" group="1" pos="6.2544792208159672 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_157" class="/" group="1" pos="6.2944792208159628 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_158" class="/" group="1" pos="6.3344792208159584 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_159" class="/" group="1" pos="6.374479220815954 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_160" class="/" group="1" pos="6.4144792208159496 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_161" class="/" group="1" pos="6.4544792208159452 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_162" class="/" group="1" pos="6.4944792208159408 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_163" class="/" group="1" pos="6.5344792208159364 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_164" class="/" group="1" pos="6.5744792208159319 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_165" class="/" group="1" pos="6.6144792208159275 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_166" class="/" group="1" pos="6.6544792208159231 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_167" class="/" group="1" pos="6.6944792208159187 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_168" class="/" group="1" pos="6.7344792208159143 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_169" class="/" group="1" pos="6.7744792208159099 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_170" class="/" group="1" pos="6.8144792208159055 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_171" class="/" group="1" pos="6.8544792208159011 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_172" class="/" group="1" pos="6.8944792208158967 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_173" class="/" group="1" pos="6.9344792208158923 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_174" class="/" group="1" pos="6.9744792208158879 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_175" class="/" group="1" pos="7.0144792208158835 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_176" class="/" group="1" pos="7.0544792208158791 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_177" class="/" group="1" pos="7.0944792208158747 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_178" class="/" group="1" pos="7.1344792208158703 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_179" class="/" group="1" pos="7.1744792208158659 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_180" class="/" group="1" pos="7.2144792208158615 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_181" class="/" group="1" pos="7.2544792208158571 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_182" class="/" group="1" pos="7.2944792208158526 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_183" class="/" group="1" pos="7.3344792208158482 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_184" class="/" group="1" pos="7.3744792208158438 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_185" class="/" group="1" pos="7.4144792208158394 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_186" class="/" group="1" pos="7.454479220815835 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_187" class="/" group="1" pos="7.4944792208158306 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_188" class="/" group="1" pos="7.5344792208158262 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_189" class="/" group="1" pos="7.5744792208158218 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_190" class="/" group="1" pos="7.6144792208158174 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_191" class="/" group="1" pos="7.654479220815813 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_192" class="/" group="1" pos="7.6944792208158086 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_193" class="/" group="1" pos="7.7344792208158042 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_194" class="/" group="1" pos="7.7744792208157998 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_195" class="/" group="1" pos="7.8144792208157954 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_196" class="/" group="1" pos="7.854479220815791 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_197" class="/" group="1" pos="7.8944792208157866 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_198" class="/" group="1" pos="7.9344792208157822 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_199" class="/" group="1" pos="7.9744792208157778 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_200" class="/" group="1" pos="8.0144792208157742 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_201" class="/" group="1" pos="8.0544792208157698 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_202" class="/" group="1" pos="8.0944792208157654 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_203" class="/" group="1" pos="8.134479220815761 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_204" class="/" group="1" pos="8.1744792208157566 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_205" class="/" group="1" pos="8.2144792208157522 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_206" class="/" group="1" pos="8.2544792208157478 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_207" class="/" group="1" pos="8.2944792208157434 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_208" class="/" group="1" pos="8.334479220815739 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_209" class="/" group="1" pos="8.3744792208157346 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_210" class="/" group="1" pos="8.4144792208157302 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_211" class="/" group="1" pos="8.4544792208157258 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_212" class="/" group="1" pos="8.4944792208157214 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_213" class="/" group="1" pos="8.534479220815717 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_214" class="/" group="1" pos="8.5744792208157126 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_215" class="/" group="1" pos="8.6144792208157082 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_216" class="/" group="1" pos="8.6544792208157038 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_217" class="/" group="1" pos="8.6944792208156993 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_218" class="/" group="1" pos="8.7344792208156949 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_219" class="/" group="1" pos="8.7744792208156905 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_220" class="/" group="1" pos="8.8144792208156861 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_221" class="/" group="1" pos="8.8544792208156817 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_222" class="/" group="1" pos="8.8944792208156773 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_223" class="/" group="1" pos="8.9344792208156729 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_224" class="/" group="1" pos="8.9744792208156685 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_225" class="/" group="1" pos="9.0144792208156641 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_226" class="/" group="1" pos="9.0544792208156597 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_227" class="/" group="1" pos="9.0944792208156553 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_228" class="/" group="1" pos="9.1344792208156509 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_229" class="/" group="1" pos="9.1744792208156465 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_230" class="/" group="1" pos="9.2144792208156421 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_231" class="/" group="1" pos="9.2544792208156377 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_232" class="/" group="1" pos="9.2944792208156333 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_233" class="/" group="1" pos="9.3344792208156289 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_234" class="/" group="1" pos="9.3744792208156245 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_235" class="/" group="1" pos="9.4144792208156201 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_236" class="/" group="1" pos="9.4544792208156156 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_237" class="/" group="1" pos="9.4944792208156112 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_238" class="/" group="1" pos="9.5344792208156068 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_239" class="/" group="1" pos="9.5744792208156024 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_240" class="/" group="1" pos="9.614479220815598 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_241" class="/" group="1" pos="9.6544792208155936 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_242" class="/" group="1" pos="9.6944792208155892 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_243" class="/" group="1" pos="9.7344792208155848 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_244" class="/" group="1" pos="9.7744792208155804 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_245" class="/" group="1" pos="9.814479220815576 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_246" class="/" group="1" pos="9.8544792208155716 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_247" class="/" group="1" pos="9.8944792208155672 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_248" class="/" group="1" pos="9.9344792208155628 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_249" class="/" group="1" pos="9.9744792208155584 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_250" class="/" group="1" pos="10.014479220815554 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_251" class="/" group="1" pos="10.05447922081555 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_252" class="/" group="1" pos="10.094479220815545 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_253" class="/" group="1" pos="10.134479220815541 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_254" class="/" group="1" pos="10.174479220815536 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_255" class="/" group="1" pos="10.214479220815532 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_256" class="/" group="1" pos="10.254479220815528 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_257" class="/" group="1" pos="10.294479220815523 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_258" class="/" group="1" pos="10.334479220815519 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_259" class="/" group="1" pos="10.374479220815514 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_260" class="/" group="1" pos="10.41447922081551 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_261" class="/" group="1" pos="10.454479220815506 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_262" class="/" group="1" pos="10.494479220815501 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_263" class="/" group="1" pos="10.534479220815497 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_264" class="/" group="1" pos="10.574479220815492 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_265" class="/" group="1" pos="10.614479220815488 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_266" class="/" group="1" pos="10.654479220815483 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_267" class="/" group="1" pos="10.694479220815479 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_268" class="/" group="1" pos="10.734479220815475 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_269" class="/" group="1" pos="10.77447922081547 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_270" class="/" group="1" pos="10.814479220815466 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_271" class="/" group="1" pos="10.854479220815461 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_272" class="/" group="1" pos="10.894479220815457 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_273" class="/" group="1" pos="10.934479220815453 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_274" class="/" group="1" pos="10.974479220815448 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_275" class="/" group="1" pos="11.014479220815444 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_276" class="/" group="1" pos="11.054479220815439 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_277" class="/" group="1" pos="11.094479220815435 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_278" class="/" group="1" pos="11.134479220815431 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_279" class="/" group="1" pos="11.174479220815426 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_280" class="/" group="1" pos="11.214479220815422 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_281" class="/" group="1" pos="11.254479220815417 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_282" class="/" group="1" pos="11.294479220815413 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_283" class="/" group="1" pos="11.334479220815409 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_284" class="/" group="1" pos="11.374479220815404 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_285" class="/" group="1" pos="11.4144792208154 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_286" class="/" group="1" pos="11.454479220815395 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_287" class="/" group="1" pos="11.494479220815391 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_288" class="/" group="1" pos="11.534479220815387 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_289" class="/" group="1" pos="11.574479220815382 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_290" class="/" group="1" pos="11.614479220815378 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_291" class="/" group="1" pos="11.654479220815373 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_292" class="/" group="1" pos="11.694479220815369 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_293" class="/" group="1" pos="11.734479220815365 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_294" class="/" group="1" pos="11.77447922081536 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_295" class="/" group="1" pos="11.814479220815356 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_296" class="/" group="1" pos="11.854479220815351 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_297" class="/" group="1" pos="11.894479220815347 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_298" class="/" group="1" pos="11.934479220815343 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+    <site name="traj_299" class="/" group="1" pos="11.974479220815338 -0.00029204999999999997 1.0368861198423984" size="0.0050000000000000001 0.0050000000000000001 0.0050000000000000001" rgba="0 1 1 0.5" />
+  </worldbody>
+  <contact>
+    <exclude name="walker/abdomen_abdomen_3" body1="walker/abdomen" body2="walker/abdomen_3" />
+    <exclude name="walker/abdomen_2_abdomen_4" body1="walker/abdomen_2" body2="walker/abdomen_4" />
+    <exclude name="walker/abdomen_3_abdomen_5" body1="walker/abdomen_3" body2="walker/abdomen_5" />
+    <exclude name="walker/abdomen_4_abdomen_6" body1="walker/abdomen_4" body2="walker/abdomen_6" />
+    <exclude name="walker/abdomen_5_abdomen_7" body1="walker/abdomen_5" body2="walker/abdomen_7" />
+    <exclude name="walker/wing_left_abdomen" body1="walker/wing_left" body2="walker/abdomen" />
+    <exclude name="walker/wing_left_abdomen_2" body1="walker/wing_left" body2="walker/abdomen_2" />
+    <exclude name="walker/wing_left_abdomen_3" body1="walker/wing_left" body2="walker/abdomen_3" />
+    <exclude name="walker/wing_right_abdomen" body1="walker/wing_right" body2="walker/abdomen" />
+    <exclude name="walker/wing_right_abdomen_2" body1="walker/wing_right" body2="walker/abdomen_2" />
+    <exclude name="walker/wing_right_abdomen_3" body1="walker/wing_right" body2="walker/abdomen_3" />
+    <exclude name="walker/wing_left_wing_right" body1="walker/wing_left" body2="walker/wing_right" />
+    <exclude name="walker/coxa_T1_left_coxa_T1_right" body1="walker/coxa_T1_left" body2="walker/coxa_T1_right" />
+    <exclude name="walker/coxa_T1_left_femur_T1_right" body1="walker/coxa_T1_left" body2="walker/femur_T1_right" />
+    <exclude name="walker/femur_T1_left_coxa_T1_right" body1="walker/femur_T1_left" body2="walker/coxa_T1_right" />
+    <exclude name="walker/femur_T1_left_femur_T1_right" body1="walker/femur_T1_left" body2="walker/femur_T1_right" />
+    <exclude name="walker/coxa_T2_left_coxa_T2_right" body1="walker/coxa_T2_left" body2="walker/coxa_T2_right" />
+    <exclude name="walker/coxa_T2_left_femur_T2_right" body1="walker/coxa_T2_left" body2="walker/femur_T2_right" />
+    <exclude name="walker/femur_T2_left_coxa_T2_right" body1="walker/femur_T2_left" body2="walker/coxa_T2_right" />
+    <exclude name="walker/femur_T2_left_femur_T2_right" body1="walker/femur_T2_left" body2="walker/femur_T2_right" />
+    <exclude name="walker/coxa_T3_left_coxa_T3_right" body1="walker/coxa_T3_left" body2="walker/coxa_T3_right" />
+    <exclude name="walker/coxa_T3_left_femur_T3_right" body1="walker/coxa_T3_left" body2="walker/femur_T3_right" />
+    <exclude name="walker/femur_T3_left_coxa_T3_right" body1="walker/femur_T3_left" body2="walker/coxa_T3_right" />
+    <exclude name="walker/femur_T3_left_femur_T3_right" body1="walker/femur_T3_left" body2="walker/femur_T3_right" />
+    <exclude name="walker/rostrum_labrum_left" body1="walker/rostrum" body2="walker/labrum_left" />
+    <exclude name="walker/rostrum_labrum_right" body1="walker/rostrum" body2="walker/labrum_right" />
+    <exclude name="walker/coxa_T1_left_wing_left" body1="walker/coxa_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/coxa_T1_left_wing_right" body1="walker/coxa_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/femur_T1_left_wing_left" body1="walker/femur_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/femur_T1_left_wing_right" body1="walker/femur_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/tibia_T1_left_wing_left" body1="walker/tibia_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/tibia_T1_left_wing_right" body1="walker/tibia_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus_T1_left_wing_left" body1="walker/tarsus_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus_T1_left_wing_right" body1="walker/tarsus_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus2_T1_left_wing_left" body1="walker/tarsus2_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus2_T1_left_wing_right" body1="walker/tarsus2_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus3_T1_left_wing_left" body1="walker/tarsus3_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus3_T1_left_wing_right" body1="walker/tarsus3_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus4_T1_left_wing_left" body1="walker/tarsus4_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus4_T1_left_wing_right" body1="walker/tarsus4_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/claw_T1_left_wing_left" body1="walker/claw_T1_left" body2="walker/wing_left" />
+    <exclude name="walker/claw_T1_left_wing_right" body1="walker/claw_T1_left" body2="walker/wing_right" />
+    <exclude name="walker/coxa_T1_right_wing_left" body1="walker/coxa_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/coxa_T1_right_wing_right" body1="walker/coxa_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/femur_T1_right_wing_left" body1="walker/femur_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/femur_T1_right_wing_right" body1="walker/femur_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/tibia_T1_right_wing_left" body1="walker/tibia_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/tibia_T1_right_wing_right" body1="walker/tibia_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus_T1_right_wing_left" body1="walker/tarsus_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus_T1_right_wing_right" body1="walker/tarsus_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus2_T1_right_wing_left" body1="walker/tarsus2_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus2_T1_right_wing_right" body1="walker/tarsus2_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus3_T1_right_wing_left" body1="walker/tarsus3_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus3_T1_right_wing_right" body1="walker/tarsus3_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus4_T1_right_wing_left" body1="walker/tarsus4_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus4_T1_right_wing_right" body1="walker/tarsus4_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/claw_T1_right_wing_left" body1="walker/claw_T1_right" body2="walker/wing_left" />
+    <exclude name="walker/claw_T1_right_wing_right" body1="walker/claw_T1_right" body2="walker/wing_right" />
+    <exclude name="walker/coxa_T2_left_wing_left" body1="walker/coxa_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/coxa_T2_left_wing_right" body1="walker/coxa_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/femur_T2_left_wing_left" body1="walker/femur_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/femur_T2_left_wing_right" body1="walker/femur_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/tibia_T2_left_wing_left" body1="walker/tibia_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/tibia_T2_left_wing_right" body1="walker/tibia_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus_T2_left_wing_left" body1="walker/tarsus_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus_T2_left_wing_right" body1="walker/tarsus_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus2_T2_left_wing_left" body1="walker/tarsus2_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus2_T2_left_wing_right" body1="walker/tarsus2_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus3_T2_left_wing_left" body1="walker/tarsus3_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus3_T2_left_wing_right" body1="walker/tarsus3_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus4_T2_left_wing_left" body1="walker/tarsus4_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus4_T2_left_wing_right" body1="walker/tarsus4_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/claw_T2_left_wing_left" body1="walker/claw_T2_left" body2="walker/wing_left" />
+    <exclude name="walker/claw_T2_left_wing_right" body1="walker/claw_T2_left" body2="walker/wing_right" />
+    <exclude name="walker/coxa_T2_right_wing_left" body1="walker/coxa_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/coxa_T2_right_wing_right" body1="walker/coxa_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/femur_T2_right_wing_left" body1="walker/femur_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/femur_T2_right_wing_right" body1="walker/femur_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/tibia_T2_right_wing_left" body1="walker/tibia_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/tibia_T2_right_wing_right" body1="walker/tibia_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus_T2_right_wing_left" body1="walker/tarsus_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus_T2_right_wing_right" body1="walker/tarsus_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus2_T2_right_wing_left" body1="walker/tarsus2_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus2_T2_right_wing_right" body1="walker/tarsus2_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus3_T2_right_wing_left" body1="walker/tarsus3_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus3_T2_right_wing_right" body1="walker/tarsus3_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus4_T2_right_wing_left" body1="walker/tarsus4_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus4_T2_right_wing_right" body1="walker/tarsus4_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/claw_T2_right_wing_left" body1="walker/claw_T2_right" body2="walker/wing_left" />
+    <exclude name="walker/claw_T2_right_wing_right" body1="walker/claw_T2_right" body2="walker/wing_right" />
+    <exclude name="walker/coxa_T3_left_wing_left" body1="walker/coxa_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/coxa_T3_left_wing_right" body1="walker/coxa_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/femur_T3_left_wing_left" body1="walker/femur_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/femur_T3_left_wing_right" body1="walker/femur_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/tibia_T3_left_wing_left" body1="walker/tibia_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/tibia_T3_left_wing_right" body1="walker/tibia_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus_T3_left_wing_left" body1="walker/tarsus_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus_T3_left_wing_right" body1="walker/tarsus_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus2_T3_left_wing_left" body1="walker/tarsus2_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus2_T3_left_wing_right" body1="walker/tarsus2_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus3_T3_left_wing_left" body1="walker/tarsus3_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus3_T3_left_wing_right" body1="walker/tarsus3_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/tarsus4_T3_left_wing_left" body1="walker/tarsus4_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/tarsus4_T3_left_wing_right" body1="walker/tarsus4_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/claw_T3_left_wing_left" body1="walker/claw_T3_left" body2="walker/wing_left" />
+    <exclude name="walker/claw_T3_left_wing_right" body1="walker/claw_T3_left" body2="walker/wing_right" />
+    <exclude name="walker/coxa_T3_right_wing_left" body1="walker/coxa_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/coxa_T3_right_wing_right" body1="walker/coxa_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/femur_T3_right_wing_left" body1="walker/femur_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/femur_T3_right_wing_right" body1="walker/femur_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/tibia_T3_right_wing_left" body1="walker/tibia_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/tibia_T3_right_wing_right" body1="walker/tibia_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus_T3_right_wing_left" body1="walker/tarsus_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus_T3_right_wing_right" body1="walker/tarsus_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus2_T3_right_wing_left" body1="walker/tarsus2_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus2_T3_right_wing_right" body1="walker/tarsus2_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus3_T3_right_wing_left" body1="walker/tarsus3_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus3_T3_right_wing_right" body1="walker/tarsus3_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/tarsus4_T3_right_wing_left" body1="walker/tarsus4_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/tarsus4_T3_right_wing_right" body1="walker/tarsus4_T3_right" body2="walker/wing_right" />
+    <exclude name="walker/claw_T3_right_wing_left" body1="walker/claw_T3_right" body2="walker/wing_left" />
+    <exclude name="walker/claw_T3_right_wing_right" body1="walker/claw_T3_right" body2="walker/wing_right" />
+  </contact>
+  <tendon>
+    <fixed name="walker/abduct_abdomen" class="walker/">
+      <joint joint="walker/abdomen_abduct" coef="1" />
+      <joint joint="walker/abdomen_abduct_2" coef="1" />
+      <joint joint="walker/abdomen_abduct_3" coef="1" />
+      <joint joint="walker/abdomen_abduct_4" coef="1" />
+      <joint joint="walker/abdomen_abduct_5" coef="1" />
+      <joint joint="walker/abdomen_abduct_6" coef="1" />
+      <joint joint="walker/abdomen_abduct_7" coef="1" />
+    </fixed>
+    <fixed name="walker/abdomen" class="walker/">
+      <joint joint="walker/abdomen" coef="1" />
+      <joint joint="walker/abdomen_2" coef="1" />
+      <joint joint="walker/abdomen_3" coef="1" />
+      <joint joint="walker/abdomen_4" coef="1" />
+      <joint joint="walker/abdomen_5" coef="1" />
+      <joint joint="walker/abdomen_6" coef="1" />
+      <joint joint="walker/abdomen_7" coef="1" />
+    </fixed>
+  </tendon>
+  <actuator>
+    <general name="walker/head_abduct" class="walker/head" ctrlrange="-0.20000000000000001 0.20000000000000001" joint="walker/head_abduct" />
+    <general name="walker/head_twist" class="walker/head" ctrlrange="-3 3" joint="walker/head_twist" />
+    <general name="walker/head" class="walker/head" ctrlrange="-0.5 0.29999999999999999" joint="walker/head" />
+    <general name="walker/wing_yaw_left" class="walker/yaw" joint="walker/wing_yaw_left" />
+    <general name="walker/wing_roll_left" class="walker/roll" joint="walker/wing_roll_left" />
+    <general name="walker/wing_pitch_left" class="walker/pitch" joint="walker/wing_pitch_left" />
+    <general name="walker/wing_yaw_right" class="walker/yaw" joint="walker/wing_yaw_right" />
+    <general name="walker/wing_roll_right" class="walker/roll" joint="walker/wing_roll_right" />
+    <general name="walker/wing_pitch_right" class="walker/pitch" joint="walker/wing_pitch_right" />
+    <general name="walker/abdomen_abduct" class="walker/abduct_abdomen" ctrlrange="-0.69999999999999996 0.69999999999999996" tendon="walker/abduct_abdomen" />
+    <general name="walker/abdomen" class="walker/extend_abdomen" ctrlrange="-1.05 0.69999999999999996" tendon="walker/abdomen" />
+  </actuator>
+  <sensor>
+    <accelerometer name="walker/accelerometer" site="walker/thorax" />
+    <gyro name="walker/gyro" site="walker/thorax" />
+    <velocimeter name="walker/velocimeter" site="walker/thorax" />
+    <framepos name="walker/claw_T1_left_end_effector" objtype="site" objname="walker/claw_T1_left" reftype="xbody" refname="walker/thorax" />
+    <framepos name="walker/claw_T1_right_end_effector" objtype="site" objname="walker/claw_T1_right" reftype="xbody" refname="walker/thorax" />
+    <framepos name="walker/claw_T2_left_end_effector" objtype="site" objname="walker/claw_T2_left" reftype="xbody" refname="walker/thorax" />
+    <framepos name="walker/claw_T2_right_end_effector" objtype="site" objname="walker/claw_T2_right" reftype="xbody" refname="walker/thorax" />
+    <framepos name="walker/claw_T3_left_end_effector" objtype="site" objname="walker/claw_T3_left" reftype="xbody" refname="walker/thorax" />
+    <framepos name="walker/claw_T3_right_end_effector" objtype="site" objname="walker/claw_T3_right" reftype="xbody" refname="walker/thorax" />
+    <accelerometer name="ghost/accelerometer" site="ghost/thorax" />
+    <gyro name="ghost/gyro" site="ghost/thorax" />
+    <velocimeter name="ghost/velocimeter" site="ghost/thorax" />
+    <framepos name="ghost/claw_T1_left_end_effector" objtype="site" objname="ghost/claw_T1_left" reftype="xbody" refname="ghost/thorax" />
+    <framepos name="ghost/claw_T1_right_end_effector" objtype="site" objname="ghost/claw_T1_right" reftype="xbody" refname="ghost/thorax" />
+    <framepos name="ghost/claw_T2_left_end_effector" objtype="site" objname="ghost/claw_T2_left" reftype="xbody" refname="ghost/thorax" />
+    <framepos name="ghost/claw_T2_right_end_effector" objtype="site" objname="ghost/claw_T2_right" reftype="xbody" refname="ghost/thorax" />
+    <framepos name="ghost/claw_T3_left_end_effector" objtype="site" objname="ghost/claw_T3_left" reftype="xbody" refname="ghost/thorax" />
+    <framepos name="ghost/claw_T3_right_end_effector" objtype="site" objname="ghost/claw_T3_right" reftype="xbody" refname="ghost/thorax" />
+  </sensor>
+</mujoco>

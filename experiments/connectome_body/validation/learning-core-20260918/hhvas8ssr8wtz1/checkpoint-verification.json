@@ -1,0 +1,88 @@
+{
+  "archive_sha256": "4f38c24de41e6ee69357014f780783e9b3ba007baa9ed7c81fb863bdcbdd4e2d",
+  "verified_completed_cases": 10,
+  "verified_checkpoints": [
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-00/bc/best.pt",
+      "sha256": "9f4b46aa4c2bf6585fd099b47c8331b6e63320ba54d6beb4fbadd6316086f7a1"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-00/ppo/latest.pt",
+      "sha256": "3a7463e35a6849be4e45b18edae50c750bcff42ee3ca60b33cbf537ec742871c"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-01/bc/best.pt",
+      "sha256": "4260f2433c1dde5109f9509afcf70d612b65437436b795b6763141b997d10b30"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-01/ppo/latest.pt",
+      "sha256": "3f1096482096021627f77cde9dd6e5cd66cd5b88386fa660944524ee9427199c"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-02/bc/best.pt",
+      "sha256": "0ecf45169c771dde549e48fd41c77d054eb6783c21aca6e37f737cb0340ee060"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-02/ppo/latest.pt",
+      "sha256": "4b22dbca08a7f49667bcdd0e4574fae1709c03b3263cd64d6380ba71f69a5d3a"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-03/bc/best.pt",
+      "sha256": "5f5d5e0f8a1ae43a3d2a3c3c00277acc6972acd83d307a60f10e227464a9442c"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-03/ppo/latest.pt",
+      "sha256": "d9409345512811eadcfc99f51069cf01dda9b806e2cdb2879163f45572b75fdc"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-04/bc/best.pt",
+      "sha256": "cfc57da4571c972ec370fe4034dac9d0d052e000b87f47784598c01b10f2bba8"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-04/ppo/latest.pt",
+      "sha256": "6a5c47f1c1effcd5eded5f53a972d9b8dc135169be64daa73114362ee2194c03"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-05/bc/best.pt",
+      "sha256": "8497944d8323fd68795fc5735281b1c1fa15a478d10bf4b71fd2a84b6f52364a"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-05/ppo/latest.pt",
+      "sha256": "52d1b42090e91b493f2085e280c33eb85efd2feccbfddcd801ba1462bf853b90"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-06/bc/best.pt",
+      "sha256": "70a683bd1306ac4070f54af044dbf92fa3d4f5d5010d88f0cd5f199d97d3795b"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-06/ppo/latest.pt",
+      "sha256": "9d860790de753ef82822b9785cc41bd255fbda9fbf8a4ad2a6d07d509baae4a1"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-07/bc/best.pt",
+      "sha256": "fa459f7bbdeccbaf6e2c7964b35c7117e5a940ca3fd45b582fc3237c533aefae"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-07/ppo/latest.pt",
+      "sha256": "e949364f0ef39d2b96af489d864f529d1f9203d822620e55a81d9310cc9e6aea"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-08/bc/best.pt",
+      "sha256": "656a462abb3d26cf1eaeb6c211eedde2316a7138332028a37fb2e6836057688a"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-08/ppo/latest.pt",
+      "sha256": "b1179b562b088155480133fc583aa768f77ac0dfac4b9dd1a2b2e2c9ee1d3f43"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-09/bc/best.pt",
+      "sha256": "d499f54347ab79699aef64090e12be010e612d9ff26ebf777ec0cd9934568905"
+    },
+    {
+      "member": "runs/learning-qualification-cuda-v2/case-09/ppo/latest.pt",
+      "sha256": "efb0fb0cdda9ebf2fd5450643903c094b6bbd59b2120459e6c559c0b68e722f5"
+    }
+  ],
+  "passed": false,
+  "qualification_incomplete": true
+}

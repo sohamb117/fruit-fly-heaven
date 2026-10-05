@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-09-18T15:17:18.080068+00:00",
+  "old_pod": "2tmnut86nzr086",
+  "old_restart": "400 no free GPUs on host",
+  "replacement_pod": "1qtjvzcq4ctery",
+  "rate_per_hour": 0.74,
+  "location": "EU-RO-1",
+  "replacement_status": "EXITED",
+  "uploaded": false,
+  "training_started": false,
+  "blocker": "Automatic approval review requires explicit authorization for source/docs/cache transfer to replacement pod; stopped pending user authorization."
+}

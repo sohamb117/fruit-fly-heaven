@@ -1,0 +1,73 @@
+{
+  "verified_on": "2026-09-15",
+  "flybody": {
+    "repository": "https://github.com/TuragaLab/flybody",
+    "revision": "d015e9bfe441bd90ae431bac24c55cb74bdbce26",
+    "content_sha256": "2b78d4b60f8c4121a3993d8a703d71c42e7f68cc8ebb664565b344ec2f6ae3ce",
+    "license": "Apache-2.0"
+  },
+  "datasets": {
+    "banc": {
+      "status": "public_graph",
+      "dataset": "BANC",
+      "release": "v888-v3",
+      "species": "Drosophila melanogaster",
+      "coverage": "brain_and_ventral_nerve_cord",
+      "resolution": "neuron_synapse",
+      "license": "CC-BY-4.0",
+      "citation": "https://doi.org/10.7910/DVN/7WTH1N",
+      "documentation": "https://github.com/sjcabs/fly_connectome_data_tutorial/blob/main/data/dataset_documentation/banc_data.md",
+      "files": {
+        "meta.feather": {
+          "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather",
+          "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+          "bytes": 57503026
+        },
+        "edges-v3.feather": {
+          "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_edgelist_simple_v3.feather",
+          "sha256": "8c296e946f3c69a8c7222f30ad75fa8a98eeb189124fec6df829c9125f4be64b",
+          "bytes": 359161658
+        }
+      }
+    },
+    "malecns": {
+      "status": "public_graph",
+      "dataset": "MaleCNS",
+      "release": "v1.0-minconf-0.5",
+      "species": "Drosophila melanogaster",
+      "coverage": "brain_and_ventral_nerve_cord_traced_neurons",
+      "resolution": "neuron_synapse",
+      "license": "CC-BY-4.0",
+      "citation": "https://male-cns.janelia.org/",
+      "documentation": "https://male-cns.janelia.org/download/",
+      "files": {
+        "annotations.feather": {
+          "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/body-annotations-male-cns-v1.0-minconf-0.5.feather",
+          "sha256": "2177e246113e4cfbf1e7772ec37c6da1955ff22e8063d0b1f833101f99a9a3b2",
+          "bytes": 14483314
+        },
+        "edges.feather": {
+          "url": "https://storage.googleapis.com/flyem-male-cns/v1.0/connectome-data/flat-connectome/connectome-weights-male-cns-v1.0-minconf-0.5.feather",
+          "sha256": "e35da783d1c686b2b58b3b87cd6a403ae43bfcfba8bff28e08ef752c1a56afc1",
+          "bytes": 1051241946
+        }
+      }
+    },
+    "fish1": {
+      "status": "requires_pinned_export",
+      "dataset": "Fish1",
+      "species": "Danio rerio",
+      "coverage": "larval_brain_spinal_cord_and_ganglia_imaging_volume; graph coverage must be specified",
+      "resolution": "neuron_synapse",
+      "documentation": "https://fish1-release.storage.googleapis.com/programmatic.html",
+      "data_policy": "https://fish1-release.storage.googleapis.com/data_policy.html",
+      "reason": "CAVE provides changing segment roots and synapse tables. Import a versioned neuron and edge export with materialization, membership, proofreading coverage, and file digests. The imaging volume is not a fully proofread whole-CNS graph."
+    },
+    "cockroach": {
+      "status": "unverified_release",
+      "dataset": "cockroach",
+      "species": "unspecified",
+      "reason": "No suitable public synapse-resolved neuron graph was verified in the source audit. This registry entry is an explicit pending dataset, not a fabricated or region-level substitute. Use import-edges when a documented release is available."
+    }
+  }
+}

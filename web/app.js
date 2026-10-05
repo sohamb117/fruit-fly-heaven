@@ -1,28 +1,48 @@
 import * as THREE from './vendor/three.module.js';
 import {createAnatomicalViewer} from './brain-view.js';
-import {SIMULATION_MODES} from './simulation-modes.js';
+import {SIMULATION_MODES as FLYWIRE_MODES} from './simulation-modes.js';
 import {BodyWorld,BODY_LABELS,MOTOR_DECODER,isAirborne,applyNeuralOutput} from './body-world.js';
 import {createRetinalCamera} from './retinal-camera.js';
 import {createCircuitInspector} from './circuit-inspector.js';
+import {createBancBodyFactory} from './flybody-world.js';
+import {createFlyBodyReferenceFactory} from './flybody-reference-world.js';
+import {labelBancConsole} from './banc-console-labels.js';
+import {createFruitCameraOcclusion} from './fruit-camera-occlusion.js';
 
 import {uiElement as $,isUIVisible,onUIFrame} from './ui-elements.js';
 import {mountConsole} from './console-shell.js';
 const consoleUI=mountConsole();
+const query=new URLSearchParams(location.search);
+const banc=query.get('dataset')!=='flywire'&&!location.pathname.endsWith('/flywire.html');
+const flightReference=banc&&query.get('controller')==='flybody-reference';
+const dataBase=banc?'/banc-data/console/':'/';
+const graphBase=banc?dataBase:'/connectome/';
+const SIMULATION_MODES=banc?{
+  reference:{dtMs:.5,label:'BANC · physiology',description:'Float32 · 0.5 ms · graded/spiking cells, receptor kinetics and internal state.'},
+  fast:{dtMs:1,label:'Fast · approximate',description:'Float32 · 1 ms physiology steps. Delays round to whole steps; activity and spike timing can change.'},
+}:FLYWIRE_MODES;
 const countFormat=n=>Math.round(n).toLocaleString();
 function showError(message){for(const id of ['error','anatomy-error']){$(id).hidden=false;$(id).textContent=message;}}
-let meta, snapshot=null, selected=1, stopped=false, following=false;
+function failSimulation(error){
+  const message=error?.stack||error?.message||String(error);
+  if(snapshot){snapshot.runtimeError=message;control({paused:true});}
+  showError(message);
+}
+let meta, snapshot=null, selected=1, stopped=false, following=query.get('follow')==='1';
 let renderer, scene, camera, flyMeshes=[], targets=[], selectedRing,renderBatches=[];
 let workers=[],readyWorkers=0,totalWorkers=0,latestActivation=null,brainView=false,startedWall=0,pausedWall=0,pauseStarted=0;
 let anatomyViewer=null,selectedNeuron=0;
-let habitatData,groupsData,motorOutputsData,fastMode=false,workerGeneration=0,populationSize=100;
+let habitatData,groupsData,motorOutputsData,fastMode=false,workerGeneration=0,populationSize=banc?1:100;
 let sensoryInputsData,retinalCamera,retinaCursor=0,lastEyeDraw='';
 let circuitProbeData,visualModelData,visualProjectionData,colorMappingData;
 const circuitInspector=createCircuitInspector($('circuit-inspector'));
 let bodyWorld,bodyClock='neural',movementMode='behavior',flightEnabled=true,motorCoupling=true,lastMotionNeuralMs=0,lastPoseSent=0,lastMotionPanel=0;
+let bancBodyFactory;
 let flightTrails,trailPositions,lastTrailTime=0;
 const poseUp=new THREE.Vector3(),poseForward=new THREE.Vector3(),poseSide=new THREE.Vector3(),poseMatrix=new THREE.Matrix4();
-let azimuth=.63,elevation=.79,distance=178;
+let azimuth=.63,elevation=.79,distance=following?25:178;
 const look=new THREE.Vector3(0,8,0), goalLook=look.clone();
+const fruitCamera=createFruitCameraOcclusion();
 const host=$('scene');
 const sphere=new THREE.SphereGeometry(1,12,8);
 const cylinder=new THREE.CylinderGeometry(1,.85,1,5);
@@ -40,7 +60,7 @@ function createFruit(f,index){
     const points=Array.from({length:31},(_,i)=>curvePoint(f,i/30));
     const curve=new THREE.CatmullRomCurve3(points);
     const body=new THREE.Mesh(new THREE.TubeGeometry(curve,60,f.radius,12,false),material(index===2?'#b69946':'#c4aa58'));
-    body.castShadow=body.receiveShadow=true;group.add(body);
+    body.castShadow=body.receiveShadow=true;group.add(body);fruitCamera.addSolid(body);
     for(const t of [0,1]){const p=curvePoint(f,t);ellipsoid(group,bruise,p.x,p.y,p.z,2.5,2.5,2.5);}
     for(let i=0;i<95;i++){
       const p=curvePoint(f,.03+random()*.94),a=random()*Math.PI*2,r=f.radius*.99;
@@ -50,7 +70,7 @@ function createFruit(f,index){
     }
   }else{
     const skin=material(index===5?'#969951':'#a7543b');
-    ellipsoid(group,skin,f.x,f.y,f.z,f.radius,f.radius*.94,f.radius);
+    fruitCamera.addSolid(ellipsoid(group,skin,f.x,f.y,f.z,f.radius,f.radius*.94,f.radius));
     const top=f.y+f.radius*.91;
     ellipsoid(group,bruise,f.x,top,f.z,2.7,.9,2.7);
     const stem=lineBetween(group,new THREE.Vector3(f.x,top,f.z),new THREE.Vector3(f.x+1.2,top+3,f.z+.5),material('#635839'),.7);
@@ -77,7 +97,7 @@ function createFly(id){
     const hinge=new THREE.Group();hinge.position.set(.05,1.2,.2*side);group.add(hinge);
     ellipsoid(hinge,materials.wing,-.85,0,.22*side,1.18,.025,.38);
     const blur=ellipsoid(hinge,materials.wingBlur,-.65,0,.25*side,1.35,.43,.5);
-    blur.userData.motionVisible=false;wings.push({hinge,blur,side});
+    blur.userData.motionVisible=false;wings.push({hinge,blur,side,restPosition:hinge.position.clone()});
     const antenna=new THREE.Group();antenna.position.set(1,.91,.18*side);group.add(antenna);
     lineBetween(antenna,new THREE.Vector3(),new THREE.Vector3(.37,.16,.15*side),headMat,.045);antennae.push({hinge:antenna,side});
   }
@@ -88,11 +108,14 @@ function createFly(id){
   for(const side of [-1,1])for(let k=0;k<3;k++){
     const leg=new THREE.Group();leg.position.set(.35-k*.49,.66,.28*side);group.add(leg);
     const end=new THREE.Vector3(.45-k*.4,-.15,.69*side);
-    lineBetween(leg,new THREE.Vector3(),end,bodyMat,.056);
-    lineBetween(leg,end,new THREE.Vector3(.62-k*.53,-.67,1.05*side),bodyMat,.039);
-    legs.push({node:leg,phase:(k%2)*Math.PI+(side>0?Math.PI:0),side,front:k===0});
+    const bones=[lineBetween(leg,new THREE.Vector3(),end,bodyMat,.056),lineBetween(leg,end,new THREE.Vector3(.62-k*.53,-.67,1.05*side),bodyMat,.039)];
+    legs.push({node:leg,bones,restPosition:leg.position.clone(),restBones:bones.map(b=>({position:b.position.clone(),quaternion:b.quaternion.clone(),scale:b.scale.clone()})),phase:(k%2)*Math.PI+(side>0?Math.PI:0),side,front:k===0});
   }
   const proboscis=ellipsoid(group,bodyMat,1.08,.43,0,.10,.30,.10);
+  const physicalMouth={bones:[.05,.035].map(radius=>lineBetween(group,new THREE.Vector3(),new THREE.Vector3(0,1,0),bodyMat,radius)),
+    ellipsoids:[0,1].map(()=>ellipsoid(group,bodyMat,0,0,0,1,1,1))};
+  for(const part of [...physicalMouth.bones,...physicalMouth.ellipsoids])part.userData.motionVisible=false;
+  group.userData.physicalMouth=physicalMouth;
   group.userData.legs=legs;group.userData.wings=wings;group.userData.antennae=antennae;group.userData.proboscis=proboscis;group.userData.trail=[];
   // Larger invisible picking target; visible anatomy stays at fly scale.
   const hit=new THREE.Mesh(new THREE.SphereGeometry(2.0,8,6),new THREE.MeshBasicMaterial({visible:false}));
@@ -115,7 +138,8 @@ function initScene(){
   const plane=new THREE.Mesh(new THREE.PlaneGeometry(1000,1000),material('#dbdaca'));plane.rotation.x=-Math.PI/2;plane.position.y=-1;plane.receiveShadow=true;scene.add(plane);
   const points=[];for(let r=0;r<=65;r+=2.5)points.push(new THREE.Vector2(r,1.5+.0037*r*r));
   points.push(new THREE.Vector2(66,17),new THREE.Vector2(66.5,15),new THREE.Vector2(62,9),new THREE.Vector2(51,1),new THREE.Vector2(38,-.4),new THREE.Vector2(0,-.4));
-  const bowl=new THREE.Mesh(new THREE.LatheGeometry(points,128),material('#f1eddd',.33));bowl.receiveShadow=true;bowl.castShadow=true;scene.add(bowl);
+  // Orient the closed profile outward: its inner floor must face upward.
+  const bowl=new THREE.Mesh(new THREE.LatheGeometry(points.reverse(),128),material('#f1eddd',.33));bowl.receiveShadow=true;bowl.castShadow=true;scene.add(bowl);
   const rim=new THREE.Mesh(new THREE.TorusGeometry(65.3,.8,12,128),material('#879788',.4));rim.rotation.x=Math.PI/2;rim.position.y=17;scene.add(rim);
   meta.fruit.forEach(createFruit);
   materials.body=material('#805b2d');materials.head=material('#493d2b');materials.eye=material('#a83d28',.38);
@@ -149,39 +173,79 @@ function initScene(){
 }
 
 let previousRender=0;
+function sendBodyPoses(){
+  const poses=bodyWorld.poses();
+  workers.forEach((worker,n)=>worker.postMessage({type:'poses',neuralTimeMs:snapshot.time_ms,poses:poses.filter((f,i)=>i%totalWorkers===n)}));
+  lastPoseSent=performance.now();
+}
+function advanceNeuralBodies(){
+  if(!banc||bodyClock!=='neural'||!bodyWorld||readyWorkers!==totalWorkers)return;
+  const elapsed=Math.max(0,snapshot.time_ms-lastMotionNeuralMs)/1000;
+  if(elapsed>0){bodyWorld.advance(elapsed);lastMotionNeuralMs=snapshot.time_ms;}
+  sendBodyPoses();
+}
 function render(now){
   const gap=(now-previousRender)/1000,dt=gap>0&&gap<.25?gap:0;previousRender=now;
   const neuralDelta=snapshot?Math.max(0,snapshot.time_ms-lastMotionNeuralMs)/1000:0;
-  lastMotionNeuralMs=snapshot?.time_ms||0;
   if(!isUIVisible())return;
-  if(bodyWorld&&snapshot&&!snapshot.paused&&readyWorkers===totalWorkers){
-    bodyWorld.advance(bodyClock==='live'?dt:neuralDelta);
-    if(now-lastPoseSent>50){
-      const poses=bodyWorld.poses();
-      workers.forEach((worker,n)=>worker.postMessage({type:'poses',poses:poses.filter((f,i)=>i%totalWorkers===n)}));lastPoseSent=now;
+  if(bodyWorld&&snapshot&&!snapshot.paused&&readyWorkers===totalWorkers&&!(banc&&bodyClock==='neural')){
+    try{bodyWorld.advance(bodyClock==='live'?dt:neuralDelta);}catch(error){failSimulation(error);}
+    lastMotionNeuralMs=snapshot.time_ms;
+    if((banc&&neuralDelta>0)||now-lastPoseSent>50){
+      sendBodyPoses();
     }
   }
   if(snapshot&&now-lastMotionPanel>150){updateMotionPanel();lastMotionPanel=now;}
   if(snapshot){
     snapshot.flies.forEach((f,i)=>{
       const mesh=flyMeshes[i],air=isAirborne(f),a=f.actuators,walking=f.motion==='walking'||f.motion==='turning';
-      mesh.position.set(f.x,f.y+.14+(walking?Math.abs(Math.sin(f.gait))*.055:0),f.z);
-      if(air)mesh.rotation.set(f.bank,-f.heading,f.pitch,'YXZ');
+      if(f.physicsPosition)mesh.position.fromArray(f.physicsPosition);
+      else mesh.position.set(f.x,f.y+.14+(walking?Math.abs(Math.sin(f.gait))*.055:0),f.z);
+      if(f.physicsQuaternion)mesh.quaternion.fromArray(f.physicsQuaternion);
+      else if(air)mesh.rotation.set(f.bank,-f.heading,f.pitch,'YXZ');
       else{
         poseUp.fromArray(f.normal);poseForward.set(Math.cos(f.heading),0,Math.sin(f.heading));
         poseForward.addScaledVector(poseUp,-poseForward.dot(poseUp)).normalize();
         poseSide.crossVectors(poseForward,poseUp).normalize();poseMatrix.makeBasis(poseForward,poseUp,poseSide);mesh.quaternion.setFromRotationMatrix(poseMatrix);
       }
       for(const [j,leg]of mesh.userData.legs.entries()){
-        leg.node.rotation.set(...f.joints.legs[j]);
+        if(f.physicsLegs){
+          leg.node.position.set(0,0,0);leg.node.rotation.set(0,0,0);
+          for(let k=0;k<2;k++){
+            const a=poseForward.fromArray(f.physicsLegs[j][k]),b=poseSide.fromArray(f.physicsLegs[j][k+1]),bone=leg.bones[k];
+            bone.position.copy(a).add(b).multiplyScalar(.5);poseUp.copy(b).sub(a);bone.scale.y=poseUp.length();
+            bone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),poseUp.normalize());
+          }
+        }else{
+          leg.node.position.copy(leg.restPosition);leg.node.rotation.set(...f.joints.legs[j]);
+          leg.bones.forEach((bone,k)=>{const rest=leg.restBones[k];bone.position.copy(rest.position);bone.quaternion.copy(rest.quaternion);bone.scale.copy(rest.scale);});
+        }
       }
       for(const [j,wing]of mesh.userData.wings.entries()){
         const power=wing.side<0?a.wingLeft:a.wingRight;
-        wing.hinge.rotation.set(...f.joints.wings[j]);
+        if(f.physicsWings){
+          const pose=f.physicsWings[j],r=pose.rotation;wing.hinge.position.fromArray(pose.position);
+          poseMatrix.set(r[0],r[1],r[2],0,r[3],r[4],r[5],0,r[6],r[7],r[8],0,0,0,0,1);wing.hinge.quaternion.setFromRotationMatrix(poseMatrix);
+        }else{wing.hinge.position.copy(wing.restPosition);wing.hinge.rotation.set(...f.joints.wings[j]);}
         wing.blur.userData.motionVisible=power>.08;
       }
       for(const [j,antenna]of mesh.userData.antennae.entries())antenna.hinge.rotation.y=f.joints.antennae[j];
       mesh.userData.proboscis.scale.y=f.joints.proboscis;
+      const mouth=mesh.userData.physicalMouth;
+      mesh.userData.proboscis.userData.motionVisible=!f.physicsMouth;
+      for(const part of [...mouth.bones,...mouth.ellipsoids])part.userData.motionVisible=!!f.physicsMouth;
+      if(f.physicsMouth){
+        mouth.bones.forEach((bone,k)=>{
+          poseForward.fromArray(f.physicsMouth.anchors[k]);poseSide.fromArray(f.physicsMouth.anchors[k+1]);
+          bone.position.copy(poseForward).add(poseSide).multiplyScalar(.5);poseUp.copy(poseSide).sub(poseForward);bone.scale.y=poseUp.length();
+          bone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),poseUp.normalize());
+        });
+        mouth.ellipsoids.forEach((part,k)=>{
+          const shape=f.physicsMouth.ellipsoids[k],r=shape.rotation;
+          part.position.fromArray(shape.center);part.scale.fromArray(shape.size);
+          poseMatrix.set(r[0],r[1],r[2],0,r[3],r[4],r[5],0,r[6],r[7],r[8],0,0,0,0,1);part.quaternion.setFromRotationMatrix(poseMatrix);
+        });
+      }
       if(bodyWorld.time-lastTrailTime>.06){
         const trail=mesh.userData.trail;
         if(air)trail.push({x:f.x,y:f.y+.7,z:f.z,time:bodyWorld.time});
@@ -194,7 +258,8 @@ function render(now){
     if(following)goalLook.set(f.x,f.y+1,f.z);
   }
   look.lerp(goalLook,Math.min(1,dt*5));
-  camera.position.set(look.x+distance*Math.cos(elevation)*Math.sin(azimuth),look.y+distance*Math.sin(elevation),look.z+distance*Math.cos(elevation)*Math.cos(azimuth));camera.lookAt(look);
+  const viewElevation=fruitCamera.resolve({target:look,azimuth,elevation,distance,following}).elevation;
+  camera.position.set(look.x+distance*Math.cos(viewElevation)*Math.sin(azimuth),look.y+distance*Math.sin(viewElevation),look.z+distance*Math.cos(viewElevation)*Math.cos(azimuth));camera.lookAt(look);
   scene.updateMatrixWorld(true);
   for(const{batch,originals}of renderBatches){
     let count=0;
@@ -243,8 +308,9 @@ function updatePanel(){
   $('sim-time').textContent=(snapshot.time_ms/1000).toFixed(2)+' s';
   $('speed').textContent=snapshot.speed?snapshot.speed.toFixed(4)+'× real time':'Measuring';
   $('total-spikes').textContent=countFormat(snapshot.total_spikes);
-  $('pause').textContent=snapshot.paused?'Resume habitat':'Pause habitat';
-  $('connection').textContent=readyWorkers<totalWorkers?`Loading brains · ${readyWorkers}/${totalWorkers} workers`:snapshot.paused?'Habitat paused':`${populationSize} WASM ${populationSize===1?'brain':'brains'} · ${totalWorkers} ${totalWorkers===1?'worker':'workers'}`;$('live-dot').classList.add('online');
+  $('pause').textContent=flightReference&&bodyWorld.complete?'Replay reference':snapshot.paused?'Resume habitat':'Pause habitat';
+  $('connection').textContent=readyWorkers<totalWorkers?`Loading brains · ${readyWorkers}/${totalWorkers} workers`:snapshot.paused?'Habitat paused':`${populationSize} ${snapshot.backend==='webgpu'?'WebGPU':'WASM'} ${populationSize===1?'brain':'brains'} · ${totalWorkers} ${totalWorkers===1?'worker':'workers'}`;$('live-dot').classList.add('online');
+  if(flightReference&&readyWorkers===totalWorkers)$('connection').textContent='FlyBody reference · BANC observer';
   $('slow-note').textContent=snapshot.speed?`1 neural second ≈ ${Math.round(1/snapshot.speed)} seconds of computation`:'The clock advances with neural computation.';
   drawRaster(snapshot.selected_spikes);
 }
@@ -259,9 +325,10 @@ function updateMotionPanel(){
   $('airborne-count').textContent=snapshot.flies.filter(isAirborne).length+' airborne';
   $('follow-flight').disabled=!snapshot.flies.some(isAirborne);
   $('landings-count').textContent=bodyWorld.landings+(bodyWorld.landings===1?' landing':' landings');
+  $('landings-count').title=banc&&movementMode==='direct'&&!flightReference?'Sustained upright food contact after qualified flight; bounces and crashes are excluded.':'';
   $('body-clock-note').textContent=bodyClock==='live'?'Live actuation holds the latest neural outputs on a separate body clock.':'Bodies advance with computed neural time. Use Live to watch the latest outputs drive movement at wall-clock speed.';
-  $('movement-note').textContent=movementMode==='behavior'?'Behavior control: walking and steering activity drive movement and prepare flight; feeding slows preparation. A modeled flight program supplies sustained wings and landing using body feedback.':'Direct motor mapping: each annotated channel drives its own actuator, with a 2 Hz threshold. Steering alone turns the body in place; flight needs sustained wing-neuron output.';
-  const a=bodyWorld.readCommands(f.brain,f),drives=[['forward',a.forward],['reverse',a.reverse],['turn',Math.abs(a.turn)],['wing power',a.wing],['jump',a.jump],['landing',a.landing],['groom',a.groom],['proboscis',a.proboscis],['antennae',Math.max(a.antennaLeft,a.antennaRight)]].filter(([,value])=>value>.01).map(([name])=>name);
+  $('movement-note').textContent=movementMode==='behavior'?'Behavior control: walking and steering activity drive movement and prepare flight; feeding slows preparation. A modeled flight program supplies sustained wings and landing using body feedback.':banc?'BANC motor neurons drive muscles and native FlyBody actuators. MuJoCo computes joint motion, foot contacts and wing forces. Antennae stay in their fixed native posture.':'Direct motor mapping: each annotated channel drives its own actuator, with a 2 Hz threshold. Steering alone turns the body in place; flight needs sustained wing-neuron output.';
+  const a=banc&&movementMode==='direct'?f.actuators:bodyWorld.readCommands(f.brain,f),drives=[['forward',a.forward],['reverse',a.reverse],['turn',Math.abs(a.turn)],['wing power',a.wing],['jump',a.jump],['landing',a.landing],['groom',a.groom],['proboscis',a.proboscis],['antennae',Math.max(a.antennaLeft,a.antennaRight)]].filter(([,value])=>value>.01).map(([name])=>name);
   $('command-speed').textContent=((MOTOR_DECODER.walkSpeed*a.forward-MOTOR_DECODER.reverseSpeed*a.reverse)/2.6).toFixed(2)+' lengths/s';
   $('command-turn').textContent=(MOTOR_DECODER.yawRate*a.turn*180/Math.PI).toFixed(1)+'°/s';
   const program=f.flightProgram;
@@ -270,6 +337,19 @@ function updateMotionPanel(){
   const controller=movementMode==='behavior'?'Behavior mapping':'Direct motor mapping';
   $('actuator-status').textContent=!motorCoupling?'Motor outputs disconnected · '+(snapshot.paused?'habitat paused':'brain still computing'):drives.length?controller+': '+drives.join(' · '):controller+' · no active drive';
   $('sampled-senses').textContent=f.senses?`Latest brain inputs · odor ${((f.senses[0]+f.senses[1])/2).toFixed(0)} Hz · sugar ${f.senses[2].toFixed(0)} Hz`:'Waiting for sensory feedback';
+  if(banc&&$('internal-state')&&f.internal)$('internal-state').textContent=`Hunger ${(f.internal.hunger*100).toFixed(0)}% · crop ${(f.internal.crop*100).toFixed(1)}% · energy ${(f.internal.energy*100).toFixed(1)}% · insulin-like ${f.internal.insulin.toFixed(2)} · AKH-like ${f.internal.akh.toFixed(2)} · observed stage: ${f.task?.phase||'unobserved'}`;
+  if(flightReference){
+    $('behavior').textContent=bodyWorld.complete?'Reference trial ended':motorCoupling&&flightEnabled?'Reference flight':'Unactuated fall';
+    $('body-clock-note').textContent='Reference physics runs as computation allows, retaining every 0.05 ms step. Neural panels observe the body on a separate clock.';
+    $('movement-note').textContent=bodyWorld.referenceNote;
+    $('flight-program').textContent=bodyWorld.complete?(bodyWorld.controller.terminationReason==='trajectory complete'?'Reference complete':'Reference ended'):!motorCoupling||!flightEnabled?'Unactuated':'Published flight policy';
+    $('command-speed').textContent=bodyWorld.metadata.prescribedTrajectory?'Braking to hover':'20 cm/s reference';$('command-turn').textContent=bodyWorld.metadata.prescribedTrajectory?'Bounded hover':'Prescribed straight flight';
+    $('body-height').textContent=(bodyWorld.diagnostics.position[2]*10).toFixed(2)+' mm';
+    $('command-wing').textContent=`${bodyWorld.controller.wingbeat.frequency.toFixed(1)} Hz`;
+    $('actuator-status').textContent='Published FlyBody controller → native joint actuators. BANC outputs are observed, not coupled.';
+    if($('internal-state'))$('internal-state').textContent='Airborne reference trial. Starts in flight; floor contacts, takeoff, landing and feeding are outside this trial.';
+    if(bodyWorld.complete)$('pause').textContent='Replay reference';
+  }
   updateSensoryPanel(f);
 }
 function updateSensoryPanel(f){
@@ -286,7 +366,7 @@ function updateSensoryPanel(f){
   $('eye-status').textContent=!$('vision').checked?'Vision disconnected':s?.vision.ready?`Supplied to brain · frame ${s.vision.sequence} · body ${s.vision.frameBodyTime.toFixed(2)} s`:'Waiting for rendered eyes';
   for(const side of ['left','right'])$('eye-rate-'+side).textContent=(s?.vision[side+'Hz']||0).toFixed(1)+' Hz';
   $('eye-change').textContent=((s?.vision.contrast||0)*100).toFixed(1)+'%';
-  $('body-sense-status').textContent=!$('body-sense').checked?'Body sense disconnected':s?'Posture and motion → ascending-input proxy':'Waiting for body sample';
+  $('body-sense-status').textContent=!$('body-sense').checked?'Body sense disconnected':s?(banc?'Per-leg contact and joint feedback → BANC sensory neurons':'Posture and motion → ascending-input proxy'):'Waiting for body sample';
   $('sense-support').textContent=((s?.body.support||0)*100).toFixed(0)+'%';
   $('sense-joints').textContent=(s?.body.jointSpeed||0).toFixed(2)+' rad/s';
   $('sense-tilt').textContent=((s?.body.tilt||0)*180/Math.PI).toFixed(1)+'°';
@@ -335,30 +415,38 @@ function launchWorkers(groups){
   const generation=++workerGeneration,mode=fastMode?'fast':'reference';
   totalWorkers=Math.min(populationSize,4,Math.max(1,(navigator.hardwareConcurrency||4)-2));
   for(let n=0;n<totalWorkers;n++){
-    const worker=new Worker('/wasm-world-worker.js',{type:'module'});workers.push(worker);
+    const worker=new Worker(banc?'/banc-world-worker.js':'/wasm-world-worker.js',{type:'module'});workers.push(worker);
     worker.onmessage=({data})=>{
       if(generation!==workerGeneration)return;
+      try{
       if(data.type==='error'){control({paused:true});showError(data.message);return;}
-      if(data.type==='ready'){readyWorkers++;if(readyWorkers===totalWorkers){startedWall=performance.now();if(snapshot.paused)pauseStarted=startedWall;}}
+      if(data.type==='progress')$('matrix-label').textContent=data.message;
+      if(data.type==='ready'){readyWorkers++;snapshot.backend=data.backend||'wasm';snapshot.heapBytes=(snapshot.heapBytes||0)+data.heapBytes;if(readyWorkers===totalWorkers){startedWall=performance.now();if(snapshot.paused)pauseStarted=startedWall;}}
       if(data.type==='update'){
         for(const f of data.flies)applyNeuralOutput(snapshot.flies[f.id-1],f);
         snapshot.time_ms=Math.min(...snapshot.flies.map(f=>f.brain.time_ms));
+        // Native mechanics and sensory feedback advance for every neural block,
+        // independently of screen redraws. Workers await this body state before
+        // computing the next block, so motor samples cannot be skipped.
+        if(!data.inspectionOnly)advanceNeuralBodies();
         const elapsed=(pauseStarted||performance.now())-startedWall-pausedWall;
         snapshot.speed=startedWall&&elapsed>0?snapshot.time_ms/elapsed:0;
         snapshot.total_spikes=snapshot.flies.reduce((sum,f)=>sum+f.brain.spikes,0);
         if(data.selectedId===selected){if(data.circuit)snapshot.flies[selected-1].circuit=data.circuit;latestActivation=data.activation;snapshot.selected_spikes=data.spikes;drawActivation();try{anatomyViewer?.update({flyId:selected,activation:data.activation,lastSpikeMs:data.lastSpikeMs,neuralTimeMs:snapshot.flies[selected-1].brain.time_ms,recording:data.trace});}catch(error){showError('Cannot display neural state: '+error.message);}}
       }
       updatePanel();
+      }catch(error){failSimulation(error);}
     };
     worker.onerror=event=>{if(generation===workerGeneration){control({paused:true});showError(event.message);}};
-    worker.postMessage({type:'init',flies:bodyWorld.poses().filter((f,i)=>i%totalWorkers===n),fruit:meta.fruit,groups,motorOutputs:motorOutputsData,sensoryInputs:sensoryInputsData,circuitProbe:circuitProbeData,visualModel:visualModelData,visualMapping:visualProjectionData,colorMapping:colorMappingData,selectedNeuron,mode,selected,paused:snapshot.paused,odor:$('odor').checked,taste:$('taste').checked,vision:$('vision').checked,bodySense:$('body-sense').checked});
+    worker.postMessage({type:'init',bodySynchronized:banc&&bodyClock==='neural',flies:bodyWorld.poses().filter((f,i)=>i%totalWorkers===n),fruit:meta.fruit,groups,motorOutputs:motorOutputsData,sensoryInputs:sensoryInputsData,circuitProbe:circuitProbeData,visualModel:visualModelData,visualMapping:visualProjectionData,colorMapping:colorMappingData,selectedNeuron,mode,selected,paused:snapshot.paused,odor:$('odor').checked,taste:$('taste').checked,vision:$('vision').checked,bodySense:$('body-sense').checked});
   }
 }
 
 function freshSnapshot(paused=false){
   const zero=()=>({time_ms:0,spikes:0,active_ever:0,odor_left_hz:0,odor_right_hz:0,sweet_hz:0,walk_hz:0,left_hz:0,right_hz:0,feed_hz:0,antenna_hz:0,motor:{}});
   const flies=habitatData.flies.slice(0,populationSize).map(f=>({...f,brain:zero()}));
-  bodyWorld=new BodyWorld(habitatData.fruit,flies,{flightEnabled,motorCoupling,movementMode});lastMotionNeuralMs=lastPoseSent=lastTrailTime=0;
+  bodyWorld?.dispose?.();
+  bodyWorld=banc?bancBodyFactory(habitatData.fruit,flies,{flightEnabled,motorCoupling,movementMode}):new BodyWorld(habitatData.fruit,flies,{flightEnabled,motorCoupling,movementMode});lastMotionNeuralMs=lastPoseSent=lastTrailTime=0;
   retinaCursor=0;lastEyeDraw='';
   for(const mesh of flyMeshes)mesh.userData.trail=[];
   return {flies,time_ms:0,speed:0,total_spikes:0,selected_spikes:[],paused};
@@ -383,9 +471,14 @@ function syncPopulationView(){
   }
   const flies=`${populationSize} ${populationSize===1?'fly':'flies'}`;
   $('population').textContent=flies;
-  $('population-summary').textContent=`${populationSize} independent neural ${populationSize===1?'state':'states'}. A bottomless bowl of bananas and apples.`;
-  $('model-population').textContent=`Actual connectome wiring · ${populationSize} independent WASM ${populationSize===1?'brain':'brains'} · modeled bodies`;
+  $('population-summary').textContent=`${populationSize} independent neural ${populationSize===1?'state':'states'}. ${banc?'Finite food, muscles and internal state.':'A bottomless bowl of bananas and apples.'}`;
+  $('model-population').textContent=`Actual connectome wiring · ${populationSize} independent ${banc?'BANC':'WASM'} ${populationSize===1?'brain':'brains'} · modeled bodies`;
   host.setAttribute('aria-label',`A three-dimensional bowl of rotting bananas and apples with ${flies}. Movement commands come from annotated brain outputs; body mechanics and muscle actuation are modeled.`);
+  if(flightReference){
+    $('population-summary').textContent='One published FlyBody reference controller. BANC observes sensory feedback; its outputs do not control this trial.';
+    $('model-population').textContent='Published flight reference · one fly · BANC observer';
+    host.setAttribute('aria-label','Original three-dimensional habitat displaying one published FlyBody flight reference. Its learned controller follows a prescribed airborne trajectory; BANC does not control this trial.');
+  }
   for(const mesh of flyMeshes)mesh.visible=mesh.userData.flyId<=populationSize;
 }
 function changePopulation(value){
@@ -396,7 +489,8 @@ function changePopulation(value){
   restartPopulation();
 }
 function showPrecision(){
-  const mode=SIMULATION_MODES[fastMode?'fast':'reference'];
+  const mode=banc?(fastMode?{dtMs:1,label:'BANC fast · Float32',description:'1 ms neural steps · delay bins rounded to 1 ms. Physiology runs in Float32 on WebGPU or WASM; activity and spike timing can change.'}:
+    {dtMs:.5,label:'BANC reference · Float32',description:'0.5 ms neural steps · prepared BANC delay bins and physiology. Float32 on WebGPU or WASM.'}):SIMULATION_MODES[fastMode?'fast':'reference'];
   $('fast-mode').checked=fastMode;$('precision-label').textContent=mode.label;$('precision-description').textContent=mode.description;
   if(anatomyViewer)anatomyViewer.setTimeStep(mode.dtMs);
   else $('trace-window').textContent=`Samples every ${mode.dtMs} ms of neural time`;
@@ -414,18 +508,21 @@ function restartPopulation(){
 }
 
 try{
-  const responses=await Promise.all([fetch('/connectome/metadata.json'),fetch('/habitat.json'),fetch('/connectome/groups.json'),fetch('/motor-outputs.json'),fetch('/sensory-inputs.json'),fetch('/circuit-probe.json'),fetch('/visual-model.json'),fetch('/visual-projections.json'),fetch('/color-inputs.json')]);
+  const responses=await Promise.all([fetch(graphBase+'metadata.json'),fetch('/habitat.json'),fetch(graphBase+'groups.json'),fetch(dataBase+'motor-outputs.json'),fetch(dataBase+'sensory-inputs.json'),fetch(dataBase+'circuit-probe.json'),fetch('/visual-model.json'),fetch(dataBase+'visual-projections.json'),fetch(dataBase+'color-inputs.json')]);
   if(responses.some(r=>!r.ok))throw new Error('Cannot load connectome or habitat');
+  if(banc)bancBodyFactory=await (flightReference?createFlyBodyReferenceFactory({trajectory:query.get('trajectory')||'brake-hover'}):createBancBodyFactory());
   meta=await responses[0].json();const habitat=await responses[1].json(),groups=await responses[2].json();meta.fruit=habitat.fruit;meta.flies=habitat.flies.length;
+  if(banc)labelBancConsole(meta);
   habitatData=habitat;groupsData=groups;motorOutputsData=await responses[3].json();
   colorMappingData=await responses[8].json();
   sensoryInputsData=await responses[4].json();circuitProbeData=await responses[5].json();
   const modelText=await responses[6].text();visualModelData=JSON.parse(modelText);visualProjectionData=await responses[7].json();
   const modelHash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(modelText))),n=>n.toString(16).padStart(2,'0')).join('');
   if(modelHash!==visualProjectionData.model_sha256||visualProjectionData.ids_sha256!==meta.prepared_sha256['ids.bin'])throw new Error('Graded vision data do not match this model/connectome');
-  for(const file of ['ids.bin','indptr.bin','targets.bin','weights.bin'])if(circuitProbeData.source_sha256['data/prepared/'+file]!==meta.prepared_sha256[file])throw new Error('Circuit probes do not match the loaded graph: '+file);
-  for(const file of ['ids.bin','indptr.bin','targets.bin','weights.bin'])if(sensoryInputsData.source_sha256['data/prepared/'+file]!==meta.prepared_sha256[file])throw new Error('Sensory annotations do not match the loaded graph: '+file);
-  $('sensory-mapping-summary').textContent=`${countFormat(sensoryInputsData.vision.receptors.length)} R1–6 photoreceptors receive spatial visual input. ${countFormat(sensoryInputsData.vision.unmapped_root_ids.length)} R1–6 cells lack a usable column assignment and receive no added visual drive. Eight body-sense channels use existing input neurons; their tuning is a modeled boundary approximation.`;
+  const graphFiles=banc?['ids.bin','offsets.bin','edges.bin','params.bin']:['ids.bin','indptr.bin','targets.bin','weights.bin'];
+  for(const file of graphFiles)if(circuitProbeData.source_sha256['data/prepared/'+file]!==meta.prepared_sha256[file])throw new Error('Circuit probes do not match the loaded graph: '+file);
+  for(const file of graphFiles)if(sensoryInputsData.source_sha256['data/prepared/'+file]!==meta.prepared_sha256[file])throw new Error('Sensory annotations do not match the loaded graph: '+file);
+  $('sensory-mapping-summary').textContent=banc?sensoryInputsData.vision.mapping_note:`${countFormat(sensoryInputsData.vision.receptors.length)} R1–6 photoreceptors receive spatial visual input. ${countFormat(sensoryInputsData.vision.unmapped_root_ids.length)} R1–6 cells lack a usable column assignment and receive no added visual drive. Eight body-sense channels use existing input neurons; their tuning is a modeled boundary approximation.`;
   for(const c of sensoryInputsData.channels){
     const row=document.createElement('div');row.className='sense-channel';
     const label=document.createElement('span');label.textContent=c.label;
@@ -442,19 +539,29 @@ try{
     const source=document.createElement('a');source.href=channel.source;source.target='_blank';source.rel='noreferrer';source.textContent='Evidence ↗';
     card.append(title,rate,cells,mapping,source);$('motor-channels').appendChild(card);
   }
-  populationSize=habitatData.flies.length;
+  populationSize=banc?1:habitatData.flies.length;
   try{fastMode=localStorage.getItem('fruit-fly-fast-mode')==='true';}catch{}
   try{populationSize=populationValue(localStorage.getItem('fruit-fly-population'));}catch{}
+  populationSize=populationValue(query.get('population'));
   try{bodyClock=localStorage.getItem('fruit-fly-neural-body-clock')==='live'?'live':'neural';flightEnabled=localStorage.getItem('fruit-fly-flight')!=='false';}catch{}
-  try{movementMode=localStorage.getItem('fruit-fly-movement-mode')==='direct'?'direct':'behavior';}catch{}
+  movementMode=banc?'direct':'behavior';
+  try{const saved=localStorage.getItem('fruit-fly-movement-mode');if(saved==='direct'||saved==='behavior')movementMode=saved;}catch{}
+  if(['direct','behavior'].includes(query.get('movement')))movementMode=query.get('movement');
+  if(['neural','live'].includes(query.get('clock')))bodyClock=query.get('clock');
+  if(flightReference){
+    populationSize=1;bodyClock='live';movementMode='direct';flightEnabled=true;
+    $('movement-mode').replaceChildren(new Option('Published flight reference','direct'));$('movement-mode').disabled=true;
+    $('body-clock').replaceChildren(new Option('Reference physics clock','live'));$('body-clock').disabled=true;
+    $('body-height').parentElement.querySelector('span').textContent='Height in reference task';
+  }
   $('body-clock').value=bodyClock;$('flight-enabled').checked=flightEnabled;$('movement-mode').value=movementMode;
   $('movement-mode').addEventListener('change',()=>{movementMode=$('movement-mode').value;bodyWorld.setMovementMode(movementMode);try{localStorage.setItem('fruit-fly-movement-mode',movementMode);}catch{}updateMotionPanel();});
-  $('body-clock').addEventListener('change',()=>{bodyClock=$('body-clock').value;try{localStorage.setItem('fruit-fly-neural-body-clock',bodyClock);}catch{}updateMotionPanel();});
+  $('body-clock').addEventListener('change',()=>{bodyClock=$('body-clock').value;lastMotionNeuralMs=snapshot.time_ms;control({bodySynchronized:banc&&bodyClock==='neural'});sendBodyPoses();try{localStorage.setItem('fruit-fly-neural-body-clock',bodyClock);}catch{}updateMotionPanel();});
   $('motor-coupling').addEventListener('change',()=>{motorCoupling=$('motor-coupling').checked;bodyWorld.setMotorCoupling(motorCoupling);updateMotionPanel();});
   $('flight-enabled').addEventListener('change',()=>{flightEnabled=$('flight-enabled').checked;bodyWorld.setFlightEnabled(flightEnabled);try{localStorage.setItem('fruit-fly-flight',String(flightEnabled));}catch{}});
   snapshot=freshSnapshot();syncPopulationView();showPrecision();$('fast-mode').disabled=false;
-  for(const id of ['population-size','population-count']){$(id).max=String(habitatData.flies.length);$(id).disabled=false;}
-  $('population-max').textContent=String(habitatData.flies.length);
+  for(const id of ['population-size','population-count']){$(id).max=String(flightReference?1:habitatData.flies.length);$(id).disabled=flightReference;}
+  $('population-max').textContent=String(flightReference?1:habitatData.flies.length);
   $('population-size').addEventListener('input',()=>previewPopulation($('population-size').value));
   $('population-size').addEventListener('change',()=>changePopulation($('population-size').value));
   $('population-count').addEventListener('change',()=>changePopulation($('population-count').value));
@@ -468,7 +575,10 @@ try{
   selectedNeuron=groups.steer_left[0];initScene();syncPopulationView();launchWorkers(groups);updatePanel();
   $('fly-id').addEventListener('change',()=>selectFly(Number($('fly-id').value)));
   $('brain-fly').addEventListener('change',()=>selectFly(Number($('brain-fly').value)));
-  $('pause').addEventListener('click',()=>control({paused:!snapshot?.paused}).catch(console.error));
+  $('pause').addEventListener('click',()=>{
+    if(flightReference&&bodyWorld.complete){snapshot.paused=false;restartPopulation();return;}
+    control({paused:!snapshot?.paused}).catch(console.error);
+  });
   $('odor').addEventListener('change',()=>control({odor:$('odor').checked}).catch(console.error));
   $('taste').addEventListener('change',()=>control({taste:$('taste').checked}).catch(console.error));
   $('vision').addEventListener('change',()=>{for(const f of snapshot.flies)delete f.eyeBodyTime;control({vision:$('vision').checked}).catch(console.error);});
@@ -479,7 +589,7 @@ try{
   $('brain-view').addEventListener('click',()=>setBrainView(true));
   $('back-to-bowl').addEventListener('click',()=>setBrainView(false));
   brainView=consoleUI.isOpen('cortex');
-  createAnatomicalViewer({initialNeuron:selectedNeuron,onNeuronSelect:index=>{selectedNeuron=index;for(const w of workers)w.postMessage({type:'control',selectedNeuron:index});}}).then(viewer=>{anatomyViewer=viewer;showPrecision();viewer.selectFly(selected);viewer.setActive(brainView);}).catch(error=>{$('anatomy-error').hidden=false;$('anatomy-error').textContent='Cannot load anatomical viewer: '+error.message;console.error(error);});
+  createAnatomicalViewer({base:banc?'/banc-data/anatomy/':'/anatomy/',initialNeuron:selectedNeuron,onNeuronSelect:index=>{selectedNeuron=index;for(const w of workers)w.postMessage({type:'control',selectedNeuron:index});}}).then(viewer=>{anatomyViewer=viewer;showPrecision();viewer.selectFly(selected);viewer.setActive(brainView);}).catch(error=>{$('anatomy-error').hidden=false;$('anatomy-error').textContent='Cannot load anatomical viewer: '+error.message;console.error(error);});
   // Small inspectable surface for local QA; no fabricated or replayed brain data.
-  window.heaven={get state(){return snapshot;},get meta(){return meta;},get renderer(){return renderer;},selectFly};
+  window.heaven={get state(){return snapshot;},get meta(){return meta;},get renderer(){return renderer;},get ready(){return readyWorkers===totalWorkers;},get anatomy(){return anatomyViewer?.diagnostics;},get bodyWorld(){return bodyWorld;},selectFly};
 }catch(error){$('error').hidden=false;$('error').textContent='Unable to start: '+error.message;console.error(error);}

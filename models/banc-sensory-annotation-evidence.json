@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "scope": "Exact BANC fafb_match identity evidence for three internally conflicting labellar annotations. No cross-dataset synapses, physiology or laterality are transferred.",
+  "sources": {
+    "data/raw/banc888/meta.feather": {
+      "sha256": "86ccf5df0c67419f8c5f43e93a7ed38d23a080e9f7fde26737290252f3780098",
+      "url": "https://storage.googleapis.com/lee-lab_brain-and-nerve-cord-fly-connectome/compiled_data/banc_888/banc_888_meta.feather"
+    },
+    "data/raw/classification.csv.gz": {
+      "sha256": "e946b552f4056dfc977707be0674609832c3f64332a22d69dc0d9615e7aae663",
+      "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/classification.csv.gz"
+    },
+    "data/raw/consolidated_cell_types.csv.gz": {
+      "sha256": "8aba246d71dc40361677493629972ce3883048c3d02010adc42bda22962a1a2d",
+      "url": "https://storage.googleapis.com/flywire-data/codex/data/fafb/783/consolidated_cell_types.csv.gz"
+    }
+  },
+  "rows": [
+    {
+      "banc_root_id": "720575941514255427",
+      "banc_cell_type": "BM_Taste",
+      "banc_function": "tactile",
+      "banc_detailed_function": "sugar, Gr64f",
+      "banc_side": "left",
+      "fafb_match": "720575940621754367",
+      "flywire_classification": {
+        "root_id": "720575940621754367",
+        "flow": "afferent",
+        "super_class": "sensory",
+        "class": "gustatory",
+        "sub_class": "sugar/water",
+        "hemilineage": "",
+        "side": "left",
+        "nerve": "MxLbN"
+      },
+      "flywire_cell_type": {
+        "root_id": "720575940621754367",
+        "primary_type": "LB3",
+        "additional_type(s)": ""
+      },
+      "supports_external_sugar": true,
+      "decision": "Retain BANC sugar function: the exact annotated FAFB match is a gustatory sugar/water LB3 neuron. Preserve conflicting BANC BM_Taste label without transferring generic BM_Taste function."
+    },
+    {
+      "banc_root_id": "720575941514105297",
+      "banc_cell_type": "BM_Taste",
+      "banc_function": "tactile",
+      "banc_detailed_function": "sugar, Gr64f",
+      "banc_side": "left",
+      "fafb_match": "720575940639259967",
+      "flywire_classification": {
+        "root_id": "720575940639259967",
+        "flow": "afferent",
+        "super_class": "sensory",
+        "class": "gustatory",
+        "sub_class": "sugar/water",
+        "hemilineage": "",
+        "side": "left",
+        "nerve": "MxLbN"
+      },
+      "flywire_cell_type": {
+        "root_id": "720575940639259967",
+        "primary_type": "LB3",
+        "additional_type(s)": ""
+      },
+      "supports_external_sugar": true,
+      "decision": "Retain BANC sugar function: the exact annotated FAFB match is a gustatory sugar/water LB3 neuron. Preserve conflicting BANC BM_Taste label without transferring generic BM_Taste function."
+    },
+    {
+      "banc_root_id": "720575941442395599",
+      "banc_cell_type": "BM_Taste",
+      "banc_function": "tactile",
+      "banc_detailed_function": "sugar, Gr64f",
+      "banc_side": null,
+      "fafb_match": "720575940628672122",
+      "flywire_classification": {
+        "root_id": "720575940628672122",
+        "flow": "afferent",
+        "super_class": "sensory",
+        "class": "mechanosensory",
+        "sub_class": "head_bristle",
+        "hemilineage": "",
+        "side": "left",
+        "nerve": "MxLbN"
+      },
+      "flywire_cell_type": {
+        "root_id": "720575940628672122",
+        "primary_type": "BM_Taste",
+        "additional_type(s)": ""
+      },
+      "supports_external_sugar": false,
+      "decision": "Abstain from sugar drive: BANC detailed sugar conflicts with both its tactile BM_Taste label and the exact annotated FAFB match, which is mechanosensory head-bristle BM_Taste. Null BANC side remains null; do not infer it from FlyWire."
+    }
+  ]
+}
